@@ -30,9 +30,13 @@ func parseTokens(tokens []string) (*Node, int) {
 			last.Car = tokens[i]
 			i++
 		}
-		if i >= len(tokens) || tokens[i] == ")" {
+		if i >= len(tokens) {
 			last.Cdr = nil
 			return first, i
+		}
+		if tokens[i] == ")" {
+			last.Cdr = nil
+			return first, i+1
 		}
 		tmp := new(Node)
 		last.Cdr = tmp
