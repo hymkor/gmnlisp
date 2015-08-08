@@ -6,38 +6,36 @@ import (
 	"os"
 )
 
-func print_(p *DotPair) *DotPair {
+func CmdPrint(first *DotPair) *DotPair {
 	defer fmt.Println()
-	i := 0
-	for p != nil {
-		if i > 0 {
+	for p := first; p != nil; p = p.Cdr {
+		if p != first {
 			fmt.Print(" ")
 		}
-		i++
 		switch t := p.Car.(type) {
 		case string:
 			fmt.Print(t)
 		case *DotPair:
 			if p.Car != nil {
-				result, err := Eval(t)
+				result, err := t.Eval()
 				if err != nil {
 					return nil
 				}
-				Print(result, os.Stdout)
+				result.Print(os.Stdout)
 			} else {
 				fmt.Print("<nil>")
 			}
 		}
-		p = p.Cdr
 	}
 	return nil
 }
 
 var builtInFunc = map[string]func(*DotPair) *DotPair{}
 
-func Eval(p *DotPair) (*DotPair, error) {
+func (this *DotPair) Eval() (*DotPair, error) {
 	first := new(DotPair)
 	last := first
+	p := this
 	for {
 		switch t := p.Car.(type) {
 		case string:
@@ -67,5 +65,5 @@ func Eval(p *DotPair) (*DotPair, error) {
 }
 
 func init() {
-	builtInFunc["print"] = print_
+	builtInFunc["print"] = CmdPrint
 }

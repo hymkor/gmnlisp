@@ -46,22 +46,24 @@ func ParseString(s string) *DotPair {
 	return ParseTokens(StringToTokens(s))
 }
 
-func Print(p *DotPair, w io.Writer) {
-	for p != nil {
+func (this *DotPair) Print(w io.Writer) {
+	for p := this; p != nil; p = p.Cdr {
+		if p != this {
+			fmt.Fprint(w, " ")
+		}
 		switch t := p.Car.(type) {
 		case nil:
-			fmt.Fprint(w, "nil ")
+			fmt.Fprint(w, "<nil> ")
 		case string:
 			fmt.Fprintf(w, "\"%s\" ", t)
 		case *DotPair:
 			if t == nil {
 				fmt.Fprint(w, "<nil> ")
 			} else {
-				fmt.Fprint(w, "[ ")
-				Print(t, w)
-				fmt.Fprint(w, "] ")
+				fmt.Fprint(w, "( ")
+				t.Print(w)
+				fmt.Fprint(w, ") ")
 			}
 		}
-		p = p.Cdr
 	}
 }
