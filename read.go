@@ -31,7 +31,7 @@ type Node struct {
 	Cdr *Node
 }
 
-func parseTokens(tokens []string) (*Node, int) {
+func readTokens(tokens []string) (*Node, int) {
 	if len(tokens) <= 0 {
 		return nil, 0
 	}
@@ -44,7 +44,7 @@ func parseTokens(tokens []string) (*Node, int) {
 	for {
 		if tokens[i] == "(" {
 			i++
-			car, n := parseTokens(tokens[i:])
+			car, n := readTokens(tokens[i:])
 			last.Car = car
 			i += n
 		} else {
@@ -69,13 +69,13 @@ func parseTokens(tokens []string) (*Node, int) {
 	}
 }
 
-func ParseTokens(tokens []string) *Node {
-	list, _ := parseTokens(tokens)
+func ReadTokens(tokens []string) *Node {
+	list, _ := readTokens(tokens)
 	return list
 }
 
-func ParseString(s string) *Node {
-	return ParseTokens(StringToTokens(s))
+func ReadString(s string) *Node {
+	return ReadTokens(StringToTokens(s))
 }
 
 func (this *Node) Dump(w io.Writer) {
