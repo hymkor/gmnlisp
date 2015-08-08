@@ -11,6 +11,9 @@ type DotPair struct {
 }
 
 func parseTokens(tokens []string) (*DotPair, int) {
+	if len(tokens) <= 0 {
+		return nil, 0
+	}
 	if tokens[0] == ")" {
 		return nil, 1
 	}
@@ -53,16 +56,16 @@ func (this *DotPair) Print(w io.Writer) {
 		}
 		switch t := p.Car.(type) {
 		case nil:
-			fmt.Fprint(w, "<nil> ")
+			fmt.Fprint(w, "<nil>")
 		case string:
-			fmt.Fprintf(w, "\"%s\" ", t)
+			fmt.Fprintf(w, "\"%s\"", t)
 		case *DotPair:
 			if t == nil {
-				fmt.Fprint(w, "<nil> ")
+				fmt.Fprint(w, "<nil>")
 			} else {
-				fmt.Fprint(w, "( ")
+				fmt.Fprint(w, "(")
 				t.Print(w)
-				fmt.Fprint(w, ") ")
+				fmt.Fprint(w, ")")
 			}
 		}
 	}

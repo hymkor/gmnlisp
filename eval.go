@@ -6,31 +6,17 @@ import (
 	"os"
 )
 
-func CmdPrint(first *DotPair) *DotPair {
-	defer fmt.Println()
-	for p := first; p != nil; p = p.Cdr {
-		if p != first {
-			fmt.Print(" ")
-		}
-		switch t := p.Car.(type) {
-		case string:
-			fmt.Print(t)
-		case *DotPair:
-			if p.Car != nil {
-				result, err := t.Eval()
-				if err != nil {
-					return nil
-				}
-				result.Print(os.Stdout)
-			} else {
-				fmt.Print("<nil>")
-			}
-		}
+func CmdPrint(this *DotPair) (*DotPair, error) {
+	list, err := this.Eval()
+	if err != nil {
+		return nil, err
 	}
-	return nil
+	list.Print(os.Stdout)
+	fmt.Println()
+	return nil, nil
 }
 
-var builtInFunc = map[string]func(*DotPair) *DotPair{}
+var builtInFunc = map[string]func(*DotPair) (*DotPair, error){}
 
 func (this *DotPair) Eval() (*DotPair, error) {
 	first := new(DotPair)
@@ -45,7 +31,11 @@ func (this *DotPair) Eval() (*DotPair, error) {
 		case *DotPair:
 			if name, ok := t.Car.(string); ok {
 				if fn, ok := builtInFunc[name]; ok {
-					last.Car = fn(t.Cdr)
+					var err error
+					last.Car, err = fn(t.Cdr)
+					if err != nil {
+						return nil, err
+					}
 				} else {
 					return nil, fmt.Errorf("%s: Not found", name)
 				}
