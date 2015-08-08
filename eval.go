@@ -13,13 +13,15 @@ func (this *Node) Eval() (*Node, error) {
 	p := this
 	for {
 		switch t := p.Car.(type) {
-		case string:
+		case *AtomString:
+			last.Car = t
+		case *AtomSymbol:
 			last.Car = t
 		case nil:
 			last.Car = t
 		case *Node:
-			if name, ok := t.Car.(string); ok {
-				if fn, ok := builtInFunc[name]; ok {
+			if name, ok := t.Car.(*AtomSymbol); ok {
+				if fn, ok := builtInFunc[name.Name1]; ok {
 					var err error
 					last.Car, err = fn(t.Cdr)
 					if err != nil {

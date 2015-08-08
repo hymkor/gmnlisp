@@ -3,10 +3,31 @@ package gommon
 import (
 	"fmt"
 	"io"
+	"strings"
 )
 
+type Atom interface {
+	Dump(io.Writer)
+}
+
+type AtomString struct {
+	Value1 string
+}
+
+func (this *AtomString) Dump(w io.Writer) {
+	fmt.Fprintf(w, "\"%s\"", this.Value1)
+}
+
+type AtomSymbol struct {
+	Name1 string
+}
+
+func (this *AtomSymbol) Dump(w io.Writer) {
+	fmt.Fprintf(w, "{%s}", this.Name1)
+}
+
 type Node struct {
-	Car interface{}
+	Car Atom
 	Cdr *Node
 }
 
@@ -27,7 +48,11 @@ func parseTokens(tokens []string) (*Node, int) {
 			last.Car = car
 			i += n
 		} else {
-			last.Car = tokens[i]
+			if strings.HasPrefix(tokens[i], "\"") {
+				last.Car = &AtomString{strings.Replace(tokens[i], "\"", "", -1)}
+			} else {
+				last.Car = &AtomSymbol{tokens[i]}
+			}
 			i++
 		}
 		if i >= len(tokens) {
@@ -53,24 +78,23 @@ func ParseString(s string) *Node {
 	return ParseTokens(StringToTokens(s))
 }
 
-func (this *Node) Print(w io.Writer) {
+func (this *Node) Dump(w io.Writer) {
 	for p := this; p != nil; p = p.Cdr {
 		if p != this {
 			fmt.Fprint(w, " ")
 		}
-		switch t := p.Car.(type) {
-		case nil:
+		if p.Car == nil {
 			fmt.Fprint(w, "<nil>")
-		case string:
-			fmt.Fprintf(w, "\"%s\"", t)
-		case *Node:
-			if t == nil {
+		} else if val, ok := p.Car.(*Node); ok {
+			fmt.Fprint(w, "(")
+			if val == nil {
 				fmt.Fprint(w, "<nil>")
 			} else {
-				fmt.Fprint(w, "(")
-				t.Print(w)
-				fmt.Fprint(w, ")")
+				val.Dump(w)
 			}
+			fmt.Fprint(w, ")")
+		} else {
+			p.Car.Dump(w)
 		}
 	}
 }
