@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-func CmdPrint(this *DotPair) (*DotPair, error) {
+func CmdPrint(this *Node) (*Node, error) {
 	list, err := this.Eval()
 	if err != nil {
 		return nil, err
@@ -16,10 +16,10 @@ func CmdPrint(this *DotPair) (*DotPair, error) {
 	return nil, nil
 }
 
-var builtInFunc = map[string]func(*DotPair) (*DotPair, error){}
+var builtInFunc = map[string]func(*Node) (*Node, error){}
 
-func (this *DotPair) Eval() (*DotPair, error) {
-	first := new(DotPair)
+func (this *Node) Eval() (*Node, error) {
+	first := new(Node)
 	last := first
 	p := this
 	for {
@@ -28,7 +28,7 @@ func (this *DotPair) Eval() (*DotPair, error) {
 			last.Car = t
 		case nil:
 			last.Car = t
-		case *DotPair:
+		case *Node:
 			if name, ok := t.Car.(string); ok {
 				if fn, ok := builtInFunc[name]; ok {
 					var err error
@@ -48,7 +48,7 @@ func (this *DotPair) Eval() (*DotPair, error) {
 			return first, nil
 		}
 		p = p.Cdr
-		tmp := new(DotPair)
+		tmp := new(Node)
 		last.Cdr = tmp
 		last = tmp
 	}

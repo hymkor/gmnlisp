@@ -5,19 +5,19 @@ import (
 	"io"
 )
 
-type DotPair struct {
+type Node struct {
 	Car interface{}
-	Cdr *DotPair
+	Cdr *Node
 }
 
-func parseTokens(tokens []string) (*DotPair, int) {
+func parseTokens(tokens []string) (*Node, int) {
 	if len(tokens) <= 0 {
 		return nil, 0
 	}
 	if tokens[0] == ")" {
 		return nil, 1
 	}
-	first := new(DotPair)
+	first := new(Node)
 	last := first
 	i := 0
 	for {
@@ -34,22 +34,22 @@ func parseTokens(tokens []string) (*DotPair, int) {
 			last.Cdr = nil
 			return first, i
 		}
-		tmp := new(DotPair)
+		tmp := new(Node)
 		last.Cdr = tmp
 		last = tmp
 	}
 }
 
-func ParseTokens(tokens []string) *DotPair {
+func ParseTokens(tokens []string) *Node {
 	list, _ := parseTokens(tokens)
 	return list
 }
 
-func ParseString(s string) *DotPair {
+func ParseString(s string) *Node {
 	return ParseTokens(StringToTokens(s))
 }
 
-func (this *DotPair) Print(w io.Writer) {
+func (this *Node) Print(w io.Writer) {
 	for p := this; p != nil; p = p.Cdr {
 		if p != this {
 			fmt.Fprint(w, " ")
@@ -59,7 +59,7 @@ func (this *DotPair) Print(w io.Writer) {
 			fmt.Fprint(w, "<nil>")
 		case string:
 			fmt.Fprintf(w, "\"%s\"", t)
-		case *DotPair:
+		case *Node:
 			if t == nil {
 				fmt.Fprint(w, "<nil>")
 			} else {
