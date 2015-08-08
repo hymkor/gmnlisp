@@ -3,6 +3,8 @@ package gommon
 import (
 	"fmt"
 	"io"
+	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -26,10 +28,20 @@ func (this *AtomSymbol) Dump(w io.Writer) {
 	fmt.Fprintf(w, "{%s}", this.Name1)
 }
 
+type AtomInteger struct {
+	Value1 int64
+}
+
+func (this *AtomInteger) Dump(w io.Writer) {
+	fmt.Fprintf(w, "%d", this.Value1)
+}
+
 type Node struct {
 	Car Atom
 	Cdr *Node
 }
+
+var RxNumber = regexp.MustCompile("^[0-9]+$")
 
 func readTokens(tokens []string) (*Node, int) {
 	if len(tokens) <= 0 {
@@ -47,6 +59,13 @@ func readTokens(tokens []string) (*Node, int) {
 			car, n := readTokens(tokens[i:])
 			last.Car = car
 			i += n
+		} else if RxNumber.MatchString(tokens[i]) {
+			val, err := strconv.ParseInt(tokens[i], 10, 63)
+			if err != nil {
+				val = 0
+			}
+			last.Car = &AtomInteger{val}
+			i++
 		} else {
 			if strings.HasPrefix(tokens[i], "\"") {
 				last.Car = &AtomString{strings.Replace(tokens[i], "\"", "", -1)}
