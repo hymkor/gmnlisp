@@ -16,7 +16,11 @@ func CmdPrint(this *Node) (*Node, error) {
 	return nil, nil
 }
 
-var builtInFunc = map[string]func(*Node) (*Node, error){}
+func CmdQuote(this *Node) (*Node, error) {
+	return this,nil
+}
+
+var builtInFunc map[string]func(*Node) (*Node, error)
 
 func (this *Node) Eval() (*Node, error) {
 	first := new(Node)
@@ -55,5 +59,8 @@ func (this *Node) Eval() (*Node, error) {
 }
 
 func init() {
-	builtInFunc["print"] = CmdPrint
+	builtInFunc = map[string]func(*Node)(*Node,error){
+		"print": CmdPrint,
+		"quote": CmdQuote,
+	}
 }
