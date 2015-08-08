@@ -3,22 +3,7 @@ package gommon
 import (
 	"errors"
 	"fmt"
-	"os"
 )
-
-func CmdPrint(this *Node) (*Node, error) {
-	list, err := this.Eval()
-	if err != nil {
-		return nil, err
-	}
-	list.Print(os.Stdout)
-	fmt.Println()
-	return nil, nil
-}
-
-func CmdQuote(this *Node) (*Node, error) {
-	return this,nil
-}
 
 var builtInFunc map[string]func(*Node) (*Node, error)
 
@@ -59,7 +44,7 @@ func (this *Node) Eval() (*Node, error) {
 }
 
 func init() {
-	builtInFunc = map[string]func(*Node)(*Node,error){
+	builtInFunc = map[string]func(*Node) (*Node, error){
 		"print": CmdPrint,
 		"quote": CmdQuote,
 	}

@@ -36,7 +36,7 @@ func parseTokens(tokens []string) (*Node, int) {
 		}
 		if tokens[i] == ")" {
 			last.Cdr = nil
-			return first, i+1
+			return first, i + 1
 		}
 		tmp := new(Node)
 		last.Cdr = tmp
