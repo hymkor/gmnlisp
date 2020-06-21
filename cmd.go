@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-func CmdPrint(this *Node) (*Node, error) {
+func CmdPrint(this *Cons) (*Cons, error) {
 	list, err := this.Eval()
 	if err != nil {
 		return nil, err
@@ -15,6 +15,6 @@ func CmdPrint(this *Node) (*Node, error) {
 	return nil, nil
 }
 
-func CmdQuote(this *Node) (*Node, error) {
+func CmdQuote(this *Cons) (*Cons, error) {
 	return this, nil
 }

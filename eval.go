@@ -5,14 +5,14 @@ import (
 	"fmt"
 )
 
-var builtInFunc map[string]func(*Node) (*Node, error)
+var builtInFunc map[string]func(*Cons) (*Cons, error)
 
-func (this *Node) Eval() (*Node, error) {
-	first := new(Node)
+func (this *Cons) Eval() (*Cons, error) {
+	first := new(Cons)
 	last := first
 	p := this
 	for {
-		if t, ok := p.Car.(*Node); ok {
+		if t, ok := p.Car.(*Cons); ok {
 			if name, ok := t.Car.(AtomSymbol); ok {
 				if fn, ok := builtInFunc[string(name)]; ok {
 					var err error
@@ -34,14 +34,14 @@ func (this *Node) Eval() (*Node, error) {
 			return first, nil
 		}
 		p = p.Cdr
-		tmp := new(Node)
+		tmp := new(Cons)
 		last.Cdr = tmp
 		last = tmp
 	}
 }
 
 func init() {
-	builtInFunc = map[string]func(*Node) (*Node, error){
+	builtInFunc = map[string]func(*Cons) (*Cons, error){
 		"print": CmdPrint,
 		"quote": CmdQuote,
 	}

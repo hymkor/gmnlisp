@@ -33,21 +33,21 @@ func (this AtomInteger) WriteTo(w io.Writer) (int64, error) {
 	return int64(n), err
 }
 
-type Node struct {
+type Cons struct {
 	Car Atom
-	Cdr *Node
+	Cdr *Cons
 }
 
 var RxNumber = regexp.MustCompile("^[0-9]+$")
 
-func readTokens(tokens []string) (*Node, int) {
+func readTokens(tokens []string) (*Cons, int) {
 	if len(tokens) <= 0 {
 		return nil, 0
 	}
 	if tokens[0] == ")" {
 		return nil, 1
 	}
-	first := new(Node)
+	first := new(Cons)
 	last := first
 	i := 0
 	for {
@@ -79,22 +79,22 @@ func readTokens(tokens []string) (*Node, int) {
 			last.Cdr = nil
 			return first, i + 1
 		}
-		tmp := new(Node)
+		tmp := new(Cons)
 		last.Cdr = tmp
 		last = tmp
 	}
 }
 
-func ReadTokens(tokens []string) *Node {
+func ReadTokens(tokens []string) *Cons {
 	list, _ := readTokens(tokens)
 	return list
 }
 
-func ReadString(s string) *Node {
+func ReadString(s string) *Cons {
 	return ReadTokens(StringToTokens(s))
 }
 
-func (this *Node) WriteTo(w io.Writer) (int64, error) {
+func (this *Cons) WriteTo(w io.Writer) (int64, error) {
 	var n int64 = 0
 	for p := this; p != nil; p = p.Cdr {
 		if p != this {
@@ -110,7 +110,7 @@ func (this *Node) WriteTo(w io.Writer) (int64, error) {
 			if err != nil {
 				return n, err
 			}
-		} else if val, ok := p.Car.(*Node); ok {
+		} else if val, ok := p.Car.(*Cons); ok {
 			m, err := fmt.Fprint(w, "(")
 			n += int64(m)
 			if err != nil {
