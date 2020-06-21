@@ -10,7 +10,7 @@ func CmdPrint(this *Node) (*Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	list.Dump(os.Stdout)
+	list.WriteTo(os.Stdout)
 	fmt.Println()
 	return nil, nil
 }

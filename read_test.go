@@ -6,9 +6,9 @@ import (
 )
 
 func TestParse(t *testing.T) {
-	ReadString("(a (b c d) e d)").Dump(os.Stdout)
+	ReadString("(a (b c d) e d)").WriteTo(os.Stdout)
 	println()
 
-	ReadString("(a (b () c d) e d)").Dump(os.Stdout)
+	ReadString("(a (b () c d) e d)").WriteTo(os.Stdout)
 	println()
 }

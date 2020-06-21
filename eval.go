@@ -12,7 +12,7 @@ func (this *Node) Eval() (*Node, error) {
 	last := first
 	p := this
 	for {
-		if t,ok := p.Car.(*Node) ; ok {
+		if t, ok := p.Car.(*Node); ok {
 			if name, ok := t.Car.(*AtomSymbol); ok {
 				if fn, ok := builtInFunc[name.Name1]; ok {
 					var err error
@@ -26,7 +26,7 @@ func (this *Node) Eval() (*Node, error) {
 			} else {
 				return nil, errors.New("list: can not evaluate")
 			}
-		}else{
+		} else {
 			last.Car = p.Car
 		}
 		if p.Cdr == nil {

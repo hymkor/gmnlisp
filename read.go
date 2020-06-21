@@ -9,31 +9,34 @@ import (
 )
 
 type Atom interface {
-	Dump(io.Writer)
+	io.WriterTo
 }
 
 type AtomString struct {
 	Value1 string
 }
 
-func (this *AtomString) Dump(w io.Writer) {
-	fmt.Fprintf(w, "\"%s\"", this.Value1)
+func (this *AtomString) WriteTo(w io.Writer) (int64, error) {
+	n, err := fmt.Fprintf(w, "\"%s\"", this.Value1)
+	return int64(n), err
 }
 
 type AtomSymbol struct {
 	Name1 string
 }
 
-func (this *AtomSymbol) Dump(w io.Writer) {
-	fmt.Fprintf(w, "{%s}", this.Name1)
+func (this *AtomSymbol) WriteTo(w io.Writer) (int64, error) {
+	n, err := fmt.Fprintf(w, "{%s}", this.Name1)
+	return int64(n), err
 }
 
 type AtomInteger struct {
 	Value1 int64
 }
 
-func (this *AtomInteger) Dump(w io.Writer) {
-	fmt.Fprintf(w, "%d", this.Value1)
+func (this *AtomInteger) WriteTo(w io.Writer) (int64, error) {
+	n, err := fmt.Fprintf(w, "%d", this.Value1)
+	return int64(n), err
 }
 
 type Node struct {
@@ -97,23 +100,53 @@ func ReadString(s string) *Node {
 	return ReadTokens(StringToTokens(s))
 }
 
-func (this *Node) Dump(w io.Writer) {
+func (this *Node) WriteTo(w io.Writer) (int64, error) {
+	var n int64 = 0
 	for p := this; p != nil; p = p.Cdr {
 		if p != this {
-			fmt.Fprint(w, " ")
+			m, err := fmt.Fprint(w, " ")
+			n += int64(m)
+			if err != nil {
+				return n, err
+			}
 		}
 		if p.Car == nil {
-			fmt.Fprint(w, "<nil>")
-		} else if val, ok := p.Car.(*Node); ok {
-			fmt.Fprint(w, "(")
-			if val == nil {
-				fmt.Fprint(w, "<nil>")
-			} else {
-				val.Dump(w)
+			m, err := fmt.Fprint(w, "<nil>")
+			n += int64(m)
+			if err != nil {
+				return n, err
 			}
-			fmt.Fprint(w, ")")
+		} else if val, ok := p.Car.(*Node); ok {
+			m, err := fmt.Fprint(w, "(")
+			n += int64(m)
+			if err != nil {
+				return n, err
+			}
+			if val == nil {
+				m, err := fmt.Fprint(w, "<nil>")
+				n += int64(m)
+				if err != nil {
+					return n, err
+				}
+			} else {
+				m, err := val.WriteTo(w)
+				n += m
+				if err != nil {
+					return n, err
+				}
+			}
+			m, err = fmt.Fprint(w, ")")
+			n += int64(m)
+			if err != nil {
+				return n, err
+			}
 		} else {
-			p.Car.Dump(w)
+			m, err := p.Car.WriteTo(w)
+			n += int64(m)
+			if err != nil {
+				return n, err
+			}
 		}
 	}
+	return n, nil
 }
