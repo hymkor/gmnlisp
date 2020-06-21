@@ -12,30 +12,24 @@ type Atom interface {
 	io.WriterTo
 }
 
-type AtomString struct {
-	Value1 string
-}
+type AtomString string
 
-func (this *AtomString) WriteTo(w io.Writer) (int64, error) {
-	n, err := fmt.Fprintf(w, "\"%s\"", this.Value1)
+func (this AtomString) WriteTo(w io.Writer) (int64, error) {
+	n, err := fmt.Fprintf(w, "\"%s\"", string(this))
 	return int64(n), err
 }
 
-type AtomSymbol struct {
-	Name1 string
-}
+type AtomSymbol string
 
-func (this *AtomSymbol) WriteTo(w io.Writer) (int64, error) {
-	n, err := fmt.Fprintf(w, "{%s}", this.Name1)
+func (this AtomSymbol) WriteTo(w io.Writer) (int64, error) {
+	n, err := fmt.Fprintf(w, "{%s}", string(this))
 	return int64(n), err
 }
 
-type AtomInteger struct {
-	Value1 int64
-}
+type AtomInteger int64
 
-func (this *AtomInteger) WriteTo(w io.Writer) (int64, error) {
-	n, err := fmt.Fprintf(w, "%d", this.Value1)
+func (this AtomInteger) WriteTo(w io.Writer) (int64, error) {
+	n, err := fmt.Fprintf(w, "%d", int64(this))
 	return int64(n), err
 }
 
@@ -67,13 +61,13 @@ func readTokens(tokens []string) (*Node, int) {
 			if err != nil {
 				val = 0
 			}
-			last.Car = &AtomInteger{val}
+			last.Car = AtomInteger(val)
 			i++
 		} else {
 			if strings.HasPrefix(tokens[i], "\"") {
-				last.Car = &AtomString{strings.Replace(tokens[i], "\"", "", -1)}
+				last.Car = AtomString(strings.Replace(tokens[i], "\"", "", -1))
 			} else {
-				last.Car = &AtomSymbol{tokens[i]}
+				last.Car = AtomSymbol(tokens[i])
 			}
 			i++
 		}

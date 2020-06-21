@@ -13,8 +13,8 @@ func (this *Node) Eval() (*Node, error) {
 	p := this
 	for {
 		if t, ok := p.Car.(*Node); ok {
-			if name, ok := t.Car.(*AtomSymbol); ok {
-				if fn, ok := builtInFunc[name.Name1]; ok {
+			if name, ok := t.Car.(AtomSymbol); ok {
+				if fn, ok := builtInFunc[string(name)]; ok {
 					var err error
 					last.Car, err = fn(t.Cdr)
 					if err != nil {
