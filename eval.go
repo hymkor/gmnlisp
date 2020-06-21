@@ -5,43 +5,30 @@ import (
 	"fmt"
 )
 
-var builtInFunc map[string]func(*Cons) (*Cons, error)
+var builtInFunc map[string]func(Atom) (Atom, error)
 
-func (this *Cons) Eval() (*Cons, error) {
-	first := new(Cons)
-	last := first
-	p := this
-	for {
-		if t, ok := p.Car.(*Cons); ok {
-			if name, ok := t.Car.(AtomSymbol); ok {
-				if fn, ok := builtInFunc[string(name)]; ok {
-					var err error
-					last.Car, err = fn(t.Cdr)
-					if err != nil {
-						return nil, err
-					}
-				} else {
-					return nil, fmt.Errorf("%s: Not found", name)
-				}
-			} else {
-				return nil, errors.New("list: can not evaluate")
-			}
-		} else {
-			last.Car = p.Car
+func (this *Cons) Eval() (Atom, error) {
+	first := this.Car
+	if p, ok := first.(*Cons); ok {
+		var err error
+		first, err = p.Eval()
+		if err != nil {
+			return nil, err
 		}
-		if p.Cdr == nil {
-			last.Cdr = nil
-			return first, nil
-		}
-		p = p.Cdr
-		tmp := new(Cons)
-		last.Cdr = tmp
-		last = tmp
 	}
+	name, ok := first.(AtomSymbol)
+	if !ok {
+		return nil, errors.New("Illeagal function Call")
+	}
+	fn, ok := builtInFunc[string(name)]
+	if !ok {
+		return nil, fmt.Errorf("%s: Not found", name)
+	}
+	return fn(this.Cdr)
 }
 
 func init() {
-	builtInFunc = map[string]func(*Cons) (*Cons, error){
+	builtInFunc = map[string]func(Atom) (Atom, error){
 		"print": CmdPrint,
 		"quote": CmdQuote,
 	}

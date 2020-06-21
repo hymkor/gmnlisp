@@ -35,7 +35,7 @@ func (this AtomInteger) WriteTo(w io.Writer) (int64, error) {
 
 type Cons struct {
 	Car Atom
-	Cdr *Cons
+	Cdr Atom
 }
 
 var RxNumber = regexp.MustCompile("^[0-9]+$")
@@ -95,52 +95,47 @@ func ReadString(s string) *Cons {
 }
 
 func (this *Cons) WriteTo(w io.Writer) (int64, error) {
-	var n int64 = 0
-	for p := this; p != nil; p = p.Cdr {
-		if p != this {
-			m, err := fmt.Fprint(w, " ")
-			n += int64(m)
-			if err != nil {
-				return n, err
-			}
-		}
-		if p.Car == nil {
+	var n int64
+	m, err := fmt.Fprint(w, "( ")
+	n += int64(m)
+	if err != nil {
+		return n, err
+	}
+
+	for this != nil {
+		if this.Car == nil {
 			m, err := fmt.Fprint(w, "<nil>")
 			n += int64(m)
 			if err != nil {
 				return n, err
 			}
-		} else if val, ok := p.Car.(*Cons); ok {
-			m, err := fmt.Fprint(w, "(")
-			n += int64(m)
-			if err != nil {
-				return n, err
-			}
-			if val == nil {
-				m, err := fmt.Fprint(w, "<nil>")
-				n += int64(m)
-				if err != nil {
-					return n, err
-				}
-			} else {
-				m, err := val.WriteTo(w)
-				n += m
-				if err != nil {
-					return n, err
-				}
-			}
-			m, err = fmt.Fprint(w, ")")
-			n += int64(m)
-			if err != nil {
-				return n, err
-			}
 		} else {
-			m, err := p.Car.WriteTo(w)
-			n += int64(m)
+			m, err := this.Car.WriteTo(w)
+			n += m
 			if err != nil {
 				return n, err
 			}
 		}
+		p, ok := this.Cdr.(*Cons)
+		if !ok {
+			if this.Cdr == nil {
+				break
+			}
+			_m, err := fmt.Fprint(w, " . ")
+			n += int64(_m)
+			if err != nil {
+				return n, err
+			}
+			m, err := this.Cdr.WriteTo(w)
+			n += m
+			if err != nil {
+				return n, err
+			}
+		}
+		this = p
+		fmt.Fprint(w, " ")
 	}
+	m, err = fmt.Fprint(w, " )")
+	n += int64(m)
 	return n, nil
 }
