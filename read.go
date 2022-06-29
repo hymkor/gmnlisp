@@ -1,6 +1,8 @@
 package gommon
 
 import (
+	"errors"
+	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
@@ -8,53 +10,55 @@ import (
 
 var RxNumber = regexp.MustCompile("^[0-9]+$")
 
-func readTokens(tokens []string) (Node, int) {
-	if len(tokens) <= 0 {
-		return &Null{}, 0
-	}
-	if tokens[0] == ")" {
-		return &Null{}, 1
-	}
-	first := new(Cons)
-	last := first
-	i := 0
-	for {
-		if tokens[i] == "(" {
-			i++
-			car, n := readTokens(tokens[i:])
-			last.Car = car
-			i += n
-		} else if RxNumber.MatchString(tokens[i]) {
-			val, err := strconv.ParseInt(tokens[i], 10, 63)
-			if err != nil {
-				val = 0
-			}
-			last.Car = NodeInteger(val)
-			i++
-		} else {
-			if strings.HasPrefix(tokens[i], "\"") {
-				last.Car = NodeString(strings.Replace(tokens[i], "\"", "", -1))
-			} else {
-				last.Car = NodeSymbol(tokens[i])
-			}
-			i++
-		}
-		if i >= len(tokens) {
-			last.Cdr = &Null{}
-			return first, i
-		}
-		if tokens[i] == ")" {
-			last.Cdr = &Null{}
-			return first, i + 1
-		}
-		tmp := new(Cons)
-		last.Cdr = tmp
-		last = tmp
+func nodes2cons(nodes []Node) Node {
+	switch len(nodes) {
+	case 0:
+		return &Null{}
+	case 1:
+		return nodes[0]
+	default:
+		return &Cons{Car: nodes[0], Cdr: nodes2cons(nodes[1:])}
 	}
 }
 
+func readTokens(tokens []string) (Node, []string, error) {
+	if len(tokens) < 1 {
+		return &Null{}, tokens, nil
+	}
+	if tokens[0] == "(" {
+		nodes := []Node{}
+		tokens = tokens[1:]
+		for {
+			if len(tokens) < 1 {
+				return nil, nil, errors.New("too short tokens")
+			}
+			if tokens[0] == ")" {
+				return nodes2cons(nodes), tokens[1:], nil
+			}
+			var err error
+			var node1 Node
+			node1, tokens, err = readTokens(tokens)
+			if err != nil {
+				return nil, nil, err
+			}
+			nodes = append(nodes, node1)
+		}
+	}
+	if RxNumber.MatchString(tokens[0]) {
+		val, err := strconv.ParseInt(tokens[0], 10, 63)
+		if err != nil {
+			return nil, nil, fmt.Errorf("%s: %w", tokens[0], err)
+		}
+		return NodeInteger(val), tokens[1:], nil
+	}
+	if strings.HasPrefix(tokens[0], "\"") {
+		return NodeString(strings.Replace(tokens[0], "\"", "", -1)), tokens[1:], nil
+	}
+	return NodeSymbol(tokens[0]), tokens[1:], nil
+}
+
 func ReadTokens(tokens []string) Node {
-	list, _ := readTokens(tokens)
+	list, _, _ := readTokens(tokens)
 	return list
 }
 

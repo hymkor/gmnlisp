@@ -22,7 +22,7 @@ func (this *Cons) WriteTo(w io.Writer) (int64, error) {
 		return n, err
 	}
 
-	for !this.Null() {
+	for this != nil && !this.Null() {
 		m, err := this.Car.WriteTo(w)
 		n += m
 		if err != nil {
@@ -30,7 +30,7 @@ func (this *Cons) WriteTo(w io.Writer) (int64, error) {
 		}
 		p, ok := this.Cdr.(*Cons)
 		if !ok {
-			if this.Cdr.Null() {
+			if this.Cdr == nil || this.Cdr.Null() {
 				break
 			}
 			_m, err := fmt.Fprint(w, " . ")
