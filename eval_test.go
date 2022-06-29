@@ -12,7 +12,7 @@ func TestEval(t *testing.T) {
 	fmt.Println("Parsing")
 	_, err := list.Eval()
 	if err != nil {
-		fmt.Fprint(os.Stderr, err.Error())
+		fmt.Fprintln(os.Stderr, err.Error())
 	}
 	fmt.Println("End TestEval")
 }

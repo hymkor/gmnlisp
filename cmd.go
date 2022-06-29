@@ -7,7 +7,10 @@ import (
 
 func CmdPrint(this Atom) (Atom, error) {
 	if cons, ok := this.(*Cons); ok {
-		for cons != nil {
+		delim := ""
+		for cons != nil && !cons.Null() {
+			fmt.Print(delim)
+			delim = " "
 			if cons1, ok := cons.Car.(*Cons); ok {
 				val, err := cons1.Eval()
 				if err != nil {
@@ -21,14 +24,14 @@ func CmdPrint(this Atom) (Atom, error) {
 			}
 			if cons1, ok := cons.Cdr.(*Cons); ok {
 				cons = cons1
-			} else if cons.Cdr == nil {
+			} else if cons.Cdr == nil || cons.Cdr.Null() {
 				break
 			} else {
 				cons.Cdr.WriteTo(os.Stdout)
 				break
 			}
 		}
-	} else {
+	} else if this != nil && !this.Null() {
 		this.WriteTo(os.Stdout)
 	}
 	fmt.Println()

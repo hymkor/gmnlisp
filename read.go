@@ -1,6 +1,7 @@
 package gommon
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"regexp"
@@ -10,6 +11,23 @@ import (
 
 type Atom interface {
 	io.WriterTo
+	Null() bool
+	Eval() (Atom, error)
+}
+
+type Null struct{}
+
+func (this Null) WriteTo(w io.Writer) (int64, error) {
+	n, err := fmt.Fprint(w, "<nil>")
+	return int64(n), err
+}
+
+func (this Null) Null() bool {
+	return true
+}
+
+func (this Null) Eval() (Atom, error) {
+	return this, errors.New("Null can not be evaluate.")
 }
 
 type AtomString string
@@ -19,11 +37,27 @@ func (this AtomString) WriteTo(w io.Writer) (int64, error) {
 	return int64(n), err
 }
 
+func (this AtomString) Null() bool {
+	return false
+}
+
+func (this AtomString) Eval() (Atom, error) {
+	return this, errors.New("String can not be evaluate.")
+}
+
 type AtomSymbol string
 
 func (this AtomSymbol) WriteTo(w io.Writer) (int64, error) {
 	n, err := fmt.Fprintf(w, "{%s}", string(this))
 	return int64(n), err
+}
+
+func (this AtomSymbol) Null() bool {
+	return false
+}
+
+func (this AtomSymbol) Eval() (Atom, error) {
+	return this, errors.New("Symbol can not be evaluate.")
 }
 
 type AtomInteger int64
@@ -33,19 +67,31 @@ func (this AtomInteger) WriteTo(w io.Writer) (int64, error) {
 	return int64(n), err
 }
 
+func (this AtomInteger) Null() bool {
+	return false
+}
+
+func (this AtomInteger) Eval() (Atom, error) {
+	return this, errors.New("Integer can not be evaluate.")
+}
+
 type Cons struct {
 	Car Atom
 	Cdr Atom
 }
 
+func (this *Cons) Null() bool {
+	return false
+}
+
 var RxNumber = regexp.MustCompile("^[0-9]+$")
 
-func readTokens(tokens []string) (*Cons, int) {
+func readTokens(tokens []string) (Atom, int) {
 	if len(tokens) <= 0 {
-		return nil, 0
+		return &Null{}, 0
 	}
 	if tokens[0] == ")" {
-		return nil, 1
+		return &Null{}, 1
 	}
 	first := new(Cons)
 	last := first
@@ -72,11 +118,11 @@ func readTokens(tokens []string) (*Cons, int) {
 			i++
 		}
 		if i >= len(tokens) {
-			last.Cdr = nil
+			last.Cdr = &Null{}
 			return first, i
 		}
 		if tokens[i] == ")" {
-			last.Cdr = nil
+			last.Cdr = &Null{}
 			return first, i + 1
 		}
 		tmp := new(Cons)
@@ -85,12 +131,12 @@ func readTokens(tokens []string) (*Cons, int) {
 	}
 }
 
-func ReadTokens(tokens []string) *Cons {
+func ReadTokens(tokens []string) Atom {
 	list, _ := readTokens(tokens)
 	return list
 }
 
-func ReadString(s string) *Cons {
+func ReadString(s string) Atom {
 	return ReadTokens(StringToTokens(s))
 }
 
@@ -102,23 +148,15 @@ func (this *Cons) WriteTo(w io.Writer) (int64, error) {
 		return n, err
 	}
 
-	for this != nil {
-		if this.Car == nil {
-			m, err := fmt.Fprint(w, "<nil>")
-			n += int64(m)
-			if err != nil {
-				return n, err
-			}
-		} else {
-			m, err := this.Car.WriteTo(w)
-			n += m
-			if err != nil {
-				return n, err
-			}
+	for !this.Null() {
+		m, err := this.Car.WriteTo(w)
+		n += m
+		if err != nil {
+			return n, err
 		}
 		p, ok := this.Cdr.(*Cons)
 		if !ok {
-			if this.Cdr == nil {
+			if this.Cdr.Null() {
 				break
 			}
 			_m, err := fmt.Fprint(w, " . ")
