@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-func CmdPrint(this Atom) (Atom, error) {
+func CmdPrint(this Node) (Node, error) {
 	if cons, ok := this.(*Cons); ok {
 		delim := ""
 		for cons != nil && !cons.Null() {
@@ -38,6 +38,6 @@ func CmdPrint(this Atom) (Atom, error) {
 	return nil, nil
 }
 
-func CmdQuote(this Atom) (Atom, error) {
+func CmdQuote(this Node) (Node, error) {
 	return this, nil
 }

@@ -9,10 +9,10 @@ import (
 	"strings"
 )
 
-type Atom interface {
+type Node interface {
 	io.WriterTo
 	Null() bool
-	Eval() (Atom, error)
+	Eval() (Node, error)
 }
 
 type Null struct{}
@@ -26,7 +26,7 @@ func (this Null) Null() bool {
 	return true
 }
 
-func (this Null) Eval() (Atom, error) {
+func (this Null) Eval() (Node, error) {
 	return this, errors.New("Null can not be evaluate.")
 }
 
@@ -41,7 +41,7 @@ func (this AtomString) Null() bool {
 	return false
 }
 
-func (this AtomString) Eval() (Atom, error) {
+func (this AtomString) Eval() (Node, error) {
 	return this, errors.New("String can not be evaluate.")
 }
 
@@ -56,7 +56,7 @@ func (this AtomSymbol) Null() bool {
 	return false
 }
 
-func (this AtomSymbol) Eval() (Atom, error) {
+func (this AtomSymbol) Eval() (Node, error) {
 	return this, errors.New("Symbol can not be evaluate.")
 }
 
@@ -71,13 +71,13 @@ func (this AtomInteger) Null() bool {
 	return false
 }
 
-func (this AtomInteger) Eval() (Atom, error) {
+func (this AtomInteger) Eval() (Node, error) {
 	return this, errors.New("Integer can not be evaluate.")
 }
 
 type Cons struct {
-	Car Atom
-	Cdr Atom
+	Car Node
+	Cdr Node
 }
 
 func (this *Cons) Null() bool {
@@ -86,7 +86,7 @@ func (this *Cons) Null() bool {
 
 var RxNumber = regexp.MustCompile("^[0-9]+$")
 
-func readTokens(tokens []string) (Atom, int) {
+func readTokens(tokens []string) (Node, int) {
 	if len(tokens) <= 0 {
 		return &Null{}, 0
 	}
@@ -131,12 +131,12 @@ func readTokens(tokens []string) (Atom, int) {
 	}
 }
 
-func ReadTokens(tokens []string) Atom {
+func ReadTokens(tokens []string) Node {
 	list, _ := readTokens(tokens)
 	return list
 }
 
-func ReadString(s string) Atom {
+func ReadString(s string) Node {
 	return ReadTokens(StringToTokens(s))
 }
 

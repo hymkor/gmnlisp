@@ -5,9 +5,9 @@ import (
 	"fmt"
 )
 
-var builtInFunc map[string]func(Atom) (Atom, error)
+var builtInFunc map[string]func(Node) (Node, error)
 
-func (this *Cons) Eval() (Atom, error) {
+func (this *Cons) Eval() (Node, error) {
 	first := this.Car
 	if p, ok := first.(*Cons); ok {
 		var err error
@@ -28,7 +28,7 @@ func (this *Cons) Eval() (Atom, error) {
 }
 
 func init() {
-	builtInFunc = map[string]func(Atom) (Atom, error){
+	builtInFunc = map[string]func(Node) (Node, error){
 		"print": CmdPrint,
 		"quote": CmdQuote,
 	}
