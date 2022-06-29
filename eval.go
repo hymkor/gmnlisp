@@ -16,7 +16,7 @@ func (this *Cons) Eval() (Node, error) {
 			return nil, err
 		}
 	}
-	name, ok := first.(AtomSymbol)
+	name, ok := first.(NodeSymbol)
 	if !ok {
 		return nil, errors.New("Illeagal function Call")
 	}

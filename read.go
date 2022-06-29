@@ -45,18 +45,18 @@ func (this NodeString) Eval() (Node, error) {
 	return this, errors.New("String can not be evaluate.")
 }
 
-type AtomSymbol string
+type NodeSymbol string
 
-func (this AtomSymbol) WriteTo(w io.Writer) (int64, error) {
+func (this NodeSymbol) WriteTo(w io.Writer) (int64, error) {
 	n, err := fmt.Fprintf(w, "{%s}", string(this))
 	return int64(n), err
 }
 
-func (this AtomSymbol) Null() bool {
+func (this NodeSymbol) Null() bool {
 	return false
 }
 
-func (this AtomSymbol) Eval() (Node, error) {
+func (this NodeSymbol) Eval() (Node, error) {
 	return this, errors.New("Symbol can not be evaluate.")
 }
 
@@ -113,7 +113,7 @@ func readTokens(tokens []string) (Node, int) {
 			if strings.HasPrefix(tokens[i], "\"") {
 				last.Car = NodeString(strings.Replace(tokens[i], "\"", "", -1))
 			} else {
-				last.Car = AtomSymbol(tokens[i])
+				last.Car = NodeSymbol(tokens[i])
 			}
 			i++
 		}
