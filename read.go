@@ -60,18 +60,18 @@ func (this NodeSymbol) Eval() (Node, error) {
 	return this, errors.New("Symbol can not be evaluate.")
 }
 
-type AtomInteger int64
+type NodeInteger int64
 
-func (this AtomInteger) WriteTo(w io.Writer) (int64, error) {
+func (this NodeInteger) WriteTo(w io.Writer) (int64, error) {
 	n, err := fmt.Fprintf(w, "%d", int64(this))
 	return int64(n), err
 }
 
-func (this AtomInteger) Null() bool {
+func (this NodeInteger) Null() bool {
 	return false
 }
 
-func (this AtomInteger) Eval() (Node, error) {
+func (this NodeInteger) Eval() (Node, error) {
 	return this, errors.New("Integer can not be evaluate.")
 }
 
@@ -107,7 +107,7 @@ func readTokens(tokens []string) (Node, int) {
 			if err != nil {
 				val = 0
 			}
-			last.Car = AtomInteger(val)
+			last.Car = NodeInteger(val)
 			i++
 		} else {
 			if strings.HasPrefix(tokens[i], "\"") {
