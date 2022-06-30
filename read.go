@@ -16,6 +16,11 @@ func nodes2cons(nodes []Node) Node {
 		return &Null{}
 	case 1:
 		return &Cons{nodes[0], &Null{}}
+	case 3:
+		if sym, ok := nodes[1].(NodeSymbol); ok && string(sym) == "." {
+			return &Cons{nodes[0], nodes[2]}
+		}
+		fallthrough
 	default:
 		return &Cons{Car: nodes[0], Cdr: nodes2cons(nodes[1:])}
 	}
