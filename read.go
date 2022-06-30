@@ -15,7 +15,7 @@ func nodes2cons(nodes []Node) Node {
 	case 0:
 		return &Null{}
 	case 1:
-		return nodes[0]
+		return &Cons{nodes[0], &Null{}}
 	default:
 		return &Cons{Car: nodes[0], Cdr: nodes2cons(nodes[1:])}
 	}
