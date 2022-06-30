@@ -15,7 +15,7 @@ type Node interface {
 type Null struct{}
 
 func (this Null) WriteTo(w io.Writer) (int64, error) {
-	n, err := fmt.Fprint(w, "<nil>")
+	n, err := fmt.Fprint(w, "()")
 	return int64(n), err
 }
 
