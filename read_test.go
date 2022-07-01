@@ -17,4 +17,11 @@ func TestParse(t *testing.T) {
 	print("-> ")
 	ReadString(code).WriteTo(os.Stdout)
 	println()
+
+	code = "(a (b . (c . d)) e)"
+	println(code)
+	print("-> ")
+	ReadString(code).WriteTo(os.Stdout)
+
+	println()
 }

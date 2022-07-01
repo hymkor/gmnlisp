@@ -45,7 +45,7 @@ func (this NodeString) Eval() (Node, error) {
 type NodeSymbol string
 
 func (this NodeSymbol) WriteTo(w io.Writer) (int64, error) {
-	n, err := fmt.Fprintf(w, "{%s}", string(this))
+	n, err := io.WriteString(w, string(this))
 	return int64(n), err
 }
 

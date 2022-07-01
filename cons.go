@@ -22,6 +22,16 @@ func write(n *int64, w io.Writer, s string) error {
 	return err
 }
 
+func (this *Cons) isTailNull() bool {
+	if IsNull(this.Cdr) {
+		return true
+	} else if next, ok := this.Cdr.(*Cons); ok {
+		return next.isTailNull()
+	} else {
+		return false
+	}
+}
+
 func (this *Cons) WriteTo(w io.Writer) (int64, error) {
 	var n int64
 	if err := write(&n, w, "("); err != nil {
@@ -35,14 +45,28 @@ func (this *Cons) WriteTo(w io.Writer) (int64, error) {
 	}
 
 	if !IsNull(this.Cdr) {
-		// output as ( X . Y )
-		if err := write(&n, w, " . "); err != nil {
-			return n, err
-		}
-		m, err := this.Cdr.WriteTo(w)
-		n += m
-		if err != nil {
-			return n, err
+		if this.isTailNull() {
+			// output as ( X Y Z ...)
+
+			for p, ok := this.Cdr.(*Cons); ok && !IsNull(p); p, ok = p.Cdr.(*Cons) {
+				write(&n, w, " ")
+				_n, err := p.Car.WriteTo(w)
+				n += _n
+				if err != nil {
+					return n, err
+				}
+			}
+
+		} else {
+			// output as ( X . Y )
+			if err := write(&n, w, " . "); err != nil {
+				return n, err
+			}
+			m, err := this.Cdr.WriteTo(w)
+			n += m
+			if err != nil {
+				return n, err
+			}
 		}
 	}
 	err = write(&n, w, ")")
