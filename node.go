@@ -1,7 +1,7 @@
 package gommon
 
 import (
-	"errors"
+	// "errors"
 	"fmt"
 	"io"
 )
@@ -24,7 +24,7 @@ func (this Null) Null() bool {
 }
 
 func (this Null) Eval() (Node, error) {
-	return this, errors.New("Null can not be evaluate.")
+	return this, nil // errors.New("Null can not be evaluate.")
 }
 
 type NodeString string
@@ -39,7 +39,7 @@ func (this NodeString) Null() bool {
 }
 
 func (this NodeString) Eval() (Node, error) {
-	return this, errors.New("String can not be evaluate.")
+	return this, nil // errors.New("String can not be evaluate.")
 }
 
 type NodeSymbol string
@@ -54,7 +54,7 @@ func (this NodeSymbol) Null() bool {
 }
 
 func (this NodeSymbol) Eval() (Node, error) {
-	return this, errors.New("Symbol can not be evaluate.")
+	return this, nil // errors.New("Symbol can not be evaluate.")
 }
 
 type NodeInteger int64
@@ -69,5 +69,5 @@ func (this NodeInteger) Null() bool {
 }
 
 func (this NodeInteger) Eval() (Node, error) {
-	return this, errors.New("Integer can not be evaluate.")
+	return this, nil // errors.New("Integer can not be evaluate.")
 }
