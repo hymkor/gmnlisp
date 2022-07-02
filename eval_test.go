@@ -14,9 +14,11 @@ func TestEval(t *testing.T) {
 		t.Fatalf("Error: %s: %s", code, err.Error())
 	}
 	fmt.Println("Parsing:", code)
-	_, err = list.Eval()
-	if err != nil {
-		fmt.Fprintln(os.Stderr, err.Error())
+	for _, c := range list {
+		_, err = c.Eval()
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err.Error())
+		}
 	}
 	fmt.Println("End TestEval")
 }

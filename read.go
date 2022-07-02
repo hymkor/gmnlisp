@@ -65,7 +65,17 @@ func readTokens(tokens []string) (Node, []string, error) {
 	return NodeSymbol(tokens[0]), tokens[1:], nil
 }
 
-func ReadString(s string) (Node, error) {
-	list, _, err := readTokens(StringToTokens(s))
-	return list, err
+func ReadString(s string) ([]Node, error) {
+	tokens := StringToTokens(s)
+	result := []Node{}
+	for len(tokens) > 0 {
+		var err error
+		var list Node
+		list, tokens, err = readTokens(tokens)
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, list)
+	}
+	return result, nil
 }

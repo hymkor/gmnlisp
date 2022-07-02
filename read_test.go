@@ -18,7 +18,9 @@ func TestParse(t *testing.T) {
 			t.Fatalf("Error: %s: %s", code, err.Error())
 			return
 		}
-		compiled.WriteTo(os.Stdout)
+		for _, c := range compiled {
+			c.WriteTo(os.Stdout)
+		}
 		println()
 	}
 
@@ -33,12 +35,14 @@ func TestParse(t *testing.T) {
 			t.Fatalf("Error: %s: %s", code, err.Error())
 			return
 		}
-		result, err := compiled.Eval()
-		if err != nil {
-			t.Fatalf("Error: %s: %s", code, err.Error())
-			return
+		for _, c := range compiled {
+			result, err := c.Eval()
+			if err != nil {
+				t.Fatalf("Error: %s: %s", code, err.Error())
+				return
+			}
+			result.WriteTo(os.Stdout)
+			println()
 		}
-		result.WriteTo(os.Stdout)
-		println()
 	}
 }
