@@ -59,6 +59,9 @@ func readTokens(tokens []string) (Node, []string, error) {
 	if strings.HasPrefix(tokens[0], "\"") {
 		return NodeString(strings.Replace(tokens[0], "\"", "", -1)), tokens[1:], nil
 	}
+	if tokens[0] == "nil" {
+		return &Null{}, tokens[1:], nil
+	}
 	return NodeSymbol(tokens[0]), tokens[1:], nil
 }
 
