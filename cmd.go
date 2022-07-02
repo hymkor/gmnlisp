@@ -7,10 +7,6 @@ import (
 	"os"
 )
 
-func CmdQuote(this Node) (Node, error) {
-	return this, nil
-}
-
 func ForEachQuote(this Node, f func(Node) error) error {
 	for {
 		cons, ok := this.(*Cons)
@@ -117,4 +113,12 @@ func CmdCdr(param Node) (Node, error) {
 	default:
 		return nil, err
 	}
+}
+
+func CmdQuote(param Node) (Node, error) {
+	cons, ok := param.(*Cons)
+	if !ok {
+		return nil, fmt.Errorf("Not a list: %s", Node2String(param))
+	}
+	return cons.Car, nil
 }
