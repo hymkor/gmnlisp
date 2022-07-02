@@ -12,7 +12,11 @@ import (
 func mains(args []string) error {
 	for _, code := range args {
 		fmt.Printf("   %s\n-> ", code)
-		result, err := gommon.ReadString(code).Eval()
+		compiled, err := gommon.ReadString(code)
+		if err != nil {
+			return err
+		}
+		result, err := compiled.Eval()
 		if err != nil {
 			return err
 		}

@@ -35,7 +35,7 @@ func readTokens(tokens []string) (Node, []string, error) {
 		tokens = tokens[1:]
 		for {
 			if len(tokens) < 1 {
-				return nil, nil, errors.New("too short tokens")
+				return nil, tokens, errors.New("too short tokens")
 			}
 			if tokens[0] == ")" {
 				return nodes2cons(nodes), tokens[1:], nil
@@ -44,7 +44,7 @@ func readTokens(tokens []string) (Node, []string, error) {
 			var node1 Node
 			node1, tokens, err = readTokens(tokens)
 			if err != nil {
-				return nil, nil, err
+				return nil, tokens, err
 			}
 			nodes = append(nodes, node1)
 		}
@@ -52,7 +52,7 @@ func readTokens(tokens []string) (Node, []string, error) {
 	if RxNumber.MatchString(tokens[0]) {
 		val, err := strconv.ParseInt(tokens[0], 10, 63)
 		if err != nil {
-			return nil, nil, fmt.Errorf("%s: %w", tokens[0], err)
+			return nil, tokens, fmt.Errorf("%s: %w", tokens[0], err)
 		}
 		return NodeInteger(val), tokens[1:], nil
 	}
@@ -65,11 +65,7 @@ func readTokens(tokens []string) (Node, []string, error) {
 	return NodeSymbol(tokens[0]), tokens[1:], nil
 }
 
-func ReadTokens(tokens []string) Node {
-	list, _, _ := readTokens(tokens)
-	return list
-}
-
-func ReadString(s string) Node {
-	return ReadTokens(StringToTokens(s))
+func ReadString(s string) (Node, error) {
+	list, _, err := readTokens(StringToTokens(s))
+	return list, err
 }
