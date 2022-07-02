@@ -100,7 +100,7 @@ func CmdCdr(param Node) (Node, error) {
 	err := ForEachEval(param, func(firstArg Node) error {
 		cons, ok := firstArg.(*Cons)
 		if !ok {
-			return fmt.Errorf("Not a list: %s", Node2String(cons))
+			return fmt.Errorf("Not a list: %s", Node2String(firstArg))
 		}
 		result = cons.Cdr
 		return io.EOF
