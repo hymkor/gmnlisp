@@ -31,5 +31,6 @@ func init() {
 	builtInFunc = map[string]func(Node) (Node, error){
 		"print": CmdPrint,
 		"quote": CmdQuote,
+		"+":     CmdPlus,
 	}
 }

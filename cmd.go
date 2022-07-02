@@ -41,3 +41,26 @@ func CmdPrint(this Node) (Node, error) {
 func CmdQuote(this Node) (Node, error) {
 	return this, nil
 }
+
+func CmdPlus(this Node) (Node, error) {
+	cons, ok := this.(*Cons)
+	if !ok {
+		return nil, fmt.Errorf("Not List")
+	}
+	leftNode, err := cons.Car.Eval()
+	if err != nil {
+		return nil, err
+	}
+	leftValue, ok := leftNode.(NodeInteger)
+	if !ok {
+		return nil, fmt.Errorf("Not A Number(1)")
+	}
+	if IsNull(cons.Cdr) {
+		return leftValue, nil
+	}
+	rightValue, err := CmdPlus(cons.Cdr)
+	if err != nil {
+		return nil, fmt.Errorf("Not A Number(2)")
+	}
+	return leftValue + (rightValue.(NodeInteger)), nil
+}
