@@ -35,5 +35,6 @@ func init() {
 		"cons":  CmdCons,
 		"car":   CmdCar,
 		"cdr":   CmdCdr,
+		"atom":  CmdAtom,
 	}
 }

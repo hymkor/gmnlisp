@@ -122,3 +122,16 @@ func CmdQuote(param Node) (Node, error) {
 	}
 	return cons.Car, nil
 }
+
+var T = NodeSymbol("T")
+
+func CmdAtom(param Node) (Node, error) {
+	cons, ok := param.(*Cons)
+	if !ok {
+		return nil, fmt.Errorf("Not a list: %s", Node2String(param))
+	}
+	if _, ok := cons.Car.(*Cons); ok {
+		return &Null{}, nil
+	}
+	return T, nil
+}
