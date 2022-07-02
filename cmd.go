@@ -13,7 +13,7 @@ func ForEachList(this Node, f func(Node) error) error {
 	for {
 		cons, ok := this.(*Cons)
 		if !ok {
-			return fmt.Errorf("EvalParameters: Not List")
+			return fmt.Errorf("Not a list: %s", Node2String(this))
 		}
 		one, err := cons.Car.Eval()
 		if err != nil {
@@ -46,7 +46,7 @@ func CmdPlus(this Node) (Node, error) {
 	err := ForEachList(this, func(one Node) error {
 		value, ok := one.(NodeInteger)
 		if !ok {
-			return fmt.Errorf("Not A Number(1)")
+			return fmt.Errorf("Not A Number: %s", Node2String(one))
 		}
 		result += value
 		return nil

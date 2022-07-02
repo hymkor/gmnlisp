@@ -1,15 +1,21 @@
 package gommon
 
 import (
-	// "errors"
 	"fmt"
 	"io"
+	"strings"
 )
 
 type Node interface {
 	io.WriterTo
 	Null() bool
 	Eval() (Node, error)
+}
+
+func Node2String(node Node) string {
+	var buffer strings.Builder
+	node.WriteTo(&buffer)
+	return buffer.String()
 }
 
 type Null struct{}
