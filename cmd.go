@@ -90,7 +90,7 @@ func CmdCar(this Node) (Node, error) {
 	}
 	cons, ok = firstArg.(*Cons)
 	if !ok {
-		return nil, fmt.Errorf("Not a list: %s", Node2String(cons))
+		return nil, fmt.Errorf("Not a list: %s", Node2String(firstArg))
 	}
 	return cons.Car, nil
 }
