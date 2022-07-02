@@ -47,5 +47,6 @@ func init() {
 		"eq":     CmdEq,
 		"lambda": CmdLambda,
 		"progn":  CmdProgn,
+		"setq":   CmdSetq,
 	}
 }
