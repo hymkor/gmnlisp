@@ -13,6 +13,9 @@ type Node interface {
 }
 
 func Node2String(node Node) string {
+	if node == nil {
+		return "()"
+	}
 	var buffer strings.Builder
 	node.WriteTo(&buffer)
 	return buffer.String()
