@@ -34,4 +34,16 @@ func TestParse(t *testing.T) {
 		result.WriteTo(os.Stdout)
 	}
 	println()
+
+	code = "(cdr (cons 1 2))"
+	println(code)
+	print("-> ")
+	result, err = ReadString(code).Eval()
+	if err != nil {
+		println(err.Error())
+	} else {
+		result.WriteTo(os.Stdout)
+	}
+	println()
+
 }

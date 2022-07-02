@@ -3,6 +3,7 @@ package gommon
 import (
 	"errors"
 	"fmt"
+	"io"
 	"os"
 )
 
@@ -96,4 +97,24 @@ func CmdCar(this Node) (Node, error) {
 		return nil, fmt.Errorf("Not a list: %s", Node2String(cons))
 	}
 	return cons.Car, nil
+}
+
+func CmdCdr(param Node) (Node, error) {
+	var result Node
+	err := ForEachEval(param, func(firstArg Node) error {
+		cons, ok := firstArg.(*Cons)
+		if !ok {
+			return fmt.Errorf("Not a list: %s", Node2String(cons))
+		}
+		result = cons.Cdr
+		return io.EOF
+	})
+	switch err {
+	case io.EOF:
+		return result, nil
+	case nil:
+		return nil, errors.New("Too few parameters")
+	default:
+		return nil, err
+	}
 }

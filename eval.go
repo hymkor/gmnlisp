@@ -34,5 +34,6 @@ func init() {
 		"+":     CmdPlus,
 		"cons":  CmdCons,
 		"car":   CmdCar,
+		"cdr":   CmdCdr,
 	}
 }
