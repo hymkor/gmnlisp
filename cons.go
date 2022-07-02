@@ -38,10 +38,18 @@ func (this *Cons) WriteTo(w io.Writer) (int64, error) {
 		return n, err
 	}
 
-	m, err := this.Car.WriteTo(w)
-	n += m
-	if err != nil {
-		return n, err
+	if IsNull(this.Car) {
+		m, err := io.WriteString(w, "()")
+		n += int64(m)
+		if err != nil {
+			return n, err
+		}
+	} else {
+		m, err := this.Car.WriteTo(w)
+		n += m
+		if err != nil {
+			return n, err
+		}
 	}
 
 	if !IsNull(this.Cdr) {
@@ -69,6 +77,6 @@ func (this *Cons) WriteTo(w io.Writer) (int64, error) {
 			}
 		}
 	}
-	err = write(&n, w, ")")
-	return n, nil
+	err := write(&n, w, ")")
+	return n, err
 }
