@@ -10,17 +10,13 @@ func CmdQuote(this Node) (Node, error) {
 	return this, nil
 }
 
-func ForEachList(this Node, f func(Node) error) error {
+func ForEachQuote(this Node, f func(Node) error) error {
 	for {
 		cons, ok := this.(*Cons)
 		if !ok {
 			return fmt.Errorf("Not a list: %s", Node2String(this))
 		}
-		one, err := cons.Car.Eval()
-		if err != nil {
-			return err
-		}
-		if err := f(one); err != nil {
+		if err := f(cons.Car); err != nil {
 			return err
 		}
 		if IsNull(cons.Cdr) {
@@ -30,9 +26,19 @@ func ForEachList(this Node, f func(Node) error) error {
 	}
 }
 
+func ForEachEval(this Node, f func(Node) error) error {
+	return ForEachQuote(this, func(quotedOne Node) error {
+		evalOne, err := quotedOne.Eval()
+		if err != nil {
+			return err
+		}
+		return f(evalOne)
+	})
+}
+
 func List2Array(this Node) ([]Node, error) {
 	result := []Node{}
-	err := ForEachList(this, func(one Node) error {
+	err := ForEachEval(this, func(one Node) error {
 		result = append(result, one)
 		return nil
 	})
@@ -41,7 +47,7 @@ func List2Array(this Node) ([]Node, error) {
 
 func CmdPrint(this Node) (Node, error) {
 	dem := ""
-	err := ForEachList(this, func(one Node) error {
+	err := ForEachEval(this, func(one Node) error {
 		fmt.Print(dem)
 		_, err1 := one.WriteTo(os.Stdout)
 		dem = " "
@@ -53,7 +59,7 @@ func CmdPrint(this Node) (Node, error) {
 
 func CmdPlus(this Node) (Node, error) {
 	var result NodeInteger
-	err := ForEachList(this, func(one Node) error {
+	err := ForEachEval(this, func(one Node) error {
 		value, ok := one.(NodeInteger)
 		if !ok {
 			return fmt.Errorf("Not A Number: %s", Node2String(one))
