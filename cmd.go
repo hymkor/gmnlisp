@@ -42,25 +42,35 @@ func CmdQuote(this Node) (Node, error) {
 	return this, nil
 }
 
+func ForEachList(this Node, f func(Node) error) error {
+	for {
+		cons, ok := this.(*Cons)
+		if !ok {
+			return fmt.Errorf("EvalParameters: Not List")
+		}
+		one, err := cons.Car.Eval()
+		if err != nil {
+			return err
+		}
+		if err := f(one); err != nil {
+			return err
+		}
+		if IsNull(cons.Cdr) {
+			return nil
+		}
+		this = cons.Cdr
+	}
+}
+
 func CmdPlus(this Node) (Node, error) {
-	cons, ok := this.(*Cons)
-	if !ok {
-		return nil, fmt.Errorf("Not List")
-	}
-	leftNode, err := cons.Car.Eval()
-	if err != nil {
-		return nil, err
-	}
-	leftValue, ok := leftNode.(NodeInteger)
-	if !ok {
-		return nil, fmt.Errorf("Not A Number(1)")
-	}
-	if IsNull(cons.Cdr) {
-		return leftValue, nil
-	}
-	rightValue, err := CmdPlus(cons.Cdr)
-	if err != nil {
-		return nil, fmt.Errorf("Not A Number(2)")
-	}
-	return leftValue + (rightValue.(NodeInteger)), nil
+	var result NodeInteger
+	err := ForEachList(this, func(one Node) error {
+		value, ok := one.(NodeInteger)
+		if !ok {
+			return fmt.Errorf("Not A Number(1)")
+		}
+		result += value
+		return nil
+	})
+	return result, err
 }
