@@ -7,6 +7,11 @@ import (
 
 var builtInFunc map[string]func(Node) (Node, error)
 
+type Callable interface {
+	Node
+	Call(Node) (Node, error)
+}
+
 func (this *Cons) Eval() (Node, error) {
 	first := this.Car
 	if p, ok := first.(*Cons); ok {
@@ -15,6 +20,9 @@ func (this *Cons) Eval() (Node, error) {
 		if err != nil {
 			return nil, err
 		}
+	}
+	if f, ok := first.(Callable); ok {
+		return f.Call(this.Cdr)
 	}
 	name, ok := first.(NodeSymbol)
 	if !ok {
@@ -29,13 +37,14 @@ func (this *Cons) Eval() (Node, error) {
 
 func init() {
 	builtInFunc = map[string]func(Node) (Node, error){
-		"print": CmdPrint,
-		"quote": CmdQuote,
-		"+":     CmdPlus,
-		"cons":  CmdCons,
-		"car":   CmdCar,
-		"cdr":   CmdCdr,
-		"atom":  CmdAtom,
-		"eq":    CmdEq,
+		"print":  CmdPrint,
+		"quote":  CmdQuote,
+		"+":      CmdPlus,
+		"cons":   CmdCons,
+		"car":    CmdCar,
+		"cdr":    CmdCdr,
+		"atom":   CmdAtom,
+		"eq":     CmdEq,
+		"lambda": CmdLambda,
 	}
 }

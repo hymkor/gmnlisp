@@ -77,7 +77,11 @@ func (this NodeSymbol) Null() bool {
 }
 
 func (this NodeSymbol) Eval() (Node, error) {
-	return this, nil // errors.New("Symbol can not be evaluate.")
+	name := string(this)
+	if value, ok := globals[name]; ok {
+		return value, nil
+	}
+	return nil, fmt.Errorf("variable `%s` unbound", name)
 }
 
 func (this NodeSymbol) Equals(n Node) bool {
