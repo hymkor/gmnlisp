@@ -32,5 +32,7 @@ func init() {
 		"print": CmdPrint,
 		"quote": CmdQuote,
 		"+":     CmdPlus,
+		"cons":  CmdCons,
+		"car":   CmdCar,
 	}
 }

@@ -1,6 +1,7 @@
 package gommon
 
 import (
+	"errors"
 	"fmt"
 	"os"
 )
@@ -29,6 +30,15 @@ func ForEachList(this Node, f func(Node) error) error {
 	}
 }
 
+func List2Array(this Node) ([]Node, error) {
+	result := []Node{}
+	err := ForEachList(this, func(one Node) error {
+		result = append(result, one)
+		return nil
+	})
+	return result, err
+}
+
 func CmdPrint(this Node) (Node, error) {
 	dem := ""
 	err := ForEachList(this, func(one Node) error {
@@ -52,4 +62,32 @@ func CmdPlus(this Node) (Node, error) {
 		return nil
 	})
 	return result, err
+}
+
+func CmdCons(this Node) (Node, error) {
+	nodes, err := List2Array(this)
+	if err != nil {
+		return nil, err
+	}
+	if len(nodes) != 2 {
+		return nil, errors.New("cons: parameter number not 2")
+	}
+	return &Cons{Car: nodes[0], Cdr: nodes[1]}, nil
+}
+
+func CmdCar(this Node) (Node, error) {
+	cons, ok := this.(*Cons)
+	if !ok {
+		return nil, fmt.Errorf("Not a list: %s", Node2String(this))
+	}
+
+	firstArg, err := cons.Car.Eval()
+	if err != nil {
+		return nil, err
+	}
+	cons, ok = firstArg.(*Cons)
+	if !ok {
+		return nil, fmt.Errorf("Not a list: %s", Node2String(cons))
+	}
+	return cons.Car, nil
 }
