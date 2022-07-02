@@ -36,5 +36,6 @@ func init() {
 		"car":   CmdCar,
 		"cdr":   CmdCdr,
 		"atom":  CmdAtom,
+		"eq":    CmdEq,
 	}
 }

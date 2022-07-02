@@ -135,3 +135,19 @@ func CmdAtom(param Node) (Node, error) {
 	}
 	return T, nil
 }
+
+func CmdEq(param Node) (Node, error) {
+	nodes, err := List2Array(param)
+	if err != nil {
+		return nil, err
+	}
+	if len(nodes) < 2 {
+		return T, nil
+	}
+	for _, value := range nodes[1:] {
+		if !nodes[0].Equals(value) {
+			return &Null{}, nil
+		}
+	}
+	return T, nil
+}
