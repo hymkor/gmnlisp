@@ -9,6 +9,20 @@ type Cons struct {
 	Cdr Node
 }
 
+func (c *Cons) GetCar() Node {
+	if c.Car == nil {
+		return &Null{}
+	}
+	return c.Car
+}
+
+func (c *Cons) GetCdr() Node {
+	if c.Cdr == nil {
+		return &Null{}
+	}
+	return c.Cdr
+}
+
 func (this *Cons) Null() bool {
 	return false
 }
@@ -79,4 +93,13 @@ func (this *Cons) WriteTo(w io.Writer) (int64, error) {
 	}
 	err := write(&n, w, ")")
 	return n, err
+}
+
+func (this *Cons) Equals(n Node) bool {
+	value, ok := n.(*Cons)
+	if !ok {
+		return false
+	}
+	return this.GetCar().Equals(value.Car) &&
+		this.GetCdr().Equals(value.Cdr)
 }

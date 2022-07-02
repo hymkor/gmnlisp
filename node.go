@@ -10,6 +10,7 @@ type Node interface {
 	io.WriterTo
 	Null() bool
 	Eval() (Node, error)
+	Equals(Node) bool
 }
 
 func Node2String(node Node) string {
@@ -36,6 +37,14 @@ func (this Null) Eval() (Node, error) {
 	return this, nil // errors.New("Null can not be evaluate.")
 }
 
+func (this Null) Equals(n Node) bool {
+	if n == nil {
+		return true
+	}
+	_, ok := n.(Null)
+	return ok
+}
+
 type NodeString string
 
 func (this NodeString) WriteTo(w io.Writer) (int64, error) {
@@ -49,6 +58,11 @@ func (this NodeString) Null() bool {
 
 func (this NodeString) Eval() (Node, error) {
 	return this, nil // errors.New("String can not be evaluate.")
+}
+
+func (this NodeString) Equals(n Node) bool {
+	ns, ok := n.(NodeString)
+	return ok && this == ns
 }
 
 type NodeSymbol string
@@ -66,6 +80,11 @@ func (this NodeSymbol) Eval() (Node, error) {
 	return this, nil // errors.New("Symbol can not be evaluate.")
 }
 
+func (this NodeSymbol) Equals(n Node) bool {
+	ns, ok := n.(NodeSymbol)
+	return ok && this == ns
+}
+
 type NodeInteger int64
 
 func (this NodeInteger) WriteTo(w io.Writer) (int64, error) {
@@ -79,4 +98,9 @@ func (this NodeInteger) Null() bool {
 
 func (this NodeInteger) Eval() (Node, error) {
 	return this, nil // errors.New("Integer can not be evaluate.")
+}
+
+func (this NodeInteger) Equals(n Node) bool {
+	ni, ok := n.(NodeInteger)
+	return ok && this == ni
 }
