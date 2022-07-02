@@ -5,7 +5,7 @@ import (
 	"io"
 )
 
-func progn(c Node) (Node, error) {
+func CmdProgn(c Node) (Node, error) {
 	var last Node
 	for !IsNull(c) {
 		cons, ok := c.(*Cons)
@@ -107,7 +107,7 @@ func (NL *NodeLambda) Call(n Node) (Node, error) {
 			globals[name] = value
 		}
 	}()
-	return progn(NL.code)
+	return CmdProgn(NL.code)
 }
 
 func (NL *NodeLambda) Eval() (Node, error) {

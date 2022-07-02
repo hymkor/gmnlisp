@@ -46,5 +46,6 @@ func init() {
 		"atom":   CmdAtom,
 		"eq":     CmdEq,
 		"lambda": CmdLambda,
+		"progn":  CmdProgn,
 	}
 }
