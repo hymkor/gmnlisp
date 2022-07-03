@@ -67,15 +67,18 @@ func CmdPlus(this Node) (Node, error) {
 	return result, err
 }
 
-func CmdCons(this Node) (Node, error) {
-	nodes, err := List2Array(this)
-	if err != nil {
-		return nil, err
-	}
-	if len(nodes) != 2 {
-		return nil, errors.New("cons: parameter number not 2")
-	}
-	return &Cons{Car: nodes[0], Cdr: nodes[1]}, nil
+func CmdCons(node Node) (Node, error) {
+	var result [2]Node
+	i := 0
+	err := ForEachEval(node, func(n Node) error {
+		if i >= len(result) {
+			return errors.New("cons: parameter number not 2")
+		}
+		result[i] = n
+		i++
+		return nil
+	})
+	return &Cons{Car: result[0], Cdr: result[1]}, err
 }
 
 func CmdCar(this Node) (Node, error) {
