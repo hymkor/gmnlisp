@@ -17,8 +17,9 @@ Experimental implementing
 - setq
 
 ```
-$ go run example.go "(setq f (lambda (a b) (+ a b))) (f 2 3)"
-   (setq f (lambda (a b) (+ a b))) (f 2 3)
+$ go run example.go "(defun plus (a b) (+ a b))" "(plus 1 2)"
+   (defun plus (a b) (+ a b))
 -> (lambda (a b) (+ a b))
--> 5
+   (plus 1 2)
+-> 3
 ```
