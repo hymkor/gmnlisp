@@ -5,7 +5,19 @@ import (
 	"fmt"
 )
 
-var builtInFunc map[string]func(Node) (Node, error)
+var builtInFunc = map[string]func(Node) (Node, error){
+	"print":  CmdPrint,
+	"quote":  CmdQuote,
+	"+":      CmdPlus,
+	"cons":   CmdCons,
+	"car":    CmdCar,
+	"cdr":    CmdCdr,
+	"atom":   CmdAtom,
+	"eq":     CmdEq,
+	"lambda": CmdLambda,
+	"progn":  CmdProgn,
+	"setq":   CmdSetq,
+}
 
 type Callable interface {
 	Node
@@ -42,20 +54,4 @@ func (this *Cons) Eval() (Node, error) {
 		return nil, fmt.Errorf("%s: Not Callable Object", name)
 	}
 	return _fn.Call(this.Cdr)
-}
-
-func init() {
-	builtInFunc = map[string]func(Node) (Node, error){
-		"print":  CmdPrint,
-		"quote":  CmdQuote,
-		"+":      CmdPlus,
-		"cons":   CmdCons,
-		"car":    CmdCar,
-		"cdr":    CmdCdr,
-		"atom":   CmdAtom,
-		"eq":     CmdEq,
-		"lambda": CmdLambda,
-		"progn":  CmdProgn,
-		"setq":   CmdSetq,
-	}
 }
