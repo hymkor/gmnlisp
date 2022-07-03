@@ -140,17 +140,24 @@ func CmdAtom(param Node) (Node, error) {
 }
 
 func CmdEq(param Node) (Node, error) {
-	nodes, err := List2Array(param)
-	if err != nil {
-		return nil, err
+	var first Node
+	i := 0
+	err := ForEachEval(param, func(node Node) error {
+		i++
+		if i == 1 {
+			first = node
+			return nil
+		}
+		if !first.Equals(node) {
+			return io.EOF
+		}
+		return nil
+	})
+	if err == io.EOF {
+		return &Null{}, nil
 	}
-	if len(nodes) < 2 {
+	if err == nil {
 		return T, nil
 	}
-	for _, value := range nodes[1:] {
-		if !nodes[0].Equals(value) {
-			return &Null{}, nil
-		}
-	}
-	return T, nil
+	return &Null{}, err
 }
