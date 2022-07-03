@@ -124,3 +124,22 @@ func (NL *NodeLambda) Eval() (Node, error) {
 func (*NodeLambda) Equals(Node) bool {
 	return false
 }
+
+func CmdDefun(node Node) (Node, error) {
+	cons, ok := node.(*Cons)
+	if !ok {
+		return nil, errors.New("Not a list")
+	}
+	_name, ok := cons.Car.(NodeSymbol)
+	if !ok {
+		return nil, errors.New("Not a Symbol")
+	}
+	name := string(_name)
+
+	lambda, err := CmdLambda(cons.Cdr)
+	if err != nil {
+		return nil, err
+	}
+	globals[name] = lambda
+	return lambda, nil
+}
