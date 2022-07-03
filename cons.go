@@ -46,12 +46,8 @@ func (this *Cons) isTailNull() bool {
 	}
 }
 
-func (this *Cons) WriteTo(w io.Writer) (int64, error) {
+func (this *Cons) writeToWithoutKakko(w io.Writer) (int64, error) {
 	var n int64
-	if err := write(&n, w, "("); err != nil {
-		return n, err
-	}
-
 	if IsNull(this.Car) {
 		m, err := io.WriteString(w, "()")
 		n += int64(m)
@@ -91,7 +87,20 @@ func (this *Cons) WriteTo(w io.Writer) (int64, error) {
 			}
 		}
 	}
-	err := write(&n, w, ")")
+	return n, nil
+}
+
+func (this *Cons) WriteTo(w io.Writer) (int64, error) {
+	var n int64
+	if err := write(&n, w, "("); err != nil {
+		return n, err
+	}
+	m, err := this.writeToWithoutKakko(w)
+	n += m
+	if err != nil {
+		return n, err
+	}
+	err = write(&n, w, ")")
 	return n, err
 }
 

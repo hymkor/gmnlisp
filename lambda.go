@@ -65,9 +65,16 @@ func (NL *NodeLambda) WriteTo(w io.Writer) (int64, error) {
 		if err := write(&n, w, name); err != nil {
 			return n, err
 		}
+		dem = " "
 	}
 	write(&n, w, ") ")
-	_n, err := NL.code.WriteTo(w)
+	var _n int64
+	var err error
+	if cons, ok := NL.code.(*Cons); ok {
+		_n, err = cons.writeToWithoutKakko(w)
+	} else {
+		_n, err = NL.code.WriteTo(w)
+	}
 	n += _n
 	if err != nil {
 		return n, err
