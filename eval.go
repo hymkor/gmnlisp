@@ -24,15 +24,24 @@ func (this *Cons) Eval() (Node, error) {
 	if f, ok := first.(Callable); ok {
 		return f.Call(this.Cdr)
 	}
-	name, ok := first.(NodeSymbol)
+	_name, ok := first.(NodeSymbol)
 	if !ok {
 		return nil, errors.New("Illeagal function Call")
 	}
-	fn, ok := builtInFunc[string(name)]
+	name := string(_name)
+	fn, ok := builtInFunc[name]
+	if ok {
+		return fn(this.Cdr)
+	}
+	val, ok := globals[name]
 	if !ok {
 		return nil, fmt.Errorf("%s: Not found", name)
 	}
-	return fn(this.Cdr)
+	_fn, ok := val.(Callable)
+	if !ok {
+		return nil, fmt.Errorf("%s: Not Callable Object", name)
+	}
+	return _fn.Call(this.Cdr)
 }
 
 func init() {
