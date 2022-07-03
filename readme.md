@@ -9,8 +9,10 @@ Experimental implementing
 - car
 - cdr
 - cons
+- defun
 - eq
 - lambda
+- let
 - print
 - progn
 - quote
