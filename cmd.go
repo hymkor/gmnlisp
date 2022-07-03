@@ -33,15 +33,6 @@ func ForEachEval(this Node, f func(Node) error) error {
 	})
 }
 
-func List2Array(this Node) ([]Node, error) {
-	result := []Node{}
-	err := ForEachEval(this, func(one Node) error {
-		result = append(result, one)
-		return nil
-	})
-	return result, err
-}
-
 func CmdPrint(this Node) (Node, error) {
 	dem := ""
 	err := ForEachEval(this, func(one Node) error {
