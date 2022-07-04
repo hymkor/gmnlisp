@@ -19,6 +19,18 @@ func mains(args []string) error {
 		result.WriteTo(os.Stdout)
 		fmt.Println()
 	}
+	for _, fname := range args {
+		script, err := os.ReadFile(fname)
+		if err != nil {
+			return err
+		}
+		result, err := gommon.Interpret(string(script))
+		if err != nil {
+			return err
+		}
+		result.WriteTo(os.Stdout)
+		fmt.Println()
+	}
 	return nil
 }
 
