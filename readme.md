@@ -19,9 +19,6 @@ Experimental implementing
 - setq
 
 ```
-$ go run example.go "(defun plus (a b) (+ a b))" "(plus 1 2)"
-   (defun plus (a b) (+ a b))
--> (lambda (a b) (+ a b))
-   (plus 1 2)
--> 3
+$ ./cmd/gmnlisp/gmnlisp -e "(defun plus (a b) (+ a b)) (plus 1 2)"
+3
 ```
