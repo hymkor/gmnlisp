@@ -35,11 +35,8 @@ func Tokenize(r io.Reader) []string {
 		for rune1 != scanner.EOF && unicode.IsSpace(rune1) {
 			rune1 = scr1.Next()
 		}
-		if rune1 == '(' {
-			list1 = append(list1, "(")
-			rune1 = scr1.Next()
-		} else if rune1 == ')' {
-			list1 = append(list1, ")")
+		if strings.ContainsRune("'()", rune1) {
+			list1 = append(list1, string(rune1))
 			rune1 = scr1.Next()
 		} else {
 			var token string
