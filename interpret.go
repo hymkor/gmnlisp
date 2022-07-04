@@ -7,6 +7,10 @@ func Interpret(code string) (Node, error) {
 	}
 	var result Node
 	for _, c := range compiled {
+		c, err = macroQuote(c)
+		if err != nil {
+			return c, err
+		}
 		result, err = c.Eval()
 		if err != nil {
 			return result, err
