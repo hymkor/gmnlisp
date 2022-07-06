@@ -20,6 +20,7 @@ var builtInFunc = map[string]func(Node) (Node, error){
 	"setq":   CmdSetq,
 	"defun":  CmdDefun,
 	"let":    CmdLet,
+	"cond":   CmdCond,
 }
 
 type Callable interface {
