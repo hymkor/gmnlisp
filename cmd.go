@@ -143,8 +143,6 @@ func CmdQuote(param Node) (Node, error) {
 	return cons.Car, nil
 }
 
-var T = NodeSymbol("T")
-
 func CmdAtom(param Node) (Node, error) {
 	cons, ok := param.(*Cons)
 	if !ok {
@@ -153,7 +151,7 @@ func CmdAtom(param Node) (Node, error) {
 	if _, ok := cons.Car.(*Cons); ok {
 		return &Null{}, nil
 	}
-	return T, nil
+	return TrueType{}, nil
 }
 
 func CmdEq(param Node) (Node, error) {
@@ -174,7 +172,7 @@ func CmdEq(param Node) (Node, error) {
 		return &Null{}, nil
 	}
 	if err == nil {
-		return T, nil
+		return TrueType{}, nil
 	}
 	return &Null{}, fmt.Errorf("eq: %w", err)
 }

@@ -22,6 +22,31 @@ func Node2String(node Node) string {
 	return buffer.String()
 }
 
+type TrueType struct{}
+
+func toInt64(n int, err error) (int64, error) {
+	return int64(n), err
+}
+
+func (TrueType) WriteTo(w io.Writer) (int64, error) {
+	return toInt64(fmt.Fprint(w, "T"))
+}
+
+func (TrueType) Null() bool {
+	return false
+}
+
+func (t TrueType) Eval() (Node, error) {
+	return t, nil
+}
+
+var TrueValue = TrueType{}
+
+func (TrueType) Equals(n Node) bool {
+	_, ok := n.(TrueType)
+	return ok
+}
+
 type Null struct{}
 
 func (this Null) WriteTo(w io.Writer) (int64, error) {

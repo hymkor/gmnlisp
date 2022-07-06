@@ -96,7 +96,10 @@ func (*NodeLambda) Null() bool {
 	return false
 }
 
-var globals = map[string]Node{}
+var globals = map[string]Node{
+	"T":   TrueType{},
+	"nil": Null{},
+}
 
 func (NL *NodeLambda) Call(n Node) (Node, error) {
 	backups := map[string]Node{}
