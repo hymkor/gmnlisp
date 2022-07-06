@@ -11,6 +11,7 @@ var (
 	ErrTooFewOrTooManyArguments = errors.New("Too few or too many arguments")
 	ErrExpectedCons             = errors.New("Expected CONS")
 	ErrExpectedNumber           = errors.New("Expected a number")
+	ErrExpectedSymbol           = errors.New("Expected symbol")
 )
 
 func ForEachQuote(this Node, f func(Node) error) error {

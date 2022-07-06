@@ -2,6 +2,7 @@ package gommon
 
 import (
 	"errors"
+	"fmt"
 	"io"
 )
 
@@ -10,7 +11,7 @@ func CmdProgn(c Node) (Node, error) {
 	for !IsNull(c) {
 		cons, ok := c.(*Cons)
 		if !ok {
-			return nil, errors.New("Not a List")
+			return nil, fmt.Errorf("progn: %w", ErrExpectedCons)
 		}
 		var err error
 		last, err = cons.GetCar().Eval()
@@ -32,13 +33,13 @@ func CmdLambda(node Node) (Node, error) {
 
 	cons, ok := node.(*Cons)
 	if !ok {
-		return nil, errors.New("lambda: parameter is not cons")
+		return nil, fmt.Errorf("lambda: %w for parameter list", ErrExpectedCons)
 	}
 	params := []string{}
 	if err := ForEachQuote(cons.Car, func(n Node) error {
 		name, ok := n.(NodeSymbol)
 		if !ok {
-			return errors.New("lambda: parameter list is not symbol")
+			return fmt.Errorf("lambda: %w", ErrExpectedSymbol)
 		}
 		params = append(params, string(name))
 		return nil

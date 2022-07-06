@@ -26,6 +26,8 @@ type Callable interface {
 	Call(Node) (Node, error)
 }
 
+var ErrExpectedFunction = errors.New("expected function")
+
 func (this *Cons) Eval() (Node, error) {
 	first := this.Car
 	if p, ok := first.(*Cons); ok {
@@ -40,7 +42,7 @@ func (this *Cons) Eval() (Node, error) {
 	}
 	_name, ok := first.(NodeSymbol)
 	if !ok {
-		return nil, errors.New("Illeagal function Call")
+		return nil, fmt.Errorf("cons: %w", ErrExpectedFunction)
 	}
 	name := string(_name)
 	fn, ok := builtInFunc[name]

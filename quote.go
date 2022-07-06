@@ -4,6 +4,8 @@ import (
 	"errors"
 )
 
+var ErrNoObjectToQuote = errors.New("No objects to quote")
+
 func macroQuote(node Node) (Node, error) {
 	cons, ok := node.(*Cons)
 	if !ok {
@@ -25,7 +27,7 @@ func macroQuote(node Node) (Node, error) {
 	// Find single quotation mark
 	cons, ok = cons.Cdr.(*Cons)
 	if !ok {
-		return nil, errors.New("not a cons after single quotation")
+		return nil, ErrNoObjectToQuote
 	}
 	quoted, err := macroQuote(cons.Car)
 	if err != nil {
