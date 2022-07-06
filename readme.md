@@ -5,9 +5,11 @@ Now under constructing.
 Experimental implementing
 
 - \+
+- \-
 - atom
 - car
 - cdr
+- cond
 - cons
 - defun
 - eq
