@@ -1,14 +1,13 @@
 package gommon
 
 import (
-	"errors"
 	"fmt"
 )
 
 func CmdLet(param Node) (Node, error) {
 	cons, ok := param.(*Cons)
 	if !ok {
-		return nil, errors.New("let: not a list")
+		return nil, fmt.Errorf("let: %w: `%s`", ErrExpectedCons, Node2String(param))
 	}
 	code := cons.Cdr
 
@@ -18,16 +17,19 @@ func CmdLet(param Node) (Node, error) {
 	err := ForEachQuote(cons.Car, func(node Node) error {
 		cons, ok := node.(*Cons)
 		if !ok {
-			return fmt.Errorf("let: var list is not a list")
+			return fmt.Errorf("let: %w: `%s`",
+				ErrExpectedCons, Node2String(node))
 		}
 		_name, ok := cons.Car.(NodeSymbol)
 		if !ok {
-			return fmt.Errorf("let: var name is invalid")
+			return fmt.Errorf("let: %w: `%s`",
+				ErrExpectedSymbol, Node2String(cons.Car))
 		}
 		name := string(_name)
 		cons, ok = cons.Cdr.(*Cons)
 		if !ok {
-			return fmt.Errorf("let: var value is invalid")
+			return fmt.Errorf("let: %w: `%s`",
+				ErrExpectedCons, Node2String(cons.Cdr))
 		}
 		value, err := cons.Car.Eval()
 		if err != nil {
