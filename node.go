@@ -70,6 +70,8 @@ func (this Null) Equals(n Node) bool {
 	return ok
 }
 
+var NullValue = Null{}
+
 type NodeString string
 
 func (this NodeString) WriteTo(w io.Writer) (int64, error) {

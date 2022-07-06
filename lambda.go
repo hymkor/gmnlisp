@@ -97,8 +97,8 @@ func (*NodeLambda) Null() bool {
 }
 
 var globals = map[string]Node{
-	"T":   TrueType{},
-	"nil": Null{},
+	"T":   TrueValue,
+	"nil": NullValue,
 }
 
 func (NL *NodeLambda) Call(n Node) (Node, error) {
@@ -119,7 +119,7 @@ func (NL *NodeLambda) Call(n Node) (Node, error) {
 			}
 			n = cons.GetCdr()
 		} else {
-			globals[name] = &Null{}
+			globals[name] = NullValue
 		}
 	}
 	defer func() {

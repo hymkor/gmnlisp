@@ -11,14 +11,14 @@ type Cons struct {
 
 func (c *Cons) GetCar() Node {
 	if c.Car == nil {
-		return &Null{}
+		return NullValue
 	}
 	return c.Car
 }
 
 func (c *Cons) GetCdr() Node {
 	if c.Cdr == nil {
-		return &Null{}
+		return NullValue
 	}
 	return c.Cdr
 }

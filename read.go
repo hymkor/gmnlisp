@@ -13,9 +13,9 @@ var RxNumber = regexp.MustCompile("^[0-9]+$")
 func nodes2cons(nodes []Node) Node {
 	switch len(nodes) {
 	case 0:
-		return &Null{}
+		return NullValue
 	case 1:
-		return &Cons{nodes[0], &Null{}}
+		return &Cons{nodes[0], NullValue}
 	case 3:
 		if sym, ok := nodes[1].(NodeSymbol); ok && string(sym) == "." {
 			return &Cons{nodes[0], nodes[2]}
@@ -28,7 +28,7 @@ func nodes2cons(nodes []Node) Node {
 
 func readTokens(tokens []string) (Node, []string, error) {
 	if len(tokens) < 1 {
-		return &Null{}, tokens, nil
+		return NullValue, tokens, nil
 	}
 	if tokens[0] == "(" {
 		nodes := []Node{}
@@ -60,7 +60,7 @@ func readTokens(tokens []string) (Node, []string, error) {
 		return NodeString(strings.Replace(tokens[0], "\"", "", -1)), tokens[1:], nil
 	}
 	if tokens[0] == "nil" {
-		return &Null{}, tokens[1:], nil
+		return NullValue, tokens[1:], nil
 	}
 	return NodeSymbol(tokens[0]), tokens[1:], nil
 }

@@ -28,5 +28,5 @@ func CmdCond(node Node) (Node, error) {
 			return result, err
 		}
 	}
-	return &Null{}, nil
+	return NullValue, nil
 }

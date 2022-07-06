@@ -49,7 +49,7 @@ func CmdPrint(this Node) (Node, error) {
 		return err1
 	})
 	fmt.Println()
-	return &Null{}, err
+	return NullValue, err
 }
 
 func CmdPlus(this Node) (Node, error) {
@@ -149,9 +149,9 @@ func CmdAtom(param Node) (Node, error) {
 		return nil, fmt.Errorf("atom: %w", ErrExpectedCons)
 	}
 	if _, ok := cons.Car.(*Cons); ok {
-		return &Null{}, nil
+		return NullValue, nil
 	}
-	return TrueType{}, nil
+	return TrueValue, nil
 }
 
 func CmdEq(param Node) (Node, error) {
@@ -169,10 +169,10 @@ func CmdEq(param Node) (Node, error) {
 		return nil
 	})
 	if err == io.EOF {
-		return &Null{}, nil
+		return NullValue, nil
 	}
 	if err == nil {
-		return TrueType{}, nil
+		return TrueValue, nil
 	}
-	return &Null{}, fmt.Errorf("eq: %w", err)
+	return NullValue, fmt.Errorf("eq: %w", err)
 }
