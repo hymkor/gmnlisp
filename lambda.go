@@ -101,7 +101,11 @@ func (NL *NodeLambda) Call(n Node) (Node, error) {
 		}
 
 		if cons, ok := n.(*Cons); ok {
-			globals[name] = cons.GetCar()
+			var err error
+			globals[name], err = cons.GetCar().Eval()
+			if err != nil {
+				return nil, err
+			}
 			n = cons.GetCdr()
 		} else {
 			globals[name] = &Null{}
