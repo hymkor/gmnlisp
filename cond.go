@@ -21,7 +21,11 @@ func CmdCond(node Node) (Node, error) {
 			return nil, fmt.Errorf("cond: %w", err)
 		}
 		if !IsNull(condition) {
-			return CmdProgn(conditionAndActions.Cdr)
+			result, err := progn(conditionAndActions.Cdr)
+			if err != nil {
+				return result, fmt.Errorf("cond: %w", err)
+			}
+			return result, err
 		}
 	}
 	return &Null{}, nil

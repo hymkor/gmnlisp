@@ -53,5 +53,10 @@ func CmdLet(param Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	return CmdProgn(code)
+
+	result, err := progn(code)
+	if err != nil {
+		return result, fmt.Errorf("let: %w", err)
+	}
+	return result, nil
 }

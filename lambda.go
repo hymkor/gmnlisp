@@ -6,7 +6,7 @@ import (
 	"io"
 )
 
-func CmdProgn(c Node) (Node, error) {
+func progn(c Node) (Node, error) {
 	var last Node
 	for !IsNull(c) {
 		cons, ok := c.(*Cons)
@@ -21,6 +21,14 @@ func CmdProgn(c Node) (Node, error) {
 		c = cons.Cdr
 	}
 	return last, nil
+}
+
+func CmdProgn(c Node) (Node, error) {
+	result, err := progn(c)
+	if err != nil {
+		return result, fmt.Errorf("progn: %w", err)
+	}
+	return result, err
 }
 
 type NodeLambda struct {
@@ -119,7 +127,7 @@ func (NL *NodeLambda) Call(n Node) (Node, error) {
 			globals[name] = value
 		}
 	}()
-	return CmdProgn(NL.code)
+	return progn(NL.code)
 }
 
 func (NL *NodeLambda) Eval() (Node, error) {
