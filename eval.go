@@ -6,21 +6,23 @@ import (
 )
 
 var builtInFunc = map[string]func(Node) (Node, error){
-	"print":  CmdPrint,
-	"quote":  CmdQuote,
-	"+":      CmdPlus,
-	"-":      CmdMinus,
-	"cons":   CmdCons,
-	"car":    CmdCar,
-	"cdr":    CmdCdr,
-	"atom":   CmdAtom,
-	"eq":     CmdEq,
-	"lambda": CmdLambda,
-	"progn":  CmdProgn,
-	"setq":   CmdSetq,
-	"defun":  CmdDefun,
-	"let":    CmdLet,
-	"cond":   CmdCond,
+	"print":       CmdPrint,
+	"quote":       CmdQuote,
+	"+":           CmdPlus,
+	"-":           CmdMinus,
+	"cons":        CmdCons,
+	"car":         CmdCar,
+	"cdr":         CmdCdr,
+	"atom":        CmdAtom,
+	"eq":          CmdEq,
+	"lambda":      CmdLambda,
+	"progn":       CmdProgn,
+	"setq":        CmdSetq,
+	"defun":       CmdDefun,
+	"let":         CmdLet,
+	"cond":        CmdCond,
+	"return":      CmdReturn,
+	"return-from": CmdReturnFrom,
 }
 
 type Callable interface {

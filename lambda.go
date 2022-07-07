@@ -6,6 +6,50 @@ import (
 	"io"
 )
 
+type ErrEarlyReturns struct {
+	Value Node
+	Name  string
+}
+
+func (e *ErrEarlyReturns) Error() string {
+	if e.Name == "" {
+		return "Unexpected (return)"
+	}
+	return fmt.Sprintf("Unexpected (return-from %s)", e.Name)
+}
+
+func CmdReturn(node Node) (Node, error) {
+	cons, ok := node.(*Cons)
+	if !ok {
+		return nil, fmt.Errorf("return: %w", ErrExpectedCons)
+	}
+	value, err := cons.GetCar().Eval()
+	if err != nil {
+		return nil, fmt.Errorf("return: %w", err)
+	}
+	return nil, &ErrEarlyReturns{Value: value, Name: ""}
+}
+
+func CmdReturnFrom(node Node) (Node, error) {
+	cons, ok := node.(*Cons)
+	if !ok {
+		return nil, fmt.Errorf("return-from: %w", ErrExpectedCons)
+	}
+	symbol, ok := cons.Car.(NodeSymbol)
+	if !ok {
+		return nil, fmt.Errorf("return-from: %w", ErrExpectedSymbol)
+	}
+	cons, ok = cons.Cdr.(*Cons)
+	if !ok {
+		return nil, fmt.Errorf("return-from: %w", ErrExpectedCons)
+	}
+	value, err := cons.GetCar().Eval()
+	if err != nil {
+		return nil, fmt.Errorf("return-from: %w", err)
+	}
+	return nil, &ErrEarlyReturns{Value: value, Name: string(symbol)}
+}
+
 func progn(c Node) (Node, error) {
 	var last Node
 	for !IsNull(c) {
@@ -34,20 +78,29 @@ func CmdProgn(c Node) (Node, error) {
 type NodeLambda struct {
 	param []string
 	code  Node
+	name  string
 }
 
 func CmdLambda(node Node) (Node, error) {
+	rv, err := NewLambda(node, "")
+	if err != nil {
+		return rv, fmt.Errorf("lambda: %w", err)
+	}
+	return rv, nil
+}
+
+func NewLambda(node Node, blockName string) (Node, error) {
 	// (lambda (param) code)
 
 	cons, ok := node.(*Cons)
 	if !ok {
-		return nil, fmt.Errorf("lambda: %w for parameter list", ErrExpectedCons)
+		return nil, fmt.Errorf("%w for parameter list", ErrExpectedCons)
 	}
 	params := []string{}
 	if err := ForEachQuote(cons.Car, func(n Node) error {
 		name, ok := n.(NodeSymbol)
 		if !ok {
-			return fmt.Errorf("lambda: %w", ErrExpectedSymbol)
+			return ErrExpectedSymbol
 		}
 		params = append(params, string(name))
 		return nil
@@ -58,6 +111,7 @@ func CmdLambda(node Node) (Node, error) {
 	return &NodeLambda{
 		param: params,
 		code:  cons.GetCdr(),
+		name:  blockName,
 	}, nil
 }
 
@@ -130,7 +184,13 @@ func (NL *NodeLambda) Call(n Node) (Node, error) {
 			globals[name] = value
 		}
 	}()
-	return progn(NL.code)
+	var errEarlyReturns *ErrEarlyReturns
+
+	result, err := progn(NL.code)
+	if errors.As(err, &errEarlyReturns) && errEarlyReturns.Name == string(NL.name) {
+		return errEarlyReturns.Value, nil
+	}
+	return result, err
 }
 
 func (NL *NodeLambda) Eval() (Node, error) {
@@ -144,17 +204,17 @@ func (*NodeLambda) Equals(Node) bool {
 func CmdDefun(node Node) (Node, error) {
 	cons, ok := node.(*Cons)
 	if !ok {
-		return nil, errors.New("Not a list")
+		return nil, fmt.Errorf("defun: %w", ErrExpectedCons)
 	}
 	_name, ok := cons.Car.(NodeSymbol)
 	if !ok {
-		return nil, errors.New("Not a Symbol")
+		return nil, fmt.Errorf("defun: %w", ErrExpectedSymbol)
 	}
 	name := string(_name)
 
-	lambda, err := CmdLambda(cons.Cdr)
+	lambda, err := NewLambda(cons.Cdr, string(_name))
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("defun: %w", err)
 	}
 	globals[name] = lambda
 	return lambda, nil
