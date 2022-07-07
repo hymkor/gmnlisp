@@ -219,3 +219,22 @@ func CmdDefun(node Node) (Node, error) {
 	globals[name] = lambda
 	return lambda, nil
 }
+
+func CmdBlock(node Node) (Node, error) {
+	cons, ok := node.(*Cons)
+	if !ok {
+		return nil, fmt.Errorf("block: %w", ErrExpectedCons)
+	}
+	_name, ok := cons.Car.(NodeSymbol)
+	if !ok {
+		return nil, fmt.Errorf("block: %w", ErrExpectedSymbol)
+	}
+	name := string(_name)
+
+	var errEarlyReturns *ErrEarlyReturns
+	rv, err := progn(cons.Cdr)
+	if errors.As(err, &errEarlyReturns) && errEarlyReturns.Name == name {
+		return errEarlyReturns.Value, nil
+	}
+	return rv, err
+}

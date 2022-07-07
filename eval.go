@@ -23,6 +23,7 @@ var builtInFunc = map[string]func(Node) (Node, error){
 	"cond":        CmdCond,
 	"return":      CmdReturn,
 	"return-from": CmdReturnFrom,
+	"block":       CmdBlock,
 }
 
 type Callable interface {
