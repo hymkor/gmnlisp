@@ -98,17 +98,24 @@ func CmdCons(node Node) (Node, error) {
 	return &Cons{Car: result[0], Cdr: result[1]}, err
 }
 
-func CmdCar(this Node) (Node, error) {
-	cons, ok := this.(*Cons)
+func ShiftAndEval(node Node) (Node, Node, error) {
+	cons, ok := node.(*Cons)
 	if !ok {
-		return nil, fmt.Errorf("car: %w", ErrTooFewOrTooManyArguments)
+		return nil, nil, ErrTooFewOrTooManyArguments
 	}
+	value, err := cons.GetCar().Eval()
+	if err != nil {
+		return nil, nil, err
+	}
+	return value, cons.Cdr, nil
+}
 
-	firstArg, err := cons.Car.Eval()
+func CmdCar(param Node) (Node, error) {
+	first, _, err := ShiftAndEval(param)
 	if err != nil {
 		return nil, fmt.Errorf("car: %w", err)
 	}
-	cons, ok = firstArg.(*Cons)
+	cons, ok := first.(*Cons)
 	if !ok {
 		return nil, fmt.Errorf("car: %w", ErrExpectedCons)
 	}
@@ -116,23 +123,15 @@ func CmdCar(this Node) (Node, error) {
 }
 
 func CmdCdr(param Node) (Node, error) {
-	var result Node
-	err := ForEachEval(param, func(firstArg Node) error {
-		cons, ok := firstArg.(*Cons)
-		if !ok {
-			return ErrExpectedCons
-		}
-		result = cons.Cdr
-		return io.EOF
-	})
-	switch err {
-	case io.EOF:
-		return result, nil
-	case nil:
-		return nil, fmt.Errorf("cdr: %w", ErrTooFewOrTooManyArguments)
-	default:
+	first, _, err := ShiftAndEval(param)
+	if err != nil {
 		return nil, fmt.Errorf("cdr: %w", err)
 	}
+	cons, ok := first.(*Cons)
+	if !ok {
+		return nil, fmt.Errorf("cdr: %w", ErrExpectedCons)
+	}
+	return cons.Cdr, nil
 }
 
 func CmdQuote(param Node) (Node, error) {
