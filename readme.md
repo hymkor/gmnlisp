@@ -7,6 +7,7 @@ Experimental implementing
 - \+
 - \-
 - atom
+- block
 - car
 - cdr
 - cond
@@ -18,6 +19,8 @@ Experimental implementing
 - print
 - progn
 - quote
+- return
+- return-from
 - setq
 
 ```
