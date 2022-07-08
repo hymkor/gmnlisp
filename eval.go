@@ -10,6 +10,8 @@ var builtInFunc = map[string]func(Node) (Node, error){
 	"quote":       CmdQuote,
 	"+":           CmdPlus,
 	"-":           CmdMinus,
+	"*":           CmdMulti,
+	"/":           CmdDevide,
 	"cons":        CmdCons,
 	"car":         CmdCar,
 	"cdr":         CmdCdr,

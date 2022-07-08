@@ -52,38 +52,6 @@ func CmdPrint(this Node) (Node, error) {
 	return NullValue, err
 }
 
-func CmdPlus(this Node) (Node, error) {
-	var result NodeInteger
-	err := ForEachEval(this, func(one Node) error {
-		value, ok := one.(NodeInteger)
-		if !ok {
-			return fmt.Errorf("+: %w %s", ErrExpectedNumber, Node2String(one))
-		}
-		result += value
-		return nil
-	})
-	return result, err
-}
-
-func CmdMinus(this Node) (Node, error) {
-	var result NodeInteger
-	count := 0
-	err := ForEachEval(this, func(one Node) error {
-		count++
-		value, ok := one.(NodeInteger)
-		if !ok {
-			return fmt.Errorf("-: %w %s", ErrExpectedNumber, Node2String(one))
-		}
-		if count <= 1 {
-			result = value
-		} else {
-			result -= value
-		}
-		return nil
-	})
-	return result, err
-}
-
 func CmdCons(node Node) (Node, error) {
 	var result [2]Node
 	i := 0
