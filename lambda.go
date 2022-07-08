@@ -150,11 +150,6 @@ func (*NodeLambda) Null() bool {
 	return false
 }
 
-var globals = map[string]Node{
-	"T":   TrueValue,
-	"nil": NullValue,
-}
-
 func (NL *NodeLambda) Call(n Node) (Node, error) {
 	backups := map[string]Node{}
 	nobackups := map[string]struct{}{}

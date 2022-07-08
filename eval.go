@@ -3,34 +3,34 @@ package gommon
 import (
 	"errors"
 	"fmt"
+	"io"
 )
-
-var builtInFunc = map[string]func(Node) (Node, error){
-	"print":       CmdPrint,
-	"quote":       CmdQuote,
-	"+":           CmdPlus,
-	"-":           CmdMinus,
-	"*":           CmdMulti,
-	"/":           CmdDevide,
-	"cons":        CmdCons,
-	"car":         CmdCar,
-	"cdr":         CmdCdr,
-	"atom":        CmdAtom,
-	"eq":          CmdEq,
-	"lambda":      CmdLambda,
-	"progn":       CmdProgn,
-	"setq":        CmdSetq,
-	"defun":       CmdDefun,
-	"let":         CmdLet,
-	"cond":        CmdCond,
-	"return":      CmdReturn,
-	"return-from": CmdReturnFrom,
-	"block":       CmdBlock,
-}
 
 type Callable interface {
 	Node
 	Call(Node) (Node, error)
+}
+
+type Function func(Node) (Node, error)
+
+func (Function) WriteTo(w io.Writer) (int64, error) {
+	return toInt64(io.WriteString(w, "buildin function"))
+}
+
+func (Function) Null() bool {
+	return false
+}
+
+func (f Function) Eval() (Node, error) {
+	return f, nil
+}
+
+func (f Function) Equals(n Node) bool {
+	return false
+}
+
+func (f Function) Call(n Node) (Node, error) {
+	return f(n)
 }
 
 var ErrExpectedFunction = errors.New("expected function")
@@ -52,10 +52,6 @@ func (this *Cons) Eval() (Node, error) {
 		return nil, fmt.Errorf("cons: %w", ErrExpectedFunction)
 	}
 	name := string(_name)
-	fn, ok := builtInFunc[name]
-	if ok {
-		return fn(this.Cdr)
-	}
 	val, ok := globals[name]
 	if !ok {
 		return nil, fmt.Errorf("%s: Not found", name)
