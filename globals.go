@@ -29,5 +29,6 @@ func init() {
 		"return":      Function(CmdReturn),
 		"return-from": Function(CmdReturnFrom),
 		"block":       Function(CmdBlock),
+		"truncate":    Function(CmdTruncate),
 	}
 }

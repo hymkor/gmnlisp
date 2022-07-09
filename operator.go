@@ -3,6 +3,7 @@ package gommon
 import (
 	"errors"
 	"fmt"
+	"math"
 )
 
 var ErrNotSupportType = errors.New("Not support type")
@@ -79,4 +80,18 @@ func CmdDevide(this Node) (Node, error) {
 	return inject(this, "/", func(left, right CanDevide) (Node, error) {
 		return left.Devide(right)
 	})
+}
+
+func CmdTruncate(this Node) (Node, error) {
+	first, _, err := ShiftAndEval(this)
+	if err != nil {
+		return nil, err
+	}
+	if value, ok := first.(NodeInteger); ok {
+		return value, err
+	}
+	if value, ok := first.(NodeFloat); ok {
+		return NodeInteger(int(math.Trunc(float64(value)))), nil
+	}
+	return nil, ErrNotSupportType
 }
