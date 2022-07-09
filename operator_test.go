@@ -4,19 +4,14 @@ import (
 	"testing"
 )
 
-func testOp[T Node](t *testing.T, equation string, expect T) {
-	rv, err := Interpret(equation)
+func testOp(t *testing.T, equation string, expect Node) {
+	result, err := Interpret(equation)
 	if err != nil {
 		t.Fatal(err.Error())
 		return
 	}
-	value, ok := rv.(T)
-	if !ok {
-		t.Fatal("not a number")
-		return
-	}
-	if !value.Equals(expect) {
-		t.Fatalf("%s != %s (was %s)", equation, Node2String(expect), Node2String(value))
+	if !result.Equals(expect) {
+		t.Fatalf("%s != %s (was %s)", equation, Node2String(expect), Node2String(result))
 		return
 	}
 }
