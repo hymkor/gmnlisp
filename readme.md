@@ -4,9 +4,9 @@ Gommon Lisp
 Now under constructing.  
 Experimental implementing
 
+- \*
 - \+
 - \-
-- \*
 - \/
 - atom
 - block
@@ -27,6 +27,7 @@ Experimental implementing
 - return-from
 - setq
 - terpri
+- truncate
 
 ```
 $ type seq.lsp
