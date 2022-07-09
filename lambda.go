@@ -115,35 +115,33 @@ func NewLambda(node Node, blockName string) (Node, error) {
 	}, nil
 }
 
-func (NL *NodeLambda) WriteTo(w io.Writer) (int64, error) {
-	var n int64
-	if err := write(&n, w, "(lambda ("); err != nil {
-		return n, err
-	}
+func (nl *NodeLambda) PrintTo(w io.Writer) {
+	nl.prinX(w, true)
+}
+
+func (nl *NodeLambda) PrincTo(w io.Writer) {
+	nl.prinX(w, false)
+}
+
+func (NL *NodeLambda) prinX(w io.Writer, rich bool) {
+	io.WriteString(w, "(lambda (")
 	dem := ""
 	for _, name := range NL.param {
-		if err := write(&n, w, dem); err != nil {
-			return n, err
-		}
-		if err := write(&n, w, name); err != nil {
-			return n, err
-		}
+		io.WriteString(w, dem)
+		io.WriteString(w, name)
 		dem = " "
 	}
-	write(&n, w, ") ")
-	var _n int64
-	var err error
+	io.WriteString(w, ") ")
 	if cons, ok := NL.code.(*Cons); ok {
-		_n, err = cons.writeToWithoutKakko(w)
+		cons.writeToWithoutKakko(w, rich)
 	} else {
-		_n, err = NL.code.WriteTo(w)
+		if rich {
+			NL.code.PrintTo(w)
+		} else {
+			NL.code.PrincTo(w)
+		}
 	}
-	n += _n
-	if err != nil {
-		return n, err
-	}
-	err = write(&n, w, ")")
-	return n, err
+	io.WriteString(w, ")")
 }
 
 func (*NodeLambda) Null() bool {

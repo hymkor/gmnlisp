@@ -7,10 +7,11 @@ import (
 )
 
 type Node interface {
-	io.WriterTo
 	Null() bool
 	Eval() (Node, error)
 	Equals(Node) bool
+	PrintTo(io.Writer)
+	PrincTo(io.Writer)
 }
 
 func Node2String(node Node) string {
@@ -18,18 +19,18 @@ func Node2String(node Node) string {
 		return "()"
 	}
 	var buffer strings.Builder
-	node.WriteTo(&buffer)
+	node.PrintTo(&buffer)
 	return buffer.String()
 }
 
 type TrueType struct{}
 
-func toInt64(n int, err error) (int64, error) {
-	return int64(n), err
+func (TrueType) PrintTo(w io.Writer) {
+	io.WriteString(w, "T")
 }
 
-func (TrueType) WriteTo(w io.Writer) (int64, error) {
-	return toInt64(fmt.Fprint(w, "T"))
+func (TrueType) PrincTo(w io.Writer) {
+	io.WriteString(w, "T")
 }
 
 func (TrueType) Null() bool {
@@ -49,12 +50,15 @@ func (TrueType) Equals(n Node) bool {
 
 type Null struct{}
 
-func (this Null) WriteTo(w io.Writer) (int64, error) {
-	n, err := fmt.Fprint(w, "()")
-	return int64(n), err
+func (Null) PrintTo(w io.Writer) {
+	io.WriteString(w, "nil")
 }
 
-func (this Null) Null() bool {
+func (Null) PrincTo(w io.Writer) {
+	io.WriteString(w, "nil")
+}
+
+func (Null) Null() bool {
 	return true
 }
 
@@ -74,12 +78,15 @@ var NullValue = Null{}
 
 type NodeString string
 
-func (this NodeString) WriteTo(w io.Writer) (int64, error) {
-	n, err := fmt.Fprintf(w, "\"%s\"", string(this))
-	return int64(n), err
+func (s NodeString) PrintTo(w io.Writer) {
+	fmt.Fprintf(w, "\"%s\"", string(s))
 }
 
-func (this NodeString) Null() bool {
+func (s NodeString) PrincTo(w io.Writer) {
+	io.WriteString(w, string(s))
+}
+
+func (NodeString) Null() bool {
 	return false
 }
 
@@ -94,9 +101,12 @@ func (this NodeString) Equals(n Node) bool {
 
 type NodeSymbol string
 
-func (this NodeSymbol) WriteTo(w io.Writer) (int64, error) {
-	n, err := io.WriteString(w, string(this))
-	return int64(n), err
+func (this NodeSymbol) PrintTo(w io.Writer) {
+	io.WriteString(w, string(this))
+}
+
+func (this NodeSymbol) PrincTo(w io.Writer) {
+	io.WriteString(w, string(this))
 }
 
 func (this NodeSymbol) Null() bool {
@@ -118,9 +128,12 @@ func (this NodeSymbol) Equals(n Node) bool {
 
 type NodeInteger int64
 
-func (this NodeInteger) WriteTo(w io.Writer) (int64, error) {
-	n, err := fmt.Fprintf(w, "%d", int64(this))
-	return int64(n), err
+func (n NodeInteger) PrintTo(w io.Writer) {
+	fmt.Fprintf(w, "%d", int64(n))
+}
+
+func (n NodeInteger) PrincTo(w io.Writer) {
+	fmt.Fprintf(w, "%d", int64(n))
 }
 
 func (this NodeInteger) Null() bool {

@@ -13,8 +13,12 @@ type Callable interface {
 
 type Function func(Node) (Node, error)
 
-func (Function) WriteTo(w io.Writer) (int64, error) {
-	return toInt64(io.WriteString(w, "buildin function"))
+func (Function) PrintTo(w io.Writer) {
+	io.WriteString(w, "buildin function")
+}
+
+func (Function) PrincTo(w io.Writer) {
+	io.WriteString(w, "buildin function")
 }
 
 func (Function) Null() bool {

@@ -46,20 +46,13 @@ func (this *Cons) isTailNull() bool {
 	}
 }
 
-func (this *Cons) writeToWithoutKakko(w io.Writer) (int64, error) {
-	var n int64
+func (this *Cons) writeToWithoutKakko(w io.Writer, rich bool) {
 	if IsNull(this.Car) {
-		m, err := io.WriteString(w, "()")
-		n += int64(m)
-		if err != nil {
-			return n, err
-		}
+		io.WriteString(w, "()")
+	} else if rich {
+		this.Car.PrintTo(w)
 	} else {
-		m, err := this.Car.WriteTo(w)
-		n += m
-		if err != nil {
-			return n, err
-		}
+		this.Car.PrincTo(w)
 	}
 
 	if !IsNull(this.Cdr) {
@@ -67,41 +60,36 @@ func (this *Cons) writeToWithoutKakko(w io.Writer) (int64, error) {
 			// output as ( X Y Z ...)
 
 			for p, ok := this.Cdr.(*Cons); ok && !IsNull(p); p, ok = p.Cdr.(*Cons) {
-				write(&n, w, " ")
-				_n, err := p.Car.WriteTo(w)
-				n += _n
-				if err != nil {
-					return n, err
+				io.WriteString(w, " ")
+				if rich {
+					p.Car.PrintTo(w)
+				} else {
+					p.Car.PrincTo(w)
 				}
 			}
-
 		} else {
 			// output as ( X . Y )
-			if err := write(&n, w, " . "); err != nil {
-				return n, err
-			}
-			m, err := this.Cdr.WriteTo(w)
-			n += m
-			if err != nil {
-				return n, err
+
+			io.WriteString(w, " . ")
+			if rich {
+				this.GetCdr().PrintTo(w)
+			} else {
+				this.GetCdr().PrincTo(w)
 			}
 		}
 	}
-	return n, nil
 }
 
-func (this *Cons) WriteTo(w io.Writer) (int64, error) {
-	var n int64
-	if err := write(&n, w, "("); err != nil {
-		return n, err
-	}
-	m, err := this.writeToWithoutKakko(w)
-	n += m
-	if err != nil {
-		return n, err
-	}
-	err = write(&n, w, ")")
-	return n, err
+func (this *Cons) PrintTo(w io.Writer) {
+	io.WriteString(w, "(")
+	this.writeToWithoutKakko(w, true)
+	io.WriteString(w, ")")
+}
+
+func (this *Cons) PrincTo(w io.Writer) {
+	io.WriteString(w, "(")
+	this.writeToWithoutKakko(w, false)
+	io.WriteString(w, ")")
 }
 
 func (this *Cons) Equals(n Node) bool {

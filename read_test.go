@@ -19,7 +19,7 @@ func TestParse(t *testing.T) {
 			return
 		}
 		for _, c := range compiled {
-			c.WriteTo(os.Stdout)
+			c.PrintTo(os.Stdout)
 		}
 		println()
 	}
@@ -41,7 +41,7 @@ func TestParse(t *testing.T) {
 				t.Fatalf("Error: %s: %s", code, err.Error())
 				return
 			}
-			result.WriteTo(os.Stdout)
+			result.PrintTo(os.Stdout)
 			println()
 		}
 	}

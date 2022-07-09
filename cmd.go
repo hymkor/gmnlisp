@@ -44,9 +44,9 @@ func CmdPrint(this Node) (Node, error) {
 	dem := ""
 	err := ForEachEval(this, func(one Node) error {
 		fmt.Print(dem)
-		_, err1 := one.WriteTo(os.Stdout)
+		one.PrintTo(os.Stdout)
 		dem = " "
-		return err1
+		return nil
 	})
 	fmt.Println()
 	return NullValue, err

@@ -16,7 +16,7 @@ func mains(args []string) error {
 		if err != nil {
 			return err
 		}
-		result.WriteTo(os.Stdout)
+		result.PrintTo(os.Stdout)
 		fmt.Println()
 	}
 	for _, fname := range args {
@@ -28,7 +28,7 @@ func mains(args []string) error {
 		if err != nil {
 			return err
 		}
-		result.WriteTo(os.Stdout)
+		result.PrintTo(os.Stdout)
 		fmt.Println()
 	}
 	return nil
