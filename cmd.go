@@ -47,7 +47,7 @@ func CmdCons(node Node) (Node, error) {
 	i := 0
 	err := ForEachEval(node, func(n Node) error {
 		if i >= len(result) {
-			return fmt.Errorf("cons: %w", ErrTooFewOrTooManyArguments)
+			return ErrTooFewOrTooManyArguments
 		}
 		result[i] = n
 		i++
@@ -71,11 +71,11 @@ func ShiftAndEval(node Node) (Node, Node, error) {
 func CmdCar(param Node) (Node, error) {
 	first, _, err := ShiftAndEval(param)
 	if err != nil {
-		return nil, fmt.Errorf("car: %w", err)
+		return nil, err
 	}
 	cons, ok := first.(*Cons)
 	if !ok {
-		return nil, fmt.Errorf("car: %w", ErrExpectedCons)
+		return nil, ErrExpectedCons
 	}
 	return cons.Car, nil
 }
@@ -83,11 +83,11 @@ func CmdCar(param Node) (Node, error) {
 func CmdCdr(param Node) (Node, error) {
 	first, _, err := ShiftAndEval(param)
 	if err != nil {
-		return nil, fmt.Errorf("cdr: %w", err)
+		return nil, err
 	}
 	cons, ok := first.(*Cons)
 	if !ok {
-		return nil, fmt.Errorf("cdr: %w", ErrExpectedCons)
+		return nil, ErrExpectedCons
 	}
 	return cons.Cdr, nil
 }
@@ -95,7 +95,7 @@ func CmdCdr(param Node) (Node, error) {
 func CmdQuote(param Node) (Node, error) {
 	cons, ok := param.(*Cons)
 	if !ok {
-		return nil, fmt.Errorf("quote: %w", ErrTooFewOrTooManyArguments)
+		return nil, ErrTooFewOrTooManyArguments
 	}
 	return cons.Car, nil
 }
@@ -103,7 +103,7 @@ func CmdQuote(param Node) (Node, error) {
 func CmdAtom(param Node) (Node, error) {
 	cons, ok := param.(*Cons)
 	if !ok {
-		return nil, fmt.Errorf("atom: %w", ErrExpectedCons)
+		return nil, ErrExpectedCons
 	}
 	if _, ok := cons.Car.(*Cons); ok {
 		return NullValue, nil
@@ -131,5 +131,5 @@ func CmdEq(param Node) (Node, error) {
 	if err == nil {
 		return TrueValue, nil
 	}
-	return NullValue, fmt.Errorf("eq: %w", err)
+	return NullValue, err
 }

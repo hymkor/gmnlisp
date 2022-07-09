@@ -21,11 +21,11 @@ func (e *ErrEarlyReturns) Error() string {
 func CmdReturn(node Node) (Node, error) {
 	cons, ok := node.(*Cons)
 	if !ok {
-		return nil, fmt.Errorf("return: %w", ErrExpectedCons)
+		return nil, ErrExpectedCons
 	}
 	value, err := cons.GetCar().Eval()
 	if err != nil {
-		return nil, fmt.Errorf("return: %w", err)
+		return nil, err
 	}
 	return nil, &ErrEarlyReturns{Value: value, Name: ""}
 }
@@ -33,19 +33,19 @@ func CmdReturn(node Node) (Node, error) {
 func CmdReturnFrom(node Node) (Node, error) {
 	cons, ok := node.(*Cons)
 	if !ok {
-		return nil, fmt.Errorf("return-from: %w", ErrExpectedCons)
+		return nil, ErrExpectedCons
 	}
 	symbol, ok := cons.Car.(NodeSymbol)
 	if !ok {
-		return nil, fmt.Errorf("return-from: %w", ErrExpectedSymbol)
+		return nil, ErrExpectedSymbol
 	}
 	cons, ok = cons.Cdr.(*Cons)
 	if !ok {
-		return nil, fmt.Errorf("return-from: %w", ErrExpectedCons)
+		return nil, ErrExpectedCons
 	}
 	value, err := cons.GetCar().Eval()
 	if err != nil {
-		return nil, fmt.Errorf("return-from: %w", err)
+		return nil, err
 	}
 	return nil, &ErrEarlyReturns{Value: value, Name: string(symbol)}
 }
@@ -55,7 +55,7 @@ func progn(c Node) (Node, error) {
 	for !IsNull(c) {
 		cons, ok := c.(*Cons)
 		if !ok {
-			return nil, fmt.Errorf("progn: %w", ErrExpectedCons)
+			return nil, ErrExpectedCons
 		}
 		var err error
 		last, err = cons.GetCar().Eval()
@@ -68,11 +68,7 @@ func progn(c Node) (Node, error) {
 }
 
 func CmdProgn(c Node) (Node, error) {
-	result, err := progn(c)
-	if err != nil {
-		return result, fmt.Errorf("progn: %w", err)
-	}
-	return result, err
+	return progn(c)
 }
 
 type NodeLambda struct {
@@ -82,11 +78,7 @@ type NodeLambda struct {
 }
 
 func CmdLambda(node Node) (Node, error) {
-	rv, err := NewLambda(node, "")
-	if err != nil {
-		return rv, fmt.Errorf("lambda: %w", err)
-	}
-	return rv, nil
+	return NewLambda(node, "")
 }
 
 func NewLambda(node Node, blockName string) (Node, error) {
@@ -197,17 +189,17 @@ func (*NodeLambda) Equals(Node) bool {
 func CmdDefun(node Node) (Node, error) {
 	cons, ok := node.(*Cons)
 	if !ok {
-		return nil, fmt.Errorf("defun: %w", ErrExpectedCons)
+		return nil, ErrExpectedCons
 	}
 	_name, ok := cons.Car.(NodeSymbol)
 	if !ok {
-		return nil, fmt.Errorf("defun: %w", ErrExpectedSymbol)
+		return nil, ErrExpectedSymbol
 	}
 	name := string(_name)
 
 	lambda, err := NewLambda(cons.Cdr, string(_name))
 	if err != nil {
-		return nil, fmt.Errorf("defun: %w", err)
+		return nil, err
 	}
 	globals[name] = lambda
 	return lambda, nil
@@ -216,11 +208,11 @@ func CmdDefun(node Node) (Node, error) {
 func CmdBlock(node Node) (Node, error) {
 	cons, ok := node.(*Cons)
 	if !ok {
-		return nil, fmt.Errorf("block: %w", ErrExpectedCons)
+		return nil, ErrExpectedCons
 	}
 	_name, ok := cons.Car.(NodeSymbol)
 	if !ok {
-		return nil, fmt.Errorf("block: %w", ErrExpectedSymbol)
+		return nil, ErrExpectedSymbol
 	}
 	name := string(_name)
 

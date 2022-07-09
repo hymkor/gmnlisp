@@ -7,7 +7,7 @@ import (
 func CmdLet(param Node) (Node, error) {
 	cons, ok := param.(*Cons)
 	if !ok {
-		return nil, fmt.Errorf("let: %w: `%s`", ErrExpectedCons, Node2String(param))
+		return nil, fmt.Errorf("%w: `%s`", ErrExpectedCons, Node2String(param))
 	}
 	code := cons.Cdr
 
@@ -17,18 +17,18 @@ func CmdLet(param Node) (Node, error) {
 	err := ForEachQuote(cons.Car, func(node Node) error {
 		cons, ok := node.(*Cons)
 		if !ok {
-			return fmt.Errorf("let: %w: `%s`",
+			return fmt.Errorf("%w: `%s`",
 				ErrExpectedCons, Node2String(node))
 		}
 		_name, ok := cons.Car.(NodeSymbol)
 		if !ok {
-			return fmt.Errorf("let: %w: `%s`",
+			return fmt.Errorf("%w: `%s`",
 				ErrExpectedSymbol, Node2String(cons.Car))
 		}
 		name := string(_name)
 		cons, ok = cons.Cdr.(*Cons)
 		if !ok {
-			return fmt.Errorf("let: %w: `%s`",
+			return fmt.Errorf("%w: `%s`",
 				ErrExpectedCons, Node2String(cons.Cdr))
 		}
 		value, err := cons.Car.Eval()
@@ -58,7 +58,7 @@ func CmdLet(param Node) (Node, error) {
 
 	result, err := progn(code)
 	if err != nil {
-		return result, fmt.Errorf("let: %w", err)
+		return result, err
 	}
 	return result, nil
 }

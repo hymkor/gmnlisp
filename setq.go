@@ -11,7 +11,7 @@ func CmdSetq(node Node) (Node, error) {
 		if name == "" {
 			_name, ok := n.(NodeSymbol)
 			if !ok {
-				return fmt.Errorf("setq: invalid name: %s", Node2String(node))
+				return fmt.Errorf("invalid name: %s", Node2String(node))
 			}
 			name = string(_name)
 		} else {
