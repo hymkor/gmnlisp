@@ -60,11 +60,11 @@ func (this *Cons) writeToWithoutKakko(w io.Writer, rich bool) {
 		this.Car.PrincTo(w)
 	}
 
-	if !IsNull(this.Cdr) {
+	if HasValue(this.Cdr) {
 		if this.isTailNull() {
 			// output as ( X Y Z ...)
 
-			for p, ok := this.Cdr.(*Cons); ok && !IsNull(p); p, ok = p.Cdr.(*Cons) {
+			for p, ok := this.Cdr.(*Cons); ok && HasValue(p); p, ok = p.Cdr.(*Cons) {
 				io.WriteString(w, " ")
 				if rich {
 					p.Car.PrintTo(w)
