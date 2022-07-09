@@ -64,5 +64,9 @@ func (this *Cons) Eval() (Node, error) {
 	if !ok {
 		return nil, fmt.Errorf("%s: Not Callable Object", name)
 	}
-	return _fn.Call(this.Cdr)
+	rv, err := _fn.Call(this.Cdr)
+	if err != nil {
+		return rv, fmt.Errorf("%s: %w", name, err)
+	}
+	return rv, nil
 }

@@ -2,37 +2,23 @@ package gommon
 
 import (
 	"errors"
-	"fmt"
 	"math"
 )
 
 var ErrNotSupportType = errors.New("Not support type")
 
-func inject[T Node](this Node, name string, f func(left, right T) (Node, error)) (Node, error) {
-	var result T
-	var _f func(left, right T) (Node, error)
+func Inject(this Node, f func(left, right Node) (Node, error)) (Node, error) {
+	var result Node
+	var _f func(left, right Node) (Node, error)
 
-	_f = func(left, right T) (Node, error) {
+	_f = func(left, right Node) (Node, error) {
 		_f = f
 		return right, nil
 	}
-	err := ForEachEval(this, func(one Node) error {
-		value, ok := one.(T)
-		if !ok {
-			return fmt.Errorf("%s: %w %s",
-				name,
-				ErrExpectedNumber,
-				Node2String(one))
-		}
-		result1, err1 := _f(result, value)
-		if err1 != nil {
-			return err1
-		}
-		result, ok = result1.(T)
-		if !ok {
-			return ErrNotSupportType
-		}
-		return nil
+	err := ForEachEval(this, func(value Node) error {
+		var err error
+		result, err = _f(result, value)
+		return err
 	})
 	return result, err
 }
@@ -43,9 +29,11 @@ type CanPlus interface {
 }
 
 func CmdPlus(this Node) (Node, error) {
-	return inject(this, "+", func(left, right CanPlus) (Node, error) {
-		rv, err := left.Plus(right)
-		return Node(rv), err
+	return Inject(this, func(left, right Node) (Node, error) {
+		if _left, ok := left.(CanPlus); ok {
+			return _left.Plus(right)
+		}
+		return nil, ErrNotSupportType
 	})
 }
 
@@ -55,8 +43,11 @@ type CanMinus interface {
 }
 
 func CmdMinus(this Node) (Node, error) {
-	return inject(this, "-", func(left, right CanMinus) (Node, error) {
-		return left.Minus(right)
+	return Inject(this, func(left, right Node) (Node, error) {
+		if _left, ok := left.(CanMinus); ok {
+			return _left.Minus(right)
+		}
+		return nil, ErrNotSupportType
 	})
 }
 
@@ -66,8 +57,11 @@ type CanMulti interface {
 }
 
 func CmdMulti(this Node) (Node, error) {
-	return inject(this, "*", func(left, right CanMulti) (Node, error) {
-		return left.Multi(right)
+	return Inject(this, func(left, right Node) (Node, error) {
+		if _left, ok := left.(CanMulti); ok {
+			return _left.Multi(right)
+		}
+		return nil, ErrNotSupportType
 	})
 }
 
@@ -77,8 +71,11 @@ type CanDevide interface {
 }
 
 func CmdDevide(this Node) (Node, error) {
-	return inject(this, "/", func(left, right CanDevide) (Node, error) {
-		return left.Devide(right)
+	return Inject(this, func(left, right Node) (Node, error) {
+		if _left, ok := left.(CanDevide); ok {
+			return _left.Devide(right)
+		}
+		return nil, ErrNotSupportType
 	})
 }
 
