@@ -26,6 +26,11 @@ func (c *Cons) GetCdr() Node {
 func (this *Cons) Null() bool {
 	return false
 }
+
+func HasValue(node Node) bool {
+	return node != nil && !node.Null()
+}
+
 func IsNull(node Node) bool {
 	return node == nil || node.Null()
 }
