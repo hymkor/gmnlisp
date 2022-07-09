@@ -3,7 +3,6 @@ package gommon
 import (
 	"errors"
 	"fmt"
-	"io"
 )
 
 var (
@@ -111,25 +110,21 @@ func CmdAtom(param Node) (Node, error) {
 	return TrueValue, nil
 }
 
-func CmdEq(param Node) (Node, error) {
-	var first Node
-	i := 0
-	err := ForEachEval(param, func(node Node) error {
-		i++
-		if i == 1 {
-			first = node
-			return nil
-		}
-		if !first.Equals(node) {
-			return io.EOF
-		}
-		return nil
-	})
-	if err == io.EOF {
-		return NullValue, nil
+func CmdEqual(param Node) (Node, error) {
+	first, rest, err := ShiftAndEval(param)
+	if err != nil {
+		return nil, err
 	}
-	if err == nil {
-		return TrueValue, nil
+	for !IsNull(rest) {
+		var next Node
+
+		next, rest, err = ShiftAndEval(rest)
+		if err != nil {
+			return nil, err
+		}
+		if !first.Equals(next) {
+			return NullValue, nil
+		}
 	}
-	return NullValue, err
+	return TrueValue, nil
 }

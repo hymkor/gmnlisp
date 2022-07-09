@@ -19,7 +19,7 @@ func init() {
 		"car":         Function(CmdCar),
 		"cdr":         Function(CmdCdr),
 		"atom":        Function(CmdAtom),
-		"eq":          Function(CmdEq),
+		"equal":       Function(CmdEqual),
 		"lambda":      Function(CmdLambda),
 		"progn":       Function(CmdProgn),
 		"setq":        Function(CmdSetq),
