@@ -14,6 +14,9 @@ var (
 )
 
 func ForEachQuote(this Node, f func(Node) error) error {
+	if IsNull(this) {
+		return nil
+	}
 	for {
 		cons, ok := this.(*Cons)
 		if !ok {
