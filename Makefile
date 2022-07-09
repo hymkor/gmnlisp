@@ -1,2 +1,5 @@
 all:
-	go fmt && go build && cd cmd/gmnlisp && go fmt && go build -o ../../gmnlisp$(shell go env GOEXE)
+	go fmt && \
+	go build && \
+	go fmt cmd/gmnlisp/main.go && \
+	go build -o gmnlisp$(shell go env GOEXE) cmd/gmnlisp/main.go
