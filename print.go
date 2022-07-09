@@ -6,14 +6,16 @@ import (
 )
 
 func cmdPrinX(this Node, f func(node Node)) (Node, error) {
-	dem := ""
-	err := ForEachEval(this, func(one Node) error {
-		fmt.Print(dem)
-		f(one)
-		dem = " "
-		return nil
-	})
-	return NullValue, err
+	cons, ok := this.(*Cons)
+	if !ok || !IsNull(cons.Cdr) {
+		return nil, fmt.Errorf("%w: `%s`", ErrTooFewOrTooManyArguments, this)
+	}
+	value, err := cons.GetCar().Eval()
+	if err != nil {
+		return nil, err
+	}
+	f(value)
+	return value, nil
 }
 
 func CmdPrint(this Node) (Node, error) {
