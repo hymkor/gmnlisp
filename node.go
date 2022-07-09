@@ -7,6 +7,8 @@ import (
 	"strings"
 )
 
+var ErrDevisionByZero = errors.New("Devision by zeor")
+
 type Node interface {
 	Null() bool
 	Eval() (Node, error)
@@ -161,12 +163,18 @@ func (this NodeInteger) Plus(n Node) (Node, error) {
 	if value, ok := n.(NodeInteger); ok {
 		return this + value, nil
 	}
+	if value, ok := n.(NodeFloat); ok {
+		return NodeFloat(this) + value, nil
+	}
 	return nil, ErrNotSupportType
 }
 
 func (this NodeInteger) Minus(n Node) (Node, error) {
 	if value, ok := n.(NodeInteger); ok {
 		return this - value, nil
+	}
+	if value, ok := n.(NodeFloat); ok {
+		return NodeFloat(this) - value, nil
 	}
 	return nil, ErrNotSupportType
 }
@@ -175,15 +183,24 @@ func (this NodeInteger) Multi(n Node) (Node, error) {
 	if value, ok := n.(NodeInteger); ok {
 		return this * value, nil
 	}
+	if value, ok := n.(NodeFloat); ok {
+		return NodeFloat(this) * value, nil
+	}
 	return nil, ErrNotSupportType
 }
 
 func (this NodeInteger) Devide(n Node) (Node, error) {
 	if value, ok := n.(NodeInteger); ok {
 		if value == 0 {
-			return nil, errors.New("Devision by zeor")
+			return nil, ErrDevisionByZero
 		}
 		return this / value, nil
+	}
+	if value, ok := n.(NodeFloat); ok {
+		if value == 0 {
+			return nil, ErrDevisionByZero
+		}
+		return NodeFloat(this) / value, nil
 	}
 	return nil, ErrNotSupportType
 }
@@ -215,12 +232,18 @@ func (this NodeFloat) Plus(n Node) (Node, error) {
 	if value, ok := n.(NodeFloat); ok {
 		return this + value, nil
 	}
+	if value, ok := n.(NodeInteger); ok {
+		return this + NodeFloat(value), nil
+	}
 	return nil, ErrNotSupportType
 }
 
 func (this NodeFloat) Minus(n Node) (Node, error) {
 	if value, ok := n.(NodeFloat); ok {
 		return this - value, nil
+	}
+	if value, ok := n.(NodeInteger); ok {
+		return this - NodeFloat(value), nil
 	}
 	return nil, ErrNotSupportType
 }
@@ -229,15 +252,24 @@ func (this NodeFloat) Multi(n Node) (Node, error) {
 	if value, ok := n.(NodeFloat); ok {
 		return this * value, nil
 	}
+	if value, ok := n.(NodeInteger); ok {
+		return this * NodeFloat(value), nil
+	}
 	return nil, ErrNotSupportType
 }
 
 func (this NodeFloat) Devide(n Node) (Node, error) {
 	if value, ok := n.(NodeFloat); ok {
 		if value == 0 {
-			return nil, errors.New("Devision by zeor")
+			return nil, ErrDevisionByZero
 		}
 		return this / value, nil
+	}
+	if value, ok := n.(NodeInteger); ok {
+		if value == 0 {
+			return nil, ErrDevisionByZero
+		}
+		return this / NodeFloat(value), nil
 	}
 	return nil, ErrNotSupportType
 }
