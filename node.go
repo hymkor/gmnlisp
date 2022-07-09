@@ -106,7 +106,7 @@ func (this NodeString) Plus(n Node) (Node, error) {
 	if value, ok := n.(NodeString); ok {
 		return this + value, nil
 	}
-	return nil, ErrNotSupportType
+	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, Node2String(n))
 }
 
 type NodeSymbol string
@@ -166,7 +166,7 @@ func (this NodeInteger) Plus(n Node) (Node, error) {
 	if value, ok := n.(NodeFloat); ok {
 		return NodeFloat(this) + value, nil
 	}
-	return nil, ErrNotSupportType
+	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, Node2String(n))
 }
 
 func (this NodeInteger) Minus(n Node) (Node, error) {
@@ -176,7 +176,7 @@ func (this NodeInteger) Minus(n Node) (Node, error) {
 	if value, ok := n.(NodeFloat); ok {
 		return NodeFloat(this) - value, nil
 	}
-	return nil, ErrNotSupportType
+	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, Node2String(n))
 }
 
 func (this NodeInteger) Multi(n Node) (Node, error) {
@@ -186,7 +186,7 @@ func (this NodeInteger) Multi(n Node) (Node, error) {
 	if value, ok := n.(NodeFloat); ok {
 		return NodeFloat(this) * value, nil
 	}
-	return nil, ErrNotSupportType
+	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, Node2String(n))
 }
 
 func (this NodeInteger) Devide(n Node) (Node, error) {
@@ -202,7 +202,7 @@ func (this NodeInteger) Devide(n Node) (Node, error) {
 		}
 		return NodeFloat(this) / value, nil
 	}
-	return nil, ErrNotSupportType
+	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, Node2String(n))
 }
 
 type NodeFloat float64
@@ -235,7 +235,7 @@ func (this NodeFloat) Plus(n Node) (Node, error) {
 	if value, ok := n.(NodeInteger); ok {
 		return this + NodeFloat(value), nil
 	}
-	return nil, ErrNotSupportType
+	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, Node2String(n))
 }
 
 func (this NodeFloat) Minus(n Node) (Node, error) {
@@ -245,7 +245,7 @@ func (this NodeFloat) Minus(n Node) (Node, error) {
 	if value, ok := n.(NodeInteger); ok {
 		return this - NodeFloat(value), nil
 	}
-	return nil, ErrNotSupportType
+	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, Node2String(n))
 }
 
 func (this NodeFloat) Multi(n Node) (Node, error) {
@@ -255,7 +255,7 @@ func (this NodeFloat) Multi(n Node) (Node, error) {
 	if value, ok := n.(NodeInteger); ok {
 		return this * NodeFloat(value), nil
 	}
-	return nil, ErrNotSupportType
+	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, Node2String(n))
 }
 
 func (this NodeFloat) Devide(n Node) (Node, error) {
@@ -271,5 +271,5 @@ func (this NodeFloat) Devide(n Node) (Node, error) {
 		}
 		return this / NodeFloat(value), nil
 	}
-	return nil, ErrNotSupportType
+	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, Node2String(n))
 }
