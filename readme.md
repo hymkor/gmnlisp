@@ -6,6 +6,8 @@ Experimental implementing
 
 - \+
 - \-
+- \*
+- \/
 - atom
 - block
 - car
@@ -16,12 +18,15 @@ Experimental implementing
 - eq
 - lambda
 - let
+- prin1
+- princ
 - print
 - progn
 - quote
 - return
 - return-from
 - setq
+- terpri
 
 ```
 $ type seq.lsp
