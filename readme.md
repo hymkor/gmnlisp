@@ -15,7 +15,7 @@ Experimental implementing
 - cond
 - cons
 - defun
-- eq
+- equal
 - lambda
 - let
 - prin1
@@ -30,17 +30,18 @@ Experimental implementing
 - truncate
 
 ```
-$ type seq.lsp
+$ cat t/seq.lsp
 (defun seq (n)
   (print n)
-        (cond
-                ((eq n 0) (print 0))
-                (T (seq (- n 1)))
-        )
+  (cond
+    ((equal n 0)
+      (return-from seq nil))
+    (T
+      (seq (- n 1)))
+  )
 )
 (seq 10)
-
-$ gmnlisp.exe seq.lsp
+$ gmnlisp.exe t/seq.lsp
 10
 9
 8
@@ -52,6 +53,4 @@ $ gmnlisp.exe seq.lsp
 2
 1
 0
-0
-()
 ```
