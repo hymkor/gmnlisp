@@ -8,6 +8,8 @@ import (
 	"strings"
 )
 
+var RxFloat = regexp.MustCompile(`^[0-9]+\.[0-9]*$`)
+
 var RxNumber = regexp.MustCompile("^[0-9]+$")
 
 func nodes2cons(nodes []Node) Node {
@@ -48,6 +50,13 @@ func readTokens(tokens []string) (Node, []string, error) {
 			}
 			nodes = append(nodes, node1)
 		}
+	}
+	if RxFloat.MatchString(tokens[0]) {
+		val, err := strconv.ParseFloat(tokens[0], 64)
+		if err != nil {
+			return nil, tokens, fmt.Errorf("%s: %w", tokens[0], err)
+		}
+		return NodeFloat(val), tokens[1:], nil
 	}
 	if RxNumber.MatchString(tokens[0]) {
 		val, err := strconv.ParseInt(tokens[0], 10, 63)

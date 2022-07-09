@@ -1,6 +1,7 @@
 package gommon
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"strings"
@@ -99,6 +100,13 @@ func (this NodeString) Equals(n Node) bool {
 	return ok && this == ns
 }
 
+func (this NodeString) Plus(n Node) (Node, error) {
+	if value, ok := n.(NodeString); ok {
+		return this + value, nil
+	}
+	return nil, ErrNotSupportType
+}
+
 type NodeSymbol string
 
 func (this NodeSymbol) PrintTo(w io.Writer) {
@@ -147,4 +155,89 @@ func (this NodeInteger) Eval() (Node, error) {
 func (this NodeInteger) Equals(n Node) bool {
 	ni, ok := n.(NodeInteger)
 	return ok && this == ni
+}
+
+func (this NodeInteger) Plus(n Node) (Node, error) {
+	if value, ok := n.(NodeInteger); ok {
+		return this + value, nil
+	}
+	return nil, ErrNotSupportType
+}
+
+func (this NodeInteger) Minus(n Node) (Node, error) {
+	if value, ok := n.(NodeInteger); ok {
+		return this - value, nil
+	}
+	return nil, ErrNotSupportType
+}
+
+func (this NodeInteger) Multi(n Node) (Node, error) {
+	if value, ok := n.(NodeInteger); ok {
+		return this * value, nil
+	}
+	return nil, ErrNotSupportType
+}
+
+func (this NodeInteger) Devide(n Node) (Node, error) {
+	if value, ok := n.(NodeInteger); ok {
+		if value == 0 {
+			return nil, errors.New("Devision by zeor")
+		}
+		return this / value, nil
+	}
+	return nil, ErrNotSupportType
+}
+
+type NodeFloat float64
+
+func (n NodeFloat) PrintTo(w io.Writer) {
+	fmt.Fprintf(w, "%f", float64(n))
+}
+
+func (n NodeFloat) PrincTo(w io.Writer) {
+	fmt.Fprintf(w, "%f", float64(n))
+}
+
+func (NodeFloat) Null() bool {
+	return false
+}
+
+func (nf NodeFloat) Eval() (Node, error) {
+	return nf, nil
+}
+
+func (nf NodeFloat) Equals(n Node) bool {
+	v, ok := n.(NodeFloat)
+	return ok && nf == v
+}
+
+func (this NodeFloat) Plus(n Node) (Node, error) {
+	if value, ok := n.(NodeFloat); ok {
+		return this + value, nil
+	}
+	return nil, ErrNotSupportType
+}
+
+func (this NodeFloat) Minus(n Node) (Node, error) {
+	if value, ok := n.(NodeFloat); ok {
+		return this - value, nil
+	}
+	return nil, ErrNotSupportType
+}
+
+func (this NodeFloat) Multi(n Node) (Node, error) {
+	if value, ok := n.(NodeFloat); ok {
+		return this * value, nil
+	}
+	return nil, ErrNotSupportType
+}
+
+func (this NodeFloat) Devide(n Node) (Node, error) {
+	if value, ok := n.(NodeFloat); ok {
+		if value == 0 {
+			return nil, errors.New("Devision by zeor")
+		}
+		return this / value, nil
+	}
+	return nil, ErrNotSupportType
 }
