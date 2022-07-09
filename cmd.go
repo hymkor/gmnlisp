@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"os"
 )
 
 var (
@@ -38,18 +37,6 @@ func ForEachEval(this Node, f func(Node) error) error {
 		}
 		return f(evalOne)
 	})
-}
-
-func CmdPrint(this Node) (Node, error) {
-	dem := ""
-	err := ForEachEval(this, func(one Node) error {
-		fmt.Print(dem)
-		one.PrintTo(os.Stdout)
-		dem = " "
-		return nil
-	})
-	fmt.Println()
-	return NullValue, err
 }
 
 func CmdCons(node Node) (Node, error) {

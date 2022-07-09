@@ -7,6 +7,8 @@ func init() {
 		"T":           TrueValue,
 		"nil":         NullValue,
 		"print":       Function(CmdPrint),
+		"prin1":       Function(CmdPrin1),
+		"princ":       Function(CmdPrinc),
 		"quote":       Function(CmdQuote),
 		"+":           Function(CmdPlus),
 		"-":           Function(CmdMinus),
