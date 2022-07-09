@@ -52,7 +52,7 @@ func CmdReturnFrom(node Node) (Node, error) {
 
 func progn(c Node) (Node, error) {
 	var last Node
-	for !IsNull(c) {
+	for HasValue(c) {
 		cons, ok := c.(*Cons)
 		if !ok {
 			return nil, ErrExpectedCons
