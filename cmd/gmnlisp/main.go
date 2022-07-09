@@ -5,17 +5,17 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/hymkor/gommon"
+	"github.com/hymkor/gmnlisp"
 )
 
 var flagExecute = flag.String("e", "", "execute string")
 
 func mains(args []string) error {
-	var last gommon.Node
+	var last gmnlisp.Node
 	var err error
 
 	if *flagExecute != "" {
-		last, err = gommon.Interpret(*flagExecute)
+		last, err = gmnlisp.Interpret(*flagExecute)
 		if err != nil {
 			return err
 		}
@@ -27,12 +27,12 @@ func mains(args []string) error {
 		if err != nil {
 			return err
 		}
-		last, err = gommon.Interpret(string(script))
+		last, err = gmnlisp.Interpret(string(script))
 		if err != nil {
 			return err
 		}
 	}
-	if !gommon.IsNull(last) {
+	if !gmnlisp.IsNull(last) {
 		fmt.Println()
 		last.PrintTo(os.Stdout)
 		fmt.Println()

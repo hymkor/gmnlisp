@@ -1,4 +1,4 @@
-package gommon
+package gmnlisp
 
 var globals map[string]Node
 

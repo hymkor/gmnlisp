@@ -1,4 +1,4 @@
-package gommon
+package gmnlisp
 
 func Interpret(code string) (Node, error) {
 	compiled, err := ReadString(code)
