@@ -11,24 +11,30 @@ import (
 var flagExecute = flag.String("e", "", "execute string")
 
 func mains(args []string) error {
+	var last gommon.Node
+	var err error
+
 	if *flagExecute != "" {
-		result, err := gommon.Interpret(*flagExecute)
+		last, err = gommon.Interpret(*flagExecute)
 		if err != nil {
 			return err
 		}
-		result.PrintTo(os.Stdout)
-		fmt.Println()
 	}
 	for _, fname := range args {
-		script, err := os.ReadFile(fname)
+		var script []byte
+
+		script, err = os.ReadFile(fname)
 		if err != nil {
 			return err
 		}
-		result, err := gommon.Interpret(string(script))
+		last, err = gommon.Interpret(string(script))
 		if err != nil {
 			return err
 		}
-		result.PrintTo(os.Stdout)
+	}
+	if !gommon.IsNull(last) {
+		fmt.Println()
+		last.PrintTo(os.Stdout)
 		fmt.Println()
 	}
 	return nil
