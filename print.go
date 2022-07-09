@@ -13,8 +13,8 @@ func init() {
 
 func cmdPrinX(this Node, f func(node Node)) (Node, error) {
 	cons, ok := this.(*Cons)
-	if !ok || !IsNull(cons.Cdr) {
-		return nil, fmt.Errorf("%w: `%s`", ErrTooFewOrTooManyArguments, this)
+	if !ok || HasValue(cons.Cdr) {
+		return nil, ErrTooFewOrTooManyArguments
 	}
 	value, err := cons.GetCar().Eval()
 	if err != nil {
