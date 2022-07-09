@@ -5,7 +5,7 @@ import (
 )
 
 func CmdCond(node Node) (Node, error) {
-	for !IsNull(node) {
+	for HasValue(node) {
 		cons, ok := node.(*Cons)
 		if !ok {
 			return nil, ErrExpectedCons
@@ -20,7 +20,7 @@ func CmdCond(node Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		if !IsNull(condition) {
+		if HasValue(condition) {
 			result, err := progn(conditionAndActions.Cdr)
 			if err != nil {
 				return result, err
