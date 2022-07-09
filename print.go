@@ -28,3 +28,8 @@ func CmdPrin1(this Node) (Node, error) {
 func CmdPrinc(this Node) (Node, error) {
 	return cmdPrinX(this, func(node Node) { node.PrincTo(os.Stdout) })
 }
+
+func CmdTerpri(Node) (Node, error) {
+	fmt.Println()
+	return NullValue, nil
+}
