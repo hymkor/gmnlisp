@@ -56,7 +56,7 @@ func readTokens(sc *_TokenScanner) (Node, error) {
 		if err != nil {
 			return nil, fmt.Errorf("%s: %w", token, err)
 		}
-		return NodeFloat(val), nil
+		return Float(val), nil
 	}
 	if rxInteger.MatchString(token) {
 		val, err := strconv.ParseInt(token, 10, 63)

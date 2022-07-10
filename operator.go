@@ -68,7 +68,7 @@ func cmdTruncate(ins *Instance, this Node) (Node, error) {
 	if value, ok := first.(NodeInteger); ok {
 		return value, err
 	}
-	if value, ok := first.(NodeFloat); ok {
+	if value, ok := first.(Float); ok {
 		return NodeInteger(int(math.Trunc(float64(value)))), nil
 	}
 	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(first))
