@@ -89,7 +89,7 @@ func CmdEqual(ins *Instance, param Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	for !IsNull(rest) {
+	for HasValue(rest) {
 		var next Node
 
 		next, rest, err = ins.ShiftAndEvalCar(rest)
