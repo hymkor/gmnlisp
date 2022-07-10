@@ -18,27 +18,27 @@ func evalTest(t *testing.T, equation string, expect Node) {
 }
 
 func TestOperators(t *testing.T) {
-	evalTest(t, "(+ 1 2)", NodeInteger(3))
-	evalTest(t, "(+ 1 2 3)", NodeInteger(6))
-	evalTest(t, "(- 10 9)", NodeInteger(1))
-	evalTest(t, "(- 10 1 2)", NodeInteger(7))
-	evalTest(t, "(* 1 2)", NodeInteger(2))
-	evalTest(t, "(* 1 2 3)", NodeInteger(6))
-	evalTest(t, "(/ 6 2)", NodeInteger(3))
+	evalTest(t, "(+ 1 2)", Integer(3))
+	evalTest(t, "(+ 1 2 3)", Integer(6))
+	evalTest(t, "(- 10 9)", Integer(1))
+	evalTest(t, "(- 10 1 2)", Integer(7))
+	evalTest(t, "(* 1 2)", Integer(2))
+	evalTest(t, "(* 1 2 3)", Integer(6))
+	evalTest(t, "(/ 6 2)", Integer(3))
 	evalTest(t, `(+ "1" "2")`, NodeString("12"))
 }
 
 func TestCmdCond(t *testing.T) {
-	evalTest(t, `(cond (nil 1) (T 2))`, NodeInteger(2))
+	evalTest(t, `(cond (nil 1) (T 2))`, Integer(2))
 	evalTest(t, `(cond ((equal 1 1) "a") ((equal 1 2) "b"))`, NodeString("a"))
 }
 
 func TestCmdCons(t *testing.T) {
-	evalTest(t, "(cons 1 2)", &Cons{Car: NodeInteger(1), Cdr: NodeInteger(2)})
-	evalTest(t, "(quote (1 . 2))", &Cons{Car: NodeInteger(1), Cdr: NodeInteger(2)})
+	evalTest(t, "(cons 1 2)", &Cons{Car: Integer(1), Cdr: Integer(2)})
+	evalTest(t, "(quote (1 . 2))", &Cons{Car: Integer(1), Cdr: Integer(2)})
 }
 
 func TestProgn(t *testing.T) {
-	evalTest(t, `(progn 1)`, NodeInteger(1))
-	evalTest(t, `(progn 1 2)`, NodeInteger(2))
+	evalTest(t, `(progn 1)`, Integer(1))
+	evalTest(t, `(progn 1 2)`, Integer(2))
 }

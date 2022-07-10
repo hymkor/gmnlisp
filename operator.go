@@ -65,11 +65,11 @@ func cmdTruncate(ins *Instance, this Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	if value, ok := first.(NodeInteger); ok {
+	if value, ok := first.(Integer); ok {
 		return value, err
 	}
 	if value, ok := first.(Float); ok {
-		return NodeInteger(int(math.Trunc(float64(value)))), nil
+		return Integer(int(math.Trunc(float64(value)))), nil
 	}
 	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(first))
 }
