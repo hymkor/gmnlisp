@@ -21,7 +21,7 @@ func (Function) PrincTo(w io.Writer) {
 	io.WriteString(w, "buildin function")
 }
 
-func (Function) Null() bool {
+func (Function) IsNull() bool {
 	return false
 }
 

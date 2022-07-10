@@ -136,7 +136,7 @@ func (NL *Lambda) prinX(w io.Writer, rich bool) {
 	io.WriteString(w, ")")
 }
 
-func (*Lambda) Null() bool {
+func (*Lambda) IsNull() bool {
 	return false
 }
 

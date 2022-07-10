@@ -15,7 +15,7 @@ func (n Integer) PrincTo(w io.Writer) {
 	fmt.Fprintf(w, "%d", int64(n))
 }
 
-func (this Integer) Null() bool {
+func (this Integer) IsNull() bool {
 	return false
 }
 
@@ -84,7 +84,7 @@ func (n Float) PrincTo(w io.Writer) {
 	fmt.Fprintf(w, "%f", float64(n))
 }
 
-func (Float) Null() bool {
+func (Float) IsNull() bool {
 	return false
 }
 

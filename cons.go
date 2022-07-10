@@ -23,16 +23,16 @@ func (c *Cons) GetCdr() Node {
 	return c.Cdr
 }
 
-func (this *Cons) Null() bool {
+func (this *Cons) IsNull() bool {
 	return false
 }
 
 func HasValue(node Node) bool {
-	return node != nil && !node.Null()
+	return node != nil && !node.IsNull()
 }
 
 func IsNull(node Node) bool {
-	return node == nil || node.Null()
+	return node == nil || node.IsNull()
 }
 
 func (this *Cons) isTailNull() bool {
