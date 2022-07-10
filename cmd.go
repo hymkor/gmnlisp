@@ -41,20 +41,6 @@ func ForEachEval(this Node, f func(Node) error) error {
 	})
 }
 
-func CmdCons(node Node) (Node, error) {
-	var result [2]Node
-	i := 0
-	err := ForEachEval(node, func(n Node) error {
-		if i >= len(result) {
-			return ErrTooFewOrTooManyArguments
-		}
-		result[i] = n
-		i++
-		return nil
-	})
-	return &Cons{Car: result[0], Cdr: result[1]}, err
-}
-
 func ShiftAndEval(node Node) (Node, Node, error) {
 	cons, ok := node.(*Cons)
 	if !ok {
@@ -65,6 +51,21 @@ func ShiftAndEval(node Node) (Node, Node, error) {
 		return nil, nil, err
 	}
 	return value, cons.Cdr, nil
+}
+
+func CmdCons(node Node) (Node, error) {
+	first, rest, err := ShiftAndEval(node)
+	if err != nil {
+		return nil, err
+	}
+	second, rest, err := ShiftAndEval(rest)
+	if err != nil {
+		return nil, err
+	}
+	if HasValue(rest) {
+		return nil, ErrTooFewOrTooManyArguments
+	}
+	return &Cons{Car: first, Cdr: second}, err
 }
 
 func CmdCar(param Node) (Node, error) {
