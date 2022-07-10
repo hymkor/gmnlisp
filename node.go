@@ -126,9 +126,9 @@ func (this Symbol) IsNull() bool {
 	return false
 }
 
-func (this Symbol) Eval(instance *Instance) (Node, error) {
+func (this Symbol) Eval(ins *Instance) (Node, error) {
 	name := string(this)
-	if value, ok := instance.globals[name]; ok {
+	if value, ok := ins.globals[name]; ok {
 		return value, nil
 	}
 	return nil, fmt.Errorf("%w: `%s`", ErrVariableUnbound, name)

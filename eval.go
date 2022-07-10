@@ -33,29 +33,29 @@ func (f Function) Equals(n Node) bool {
 	return false
 }
 
-func (f Function) Call(instance *Instance, n Node) (Node, error) {
-	return f(instance, n)
+func (f Function) Call(ins *Instance, n Node) (Node, error) {
+	return f(ins, n)
 }
 
 var ErrExpectedFunction = errors.New("expected function")
 
-func (this *Cons) Eval(instance *Instance) (Node, error) {
+func (this *Cons) Eval(ins *Instance) (Node, error) {
 	first := this.Car
 	if p, ok := first.(*Cons); ok {
 		var err error
-		first, err = p.Eval(instance)
+		first, err = p.Eval(ins)
 		if err != nil {
 			return nil, err
 		}
 	}
 	if f, ok := first.(_Callable); ok {
-		return f.Call(instance, this.Cdr)
+		return f.Call(ins, this.Cdr)
 	}
 	symbol, ok := first.(Symbol)
 	if !ok {
 		return nil, fmt.Errorf("cons: %w", ErrExpectedFunction)
 	}
-	value, err := symbol.Eval(instance)
+	value, err := symbol.Eval(ins)
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +63,7 @@ func (this *Cons) Eval(instance *Instance) (Node, error) {
 	if !ok {
 		return nil, fmt.Errorf("%s: %w", string(symbol), ErrExpectedFunction)
 	}
-	rv, err := function.Call(instance, this.Cdr)
+	rv, err := function.Call(ins, this.Cdr)
 	if err != nil {
 		return rv, fmt.Errorf("%s: %w", string(symbol), err)
 	}

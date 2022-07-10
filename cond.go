@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-func cmdCond(instance *Instance, node Node) (Node, error) {
+func cmdCond(ins *Instance, node Node) (Node, error) {
 	for HasValue(node) {
 		cons, ok := node.(*Cons)
 		if !ok {
@@ -16,12 +16,12 @@ func cmdCond(instance *Instance, node Node) (Node, error) {
 		if !ok {
 			return nil, fmt.Errorf("%w: %s", ErrExpectedCons, toString(cons.Car))
 		}
-		condition, err := conditionAndActions.GetCar().Eval(instance)
+		condition, err := conditionAndActions.GetCar().Eval(ins)
 		if err != nil {
 			return nil, err
 		}
 		if HasValue(condition) {
-			result, err := progn(instance, conditionAndActions.Cdr)
+			result, err := progn(ins, conditionAndActions.Cdr)
 			if err != nil {
 				return result, err
 			}

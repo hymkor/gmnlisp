@@ -13,12 +13,12 @@ func init() {
 	}
 }
 
-func cmdPrinX(instance *Instance, this Node, f func(node Node)) (Node, error) {
+func cmdPrinX(ins *Instance, this Node, f func(node Node)) (Node, error) {
 	cons, ok := this.(*Cons)
 	if !ok || HasValue(cons.Cdr) {
 		return nil, ErrTooFewOrTooManyArguments
 	}
-	value, err := cons.GetCar().Eval(instance)
+	value, err := cons.GetCar().Eval(ins)
 	if err != nil {
 		return nil, err
 	}

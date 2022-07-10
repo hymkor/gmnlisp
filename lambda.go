@@ -18,19 +18,19 @@ func (e *ErrEarlyReturns) Error() string {
 	return fmt.Sprintf("Unexpected (return-from %s)", e.Name)
 }
 
-func cmdReturn(instance *Instance, node Node) (Node, error) {
+func cmdReturn(ins *Instance, node Node) (Node, error) {
 	cons, ok := node.(*Cons)
 	if !ok {
 		return nil, ErrExpectedCons
 	}
-	value, err := cons.GetCar().Eval(instance)
+	value, err := cons.GetCar().Eval(ins)
 	if err != nil {
 		return nil, err
 	}
 	return nil, &ErrEarlyReturns{Value: value, Name: ""}
 }
 
-func cmdReturnFrom(instance *Instance, node Node) (Node, error) {
+func cmdReturnFrom(ins *Instance, node Node) (Node, error) {
 	cons, ok := node.(*Cons)
 	if !ok {
 		return nil, ErrExpectedCons
@@ -43,14 +43,14 @@ func cmdReturnFrom(instance *Instance, node Node) (Node, error) {
 	if !ok {
 		return nil, ErrExpectedCons
 	}
-	value, err := cons.GetCar().Eval(instance)
+	value, err := cons.GetCar().Eval(ins)
 	if err != nil {
 		return nil, err
 	}
 	return nil, &ErrEarlyReturns{Value: value, Name: string(symbol)}
 }
 
-func progn(instance *Instance, c Node) (Node, error) {
+func progn(ins *Instance, c Node) (Node, error) {
 	var last Node
 	for HasValue(c) {
 		cons, ok := c.(*Cons)
@@ -58,7 +58,7 @@ func progn(instance *Instance, c Node) (Node, error) {
 			return nil, ErrExpectedCons
 		}
 		var err error
-		last, err = cons.GetCar().Eval(instance)
+		last, err = cons.GetCar().Eval(ins)
 		if err != nil {
 			return nil, err
 		}
@@ -67,8 +67,8 @@ func progn(instance *Instance, c Node) (Node, error) {
 	return last, nil
 }
 
-func cmdProgn(instance *Instance, c Node) (Node, error) {
-	return progn(instance, c)
+func cmdProgn(ins *Instance, c Node) (Node, error) {
+	return progn(ins, c)
 }
 
 type Lambda struct {
@@ -140,11 +140,11 @@ func (*Lambda) IsNull() bool {
 	return false
 }
 
-func (NL *Lambda) Call(instance *Instance, n Node) (Node, error) {
+func (NL *Lambda) Call(ins *Instance, n Node) (Node, error) {
 	backups := map[string]Node{}
 	nobackups := map[string]struct{}{}
 	for _, name := range NL.param {
-		if value, ok := instance.globals[name]; ok {
+		if value, ok := ins.globals[name]; ok {
 			backups[name] = value
 		} else {
 			nobackups[name] = struct{}{}
@@ -152,26 +152,26 @@ func (NL *Lambda) Call(instance *Instance, n Node) (Node, error) {
 
 		if cons, ok := n.(*Cons); ok {
 			var err error
-			instance.globals[name], err = cons.GetCar().Eval(instance)
+			ins.globals[name], err = cons.GetCar().Eval(ins)
 			if err != nil {
 				return nil, err
 			}
 			n = cons.GetCdr()
 		} else {
-			instance.globals[name] = Null
+			ins.globals[name] = Null
 		}
 	}
 	defer func() {
 		for name := range nobackups {
-			delete(instance.globals, name)
+			delete(ins.globals, name)
 		}
 		for name, value := range backups {
-			instance.globals[name] = value
+			ins.globals[name] = value
 		}
 	}()
 	var errEarlyReturns *ErrEarlyReturns
 
-	result, err := progn(instance, NL.code)
+	result, err := progn(ins, NL.code)
 	if errors.As(err, &errEarlyReturns) && errEarlyReturns.Name == string(NL.name) {
 		return errEarlyReturns.Value, nil
 	}
@@ -186,7 +186,7 @@ func (*Lambda) Equals(Node) bool {
 	return false
 }
 
-func cmdDefun(instance *Instance, node Node) (Node, error) {
+func cmdDefun(ins *Instance, node Node) (Node, error) {
 	cons, ok := node.(*Cons)
 	if !ok {
 		return nil, ErrExpectedCons
@@ -201,11 +201,11 @@ func cmdDefun(instance *Instance, node Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	instance.globals[name] = lambda
+	ins.globals[name] = lambda
 	return lambda, nil
 }
 
-func cmdBlock(instance *Instance, node Node) (Node, error) {
+func cmdBlock(ins *Instance, node Node) (Node, error) {
 	cons, ok := node.(*Cons)
 	if !ok {
 		return nil, ErrExpectedCons
@@ -217,7 +217,7 @@ func cmdBlock(instance *Instance, node Node) (Node, error) {
 	name := string(_name)
 
 	var errEarlyReturns *ErrEarlyReturns
-	rv, err := progn(instance, cons.Cdr)
+	rv, err := progn(ins, cons.Cdr)
 	if errors.As(err, &errEarlyReturns) && errEarlyReturns.Name == name {
 		return errEarlyReturns.Value, nil
 	}
