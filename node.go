@@ -47,7 +47,7 @@ func (t _TrueType) Eval(*Instance) (Node, error) {
 	return t, nil
 }
 
-var TrueValue Node = _TrueType{}
+var True Node = _TrueType{}
 
 func (_TrueType) Equals(n Node) bool {
 	_, ok := n.(_TrueType)

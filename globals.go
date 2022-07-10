@@ -15,7 +15,7 @@ func New() *Instance {
 	return &Instance{
 		Stdout: os.Stdout,
 		globals: map[string]Node{
-			"T":           TrueValue,
+			"T":           True,
 			"nil":         Null,
 			"print":       Function(cmdPrint),
 			"prin1":       Function(cmdPrin1),
