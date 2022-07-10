@@ -66,7 +66,7 @@ func readTokens(sc *_TokenScanner) (Node, error) {
 		return Integer(val), nil
 	}
 	if strings.HasPrefix(token, "\"") {
-		return NodeString(strings.Replace(token, "\"", "", -1)), nil
+		return String(strings.Replace(token, "\"", "", -1)), nil
 	}
 	if token == "nil" {
 		return NullValue, nil

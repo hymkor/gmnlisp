@@ -25,12 +25,12 @@ func TestOperators(t *testing.T) {
 	evalTest(t, "(* 1 2)", Integer(2))
 	evalTest(t, "(* 1 2 3)", Integer(6))
 	evalTest(t, "(/ 6 2)", Integer(3))
-	evalTest(t, `(+ "1" "2")`, NodeString("12"))
+	evalTest(t, `(+ "1" "2")`, String("12"))
 }
 
 func TestCmdCond(t *testing.T) {
 	evalTest(t, `(cond (nil 1) (T 2))`, Integer(2))
-	evalTest(t, `(cond ((equal 1 1) "a") ((equal 1 2) "b"))`, NodeString("a"))
+	evalTest(t, `(cond ((equal 1 1) "a") ((equal 1 2) "b"))`, String("a"))
 }
 
 func TestCmdCons(t *testing.T) {

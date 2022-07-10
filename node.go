@@ -82,31 +82,31 @@ func (this _NullType) Equals(n Node) bool {
 
 var NullValue Node = _NullType{}
 
-type NodeString string
+type String string
 
-func (s NodeString) PrintTo(w io.Writer) {
+func (s String) PrintTo(w io.Writer) {
 	fmt.Fprintf(w, "\"%s\"", string(s))
 }
 
-func (s NodeString) PrincTo(w io.Writer) {
+func (s String) PrincTo(w io.Writer) {
 	io.WriteString(w, string(s))
 }
 
-func (NodeString) Null() bool {
+func (String) Null() bool {
 	return false
 }
 
-func (this NodeString) Eval(*Instance) (Node, error) {
+func (this String) Eval(*Instance) (Node, error) {
 	return this, nil // errors.New("String can not be evaluate.")
 }
 
-func (this NodeString) Equals(n Node) bool {
-	ns, ok := n.(NodeString)
+func (this String) Equals(n Node) bool {
+	ns, ok := n.(String)
 	return ok && this == ns
 }
 
-func (this NodeString) Plus(n Node) (Node, error) {
-	if value, ok := n.(NodeString); ok {
+func (this String) Plus(n Node) (Node, error) {
+	if value, ok := n.(String); ok {
 		return this + value, nil
 	}
 	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n))
