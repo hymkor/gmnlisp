@@ -14,7 +14,7 @@ func cmdCond(instance *Instance, node Node) (Node, error) {
 
 		conditionAndActions, ok := cons.Car.(*Cons)
 		if !ok {
-			return nil, fmt.Errorf("%w: %s", ErrExpectedCons, Node2String(cons.Car))
+			return nil, fmt.Errorf("%w: %s", ErrExpectedCons, toString(cons.Car))
 		}
 		condition, err := conditionAndActions.GetCar().Eval(instance)
 		if err != nil {

@@ -12,7 +12,7 @@ func evalTest(t *testing.T, equation string, expect Node) {
 		return
 	}
 	if !result.Equals(expect) {
-		t.Fatalf("%s != %s (was %s)", equation, Node2String(expect), Node2String(result))
+		t.Fatalf("%s != %s (was %s)", equation, toString(expect), toString(result))
 		return
 	}
 }

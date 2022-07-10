@@ -16,7 +16,7 @@ func ForEachWithoutEval(this Node, f func(Node) error) error {
 	for HasValue(this) {
 		cons, ok := this.(*Cons)
 		if !ok {
-			return fmt.Errorf("%w (%s)", ErrExpectedCons, Node2String(this))
+			return fmt.Errorf("%w (%s)", ErrExpectedCons, toString(this))
 		}
 		if err := f(cons.Car); err != nil {
 			return err

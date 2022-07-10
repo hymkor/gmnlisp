@@ -7,7 +7,7 @@ import (
 func cmdLet(instance *Instance, param Node) (Node, error) {
 	cons, ok := param.(*Cons)
 	if !ok {
-		return nil, fmt.Errorf("%w: `%s`", ErrExpectedCons, Node2String(param))
+		return nil, fmt.Errorf("%w: `%s`", ErrExpectedCons, toString(param))
 	}
 	code := cons.Cdr
 
@@ -18,18 +18,18 @@ func cmdLet(instance *Instance, param Node) (Node, error) {
 		cons, ok := node.(*Cons)
 		if !ok {
 			return fmt.Errorf("%w: `%s`",
-				ErrExpectedCons, Node2String(node))
+				ErrExpectedCons, toString(node))
 		}
 		_name, ok := cons.Car.(NodeSymbol)
 		if !ok {
 			return fmt.Errorf("%w: `%s`",
-				ErrExpectedSymbol, Node2String(cons.Car))
+				ErrExpectedSymbol, toString(cons.Car))
 		}
 		name := string(_name)
 		cons, ok = cons.Cdr.(*Cons)
 		if !ok {
 			return fmt.Errorf("%w: `%s`",
-				ErrExpectedCons, Node2String(cons.Cdr))
+				ErrExpectedCons, toString(cons.Cdr))
 		}
 		value, err := cons.Car.Eval(instance)
 		if err != nil {

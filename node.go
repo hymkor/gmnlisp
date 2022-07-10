@@ -20,7 +20,7 @@ type Node interface {
 	PrincTo(io.Writer)
 }
 
-func Node2String(node Node) string {
+func toString(node Node) string {
 	if node == nil {
 		return "()"
 	}
@@ -109,7 +109,7 @@ func (this NodeString) Plus(n Node) (Node, error) {
 	if value, ok := n.(NodeString); ok {
 		return this + value, nil
 	}
-	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, Node2String(n))
+	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n))
 }
 
 type NodeSymbol string
