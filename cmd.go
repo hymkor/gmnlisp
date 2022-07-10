@@ -13,10 +13,7 @@ var (
 )
 
 func ForEachQuote(this Node, f func(Node) error) error {
-	if IsNull(this) {
-		return nil
-	}
-	for {
+	for HasValue(this) {
 		cons, ok := this.(*Cons)
 		if !ok {
 			return fmt.Errorf("%w (%s)", ErrExpectedCons, Node2String(this))
@@ -24,11 +21,9 @@ func ForEachQuote(this Node, f func(Node) error) error {
 		if err := f(cons.Car); err != nil {
 			return err
 		}
-		if IsNull(cons.Cdr) {
-			return nil
-		}
 		this = cons.Cdr
 	}
+	return nil
 }
 
 func ShiftAndEvalCar(node Node) (Node, Node, error) {
