@@ -29,28 +29,28 @@ func toString(node Node) string {
 	return buffer.String()
 }
 
-type TrueType struct{}
+type _TrueType struct{}
 
-func (TrueType) PrintTo(w io.Writer) {
+func (_TrueType) PrintTo(w io.Writer) {
 	io.WriteString(w, "T")
 }
 
-func (TrueType) PrincTo(w io.Writer) {
+func (_TrueType) PrincTo(w io.Writer) {
 	io.WriteString(w, "T")
 }
 
-func (TrueType) Null() bool {
+func (_TrueType) Null() bool {
 	return false
 }
 
-func (t TrueType) Eval(*Instance) (Node, error) {
+func (t _TrueType) Eval(*Instance) (Node, error) {
 	return t, nil
 }
 
-var TrueValue = TrueType{}
+var TrueValue Node = _TrueType{}
 
-func (TrueType) Equals(n Node) bool {
-	_, ok := n.(TrueType)
+func (_TrueType) Equals(n Node) bool {
+	_, ok := n.(_TrueType)
 	return ok
 }
 
