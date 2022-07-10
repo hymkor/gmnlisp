@@ -12,7 +12,7 @@ func macroQuote(node Node) (Node, error) {
 		return node, nil
 	}
 	// normal pair
-	if !cons.GetCar().Equals(NodeSymbol("'")) {
+	if !cons.GetCar().Equals(Symbol("'")) {
 		car, err := macroQuote(cons.Car)
 		if err != nil {
 			return nil, err
@@ -39,7 +39,7 @@ func macroQuote(node Node) (Node, error) {
 	}
 	return &Cons{
 		Car: &Cons{
-			Car: NodeSymbol("quote"),
+			Car: Symbol("quote"),
 			Cdr: &Cons{
 				Car: quoted,
 				Cdr: nil,

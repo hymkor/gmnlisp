@@ -51,7 +51,7 @@ func (this *Cons) Eval(instance *Instance) (Node, error) {
 	if f, ok := first.(_Callable); ok {
 		return f.Call(instance, this.Cdr)
 	}
-	symbol, ok := first.(NodeSymbol)
+	symbol, ok := first.(Symbol)
 	if !ok {
 		return nil, fmt.Errorf("cons: %w", ErrExpectedFunction)
 	}

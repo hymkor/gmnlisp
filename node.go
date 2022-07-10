@@ -112,21 +112,21 @@ func (this String) Plus(n Node) (Node, error) {
 	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n))
 }
 
-type NodeSymbol string
+type Symbol string
 
-func (this NodeSymbol) PrintTo(w io.Writer) {
+func (this Symbol) PrintTo(w io.Writer) {
 	io.WriteString(w, string(this))
 }
 
-func (this NodeSymbol) PrincTo(w io.Writer) {
+func (this Symbol) PrincTo(w io.Writer) {
 	io.WriteString(w, string(this))
 }
 
-func (this NodeSymbol) Null() bool {
+func (this Symbol) Null() bool {
 	return false
 }
 
-func (this NodeSymbol) Eval(instance *Instance) (Node, error) {
+func (this Symbol) Eval(instance *Instance) (Node, error) {
 	name := string(this)
 	if value, ok := instance.globals[name]; ok {
 		return value, nil
@@ -134,7 +134,7 @@ func (this NodeSymbol) Eval(instance *Instance) (Node, error) {
 	return nil, fmt.Errorf("%w: `%s`", ErrVariableUnbound, name)
 }
 
-func (this NodeSymbol) Equals(n Node) bool {
-	ns, ok := n.(NodeSymbol)
+func (this Symbol) Equals(n Node) bool {
+	ns, ok := n.(Symbol)
 	return ok && this == ns
 }

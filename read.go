@@ -20,7 +20,7 @@ func nodes2cons(nodes []Node) Node {
 	case 1:
 		return &Cons{nodes[0], NullValue}
 	case 3:
-		if sym, ok := nodes[1].(NodeSymbol); ok && string(sym) == "." {
+		if sym, ok := nodes[1].(Symbol); ok && string(sym) == "." {
 			return &Cons{nodes[0], nodes[2]}
 		}
 		fallthrough
@@ -71,7 +71,7 @@ func readTokens(sc *_TokenScanner) (Node, error) {
 	if token == "nil" {
 		return NullValue, nil
 	}
-	return NodeSymbol(token), nil
+	return Symbol(token), nil
 }
 
 func ReadNodes(r io.Reader) ([]Node, error) {

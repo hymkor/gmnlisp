@@ -9,7 +9,7 @@ func cmdSetq(instance *Instance, node Node) (Node, error) {
 	var value Node = NullValue
 	err := forEachWithoutEval(node, func(n Node) error {
 		if name == "" {
-			_name, ok := n.(NodeSymbol)
+			_name, ok := n.(Symbol)
 			if !ok {
 				return fmt.Errorf("%w: `%s`", ErrExpectedSymbol, toString(node))
 			}

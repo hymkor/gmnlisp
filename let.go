@@ -20,7 +20,7 @@ func cmdLet(instance *Instance, param Node) (Node, error) {
 			return fmt.Errorf("%w: `%s`",
 				ErrExpectedCons, toString(node))
 		}
-		_name, ok := cons.Car.(NodeSymbol)
+		_name, ok := cons.Car.(Symbol)
 		if !ok {
 			return fmt.Errorf("%w: `%s`",
 				ErrExpectedSymbol, toString(cons.Car))

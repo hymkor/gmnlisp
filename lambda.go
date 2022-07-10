@@ -35,7 +35,7 @@ func cmdReturnFrom(instance *Instance, node Node) (Node, error) {
 	if !ok {
 		return nil, ErrExpectedCons
 	}
-	symbol, ok := cons.Car.(NodeSymbol)
+	symbol, ok := cons.Car.(Symbol)
 	if !ok {
 		return nil, ErrExpectedSymbol
 	}
@@ -90,7 +90,7 @@ func newLambda(node Node, blockName string) (Node, error) {
 	}
 	params := []string{}
 	if err := forEachWithoutEval(cons.Car, func(n Node) error {
-		name, ok := n.(NodeSymbol)
+		name, ok := n.(Symbol)
 		if !ok {
 			return ErrExpectedSymbol
 		}
@@ -191,7 +191,7 @@ func cmdDefun(instance *Instance, node Node) (Node, error) {
 	if !ok {
 		return nil, ErrExpectedCons
 	}
-	_name, ok := cons.Car.(NodeSymbol)
+	_name, ok := cons.Car.(Symbol)
 	if !ok {
 		return nil, ErrExpectedSymbol
 	}
@@ -210,7 +210,7 @@ func cmdBlock(instance *Instance, node Node) (Node, error) {
 	if !ok {
 		return nil, ErrExpectedCons
 	}
-	_name, ok := cons.Car.(NodeSymbol)
+	_name, ok := cons.Car.(Symbol)
 	if !ok {
 		return nil, ErrExpectedSymbol
 	}
