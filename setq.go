@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-func CmdSetq(node Node) (Node, error) {
+func CmdSetq(instance *Instance, node Node) (Node, error) {
 	var name string
 	var value Node = NullValue
 	err := ForEachWithoutEval(node, func(n Node) error {
@@ -16,11 +16,11 @@ func CmdSetq(node Node) (Node, error) {
 			name = string(_name)
 		} else {
 			var err error
-			value, err = n.Eval()
+			value, err = n.Eval(instance)
 			if err != nil {
 				return err
 			}
-			globals[name] = value
+			instance.globals[name] = value
 			name = ""
 		}
 		return nil

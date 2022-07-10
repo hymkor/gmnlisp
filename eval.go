@@ -8,10 +8,10 @@ import (
 
 type Callable interface {
 	Node
-	Call(Node) (Node, error)
+	Call(*Instance, Node) (Node, error)
 }
 
-type Function func(Node) (Node, error)
+type Function func(*Instance, Node) (Node, error)
 
 func (Function) PrintTo(w io.Writer) {
 	io.WriteString(w, "buildin function")
@@ -25,7 +25,7 @@ func (Function) Null() bool {
 	return false
 }
 
-func (f Function) Eval() (Node, error) {
+func (f Function) Eval(_ *Instance) (Node, error) {
 	return f, nil
 }
 
@@ -33,29 +33,29 @@ func (f Function) Equals(n Node) bool {
 	return false
 }
 
-func (f Function) Call(n Node) (Node, error) {
-	return f(n)
+func (f Function) Call(instance *Instance, n Node) (Node, error) {
+	return f(instance, n)
 }
 
 var ErrExpectedFunction = errors.New("expected function")
 
-func (this *Cons) Eval() (Node, error) {
+func (this *Cons) Eval(instance *Instance) (Node, error) {
 	first := this.Car
 	if p, ok := first.(*Cons); ok {
 		var err error
-		first, err = p.Eval()
+		first, err = p.Eval(instance)
 		if err != nil {
 			return nil, err
 		}
 	}
 	if f, ok := first.(Callable); ok {
-		return f.Call(this.Cdr)
+		return f.Call(instance, this.Cdr)
 	}
 	symbol, ok := first.(NodeSymbol)
 	if !ok {
 		return nil, fmt.Errorf("cons: %w", ErrExpectedFunction)
 	}
-	value, err := symbol.Eval()
+	value, err := symbol.Eval(instance)
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +63,7 @@ func (this *Cons) Eval() (Node, error) {
 	if !ok {
 		return nil, fmt.Errorf("%s: %w", string(symbol), ErrExpectedFunction)
 	}
-	rv, err := function.Call(this.Cdr)
+	rv, err := function.Call(instance, this.Cdr)
 	if err != nil {
 		return rv, fmt.Errorf("%s: %w", string(symbol), err)
 	}

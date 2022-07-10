@@ -14,8 +14,10 @@ func mains(args []string) error {
 	var last gmnlisp.Node
 	var err error
 
+	lisp := gmnlisp.New()
+
 	if *flagExecute != "" {
-		last, err = gmnlisp.Interpret(*flagExecute)
+		last, err = lisp.Interpret(*flagExecute)
 		if err != nil {
 			return err
 		}
@@ -27,7 +29,7 @@ func mains(args []string) error {
 		if err != nil {
 			return err
 		}
-		last, err = gmnlisp.Interpret(string(script))
+		last, err = lisp.Interpret(string(script))
 		if err != nil {
 			return err
 		}

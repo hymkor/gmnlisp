@@ -26,24 +26,12 @@ func ForEachWithoutEval(this Node, f func(Node) error) error {
 	return nil
 }
 
-func ShiftAndEvalCar(node Node) (Node, Node, error) {
-	cons, ok := node.(*Cons)
-	if !ok {
-		return nil, nil, ErrTooFewOrTooManyArguments
-	}
-	value, err := cons.GetCar().Eval()
-	if err != nil {
-		return nil, nil, err
-	}
-	return value, cons.Cdr, nil
-}
-
-func CmdCons(node Node) (Node, error) {
-	first, rest, err := ShiftAndEvalCar(node)
+func CmdCons(ins *Instance, node Node) (Node, error) {
+	first, rest, err := ins.ShiftAndEvalCar(node)
 	if err != nil {
 		return nil, err
 	}
-	second, rest, err := ShiftAndEvalCar(rest)
+	second, rest, err := ins.ShiftAndEvalCar(rest)
 	if err != nil {
 		return nil, err
 	}
@@ -53,8 +41,8 @@ func CmdCons(node Node) (Node, error) {
 	return &Cons{Car: first, Cdr: second}, err
 }
 
-func CmdCar(param Node) (Node, error) {
-	first, _, err := ShiftAndEvalCar(param)
+func CmdCar(ins *Instance, param Node) (Node, error) {
+	first, _, err := ins.ShiftAndEvalCar(param)
 	if err != nil {
 		return nil, err
 	}
@@ -65,8 +53,8 @@ func CmdCar(param Node) (Node, error) {
 	return cons.Car, nil
 }
 
-func CmdCdr(param Node) (Node, error) {
-	first, _, err := ShiftAndEvalCar(param)
+func CmdCdr(ins *Instance, param Node) (Node, error) {
+	first, _, err := ins.ShiftAndEvalCar(param)
 	if err != nil {
 		return nil, err
 	}
@@ -77,7 +65,7 @@ func CmdCdr(param Node) (Node, error) {
 	return cons.Cdr, nil
 }
 
-func CmdQuote(param Node) (Node, error) {
+func CmdQuote(_ *Instance, param Node) (Node, error) {
 	cons, ok := param.(*Cons)
 	if !ok {
 		return nil, ErrTooFewOrTooManyArguments
@@ -85,7 +73,7 @@ func CmdQuote(param Node) (Node, error) {
 	return cons.Car, nil
 }
 
-func CmdAtom(param Node) (Node, error) {
+func CmdAtom(_ *Instance, param Node) (Node, error) {
 	cons, ok := param.(*Cons)
 	if !ok {
 		return nil, ErrExpectedCons
@@ -96,15 +84,15 @@ func CmdAtom(param Node) (Node, error) {
 	return TrueValue, nil
 }
 
-func CmdEqual(param Node) (Node, error) {
-	first, rest, err := ShiftAndEvalCar(param)
+func CmdEqual(ins *Instance, param Node) (Node, error) {
+	first, rest, err := ins.ShiftAndEvalCar(param)
 	if err != nil {
 		return nil, err
 	}
 	for !IsNull(rest) {
 		var next Node
 
-		next, rest, err = ShiftAndEvalCar(rest)
+		next, rest, err = ins.ShiftAndEvalCar(rest)
 		if err != nil {
 			return nil, err
 		}

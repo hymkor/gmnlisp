@@ -18,19 +18,19 @@ func (e *ErrEarlyReturns) Error() string {
 	return fmt.Sprintf("Unexpected (return-from %s)", e.Name)
 }
 
-func CmdReturn(node Node) (Node, error) {
+func CmdReturn(instance *Instance, node Node) (Node, error) {
 	cons, ok := node.(*Cons)
 	if !ok {
 		return nil, ErrExpectedCons
 	}
-	value, err := cons.GetCar().Eval()
+	value, err := cons.GetCar().Eval(instance)
 	if err != nil {
 		return nil, err
 	}
 	return nil, &ErrEarlyReturns{Value: value, Name: ""}
 }
 
-func CmdReturnFrom(node Node) (Node, error) {
+func CmdReturnFrom(instance *Instance, node Node) (Node, error) {
 	cons, ok := node.(*Cons)
 	if !ok {
 		return nil, ErrExpectedCons
@@ -43,14 +43,14 @@ func CmdReturnFrom(node Node) (Node, error) {
 	if !ok {
 		return nil, ErrExpectedCons
 	}
-	value, err := cons.GetCar().Eval()
+	value, err := cons.GetCar().Eval(instance)
 	if err != nil {
 		return nil, err
 	}
 	return nil, &ErrEarlyReturns{Value: value, Name: string(symbol)}
 }
 
-func progn(c Node) (Node, error) {
+func progn(instance *Instance, c Node) (Node, error) {
 	var last Node
 	for HasValue(c) {
 		cons, ok := c.(*Cons)
@@ -58,7 +58,7 @@ func progn(c Node) (Node, error) {
 			return nil, ErrExpectedCons
 		}
 		var err error
-		last, err = cons.GetCar().Eval()
+		last, err = cons.GetCar().Eval(instance)
 		if err != nil {
 			return nil, err
 		}
@@ -67,8 +67,8 @@ func progn(c Node) (Node, error) {
 	return last, nil
 }
 
-func CmdProgn(c Node) (Node, error) {
-	return progn(c)
+func CmdProgn(instance *Instance, c Node) (Node, error) {
+	return progn(instance, c)
 }
 
 type NodeLambda struct {
@@ -77,7 +77,7 @@ type NodeLambda struct {
 	name  string
 }
 
-func CmdLambda(node Node) (Node, error) {
+func CmdLambda(_ *Instance, node Node) (Node, error) {
 	return NewLambda(node, "")
 }
 
@@ -140,11 +140,11 @@ func (*NodeLambda) Null() bool {
 	return false
 }
 
-func (NL *NodeLambda) Call(n Node) (Node, error) {
+func (NL *NodeLambda) Call(instance *Instance, n Node) (Node, error) {
 	backups := map[string]Node{}
 	nobackups := map[string]struct{}{}
 	for _, name := range NL.param {
-		if value, ok := globals[name]; ok {
+		if value, ok := instance.globals[name]; ok {
 			backups[name] = value
 		} else {
 			nobackups[name] = struct{}{}
@@ -152,33 +152,33 @@ func (NL *NodeLambda) Call(n Node) (Node, error) {
 
 		if cons, ok := n.(*Cons); ok {
 			var err error
-			globals[name], err = cons.GetCar().Eval()
+			instance.globals[name], err = cons.GetCar().Eval(instance)
 			if err != nil {
 				return nil, err
 			}
 			n = cons.GetCdr()
 		} else {
-			globals[name] = NullValue
+			instance.globals[name] = NullValue
 		}
 	}
 	defer func() {
 		for name := range nobackups {
-			delete(globals, name)
+			delete(instance.globals, name)
 		}
 		for name, value := range backups {
-			globals[name] = value
+			instance.globals[name] = value
 		}
 	}()
 	var errEarlyReturns *ErrEarlyReturns
 
-	result, err := progn(NL.code)
+	result, err := progn(instance, NL.code)
 	if errors.As(err, &errEarlyReturns) && errEarlyReturns.Name == string(NL.name) {
 		return errEarlyReturns.Value, nil
 	}
 	return result, err
 }
 
-func (NL *NodeLambda) Eval() (Node, error) {
+func (NL *NodeLambda) Eval(*Instance) (Node, error) {
 	return NL, nil
 }
 
@@ -186,7 +186,7 @@ func (*NodeLambda) Equals(Node) bool {
 	return false
 }
 
-func CmdDefun(node Node) (Node, error) {
+func CmdDefun(instance *Instance, node Node) (Node, error) {
 	cons, ok := node.(*Cons)
 	if !ok {
 		return nil, ErrExpectedCons
@@ -201,11 +201,11 @@ func CmdDefun(node Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	globals[name] = lambda
+	instance.globals[name] = lambda
 	return lambda, nil
 }
 
-func CmdBlock(node Node) (Node, error) {
+func CmdBlock(instance *Instance, node Node) (Node, error) {
 	cons, ok := node.(*Cons)
 	if !ok {
 		return nil, ErrExpectedCons
@@ -217,7 +217,7 @@ func CmdBlock(node Node) (Node, error) {
 	name := string(_name)
 
 	var errEarlyReturns *ErrEarlyReturns
-	rv, err := progn(cons.Cdr)
+	rv, err := progn(instance, cons.Cdr)
 	if errors.As(err, &errEarlyReturns) && errEarlyReturns.Name == name {
 		return errEarlyReturns.Value, nil
 	}

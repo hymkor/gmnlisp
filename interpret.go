@@ -1,6 +1,6 @@
 package gmnlisp
 
-func Interpret(code string) (Node, error) {
+func (instance *Instance) Interpret(code string) (Node, error) {
 	compiled, err := ReadString(code)
 	if err != nil {
 		return nil, err
@@ -11,7 +11,7 @@ func Interpret(code string) (Node, error) {
 		if err != nil {
 			return c, err
 		}
-		result, err = c.Eval()
+		result, err = c.Eval(instance)
 		if err != nil {
 			return result, err
 		}

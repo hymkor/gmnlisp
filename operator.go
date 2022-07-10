@@ -8,34 +8,13 @@ import (
 
 var ErrNotSupportType = errors.New("Not support type")
 
-func Inject(this Node, f func(left, right Node) (Node, error)) (Node, error) {
-	result, rest, err := ShiftAndEvalCar(this)
-	if err != nil {
-		return nil, err
-	}
-	for HasValue(rest) {
-		var next Node
-		var err error
-
-		next, rest, err = ShiftAndEvalCar(rest)
-		if err != nil {
-			return nil, err
-		}
-		result, err = f(result, next)
-		if err != nil {
-			return nil, err
-		}
-	}
-	return result, nil
-}
-
 type CanPlus interface {
 	Node
 	Plus(Node) (Node, error)
 }
 
-func CmdPlus(this Node) (Node, error) {
-	return Inject(this, func(left, right Node) (Node, error) {
+func CmdPlus(ins *Instance, param Node) (Node, error) {
+	return ins.Inject(param, func(left, right Node) (Node, error) {
 		if _left, ok := left.(CanPlus); ok {
 			return _left.Plus(right)
 		}
@@ -48,8 +27,8 @@ type CanMinus interface {
 	Minus(Node) (Node, error)
 }
 
-func CmdMinus(this Node) (Node, error) {
-	return Inject(this, func(left, right Node) (Node, error) {
+func CmdMinus(ins *Instance, param Node) (Node, error) {
+	return ins.Inject(param, func(left, right Node) (Node, error) {
 		if _left, ok := left.(CanMinus); ok {
 			return _left.Minus(right)
 		}
@@ -62,8 +41,8 @@ type CanMulti interface {
 	Multi(Node) (Node, error)
 }
 
-func CmdMulti(this Node) (Node, error) {
-	return Inject(this, func(left, right Node) (Node, error) {
+func CmdMulti(ins *Instance, param Node) (Node, error) {
+	return ins.Inject(param, func(left, right Node) (Node, error) {
 		if _left, ok := left.(CanMulti); ok {
 			return _left.Multi(right)
 		}
@@ -76,8 +55,8 @@ type CanDevide interface {
 	Devide(Node) (Node, error)
 }
 
-func CmdDevide(this Node) (Node, error) {
-	return Inject(this, func(left, right Node) (Node, error) {
+func CmdDevide(ins *Instance, param Node) (Node, error) {
+	return ins.Inject(param, func(left, right Node) (Node, error) {
 		if _left, ok := left.(CanDevide); ok {
 			return _left.Devide(right)
 		}
@@ -85,8 +64,8 @@ func CmdDevide(this Node) (Node, error) {
 	})
 }
 
-func CmdTruncate(this Node) (Node, error) {
-	first, _, err := ShiftAndEvalCar(this)
+func CmdTruncate(ins *Instance, this Node) (Node, error) {
+	first, _, err := ins.ShiftAndEvalCar(this)
 	if err != nil {
 		return nil, err
 	}

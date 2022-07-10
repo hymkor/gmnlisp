@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-func CmdLet(param Node) (Node, error) {
+func CmdLet(instance *Instance, param Node) (Node, error) {
 	cons, ok := param.(*Cons)
 	if !ok {
 		return nil, fmt.Errorf("%w: `%s`", ErrExpectedCons, Node2String(param))
@@ -31,24 +31,24 @@ func CmdLet(param Node) (Node, error) {
 			return fmt.Errorf("%w: `%s`",
 				ErrExpectedCons, Node2String(cons.Cdr))
 		}
-		value, err := cons.Car.Eval()
+		value, err := cons.Car.Eval(instance)
 		if err != nil {
 			return err
 		}
-		if val, ok := globals[name]; ok {
+		if val, ok := instance.globals[name]; ok {
 			backups[name] = val
 		} else {
 			nobackups[name] = struct{}{}
 		}
-		globals[name] = value
+		instance.globals[name] = value
 		return nil
 	})
 	defer func() {
 		for name := range nobackups {
-			delete(globals, name)
+			delete(instance.globals, name)
 		}
 		for name, value := range backups {
-			globals[name] = value
+			instance.globals[name] = value
 		}
 	}()
 
@@ -56,7 +56,7 @@ func CmdLet(param Node) (Node, error) {
 		return nil, err
 	}
 
-	result, err := progn(code)
+	result, err := progn(instance, code)
 	if err != nil {
 		return result, err
 	}

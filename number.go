@@ -19,7 +19,7 @@ func (this NodeInteger) Null() bool {
 	return false
 }
 
-func (this NodeInteger) Eval() (Node, error) {
+func (this NodeInteger) Eval(*Instance) (Node, error) {
 	return this, nil // errors.New("Integer can not be evaluate.")
 }
 
@@ -88,7 +88,7 @@ func (NodeFloat) Null() bool {
 	return false
 }
 
-func (nf NodeFloat) Eval() (Node, error) {
+func (nf NodeFloat) Eval(*Instance) (Node, error) {
 	return nf, nil
 }
 

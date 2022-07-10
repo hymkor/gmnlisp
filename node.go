@@ -11,7 +11,7 @@ var ErrDevisionByZero = errors.New("Devision by zeor")
 
 type Node interface {
 	Null() bool
-	Eval() (Node, error)
+	Eval(*Instance) (Node, error)
 	Equals(Node) bool
 	PrintTo(io.Writer)
 	PrincTo(io.Writer)
@@ -40,7 +40,7 @@ func (TrueType) Null() bool {
 	return false
 }
 
-func (t TrueType) Eval() (Node, error) {
+func (t TrueType) Eval(*Instance) (Node, error) {
 	return t, nil
 }
 
@@ -65,7 +65,7 @@ func (Null) Null() bool {
 	return true
 }
 
-func (this Null) Eval() (Node, error) {
+func (this Null) Eval(*Instance) (Node, error) {
 	return this, nil // errors.New("Null can not be evaluate.")
 }
 
@@ -93,7 +93,7 @@ func (NodeString) Null() bool {
 	return false
 }
 
-func (this NodeString) Eval() (Node, error) {
+func (this NodeString) Eval(*Instance) (Node, error) {
 	return this, nil // errors.New("String can not be evaluate.")
 }
 
@@ -123,9 +123,9 @@ func (this NodeSymbol) Null() bool {
 	return false
 }
 
-func (this NodeSymbol) Eval() (Node, error) {
+func (this NodeSymbol) Eval(instance *Instance) (Node, error) {
 	name := string(this)
-	if value, ok := globals[name]; ok {
+	if value, ok := instance.globals[name]; ok {
 		return value, nil
 	}
 	return nil, fmt.Errorf("variable `%s` unbound", name)
