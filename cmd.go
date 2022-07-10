@@ -31,16 +31,6 @@ func ForEachQuote(this Node, f func(Node) error) error {
 	}
 }
 
-func ForEachEval(this Node, f func(Node) error) error {
-	return ForEachQuote(this, func(quotedOne Node) error {
-		evalOne, err := quotedOne.Eval()
-		if err != nil {
-			return err
-		}
-		return f(evalOne)
-	})
-}
-
 func ShiftAndEvalCar(node Node) (Node, Node, error) {
 	cons, ok := node.(*Cons)
 	if !ok {

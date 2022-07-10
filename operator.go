@@ -9,19 +9,24 @@ import (
 var ErrNotSupportType = errors.New("Not support type")
 
 func Inject(this Node, f func(left, right Node) (Node, error)) (Node, error) {
-	var result Node
-	var _f func(left, right Node) (Node, error)
-
-	_f = func(left, right Node) (Node, error) {
-		_f = f
-		return right, nil
+	result, rest, err := ShiftAndEvalCar(this)
+	if err != nil {
+		return nil, err
 	}
-	err := ForEachEval(this, func(value Node) error {
+	for HasValue(rest) {
+		var next Node
 		var err error
-		result, err = _f(result, value)
-		return err
-	})
-	return result, err
+
+		next, rest, err = ShiftAndEvalCar(rest)
+		if err != nil {
+			return nil, err
+		}
+		result, err = f(result, next)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return result, nil
 }
 
 type CanPlus interface {
