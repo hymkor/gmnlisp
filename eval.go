@@ -6,7 +6,7 @@ import (
 	"io"
 )
 
-type Callable interface {
+type _Callable interface {
 	Node
 	Call(*Instance, Node) (Node, error)
 }
@@ -48,7 +48,7 @@ func (this *Cons) Eval(instance *Instance) (Node, error) {
 			return nil, err
 		}
 	}
-	if f, ok := first.(Callable); ok {
+	if f, ok := first.(_Callable); ok {
 		return f.Call(instance, this.Cdr)
 	}
 	symbol, ok := first.(NodeSymbol)
@@ -59,7 +59,7 @@ func (this *Cons) Eval(instance *Instance) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	function, ok := value.(Callable)
+	function, ok := value.(_Callable)
 	if !ok {
 		return nil, fmt.Errorf("%s: %w", string(symbol), ErrExpectedFunction)
 	}
