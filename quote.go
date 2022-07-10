@@ -1,10 +1,8 @@
 package gmnlisp
 
 import (
-	"errors"
+	"fmt"
 )
-
-var ErrNoObjectToQuote = errors.New("No objects to quote")
 
 func macroQuote(node Node) (Node, error) {
 	cons, ok := node.(*Cons)
@@ -27,7 +25,7 @@ func macroQuote(node Node) (Node, error) {
 	// Find single quotation mark
 	cons, ok = cons.Cdr.(*Cons)
 	if !ok {
-		return nil, ErrNoObjectToQuote
+		return nil, fmt.Errorf("quote: %w", ErrTooFewOrTooManyArguments)
 	}
 	quoted, err := macroQuote(cons.Car)
 	if err != nil {
