@@ -68,11 +68,3 @@ func (tr *TokenScanner) Scan() bool {
 		}
 	}
 }
-
-func StringToTokens(s string) (tokens []string) {
-	sc := NewTokenScanner(strings.NewReader(s))
-	for sc.Scan() {
-		tokens = append(tokens, sc.Token())
-	}
-	return tokens
-}
