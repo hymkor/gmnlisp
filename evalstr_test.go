@@ -7,7 +7,7 @@ import (
 func evalTest(t *testing.T, equation string, expect Node) {
 	result, err := Interpret(equation)
 	if err != nil {
-		t.Fatal(err.Error())
+		t.Fatalf("%s: %s", equation, err.Error())
 		return
 	}
 	if !result.Equals(expect) {
