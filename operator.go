@@ -13,7 +13,7 @@ type CanPlus interface {
 	Plus(Node) (Node, error)
 }
 
-func CmdPlus(ins *Instance, param Node) (Node, error) {
+func cmdPlus(ins *Instance, param Node) (Node, error) {
 	return ins.Inject(param, func(left, right Node) (Node, error) {
 		if _left, ok := left.(CanPlus); ok {
 			return _left.Plus(right)
@@ -27,7 +27,7 @@ type CanMinus interface {
 	Minus(Node) (Node, error)
 }
 
-func CmdMinus(ins *Instance, param Node) (Node, error) {
+func cmdMinus(ins *Instance, param Node) (Node, error) {
 	return ins.Inject(param, func(left, right Node) (Node, error) {
 		if _left, ok := left.(CanMinus); ok {
 			return _left.Minus(right)
@@ -41,7 +41,7 @@ type CanMulti interface {
 	Multi(Node) (Node, error)
 }
 
-func CmdMulti(ins *Instance, param Node) (Node, error) {
+func cmdMulti(ins *Instance, param Node) (Node, error) {
 	return ins.Inject(param, func(left, right Node) (Node, error) {
 		if _left, ok := left.(CanMulti); ok {
 			return _left.Multi(right)
@@ -55,7 +55,7 @@ type CanDevide interface {
 	Devide(Node) (Node, error)
 }
 
-func CmdDevide(ins *Instance, param Node) (Node, error) {
+func cmdDevide(ins *Instance, param Node) (Node, error) {
 	return ins.Inject(param, func(left, right Node) (Node, error) {
 		if _left, ok := left.(CanDevide); ok {
 			return _left.Devide(right)
@@ -64,7 +64,7 @@ func CmdDevide(ins *Instance, param Node) (Node, error) {
 	})
 }
 
-func CmdTruncate(ins *Instance, this Node) (Node, error) {
+func cmdTruncate(ins *Instance, this Node) (Node, error) {
 	first, _, err := ins.ShiftAndEvalCar(this)
 	if err != nil {
 		return nil, err

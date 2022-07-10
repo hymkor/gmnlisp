@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-func CmdSetq(instance *Instance, node Node) (Node, error) {
+func cmdSetq(instance *Instance, node Node) (Node, error) {
 	var name string
 	var value Node = NullValue
 	err := ForEachWithoutEval(node, func(n Node) error {

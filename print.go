@@ -24,20 +24,20 @@ func cmdPrinX(instance *Instance, this Node, f func(node Node)) (Node, error) {
 	return value, nil
 }
 
-func CmdPrint(instance *Instance, this Node) (Node, error) {
+func cmdPrint(instance *Instance, this Node) (Node, error) {
 	terpri()
 	return cmdPrinX(instance, this, func(node Node) { node.PrintTo(os.Stdout) })
 }
 
-func CmdPrin1(instance *Instance, this Node) (Node, error) {
+func cmdPrin1(instance *Instance, this Node) (Node, error) {
 	return cmdPrinX(instance, this, func(node Node) { node.PrintTo(os.Stdout) })
 }
 
-func CmdPrinc(instance *Instance, this Node) (Node, error) {
+func cmdPrinc(instance *Instance, this Node) (Node, error) {
 	return cmdPrinX(instance, this, func(node Node) { node.PrincTo(os.Stdout) })
 }
 
-func CmdTerpri(*Instance, Node) (Node, error) {
+func cmdTerpri(*Instance, Node) (Node, error) {
 	terpri()
 	return NullValue, nil
 }

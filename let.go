@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-func CmdLet(instance *Instance, param Node) (Node, error) {
+func cmdLet(instance *Instance, param Node) (Node, error) {
 	cons, ok := param.(*Cons)
 	if !ok {
 		return nil, fmt.Errorf("%w: `%s`", ErrExpectedCons, Node2String(param))

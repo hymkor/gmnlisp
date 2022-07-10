@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-func CmdCond(instance *Instance, node Node) (Node, error) {
+func cmdCond(instance *Instance, node Node) (Node, error) {
 	for HasValue(node) {
 		cons, ok := node.(*Cons)
 		if !ok {

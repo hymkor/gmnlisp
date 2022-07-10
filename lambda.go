@@ -18,7 +18,7 @@ func (e *ErrEarlyReturns) Error() string {
 	return fmt.Sprintf("Unexpected (return-from %s)", e.Name)
 }
 
-func CmdReturn(instance *Instance, node Node) (Node, error) {
+func cmdReturn(instance *Instance, node Node) (Node, error) {
 	cons, ok := node.(*Cons)
 	if !ok {
 		return nil, ErrExpectedCons
@@ -30,7 +30,7 @@ func CmdReturn(instance *Instance, node Node) (Node, error) {
 	return nil, &ErrEarlyReturns{Value: value, Name: ""}
 }
 
-func CmdReturnFrom(instance *Instance, node Node) (Node, error) {
+func cmdReturnFrom(instance *Instance, node Node) (Node, error) {
 	cons, ok := node.(*Cons)
 	if !ok {
 		return nil, ErrExpectedCons
@@ -67,7 +67,7 @@ func progn(instance *Instance, c Node) (Node, error) {
 	return last, nil
 }
 
-func CmdProgn(instance *Instance, c Node) (Node, error) {
+func cmdProgn(instance *Instance, c Node) (Node, error) {
 	return progn(instance, c)
 }
 
@@ -77,7 +77,7 @@ type NodeLambda struct {
 	name  string
 }
 
-func CmdLambda(_ *Instance, node Node) (Node, error) {
+func cmdLambda(_ *Instance, node Node) (Node, error) {
 	return NewLambda(node, "")
 }
 
@@ -186,7 +186,7 @@ func (*NodeLambda) Equals(Node) bool {
 	return false
 }
 
-func CmdDefun(instance *Instance, node Node) (Node, error) {
+func cmdDefun(instance *Instance, node Node) (Node, error) {
 	cons, ok := node.(*Cons)
 	if !ok {
 		return nil, ErrExpectedCons
@@ -205,7 +205,7 @@ func CmdDefun(instance *Instance, node Node) (Node, error) {
 	return lambda, nil
 }
 
-func CmdBlock(instance *Instance, node Node) (Node, error) {
+func cmdBlock(instance *Instance, node Node) (Node, error) {
 	cons, ok := node.(*Cons)
 	if !ok {
 		return nil, ErrExpectedCons

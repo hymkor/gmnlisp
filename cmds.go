@@ -26,7 +26,7 @@ func ForEachWithoutEval(this Node, f func(Node) error) error {
 	return nil
 }
 
-func CmdCons(ins *Instance, node Node) (Node, error) {
+func cmdCons(ins *Instance, node Node) (Node, error) {
 	first, rest, err := ins.ShiftAndEvalCar(node)
 	if err != nil {
 		return nil, err
@@ -41,7 +41,7 @@ func CmdCons(ins *Instance, node Node) (Node, error) {
 	return &Cons{Car: first, Cdr: second}, err
 }
 
-func CmdCar(ins *Instance, param Node) (Node, error) {
+func cmdCar(ins *Instance, param Node) (Node, error) {
 	first, _, err := ins.ShiftAndEvalCar(param)
 	if err != nil {
 		return nil, err
@@ -53,7 +53,7 @@ func CmdCar(ins *Instance, param Node) (Node, error) {
 	return cons.Car, nil
 }
 
-func CmdCdr(ins *Instance, param Node) (Node, error) {
+func cmdCdr(ins *Instance, param Node) (Node, error) {
 	first, _, err := ins.ShiftAndEvalCar(param)
 	if err != nil {
 		return nil, err
@@ -65,7 +65,7 @@ func CmdCdr(ins *Instance, param Node) (Node, error) {
 	return cons.Cdr, nil
 }
 
-func CmdQuote(_ *Instance, param Node) (Node, error) {
+func cmdQuote(_ *Instance, param Node) (Node, error) {
 	cons, ok := param.(*Cons)
 	if !ok {
 		return nil, ErrTooFewOrTooManyArguments
@@ -73,7 +73,7 @@ func CmdQuote(_ *Instance, param Node) (Node, error) {
 	return cons.Car, nil
 }
 
-func CmdAtom(_ *Instance, param Node) (Node, error) {
+func cmdAtom(_ *Instance, param Node) (Node, error) {
 	cons, ok := param.(*Cons)
 	if !ok {
 		return nil, ErrExpectedCons
@@ -84,7 +84,7 @@ func CmdAtom(_ *Instance, param Node) (Node, error) {
 	return TrueValue, nil
 }
 
-func CmdEqual(ins *Instance, param Node) (Node, error) {
+func cmdEqual(ins *Instance, param Node) (Node, error) {
 	first, rest, err := ins.ShiftAndEvalCar(param)
 	if err != nil {
 		return nil, err
