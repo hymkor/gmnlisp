@@ -51,22 +51,21 @@ func (this *Cons) Eval() (Node, error) {
 	if f, ok := first.(Callable); ok {
 		return f.Call(this.Cdr)
 	}
-	_name, ok := first.(NodeSymbol)
+	symbol, ok := first.(NodeSymbol)
 	if !ok {
 		return nil, fmt.Errorf("cons: %w", ErrExpectedFunction)
 	}
-	name := string(_name)
-	val, ok := globals[name]
-	if !ok {
-		return nil, fmt.Errorf("%s: Not found", name)
-	}
-	_fn, ok := val.(Callable)
-	if !ok {
-		return nil, fmt.Errorf("%s: Not Callable Object", name)
-	}
-	rv, err := _fn.Call(this.Cdr)
+	value, err := symbol.Eval()
 	if err != nil {
-		return rv, fmt.Errorf("%s: %w", name, err)
+		return nil, err
+	}
+	function, ok := value.(Callable)
+	if !ok {
+		return nil, fmt.Errorf("%s: %w", string(symbol), ErrExpectedFunction)
+	}
+	rv, err := function.Call(this.Cdr)
+	if err != nil {
+		return rv, fmt.Errorf("%s: %w", string(symbol), err)
 	}
 	return rv, nil
 }
