@@ -35,12 +35,6 @@ func IsNull(node Node) bool {
 	return node == nil || node.Null()
 }
 
-func write(n *int64, w io.Writer, s string) error {
-	_n, err := io.WriteString(w, s)
-	*n += int64(_n)
-	return err
-}
-
 func (this *Cons) isTailNull() bool {
 	if IsNull(this.Cdr) {
 		return true
