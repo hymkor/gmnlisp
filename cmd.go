@@ -41,7 +41,7 @@ func ForEachEval(this Node, f func(Node) error) error {
 	})
 }
 
-func ShiftAndEval(node Node) (Node, Node, error) {
+func ShiftAndEvalCar(node Node) (Node, Node, error) {
 	cons, ok := node.(*Cons)
 	if !ok {
 		return nil, nil, ErrTooFewOrTooManyArguments
@@ -54,11 +54,11 @@ func ShiftAndEval(node Node) (Node, Node, error) {
 }
 
 func CmdCons(node Node) (Node, error) {
-	first, rest, err := ShiftAndEval(node)
+	first, rest, err := ShiftAndEvalCar(node)
 	if err != nil {
 		return nil, err
 	}
-	second, rest, err := ShiftAndEval(rest)
+	second, rest, err := ShiftAndEvalCar(rest)
 	if err != nil {
 		return nil, err
 	}
@@ -69,7 +69,7 @@ func CmdCons(node Node) (Node, error) {
 }
 
 func CmdCar(param Node) (Node, error) {
-	first, _, err := ShiftAndEval(param)
+	first, _, err := ShiftAndEvalCar(param)
 	if err != nil {
 		return nil, err
 	}
@@ -81,7 +81,7 @@ func CmdCar(param Node) (Node, error) {
 }
 
 func CmdCdr(param Node) (Node, error) {
-	first, _, err := ShiftAndEval(param)
+	first, _, err := ShiftAndEvalCar(param)
 	if err != nil {
 		return nil, err
 	}
@@ -112,14 +112,14 @@ func CmdAtom(param Node) (Node, error) {
 }
 
 func CmdEqual(param Node) (Node, error) {
-	first, rest, err := ShiftAndEval(param)
+	first, rest, err := ShiftAndEvalCar(param)
 	if err != nil {
 		return nil, err
 	}
 	for !IsNull(rest) {
 		var next Node
 
-		next, rest, err = ShiftAndEval(rest)
+		next, rest, err = ShiftAndEvalCar(rest)
 		if err != nil {
 			return nil, err
 		}

@@ -81,7 +81,7 @@ func CmdDevide(this Node) (Node, error) {
 }
 
 func CmdTruncate(this Node) (Node, error) {
-	first, _, err := ShiftAndEval(this)
+	first, _, err := ShiftAndEvalCar(this)
 	if err != nil {
 		return nil, err
 	}
