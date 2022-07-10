@@ -26,29 +26,48 @@ func readtoken(r *scanner.Scanner, rune1 rune) (string, rune) {
 	return buf1.String(), rune1
 }
 
-func Tokenize(r io.Reader) []string {
-	var scr1 scanner.Scanner
-	scr1.Init(r)
-
-	list1 := make([]string, 0, 100)
-	for rune1 := scr1.Next(); rune1 != scanner.EOF; {
-		for rune1 != scanner.EOF && unicode.IsSpace(rune1) {
-			rune1 = scr1.Next()
-		}
-		if strings.ContainsRune("'()", rune1) {
-			list1 = append(list1, string(rune1))
-			rune1 = scr1.Next()
-		} else {
-			var token string
-			token, rune1 = readtoken(&scr1, rune1)
-			if token != "" {
-				list1 = append(list1, token)
-			}
-		}
-	}
-	return list1
+type TokenScanner struct {
+	lastToken string
+	lastRune  rune
+	sc        scanner.Scanner
 }
 
-func StringToTokens(s string) []string {
-	return Tokenize(strings.NewReader(s))
+func NewTokenScanner(r io.Reader) *TokenScanner {
+	tr := &TokenScanner{}
+	tr.sc.Init(r)
+	tr.lastRune = tr.sc.Next()
+	return tr
+}
+
+func (tr *TokenScanner) Text() string {
+	return tr.lastToken
+}
+
+func (tr *TokenScanner) Scan() bool {
+	for {
+		if tr.lastRune == scanner.EOF {
+			return false
+		}
+		for unicode.IsSpace(tr.lastRune) {
+			tr.lastRune = tr.sc.Next()
+			continue
+		}
+		if strings.ContainsRune("'()", tr.lastRune) {
+			tr.lastToken = string(tr.lastRune)
+			tr.lastRune = tr.sc.Next()
+			return true
+		}
+		tr.lastToken, tr.lastRune = readtoken(&tr.sc, tr.lastRune)
+		if tr.lastToken != "" {
+			return true
+		}
+	}
+}
+
+func StringToTokens(s string) (tokens []string) {
+	sc := NewTokenScanner(strings.NewReader(s))
+	for sc.Scan() {
+		tokens = append(tokens, sc.Text())
+	}
+	return tokens
 }
