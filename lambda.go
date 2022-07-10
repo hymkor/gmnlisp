@@ -78,10 +78,10 @@ type NodeLambda struct {
 }
 
 func cmdLambda(_ *Instance, node Node) (Node, error) {
-	return NewLambda(node, "")
+	return newLambda(node, "")
 }
 
-func NewLambda(node Node, blockName string) (Node, error) {
+func newLambda(node Node, blockName string) (Node, error) {
 	// (lambda (param) code)
 
 	cons, ok := node.(*Cons)
@@ -197,7 +197,7 @@ func cmdDefun(instance *Instance, node Node) (Node, error) {
 	}
 	name := string(_name)
 
-	lambda, err := NewLambda(cons.Cdr, string(_name))
+	lambda, err := newLambda(cons.Cdr, string(_name))
 	if err != nil {
 		return nil, err
 	}
