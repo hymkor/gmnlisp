@@ -31,7 +31,7 @@ func nodes2cons(nodes []Node) Node {
 
 var ErrTooShortTokens = errors.New("too short tokens")
 
-func readTokens(sc *TokenScanner) (Node, error) {
+func readTokens(sc *_TokenScanner) (Node, error) {
 	token := sc.Token()
 	sc.Scan()
 	if token == "(" {
@@ -75,7 +75,7 @@ func readTokens(sc *TokenScanner) (Node, error) {
 }
 
 func ReadNodes(r io.Reader) ([]Node, error) {
-	sc := NewTokenScanner(r)
+	sc := newTokenScanner(r)
 	if !sc.Scan() {
 		return nil, nil
 	}

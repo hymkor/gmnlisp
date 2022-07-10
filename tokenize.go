@@ -26,25 +26,25 @@ func readtoken(r *scanner.Scanner, lastRune rune) (string, rune) {
 	return buf1.String(), lastRune
 }
 
-type TokenScanner struct {
+type _TokenScanner struct {
 	lastToken string
 	lastRune  rune
 	sc        scanner.Scanner
 	EOF       bool
 }
 
-func NewTokenScanner(r io.Reader) *TokenScanner {
-	tr := &TokenScanner{}
+func newTokenScanner(r io.Reader) *_TokenScanner {
+	tr := &_TokenScanner{}
 	tr.sc.Init(r)
 	tr.lastRune = tr.sc.Next()
 	return tr
 }
 
-func (tr *TokenScanner) Token() string {
+func (tr *_TokenScanner) Token() string {
 	return tr.lastToken
 }
 
-func (tr *TokenScanner) Scan() bool {
+func (tr *_TokenScanner) Scan() bool {
 	for {
 		if tr.lastRune == scanner.EOF {
 			tr.EOF = true
