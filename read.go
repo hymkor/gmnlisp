@@ -3,14 +3,15 @@ package gmnlisp
 import (
 	"errors"
 	"fmt"
+	"io"
 	"regexp"
 	"strconv"
 	"strings"
 )
 
-var RxFloat = regexp.MustCompile(`^[0-9]+\.[0-9]*$`)
+var rxFloat = regexp.MustCompile(`^[0-9]+\.[0-9]*$`)
 
-var RxNumber = regexp.MustCompile("^[0-9]+$")
+var rxInteger = regexp.MustCompile("^[0-9]+$")
 
 func nodes2cons(nodes []Node) Node {
 	switch len(nodes) {
@@ -28,63 +29,68 @@ func nodes2cons(nodes []Node) Node {
 	}
 }
 
-func readTokens(tokens []string) (Node, []string, error) {
-	if len(tokens) < 1 {
-		return NullValue, tokens, nil
-	}
-	if tokens[0] == "(" {
+var ErrTooShortTokens = errors.New("too short tokens")
+
+func readTokens(sc *TokenScanner) (Node, error) {
+	token := sc.Token()
+	sc.Scan()
+	if token == "(" {
 		nodes := []Node{}
-		tokens = tokens[1:]
 		for {
-			if len(tokens) < 1 {
-				return nil, tokens, errors.New("too short tokens")
+			if sc.EOF {
+				return nil, ErrTooShortTokens
 			}
-			if tokens[0] == ")" {
-				return nodes2cons(nodes), tokens[1:], nil
+			if sc.Token() == ")" {
+				sc.Scan()
+				return nodes2cons(nodes), nil
 			}
-			var err error
-			var node1 Node
-			node1, tokens, err = readTokens(tokens)
+			node1, err := readTokens(sc)
 			if err != nil {
-				return nil, tokens, err
+				return nil, err
 			}
 			nodes = append(nodes, node1)
 		}
 	}
-	if RxFloat.MatchString(tokens[0]) {
-		val, err := strconv.ParseFloat(tokens[0], 64)
+	if rxFloat.MatchString(token) {
+		val, err := strconv.ParseFloat(token, 64)
 		if err != nil {
-			return nil, tokens, fmt.Errorf("%s: %w", tokens[0], err)
+			return nil, fmt.Errorf("%s: %w", token, err)
 		}
-		return NodeFloat(val), tokens[1:], nil
+		return NodeFloat(val), nil
 	}
-	if RxNumber.MatchString(tokens[0]) {
-		val, err := strconv.ParseInt(tokens[0], 10, 63)
+	if rxInteger.MatchString(token) {
+		val, err := strconv.ParseInt(token, 10, 63)
 		if err != nil {
-			return nil, tokens, fmt.Errorf("%s: %w", tokens[0], err)
+			return nil, fmt.Errorf("%s: %w", token, err)
 		}
-		return NodeInteger(val), tokens[1:], nil
+		return NodeInteger(val), nil
 	}
-	if strings.HasPrefix(tokens[0], "\"") {
-		return NodeString(strings.Replace(tokens[0], "\"", "", -1)), tokens[1:], nil
+	if strings.HasPrefix(token, "\"") {
+		return NodeString(strings.Replace(token, "\"", "", -1)), nil
 	}
-	if tokens[0] == "nil" {
-		return NullValue, tokens[1:], nil
+	if token == "nil" {
+		return NullValue, nil
 	}
-	return NodeSymbol(tokens[0]), tokens[1:], nil
+	return NodeSymbol(token), nil
 }
 
-func ReadString(s string) ([]Node, error) {
-	tokens := StringToTokens(s)
+func ReadNodes(r io.Reader) ([]Node, error) {
+	sc := NewTokenScanner(r)
+	if !sc.Scan() {
+		return nil, nil
+	}
 	result := []Node{}
-	for len(tokens) > 0 {
-		var err error
-		var list Node
-		list, tokens, err = readTokens(tokens)
+	for !sc.EOF {
+		token, err := readTokens(sc)
 		if err != nil {
 			return nil, err
 		}
-		result = append(result, list)
+		result = append(result, token)
 	}
 	return result, nil
+
+}
+
+func ReadString(s string) ([]Node, error) {
+	return ReadNodes(strings.NewReader(s))
 }
