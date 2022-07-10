@@ -71,7 +71,7 @@ func cmdProgn(instance *Instance, c Node) (Node, error) {
 	return progn(instance, c)
 }
 
-type NodeLambda struct {
+type Lambda struct {
 	param []string
 	code  Node
 	name  string
@@ -100,22 +100,22 @@ func newLambda(node Node, blockName string) (Node, error) {
 		return nil, err
 	}
 
-	return &NodeLambda{
+	return &Lambda{
 		param: params,
 		code:  cons.GetCdr(),
 		name:  blockName,
 	}, nil
 }
 
-func (nl *NodeLambda) PrintTo(w io.Writer) {
+func (nl *Lambda) PrintTo(w io.Writer) {
 	nl.prinX(w, true)
 }
 
-func (nl *NodeLambda) PrincTo(w io.Writer) {
+func (nl *Lambda) PrincTo(w io.Writer) {
 	nl.prinX(w, false)
 }
 
-func (NL *NodeLambda) prinX(w io.Writer, rich bool) {
+func (NL *Lambda) prinX(w io.Writer, rich bool) {
 	io.WriteString(w, "(lambda (")
 	dem := ""
 	for _, name := range NL.param {
@@ -136,11 +136,11 @@ func (NL *NodeLambda) prinX(w io.Writer, rich bool) {
 	io.WriteString(w, ")")
 }
 
-func (*NodeLambda) Null() bool {
+func (*Lambda) Null() bool {
 	return false
 }
 
-func (NL *NodeLambda) Call(instance *Instance, n Node) (Node, error) {
+func (NL *Lambda) Call(instance *Instance, n Node) (Node, error) {
 	backups := map[string]Node{}
 	nobackups := map[string]struct{}{}
 	for _, name := range NL.param {
@@ -178,11 +178,11 @@ func (NL *NodeLambda) Call(instance *Instance, n Node) (Node, error) {
 	return result, err
 }
 
-func (NL *NodeLambda) Eval(*Instance) (Node, error) {
+func (NL *Lambda) Eval(*Instance) (Node, error) {
 	return NL, nil
 }
 
-func (*NodeLambda) Equals(Node) bool {
+func (*Lambda) Equals(Node) bool {
 	return false
 }
 
