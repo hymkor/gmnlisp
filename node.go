@@ -7,7 +7,10 @@ import (
 	"strings"
 )
 
-var ErrDevisionByZero = errors.New("Devision by zeor")
+var (
+	ErrDevisionByZero  = errors.New("Devision by zeor")
+	ErrVariableUnbound = errors.New("Unbound variable")
+)
 
 type Node interface {
 	Null() bool
@@ -128,7 +131,7 @@ func (this NodeSymbol) Eval(instance *Instance) (Node, error) {
 	if value, ok := instance.globals[name]; ok {
 		return value, nil
 	}
-	return nil, fmt.Errorf("variable `%s` unbound", name)
+	return nil, fmt.Errorf("%w: `%s`", ErrVariableUnbound, name)
 }
 
 func (this NodeSymbol) Equals(n Node) bool {

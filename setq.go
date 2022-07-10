@@ -11,7 +11,7 @@ func CmdSetq(instance *Instance, node Node) (Node, error) {
 		if name == "" {
 			_name, ok := n.(NodeSymbol)
 			if !ok {
-				return fmt.Errorf("invalid name: %s", Node2String(node))
+				return fmt.Errorf("%w: `%s`", ErrExpectedSymbol, Node2String(node))
 			}
 			name = string(_name)
 		} else {
