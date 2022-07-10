@@ -2,14 +2,18 @@ package gmnlisp
 
 import (
 	"fmt"
+	"io"
+	"os"
 )
 
 type Instance struct {
 	globals map[string]Node
+	Stdout  io.Writer
 }
 
 func New() *Instance {
 	return &Instance{
+		Stdout: os.Stdout,
 		globals: map[string]Node{
 			"T":           TrueValue,
 			"nil":         NullValue,

@@ -2,13 +2,15 @@ package gmnlisp
 
 import (
 	"fmt"
-	"os"
+	"io"
 )
 
-var terpri func()
+var terpri func(w io.Writer)
 
 func init() {
-	terpri = func() { terpri = func() { fmt.Println() } }
+	terpri = func(w io.Writer) {
+		terpri = func(w io.Writer) { fmt.Fprintln(w) }
+	}
 }
 
 func cmdPrinX(instance *Instance, this Node, f func(node Node)) (Node, error) {
@@ -24,20 +26,20 @@ func cmdPrinX(instance *Instance, this Node, f func(node Node)) (Node, error) {
 	return value, nil
 }
 
-func cmdPrint(instance *Instance, this Node) (Node, error) {
-	terpri()
-	return cmdPrinX(instance, this, func(node Node) { node.PrintTo(os.Stdout) })
+func cmdPrint(ins *Instance, this Node) (Node, error) {
+	terpri(ins.Stdout)
+	return cmdPrinX(ins, this, func(node Node) { node.PrintTo(ins.Stdout) })
 }
 
-func cmdPrin1(instance *Instance, this Node) (Node, error) {
-	return cmdPrinX(instance, this, func(node Node) { node.PrintTo(os.Stdout) })
+func cmdPrin1(ins *Instance, this Node) (Node, error) {
+	return cmdPrinX(ins, this, func(node Node) { node.PrintTo(ins.Stdout) })
 }
 
-func cmdPrinc(instance *Instance, this Node) (Node, error) {
-	return cmdPrinX(instance, this, func(node Node) { node.PrincTo(os.Stdout) })
+func cmdPrinc(ins *Instance, this Node) (Node, error) {
+	return cmdPrinX(ins, this, func(node Node) { node.PrincTo(ins.Stdout) })
 }
 
-func cmdTerpri(*Instance, Node) (Node, error) {
-	terpri()
+func cmdTerpri(ins *Instance, _ Node) (Node, error) {
+	terpri(ins.Stdout)
 	return NullValue, nil
 }
