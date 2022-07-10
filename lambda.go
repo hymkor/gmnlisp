@@ -158,7 +158,7 @@ func (NL *Lambda) Call(instance *Instance, n Node) (Node, error) {
 			}
 			n = cons.GetCdr()
 		} else {
-			instance.globals[name] = NullValue
+			instance.globals[name] = Null
 		}
 	}
 	defer func() {

@@ -64,7 +64,7 @@ func cmdAtom(_ *Instance, param Node) (Node, error) {
 		return nil, ErrExpectedCons
 	}
 	if _, ok := cons.Car.(*Cons); ok {
-		return NullValue, nil
+		return Null, nil
 	}
 	return TrueValue, nil
 }
@@ -82,7 +82,7 @@ func cmdEqual(ins *Instance, param Node) (Node, error) {
 			return nil, err
 		}
 		if !first.Equals(next) {
-			return NullValue, nil
+			return Null, nil
 		}
 	}
 	return TrueValue, nil

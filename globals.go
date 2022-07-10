@@ -16,7 +16,7 @@ func New() *Instance {
 		Stdout: os.Stdout,
 		globals: map[string]Node{
 			"T":           TrueValue,
-			"nil":         NullValue,
+			"nil":         Null,
 			"print":       Function(cmdPrint),
 			"prin1":       Function(cmdPrin1),
 			"princ":       Function(cmdPrinc),

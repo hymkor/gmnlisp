@@ -41,5 +41,5 @@ func cmdPrinc(ins *Instance, this Node) (Node, error) {
 
 func cmdTerpri(ins *Instance, _ Node) (Node, error) {
 	terpri(ins.Stdout)
-	return NullValue, nil
+	return Null, nil
 }

@@ -16,9 +16,9 @@ var rxInteger = regexp.MustCompile("^[0-9]+$")
 func nodes2cons(nodes []Node) Node {
 	switch len(nodes) {
 	case 0:
-		return NullValue
+		return Null
 	case 1:
-		return &Cons{nodes[0], NullValue}
+		return &Cons{nodes[0], Null}
 	case 3:
 		if sym, ok := nodes[1].(Symbol); ok && string(sym) == "." {
 			return &Cons{nodes[0], nodes[2]}
@@ -69,7 +69,7 @@ func readTokens(sc *_TokenScanner) (Node, error) {
 		return String(strings.Replace(token, "\"", "", -1)), nil
 	}
 	if token == "nil" {
-		return NullValue, nil
+		return Null, nil
 	}
 	return Symbol(token), nil
 }

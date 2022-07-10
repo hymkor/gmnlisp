@@ -80,7 +80,7 @@ func (this _NullType) Equals(n Node) bool {
 	return ok
 }
 
-var NullValue Node = _NullType{}
+var Null Node = _NullType{}
 
 type String string
 
