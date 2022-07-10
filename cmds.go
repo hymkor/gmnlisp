@@ -2,7 +2,6 @@ package gmnlisp
 
 import (
 	"errors"
-	"fmt"
 )
 
 var (
@@ -11,20 +10,6 @@ var (
 	ErrExpectedNumber           = errors.New("Expected a number")
 	ErrExpectedSymbol           = errors.New("Expected symbol")
 )
-
-func ForEachWithoutEval(this Node, f func(Node) error) error {
-	for HasValue(this) {
-		cons, ok := this.(*Cons)
-		if !ok {
-			return fmt.Errorf("%w (%s)", ErrExpectedCons, toString(this))
-		}
-		if err := f(cons.Car); err != nil {
-			return err
-		}
-		this = cons.Cdr
-	}
-	return nil
-}
 
 func cmdCons(ins *Instance, node Node) (Node, error) {
 	first, rest, err := ins.ShiftAndEvalCar(node)

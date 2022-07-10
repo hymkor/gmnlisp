@@ -1,5 +1,9 @@
 package gmnlisp
 
+import (
+	"fmt"
+)
+
 type Instance struct {
 	globals map[string]Node
 }
@@ -68,4 +72,18 @@ func (ins *Instance) Inject(this Node, f func(left, right Node) (Node, error)) (
 		}
 	}
 	return result, nil
+}
+
+func forEachWithoutEval(this Node, f func(Node) error) error {
+	for HasValue(this) {
+		cons, ok := this.(*Cons)
+		if !ok {
+			return fmt.Errorf("%w (%s)", ErrExpectedCons, toString(this))
+		}
+		if err := f(cons.Car); err != nil {
+			return err
+		}
+		this = cons.Cdr
+	}
+	return nil
 }

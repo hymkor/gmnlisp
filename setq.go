@@ -7,7 +7,7 @@ import (
 func cmdSetq(instance *Instance, node Node) (Node, error) {
 	var name string
 	var value Node = NullValue
-	err := ForEachWithoutEval(node, func(n Node) error {
+	err := forEachWithoutEval(node, func(n Node) error {
 		if name == "" {
 			_name, ok := n.(NodeSymbol)
 			if !ok {
