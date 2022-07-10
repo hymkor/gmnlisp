@@ -54,33 +54,33 @@ func (TrueType) Equals(n Node) bool {
 	return ok
 }
 
-type Null struct{}
+type _NullType struct{}
 
-func (Null) PrintTo(w io.Writer) {
+func (_NullType) PrintTo(w io.Writer) {
 	io.WriteString(w, "nil")
 }
 
-func (Null) PrincTo(w io.Writer) {
+func (_NullType) PrincTo(w io.Writer) {
 	io.WriteString(w, "nil")
 }
 
-func (Null) Null() bool {
+func (_NullType) Null() bool {
 	return true
 }
 
-func (this Null) Eval(*Instance) (Node, error) {
+func (this _NullType) Eval(*Instance) (Node, error) {
 	return this, nil // errors.New("Null can not be evaluate.")
 }
 
-func (this Null) Equals(n Node) bool {
+func (this _NullType) Equals(n Node) bool {
 	if n == nil {
 		return true
 	}
-	_, ok := n.(Null)
+	_, ok := n.(_NullType)
 	return ok
 }
 
-var NullValue = Null{}
+var NullValue Node = _NullType{}
 
 type NodeString string
 
