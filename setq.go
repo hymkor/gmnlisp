@@ -7,7 +7,7 @@ import (
 func CmdSetq(node Node) (Node, error) {
 	var name string
 	var value Node = NullValue
-	err := ForEachQuote(node, func(n Node) error {
+	err := ForEachWithoutEval(node, func(n Node) error {
 		if name == "" {
 			_name, ok := n.(NodeSymbol)
 			if !ok {

@@ -12,7 +12,7 @@ var (
 	ErrExpectedSymbol           = errors.New("Expected symbol")
 )
 
-func ForEachQuote(this Node, f func(Node) error) error {
+func ForEachWithoutEval(this Node, f func(Node) error) error {
 	for HasValue(this) {
 		cons, ok := this.(*Cons)
 		if !ok {

@@ -14,7 +14,7 @@ func CmdLet(param Node) (Node, error) {
 	backups := map[string]Node{}
 	nobackups := map[string]struct{}{}
 
-	err := ForEachQuote(cons.Car, func(node Node) error {
+	err := ForEachWithoutEval(cons.Car, func(node Node) error {
 		cons, ok := node.(*Cons)
 		if !ok {
 			return fmt.Errorf("%w: `%s`",
