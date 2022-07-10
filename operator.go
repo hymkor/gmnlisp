@@ -8,12 +8,11 @@ import (
 
 var ErrNotSupportType = errors.New("Not support type")
 
-type CanPlus interface {
-	Node
-	Plus(Node) (Node, error)
-}
-
 func cmdPlus(ins *Instance, param Node) (Node, error) {
+	type CanPlus interface {
+		Node
+		Plus(Node) (Node, error)
+	}
 	return ins.Inject(param, func(left, right Node) (Node, error) {
 		if _left, ok := left.(CanPlus); ok {
 			return _left.Plus(right)
@@ -22,12 +21,11 @@ func cmdPlus(ins *Instance, param Node) (Node, error) {
 	})
 }
 
-type CanMinus interface {
-	Node
-	Minus(Node) (Node, error)
-}
-
 func cmdMinus(ins *Instance, param Node) (Node, error) {
+	type CanMinus interface {
+		Node
+		Minus(Node) (Node, error)
+	}
 	return ins.Inject(param, func(left, right Node) (Node, error) {
 		if _left, ok := left.(CanMinus); ok {
 			return _left.Minus(right)
@@ -36,12 +34,11 @@ func cmdMinus(ins *Instance, param Node) (Node, error) {
 	})
 }
 
-type CanMulti interface {
-	Node
-	Multi(Node) (Node, error)
-}
-
 func cmdMulti(ins *Instance, param Node) (Node, error) {
+	type CanMulti interface {
+		Node
+		Multi(Node) (Node, error)
+	}
 	return ins.Inject(param, func(left, right Node) (Node, error) {
 		if _left, ok := left.(CanMulti); ok {
 			return _left.Multi(right)
@@ -50,12 +47,11 @@ func cmdMulti(ins *Instance, param Node) (Node, error) {
 	})
 }
 
-type CanDevide interface {
-	Node
-	Devide(Node) (Node, error)
-}
-
 func cmdDevide(ins *Instance, param Node) (Node, error) {
+	type CanDevide interface {
+		Node
+		Devide(Node) (Node, error)
+	}
 	return ins.Inject(param, func(left, right Node) (Node, error) {
 		if _left, ok := left.(CanDevide); ok {
 			return _left.Devide(right)
