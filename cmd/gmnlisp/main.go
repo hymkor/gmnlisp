@@ -34,11 +34,9 @@ func mains(args []string) error {
 			return err
 		}
 	}
-	if gmnlisp.HasValue(last) {
-		fmt.Println()
-		last.PrintTo(os.Stdout)
-		fmt.Println()
-	}
+	lisp.Interpret("(terpri)")
+	last.PrintTo(os.Stdout)
+	lisp.Interpret("(terpri)")
 	return nil
 }
 
