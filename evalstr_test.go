@@ -36,6 +36,8 @@ func TestOperators(t *testing.T) {
 	evalTest(t, `(>= 2.0 3)`, Null)
 	evalTest(t, `(>= 3 3)`, True)
 	evalTest(t, `(>= 4 3)`, True)
+	evalTest(t, `(< "a" "b")`, True)
+	evalTest(t, `(> "a" "b")`, Null)
 }
 
 func TestCmdCond(t *testing.T) {

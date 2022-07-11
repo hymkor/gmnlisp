@@ -112,6 +112,16 @@ func (this String) Plus(n Node) (Node, error) {
 	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n))
 }
 
+func (this String) LessThan(n Node) (Node, error) {
+	if value, ok := n.(String); ok {
+		if this < value {
+			return True, nil
+		}
+		return Null, nil
+	}
+	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n))
+}
+
 type Symbol string
 
 func (this Symbol) PrintTo(w io.Writer) {
