@@ -27,7 +27,15 @@ func TestOperators(t *testing.T) {
 	evalTest(t, "(/ 6 2)", Integer(3))
 	evalTest(t, `(+ "1" "2")`, String("12"))
 	evalTest(t, `(> 2 1.0)`, True)
+	evalTest(t, `(> 2.0 3)`, Null)
+	evalTest(t, `(< 2.0 3)`, True)
 	evalTest(t, `(< 2 1.0)`, Null)
+	evalTest(t, `(<= 2.0 3)`, True)
+	evalTest(t, `(<= 3 3)`, True)
+	evalTest(t, `(<= 4 3)`, Null)
+	evalTest(t, `(>= 2.0 3)`, Null)
+	evalTest(t, `(>= 3 3)`, True)
+	evalTest(t, `(>= 4 3)`, True)
 }
 
 func TestCmdCond(t *testing.T) {

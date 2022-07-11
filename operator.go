@@ -86,6 +86,43 @@ func cmdGreaterThan(ins *Instance, param Node) (Node, error) {
 	})
 }
 
+func not(n Node, err error) (Node, error) {
+	if IsNull(n) {
+		return True, err
+	}
+	return Null, err
+}
+
+func cmdGreaterOrEqual(ins *Instance, param Node) (Node, error) {
+	type CanLessThan interface {
+		Node
+		LessThan(Node) (Node, error)
+	}
+	return ins.Inject(param, func(left, right Node) (Node, error) {
+		//     left >= right
+		// <=> not (left < right )
+		if _left, ok := left.(CanLessThan); ok {
+			return not(_left.LessThan(right))
+		}
+		return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(right))
+	})
+}
+
+func cmdLessOrEqual(ins *Instance, param Node) (Node, error) {
+	type CanLessThan interface {
+		Node
+		LessThan(Node) (Node, error)
+	}
+	return ins.Inject(param, func(left, right Node) (Node, error) {
+		//     left <= right
+		// <=> not (right < left )
+		if _right, ok := right.(CanLessThan); ok {
+			return not(_right.LessThan(left))
+		}
+		return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(right))
+	})
+}
+
 func cmdTruncate(ins *Instance, this Node) (Node, error) {
 	first, _, err := ins.ShiftAndEvalCar(this)
 	if err != nil {

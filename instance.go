@@ -28,6 +28,8 @@ func New() *Instance {
 			"/":           Function(cmdDevide),
 			"<":           Function(cmdLessThan),
 			">":           Function(cmdGreaterThan),
+			"<=":          Function(cmdLessOrEqual),
+			">=":          Function(cmdGreaterOrEqual),
 			"cons":        Function(cmdCons),
 			"car":         Function(cmdCar),
 			"cdr":         Function(cmdCdr),
