@@ -60,6 +60,32 @@ func cmdDevide(ins *Instance, param Node) (Node, error) {
 	})
 }
 
+func cmdLessThan(ins *Instance, param Node) (Node, error) {
+	type CanLessThan interface {
+		Node
+		LessThan(Node) (Node, error)
+	}
+	return ins.Inject(param, func(left, right Node) (Node, error) {
+		if _left, ok := left.(CanLessThan); ok {
+			return _left.LessThan(right)
+		}
+		return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(left))
+	})
+}
+
+func cmdGreaterThan(ins *Instance, param Node) (Node, error) {
+	type CanLessThan interface {
+		Node
+		LessThan(Node) (Node, error)
+	}
+	return ins.Inject(param, func(left, right Node) (Node, error) {
+		if _right, ok := right.(CanLessThan); ok {
+			return _right.LessThan(left)
+		}
+		return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(right))
+	})
+}
+
 func cmdTruncate(ins *Instance, this Node) (Node, error) {
 	first, _, err := ins.ShiftAndEvalCar(this)
 	if err != nil {

@@ -74,6 +74,22 @@ func (this Integer) Devide(n Node) (Node, error) {
 	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n))
 }
 
+func (this Integer) LessThan(n Node) (Node, error) {
+	if value, ok := n.(Integer); ok {
+		if this < value {
+			return True, nil
+		}
+		return Null, nil
+	}
+	if value, ok := n.(Float); ok {
+		if Float(this) < value {
+			return True, nil
+		}
+		return Null, nil
+	}
+	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n))
+}
+
 type Float float64
 
 func (n Float) PrintTo(w io.Writer) {
@@ -139,6 +155,22 @@ func (this Float) Devide(n Node) (Node, error) {
 			return nil, ErrDevisionByZero
 		}
 		return this / Float(value), nil
+	}
+	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n))
+}
+
+func (this Float) LessThan(n Node) (Node, error) {
+	if value, ok := n.(Float); ok {
+		if this < value {
+			return True, nil
+		}
+		return Null, nil
+	}
+	if value, ok := n.(Integer); ok {
+		if this < Float(value) {
+			return True, nil
+		}
+		return Null, nil
 	}
 	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n))
 }
