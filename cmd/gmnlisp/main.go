@@ -29,12 +29,12 @@ func mains(args []string) error {
 		if err != nil {
 			return err
 		}
-		last, err = lisp.Interpret(string(script))
+		last, err = lisp.InterpretBytes(script)
 		if err != nil {
 			return err
 		}
 	}
-	if !gmnlisp.IsNull(last) {
+	if gmnlisp.HasValue(last) {
 		fmt.Println()
 		last.PrintTo(os.Stdout)
 		fmt.Println()

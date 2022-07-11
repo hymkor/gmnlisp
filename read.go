@@ -1,6 +1,7 @@
 package gmnlisp
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"io"
@@ -74,7 +75,22 @@ func readTokens(sc *_TokenScanner) (Node, error) {
 	return Symbol(token), nil
 }
 
-func ReadNodes(r io.Reader) ([]Node, error) {
+type NodeSlice []Node
+
+func (ns NodeSlice) Eval(ins *Instance) (Node, error) {
+	var result Node
+	var err error
+
+	for _, c := range ns {
+		result, err = c.Eval(ins)
+		if err != nil {
+			return result, err
+		}
+	}
+	return result, nil
+}
+
+func Read(r io.Reader) (NodeSlice, error) {
 	sc := newTokenScanner(r)
 	if !sc.Scan() {
 		return nil, nil
@@ -85,12 +101,19 @@ func ReadNodes(r io.Reader) ([]Node, error) {
 		if err != nil {
 			return nil, err
 		}
+		token, err = macroQuote(token)
+		if err != nil {
+			return nil, err
+		}
 		result = append(result, token)
 	}
-	return result, nil
-
+	return NodeSlice(result), nil
 }
 
-func ReadString(s string) ([]Node, error) {
-	return ReadNodes(strings.NewReader(s))
+func ReadString(s string) (NodeSlice, error) {
+	return Read(strings.NewReader(s))
+}
+
+func ReadBytes(bin []byte) (NodeSlice, error) {
+	return Read(bytes.NewReader(bin))
 }
