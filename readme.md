@@ -6,10 +6,15 @@ Gommon Lisp
 Now under constructing.  
 Experimental implementing
 
+- T
 - \*
 - \+
 - \-
 - \/
+- \<
+- \<=
+- \>
+- \>=
 - atom
 - block
 - car
@@ -18,6 +23,7 @@ Experimental implementing
 - cons
 - defun
 - equal
+- equalp
 - lambda
 - let
 - prin1
