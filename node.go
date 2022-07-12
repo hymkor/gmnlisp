@@ -13,7 +13,7 @@ var (
 )
 
 type Node interface {
-	Eval(*Instance) (Node, error)
+	Eval(*World) (Node, error)
 	Equals(Node) bool
 	EqualP(Node) bool
 	PrintTo(io.Writer)
@@ -39,7 +39,7 @@ func (_TrueType) PrincTo(w io.Writer) {
 	io.WriteString(w, "T")
 }
 
-func (t _TrueType) Eval(*Instance) (Node, error) {
+func (t _TrueType) Eval(*World) (Node, error) {
 	return t, nil
 }
 
@@ -65,7 +65,7 @@ func (_NullType) PrincTo(w io.Writer) {
 	io.WriteString(w, "nil")
 }
 
-func (nt _NullType) Eval(*Instance) (Node, error) {
+func (nt _NullType) Eval(*World) (Node, error) {
 	return nt, nil
 }
 
@@ -93,7 +93,7 @@ func (s String) PrincTo(w io.Writer) {
 	io.WriteString(w, string(s))
 }
 
-func (s String) Eval(*Instance) (Node, error) {
+func (s String) Eval(*World) (Node, error) {
 	return s, nil // errors.New("String can not be evaluate.")
 }
 
@@ -133,9 +133,9 @@ func (s Symbol) PrincTo(w io.Writer) {
 	io.WriteString(w, string(s))
 }
 
-func (s Symbol) Eval(ins *Instance) (Node, error) {
+func (s Symbol) Eval(w *World) (Node, error) {
 	name := string(s)
-	if value, ok := ins.globals[name]; ok {
+	if value, ok := w.globals[name]; ok {
 		return value, nil
 	}
 	return nil, fmt.Errorf("%w: `%s`", ErrVariableUnbound, name)

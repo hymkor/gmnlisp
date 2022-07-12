@@ -5,8 +5,8 @@ import (
 )
 
 func evalTest(t *testing.T, equation string, expect Node) {
-	ins := New()
-	result, err := ins.Interpret(equation)
+	w := New()
+	result, err := w.Interpret(equation)
 	if err != nil {
 		t.Fatalf("%s: %s", equation, err.Error())
 		return

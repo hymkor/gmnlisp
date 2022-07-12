@@ -6,13 +6,13 @@ import (
 	"os"
 )
 
-type Instance struct {
+type World struct {
 	globals map[string]Node
 	Stdout  io.Writer
 }
 
-func New() *Instance {
-	return &Instance{
+func New() *World {
+	return &World{
 		Stdout: os.Stdout,
 		globals: map[string]Node{
 			"T":           True,
@@ -51,20 +51,20 @@ func New() *Instance {
 	}
 }
 
-func (ins *Instance) ShiftAndEvalCar(node Node) (Node, Node, error) {
+func (w *World) ShiftAndEvalCar(node Node) (Node, Node, error) {
 	cons, ok := node.(*Cons)
 	if !ok {
 		return nil, nil, ErrTooFewOrTooManyArguments
 	}
-	value, err := cons.GetCar().Eval(ins)
+	value, err := cons.GetCar().Eval(w)
 	if err != nil {
 		return nil, nil, err
 	}
 	return value, cons.Cdr, nil
 }
 
-func (ins *Instance) Inject(this Node, f func(left, right Node) (Node, error)) (Node, error) {
-	result, rest, err := ins.ShiftAndEvalCar(this)
+func (w *World) Inject(this Node, f func(left, right Node) (Node, error)) (Node, error) {
+	result, rest, err := w.ShiftAndEvalCar(this)
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +72,7 @@ func (ins *Instance) Inject(this Node, f func(left, right Node) (Node, error)) (
 		var next Node
 		var err error
 
-		next, rest, err = ins.ShiftAndEvalCar(rest)
+		next, rest, err = w.ShiftAndEvalCar(rest)
 		if err != nil {
 			return nil, err
 		}
@@ -98,18 +98,18 @@ func forEachWithoutEval(this Node, f func(Node) error) error {
 	return nil
 }
 
-func (ins *Instance) Interpret(code string) (Node, error) {
+func (w *World) Interpret(code string) (Node, error) {
 	compiled, err := ReadString(code)
 	if err != nil {
 		return nil, err
 	}
-	return compiled.Eval(ins)
+	return compiled.Eval(w)
 }
 
-func (ins *Instance) InterpretBytes(code []byte) (Node, error) {
+func (w *World) InterpretBytes(code []byte) (Node, error) {
 	compiled, err := ReadBytes(code)
 	if err != nil {
 		return nil, err
 	}
-	return compiled.Eval(ins)
+	return compiled.Eval(w)
 }

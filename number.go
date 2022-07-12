@@ -15,7 +15,7 @@ func (i Integer) PrincTo(w io.Writer) {
 	fmt.Fprintf(w, "%d", int64(i))
 }
 
-func (i Integer) Eval(*Instance) (Node, error) {
+func (i Integer) Eval(*World) (Node, error) {
 	return i, nil
 }
 
@@ -98,7 +98,7 @@ func (f Float) PrincTo(w io.Writer) {
 	fmt.Fprintf(w, "%f", float64(f))
 }
 
-func (f Float) Eval(*Instance) (Node, error) {
+func (f Float) Eval(*World) (Node, error) {
 	return f, nil
 }
 

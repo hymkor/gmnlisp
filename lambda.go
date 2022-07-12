@@ -18,19 +18,19 @@ func (e *ErrEarlyReturns) Error() string {
 	return fmt.Sprintf("Unexpected (return-from %s)", e.Name)
 }
 
-func cmdReturn(ins *Instance, node Node) (Node, error) {
+func cmdReturn(w *World, node Node) (Node, error) {
 	cons, ok := node.(*Cons)
 	if !ok {
 		return nil, ErrExpectedCons
 	}
-	value, err := cons.GetCar().Eval(ins)
+	value, err := cons.GetCar().Eval(w)
 	if err != nil {
 		return nil, err
 	}
 	return nil, &ErrEarlyReturns{Value: value, Name: ""}
 }
 
-func cmdReturnFrom(ins *Instance, node Node) (Node, error) {
+func cmdReturnFrom(w *World, node Node) (Node, error) {
 	cons, ok := node.(*Cons)
 	if !ok {
 		return nil, ErrExpectedCons
@@ -43,14 +43,14 @@ func cmdReturnFrom(ins *Instance, node Node) (Node, error) {
 	if !ok {
 		return nil, ErrExpectedCons
 	}
-	value, err := cons.GetCar().Eval(ins)
+	value, err := cons.GetCar().Eval(w)
 	if err != nil {
 		return nil, err
 	}
 	return nil, &ErrEarlyReturns{Value: value, Name: string(symbol)}
 }
 
-func progn(ins *Instance, c Node) (Node, error) {
+func progn(w *World, c Node) (Node, error) {
 	var last Node
 	for HasValue(c) {
 		cons, ok := c.(*Cons)
@@ -58,7 +58,7 @@ func progn(ins *Instance, c Node) (Node, error) {
 			return nil, ErrExpectedCons
 		}
 		var err error
-		last, err = cons.GetCar().Eval(ins)
+		last, err = cons.GetCar().Eval(w)
 		if err != nil {
 			return nil, err
 		}
@@ -67,8 +67,8 @@ func progn(ins *Instance, c Node) (Node, error) {
 	return last, nil
 }
 
-func cmdProgn(ins *Instance, c Node) (Node, error) {
-	return progn(ins, c)
+func cmdProgn(w *World, c Node) (Node, error) {
+	return progn(w, c)
 }
 
 type Lambda struct {
@@ -77,7 +77,7 @@ type Lambda struct {
 	name  string
 }
 
-func cmdLambda(_ *Instance, node Node) (Node, error) {
+func cmdLambda(_ *World, node Node) (Node, error) {
 	return newLambda(node, "")
 }
 
@@ -136,11 +136,11 @@ func (nl *Lambda) prinX(w io.Writer, rich bool) {
 	io.WriteString(w, ")")
 }
 
-func (nl *Lambda) Call(ins *Instance, n Node) (Node, error) {
+func (nl *Lambda) Call(w *World, n Node) (Node, error) {
 	backups := map[string]Node{}
 	nobackups := map[string]struct{}{}
 	for _, name := range nl.param {
-		if value, ok := ins.globals[name]; ok {
+		if value, ok := w.globals[name]; ok {
 			backups[name] = value
 		} else {
 			nobackups[name] = struct{}{}
@@ -148,33 +148,33 @@ func (nl *Lambda) Call(ins *Instance, n Node) (Node, error) {
 
 		if cons, ok := n.(*Cons); ok {
 			var err error
-			ins.globals[name], err = cons.GetCar().Eval(ins)
+			w.globals[name], err = cons.GetCar().Eval(w)
 			if err != nil {
 				return nil, err
 			}
 			n = cons.GetCdr()
 		} else {
-			ins.globals[name] = Null
+			w.globals[name] = Null
 		}
 	}
 	defer func() {
 		for name := range nobackups {
-			delete(ins.globals, name)
+			delete(w.globals, name)
 		}
 		for name, value := range backups {
-			ins.globals[name] = value
+			w.globals[name] = value
 		}
 	}()
 	var errEarlyReturns *ErrEarlyReturns
 
-	result, err := progn(ins, nl.code)
+	result, err := progn(w, nl.code)
 	if errors.As(err, &errEarlyReturns) && errEarlyReturns.Name == string(nl.name) {
 		return errEarlyReturns.Value, nil
 	}
 	return result, err
 }
 
-func (nl *Lambda) Eval(*Instance) (Node, error) {
+func (nl *Lambda) Eval(*World) (Node, error) {
 	return nl, nil
 }
 
@@ -186,7 +186,7 @@ func (*Lambda) EqualP(Node) bool {
 	return false
 }
 
-func cmdDefun(ins *Instance, node Node) (Node, error) {
+func cmdDefun(w *World, node Node) (Node, error) {
 	cons, ok := node.(*Cons)
 	if !ok {
 		return nil, ErrExpectedCons
@@ -201,11 +201,11 @@ func cmdDefun(ins *Instance, node Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	ins.globals[name] = lambda
+	w.globals[name] = lambda
 	return lambda, nil
 }
 
-func cmdBlock(ins *Instance, node Node) (Node, error) {
+func cmdBlock(w *World, node Node) (Node, error) {
 	cons, ok := node.(*Cons)
 	if !ok {
 		return nil, ErrExpectedCons
@@ -217,14 +217,14 @@ func cmdBlock(ins *Instance, node Node) (Node, error) {
 	name := string(_name)
 
 	var errEarlyReturns *ErrEarlyReturns
-	rv, err := progn(ins, cons.Cdr)
+	rv, err := progn(w, cons.Cdr)
 	if errors.As(err, &errEarlyReturns) && errEarlyReturns.Name == name {
 		return errEarlyReturns.Value, nil
 	}
 	return rv, err
 }
 
-func cmdCond(ins *Instance, node Node) (Node, error) {
+func cmdCond(w *World, node Node) (Node, error) {
 	for HasValue(node) {
 		cons, ok := node.(*Cons)
 		if !ok {
@@ -236,12 +236,12 @@ func cmdCond(ins *Instance, node Node) (Node, error) {
 		if !ok {
 			return nil, fmt.Errorf("%w: %s", ErrExpectedCons, toString(cons.Car))
 		}
-		condition, err := conditionAndActions.GetCar().Eval(ins)
+		condition, err := conditionAndActions.GetCar().Eval(w)
 		if err != nil {
 			return nil, err
 		}
 		if HasValue(condition) {
-			result, err := progn(ins, conditionAndActions.Cdr)
+			result, err := progn(w, conditionAndActions.Cdr)
 			if err != nil {
 				return result, err
 			}

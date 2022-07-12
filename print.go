@@ -13,12 +13,12 @@ func init() {
 	}
 }
 
-func cmdPrinX(ins *Instance, this Node, f func(node Node)) (Node, error) {
+func cmdPrinX(w *World, this Node, f func(node Node)) (Node, error) {
 	cons, ok := this.(*Cons)
 	if !ok || HasValue(cons.Cdr) {
 		return nil, ErrTooFewOrTooManyArguments
 	}
-	value, err := cons.GetCar().Eval(ins)
+	value, err := cons.GetCar().Eval(w)
 	if err != nil {
 		return nil, err
 	}
@@ -26,20 +26,20 @@ func cmdPrinX(ins *Instance, this Node, f func(node Node)) (Node, error) {
 	return value, nil
 }
 
-func cmdPrint(ins *Instance, this Node) (Node, error) {
-	terpri(ins.Stdout)
-	return cmdPrinX(ins, this, func(node Node) { node.PrintTo(ins.Stdout) })
+func cmdPrint(w *World, this Node) (Node, error) {
+	terpri(w.Stdout)
+	return cmdPrinX(w, this, func(node Node) { node.PrintTo(w.Stdout) })
 }
 
-func cmdPrin1(ins *Instance, this Node) (Node, error) {
-	return cmdPrinX(ins, this, func(node Node) { node.PrintTo(ins.Stdout) })
+func cmdPrin1(w *World, this Node) (Node, error) {
+	return cmdPrinX(w, this, func(node Node) { node.PrintTo(w.Stdout) })
 }
 
-func cmdPrinc(ins *Instance, this Node) (Node, error) {
-	return cmdPrinX(ins, this, func(node Node) { node.PrincTo(ins.Stdout) })
+func cmdPrinc(w *World, this Node) (Node, error) {
+	return cmdPrinX(w, this, func(node Node) { node.PrincTo(w.Stdout) })
 }
 
-func cmdTerpri(ins *Instance, _ Node) (Node, error) {
-	terpri(ins.Stdout)
+func cmdTerpri(w *World, _ Node) (Node, error) {
+	terpri(w.Stdout)
 	return Null, nil
 }

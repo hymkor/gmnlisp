@@ -77,12 +77,12 @@ func readTokens(sc *_TokenScanner) (Node, error) {
 
 type NodeSlice []Node
 
-func (ns NodeSlice) Eval(ins *Instance) (Node, error) {
+func (ns NodeSlice) Eval(w *World) (Node, error) {
 	var result Node
 	var err error
 
 	for _, c := range ns {
-		result, err = c.Eval(ins)
+		result, err = c.Eval(w)
 		if err != nil {
 			return result, err
 		}

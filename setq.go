@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-func cmdSetq(ins *Instance, node Node) (Node, error) {
+func cmdSetq(w *World, node Node) (Node, error) {
 	var name string
 	var value Node = Null
 	err := forEachWithoutEval(node, func(n Node) error {
@@ -16,11 +16,11 @@ func cmdSetq(ins *Instance, node Node) (Node, error) {
 			name = string(_name)
 		} else {
 			var err error
-			value, err = n.Eval(ins)
+			value, err = n.Eval(w)
 			if err != nil {
 				return err
 			}
-			ins.globals[name] = value
+			w.globals[name] = value
 			name = ""
 		}
 		return nil
@@ -28,7 +28,7 @@ func cmdSetq(ins *Instance, node Node) (Node, error) {
 	return value, err
 }
 
-func cmdLet(ins *Instance, param Node) (Node, error) {
+func cmdLet(w *World, param Node) (Node, error) {
 	cons, ok := param.(*Cons)
 	if !ok {
 		return nil, fmt.Errorf("%w: `%s`", ErrExpectedCons, toString(param))
@@ -55,24 +55,24 @@ func cmdLet(ins *Instance, param Node) (Node, error) {
 			return fmt.Errorf("%w: `%s`",
 				ErrExpectedCons, toString(cons.Cdr))
 		}
-		value, err := cons.Car.Eval(ins)
+		value, err := cons.Car.Eval(w)
 		if err != nil {
 			return err
 		}
-		if val, ok := ins.globals[name]; ok {
+		if val, ok := w.globals[name]; ok {
 			backups[name] = val
 		} else {
 			nobackups[name] = struct{}{}
 		}
-		ins.globals[name] = value
+		w.globals[name] = value
 		return nil
 	})
 	defer func() {
 		for name := range nobackups {
-			delete(ins.globals, name)
+			delete(w.globals, name)
 		}
 		for name, value := range backups {
-			ins.globals[name] = value
+			w.globals[name] = value
 		}
 	}()
 
@@ -80,7 +80,7 @@ func cmdLet(ins *Instance, param Node) (Node, error) {
 		return nil, err
 	}
 
-	result, err := progn(ins, code)
+	result, err := progn(w, code)
 	if err != nil {
 		return result, err
 	}
