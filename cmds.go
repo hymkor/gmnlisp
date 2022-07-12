@@ -12,11 +12,11 @@ var (
 )
 
 func cmdCons(w *World, node Node) (Node, error) {
-	first, rest, err := w.ShiftAndEvalCar(node)
+	first, rest, err := w.shiftAndEvalCar(node)
 	if err != nil {
 		return nil, err
 	}
-	second, rest, err := w.ShiftAndEvalCar(rest)
+	second, rest, err := w.shiftAndEvalCar(rest)
 	if err != nil {
 		return nil, err
 	}
@@ -27,7 +27,7 @@ func cmdCons(w *World, node Node) (Node, error) {
 }
 
 func cmdCar(w *World, param Node) (Node, error) {
-	first, _, err := w.ShiftAndEvalCar(param)
+	first, _, err := w.shiftAndEvalCar(param)
 	if err != nil {
 		return nil, err
 	}
@@ -39,7 +39,7 @@ func cmdCar(w *World, param Node) (Node, error) {
 }
 
 func cmdCdr(w *World, param Node) (Node, error) {
-	first, _, err := w.ShiftAndEvalCar(param)
+	first, _, err := w.shiftAndEvalCar(param)
 	if err != nil {
 		return nil, err
 	}
@@ -70,14 +70,14 @@ func cmdAtom(_ *World, param Node) (Node, error) {
 }
 
 func cmdEqual(w *World, param Node) (Node, error) {
-	first, rest, err := w.ShiftAndEvalCar(param)
+	first, rest, err := w.shiftAndEvalCar(param)
 	if err != nil {
 		return nil, err
 	}
 	for HasValue(rest) {
 		var next Node
 
-		next, rest, err = w.ShiftAndEvalCar(rest)
+		next, rest, err = w.shiftAndEvalCar(rest)
 		if err != nil {
 			return nil, err
 		}

@@ -158,7 +158,7 @@ func cmdLessOrEqual(w *World, param Node) (Node, error) {
 }
 
 func cmdTruncate(w *World, this Node) (Node, error) {
-	first, _, err := w.ShiftAndEvalCar(this)
+	first, _, err := w.shiftAndEvalCar(this)
 	if err != nil {
 		return nil, err
 	}

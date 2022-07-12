@@ -51,7 +51,7 @@ func New() *World {
 	}
 }
 
-func (w *World) ShiftAndEvalCar(node Node) (Node, Node, error) {
+func (w *World) shiftAndEvalCar(node Node) (Node, Node, error) {
 	cons, ok := node.(*Cons)
 	if !ok {
 		return nil, nil, ErrTooFewOrTooManyArguments
@@ -64,7 +64,7 @@ func (w *World) ShiftAndEvalCar(node Node) (Node, Node, error) {
 }
 
 func (w *World) Inject(this Node, f func(left, right Node) (Node, error)) (Node, error) {
-	result, rest, err := w.ShiftAndEvalCar(this)
+	result, rest, err := w.shiftAndEvalCar(this)
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +72,7 @@ func (w *World) Inject(this Node, f func(left, right Node) (Node, error)) (Node,
 		var next Node
 		var err error
 
-		next, rest, err = w.ShiftAndEvalCar(rest)
+		next, rest, err = w.shiftAndEvalCar(rest)
 		if err != nil {
 			return nil, err
 		}
