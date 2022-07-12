@@ -1,6 +1,7 @@
 package gmnlisp
 
 import (
+	"errors"
 	"testing"
 )
 
@@ -91,4 +92,38 @@ func TestEval(t *testing.T) {
 				(f2 (lambda (a b) (+ a b)))
 			)
 			(f2 4 5))`, Integer(9))
+}
+
+func TestWorld(t *testing.T) {
+	w1 := New()
+	if _, err := w1.Interpret(`(setq a "A")`); err != nil {
+		t.Fatal(err.Error())
+		return
+	}
+	value, err := w1.Interpret("a")
+	if err != nil {
+		t.Fatal(err.Error())
+		return
+	}
+	s, ok := value.(String)
+	if !ok {
+		t.Fatal("type mismatch")
+		return
+	}
+	if string(s) != "A" {
+		t.Fatalf("`%s` != `A`", string(s))
+		return
+	}
+
+	w2 := New()
+	value, err = w2.Interpret(`a`)
+
+	if !errors.Is(err, ErrVariableUnbound) {
+		if err == nil {
+			t.Fatal("error had to occur")
+		} else {
+			t.Fatal(err.Error())
+		}
+		return
+	}
 }
