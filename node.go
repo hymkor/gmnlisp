@@ -13,7 +13,6 @@ var (
 )
 
 type Node interface {
-	IsNull() bool
 	Eval(*Instance) (Node, error)
 	Equals(Node) bool
 	PrintTo(io.Writer)
@@ -39,10 +38,6 @@ func (_TrueType) PrincTo(w io.Writer) {
 	io.WriteString(w, "T")
 }
 
-func (_TrueType) IsNull() bool {
-	return false
-}
-
 func (t _TrueType) Eval(*Instance) (Node, error) {
 	return t, nil
 }
@@ -64,12 +59,8 @@ func (_NullType) PrincTo(w io.Writer) {
 	io.WriteString(w, "nil")
 }
 
-func (_NullType) IsNull() bool {
-	return true
-}
-
 func (nt _NullType) Eval(*Instance) (Node, error) {
-	return nt, nil // errors.New("IsNull can not be evaluate.")
+	return nt, nil
 }
 
 func (nt _NullType) Equals(n Node) bool {
@@ -90,10 +81,6 @@ func (s String) PrintTo(w io.Writer) {
 
 func (s String) PrincTo(w io.Writer) {
 	io.WriteString(w, string(s))
-}
-
-func (String) IsNull() bool {
-	return false
 }
 
 func (s String) Eval(*Instance) (Node, error) {
@@ -130,10 +117,6 @@ func (s Symbol) PrintTo(w io.Writer) {
 
 func (s Symbol) PrincTo(w io.Writer) {
 	io.WriteString(w, string(s))
-}
-
-func (Symbol) IsNull() bool {
-	return false
 }
 
 func (s Symbol) Eval(ins *Instance) (Node, error) {

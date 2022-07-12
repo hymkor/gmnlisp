@@ -15,10 +15,6 @@ func (i Integer) PrincTo(w io.Writer) {
 	fmt.Fprintf(w, "%d", int64(i))
 }
 
-func (Integer) IsNull() bool {
-	return false
-}
-
 func (i Integer) Eval(*Instance) (Node, error) {
 	return i, nil
 }
@@ -98,10 +94,6 @@ func (f Float) PrintTo(w io.Writer) {
 
 func (f Float) PrincTo(w io.Writer) {
 	fmt.Fprintf(w, "%f", float64(f))
-}
-
-func (Float) IsNull() bool {
-	return false
 }
 
 func (f Float) Eval(*Instance) (Node, error) {

@@ -136,10 +136,6 @@ func (nl *Lambda) prinX(w io.Writer, rich bool) {
 	io.WriteString(w, ")")
 }
 
-func (*Lambda) IsNull() bool {
-	return false
-}
-
 func (nl *Lambda) Call(ins *Instance, n Node) (Node, error) {
 	backups := map[string]Node{}
 	nobackups := map[string]struct{}{}

@@ -21,10 +21,6 @@ func (Function) PrincTo(w io.Writer) {
 	io.WriteString(w, "buildin function")
 }
 
-func (Function) IsNull() bool {
-	return false
-}
-
 func (f Function) Eval(_ *Instance) (Node, error) {
 	return f, nil
 }
