@@ -54,3 +54,21 @@ func TestProgn(t *testing.T) {
 	evalTest(t, `(progn 1)`, Integer(1))
 	evalTest(t, `(progn 1 2)`, Integer(2))
 }
+
+func TestEval(t *testing.T) {
+	evalTest(t, `
+		(progn
+			(defun f (a b)
+				(+ a b))
+			(f 1 2))`, Integer(3))
+	evalTest(t, `
+		(progn
+			(defun f1 (a b)
+				(+ a b))
+			(f1 1.0 2.0))`, Float(3.0))
+	evalTest(t, `
+		(let (
+				(f2 (lambda (a b) (+ a b)))
+			)
+			(f2 4 5))`, Integer(9))
+}
