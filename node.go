@@ -92,6 +92,13 @@ func (s String) Equals(n Node) bool {
 	return ok && s == ns
 }
 
+func (s String) EqualP(n Node) bool {
+	if ns, ok := n.(String); ok {
+		return strings.EqualFold(string(s), string(ns))
+	}
+	return false
+}
+
 func (s String) Plus(n Node) (Node, error) {
 	if value, ok := n.(String); ok {
 		return s + value, nil
