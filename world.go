@@ -63,7 +63,7 @@ func (w *World) shiftAndEvalCar(node Node) (Node, Node, error) {
 	return value, cons.Cdr, nil
 }
 
-func (w *World) Inject(this Node, f func(left, right Node) (Node, error)) (Node, error) {
+func (w *World) inject(this Node, f func(left, right Node) (Node, error)) (Node, error) {
 	result, rest, err := w.shiftAndEvalCar(this)
 	if err != nil {
 		return nil, err
