@@ -86,6 +86,26 @@ func cmdGreaterThan(ins *Instance, param Node) (Node, error) {
 	})
 }
 
+func cmdEqualOp(ins *Instance, param Node) (Node, error) {
+	type CanEqualP interface {
+		Node
+		EqualP(Node) bool
+	}
+	value, err := ins.Inject(param, func(left, right Node) (Node, error) {
+		if _left, ok := left.(CanEqualP); ok {
+			if _left.EqualP(right) {
+				return right, nil
+			}
+			return Null, nil
+		}
+		return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(right))
+	})
+	if HasValue(value) {
+		return True, err
+	}
+	return Null, err
+}
+
 func not(n Node, err error) (Node, error) {
 	if IsNull(n) {
 		return True, err

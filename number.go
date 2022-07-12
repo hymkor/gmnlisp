@@ -24,6 +24,14 @@ func (i Integer) Equals(n Node) bool {
 	return ok && i == _n
 }
 
+func (i Integer) EqualP(n Node) bool {
+	if _n, ok := n.(Integer); ok && i == _n {
+		return true
+	}
+	_n, ok := n.(Float)
+	return ok && Float(i) == _n
+}
+
 func (i Integer) Plus(n Node) (Node, error) {
 	if _n, ok := n.(Integer); ok {
 		return i + _n, nil
@@ -103,6 +111,14 @@ func (f Float) Eval(*Instance) (Node, error) {
 func (f Float) Equals(n Node) bool {
 	v, ok := n.(Float)
 	return ok && f == v
+}
+
+func (f Float) EqualP(n Node) bool {
+	if _n, ok := n.(Float); ok && f == _n {
+		return true
+	}
+	_n, ok := n.(Integer)
+	return ok && f == Float(_n)
 }
 
 func (f Float) Plus(n Node) (Node, error) {

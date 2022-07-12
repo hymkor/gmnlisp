@@ -30,6 +30,7 @@ func New() *Instance {
 			">":           Function(cmdGreaterThan),
 			"<=":          Function(cmdLessOrEqual),
 			">=":          Function(cmdGreaterOrEqual),
+			"=":           Function(cmdEqualOp),
 			"cons":        Function(cmdCons),
 			"car":         Function(cmdCar),
 			"cdr":         Function(cmdCdr),
