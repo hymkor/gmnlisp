@@ -78,20 +78,14 @@ func (i Integer) Devide(n Node) (Node, error) {
 	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n))
 }
 
-func (i Integer) LessThan(n Node) (Node, error) {
+func (i Integer) LessThan(n Node) (bool, error) {
 	if _n, ok := n.(Integer); ok {
-		if i < _n {
-			return True, nil
-		}
-		return Null, nil
+		return i < _n, nil
 	}
 	if _n, ok := n.(Float); ok {
-		if Float(i) < _n {
-			return True, nil
-		}
-		return Null, nil
+		return Float(i) < _n, nil
 	}
-	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n))
+	return false, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n))
 }
 
 type Float float64
@@ -167,18 +161,12 @@ func (f Float) Devide(n Node) (Node, error) {
 	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n))
 }
 
-func (f Float) LessThan(n Node) (Node, error) {
+func (f Float) LessThan(n Node) (bool, error) {
 	if _n, ok := n.(Float); ok {
-		if f < _n {
-			return True, nil
-		}
-		return Null, nil
+		return f < _n, nil
 	}
 	if _n, ok := n.(Integer); ok {
-		if f < Float(_n) {
-			return True, nil
-		}
-		return Null, nil
+		return f < Float(_n), nil
 	}
-	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n))
+	return false, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n))
 }

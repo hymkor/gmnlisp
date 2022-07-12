@@ -8,6 +8,16 @@ import (
 
 var ErrNotSupportType = errors.New("Not support type")
 
+func notNullToTrue(v Node, err error) (Node, error) {
+	if v == nil || err != nil {
+		return Null, err
+	}
+	if _, ok := v.(_NullType); ok {
+		return Null, err
+	}
+	return True, err
+}
+
 func cmdPlus(ins *Instance, param Node) (Node, error) {
 	type CanPlus interface {
 		Node
@@ -60,38 +70,47 @@ func cmdDevide(ins *Instance, param Node) (Node, error) {
 	})
 }
 
+type canLessThan interface {
+	LessThan(Node) (bool, error)
+}
+
 func cmdLessThan(ins *Instance, param Node) (Node, error) {
-	type CanLessThan interface {
-		Node
-		LessThan(Node) (Node, error)
-	}
-	return ins.Inject(param, func(left, right Node) (Node, error) {
-		if _left, ok := left.(CanLessThan); ok {
-			return _left.LessThan(right)
+	return notNullToTrue(ins.Inject(param, func(left, right Node) (Node, error) {
+		if _left, ok := left.(canLessThan); ok {
+			result, err := _left.LessThan(right)
+			if err != nil {
+				return Null, err
+			}
+			if result {
+				return right, nil
+			}
+			return Null, nil
 		}
 		return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(left))
-	})
+	}))
 }
 
 func cmdGreaterThan(ins *Instance, param Node) (Node, error) {
-	type CanLessThan interface {
-		Node
-		LessThan(Node) (Node, error)
-	}
-	return ins.Inject(param, func(left, right Node) (Node, error) {
-		if _right, ok := right.(CanLessThan); ok {
-			return _right.LessThan(left)
+	return notNullToTrue(ins.Inject(param, func(left, right Node) (Node, error) {
+		if _right, ok := right.(canLessThan); ok {
+			result, err := _right.LessThan(left)
+			if err != nil {
+				return Null, err
+			}
+			if result {
+				return right, nil
+			}
+			return Null, nil
 		}
 		return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(right))
-	})
+	}))
 }
 
 func cmdEqualOp(ins *Instance, param Node) (Node, error) {
 	type CanEqualP interface {
-		Node
 		EqualP(Node) bool
 	}
-	value, err := ins.Inject(param, func(left, right Node) (Node, error) {
+	return notNullToTrue(ins.Inject(param, func(left, right Node) (Node, error) {
 		if _left, ok := left.(CanEqualP); ok {
 			if _left.EqualP(right) {
 				return right, nil
@@ -99,48 +118,43 @@ func cmdEqualOp(ins *Instance, param Node) (Node, error) {
 			return Null, nil
 		}
 		return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(right))
-	})
-	if HasValue(value) {
-		return True, err
-	}
-	return Null, err
-}
-
-func not(n Node, err error) (Node, error) {
-	if IsNull(n) {
-		return True, err
-	}
-	return Null, err
+	}))
 }
 
 func cmdGreaterOrEqual(ins *Instance, param Node) (Node, error) {
-	type CanLessThan interface {
-		Node
-		LessThan(Node) (Node, error)
-	}
-	return ins.Inject(param, func(left, right Node) (Node, error) {
+	return notNullToTrue(ins.Inject(param, func(left, right Node) (Node, error) {
 		//     left >= right
 		// <=> not (left < right )
-		if _left, ok := left.(CanLessThan); ok {
-			return not(_left.LessThan(right))
+		if _left, ok := left.(canLessThan); ok {
+			result, err := _left.LessThan(right)
+			if err != nil {
+				return Null, err
+			}
+			if result {
+				return Null, nil
+			}
+			return right, nil
 		}
 		return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(right))
-	})
+	}))
 }
 
 func cmdLessOrEqual(ins *Instance, param Node) (Node, error) {
-	type CanLessThan interface {
-		Node
-		LessThan(Node) (Node, error)
-	}
-	return ins.Inject(param, func(left, right Node) (Node, error) {
+	return notNullToTrue(ins.Inject(param, func(left, right Node) (Node, error) {
 		//     left <= right
-		// <=> not (right < left )
-		if _right, ok := right.(CanLessThan); ok {
-			return not(_right.LessThan(left))
+		// <=> not (right < left)
+		if _right, ok := right.(canLessThan); ok {
+			result, err := _right.LessThan(left)
+			if err != nil {
+				return Null, err
+			}
+			if result {
+				return Null, nil
+			}
+			return right, nil
 		}
 		return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(right))
-	})
+	}))
 }
 
 func cmdTruncate(ins *Instance, this Node) (Node, error) {

@@ -99,14 +99,11 @@ func (s String) Plus(n Node) (Node, error) {
 	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n))
 }
 
-func (s String) LessThan(n Node) (Node, error) {
-	if value, ok := n.(String); ok {
-		if s < value {
-			return True, nil
-		}
-		return Null, nil
+func (s String) LessThan(n Node) (bool, error) {
+	if ns, ok := n.(String); ok {
+		return s < ns, nil
 	}
-	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n))
+	return false, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n))
 }
 
 type Symbol string
