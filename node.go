@@ -15,6 +15,7 @@ var (
 type Node interface {
 	Eval(*Instance) (Node, error)
 	Equals(Node) bool
+	EqualP(Node) bool
 	PrintTo(io.Writer)
 	PrincTo(io.Writer)
 }
@@ -49,6 +50,11 @@ func (_TrueType) Equals(n Node) bool {
 	return ok
 }
 
+func (t _TrueType) EqualP(n Node) bool {
+	_, ok := n.(_TrueType)
+	return ok
+}
+
 type _NullType struct{}
 
 func (_NullType) PrintTo(w io.Writer) {
@@ -69,6 +75,10 @@ func (nt _NullType) Equals(n Node) bool {
 	}
 	_, ok := n.(_NullType)
 	return ok
+}
+
+func (nt _NullType) EqualP(n Node) bool {
+	return nt.Equals(n)
 }
 
 var Null Node = _NullType{}
@@ -134,4 +144,9 @@ func (s Symbol) Eval(ins *Instance) (Node, error) {
 func (s Symbol) Equals(n Node) bool {
 	ns, ok := n.(Symbol)
 	return ok && s == ns
+}
+
+func (s Symbol) EqualP(n Node) bool {
+	ns, ok := n.(Symbol)
+	return ok && strings.EqualFold(string(s), string(ns))
 }

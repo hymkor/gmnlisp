@@ -182,6 +182,10 @@ func (*Lambda) Equals(Node) bool {
 	return false
 }
 
+func (*Lambda) EqualP(Node) bool {
+	return false
+}
+
 func cmdDefun(ins *Instance, node Node) (Node, error) {
 	cons, ok := node.(*Cons)
 	if !ok {

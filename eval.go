@@ -29,6 +29,10 @@ func (f Function) Equals(n Node) bool {
 	return false
 }
 
+func (f Function) EqualP(n Node) bool {
+	return false
+}
+
 func (f Function) Call(ins *Instance, n Node) (Node, error) {
 	return f(ins, n)
 }

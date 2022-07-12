@@ -103,3 +103,14 @@ func (cons *Cons) Equals(n Node) bool {
 	return cons.GetCar().Equals(value.Car) &&
 		cons.GetCdr().Equals(value.Cdr)
 }
+
+func (cons *Cons) EqualP(n Node) bool {
+	_n, ok := n.(*Cons)
+	if !ok {
+		return false
+	}
+	if !cons.GetCar().EqualP(_n.GetCar()) {
+		return false
+	}
+	return cons.GetCdr().EqualP(_n.GetCdr())
+}

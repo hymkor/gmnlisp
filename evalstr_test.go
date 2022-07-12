@@ -56,6 +56,8 @@ func TestOperators(t *testing.T) {
 	evalTest(t, `(= "ABC" "abcd")`, Null)
 	evalTest(t, `(equalp "DEF" "defg")`, Null)
 	evalTest(t, `(equalp "GHQ" "ghq")`, True)
+	evalTest(t, `(equalp (cons 1 (cons 2 nil)) '(1 2))`, True)
+	evalTest(t, `(equalp (cons 1 2) '(1))`, Null)
 }
 
 func TestCmdCond(t *testing.T) {
