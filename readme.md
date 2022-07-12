@@ -6,6 +6,40 @@ Gommon Lisp
 Now under constructing.  
 Experimental implementing
 
+Example
+-------
+
+```go
+package main
+
+import (
+    "fmt"
+    "os"
+
+    "github.com/hymkor/gmnlisp"
+)
+
+func main() {
+    lisp := gmnlisp.New()
+    value, err := lisp.Interpret("(+ 1 2)")
+    if err != nil {
+        fmt.Fprintln(os.Stderr, err.Error())
+        return
+    }
+
+    value.PrintTo(os.Stdout)
+    fmt.Println()
+}
+```
+
+```
+$ go run example.go
+3
+```
+
+Support functions
+-----------------
+
 - T
 - \*
 - \+
