@@ -68,11 +68,11 @@ func (_NullType) IsNull() bool {
 	return true
 }
 
-func (this _NullType) Eval(*Instance) (Node, error) {
-	return this, nil // errors.New("IsNull can not be evaluate.")
+func (nt _NullType) Eval(*Instance) (Node, error) {
+	return nt, nil // errors.New("IsNull can not be evaluate.")
 }
 
-func (this _NullType) Equals(n Node) bool {
+func (nt _NullType) Equals(n Node) bool {
 	if n == nil {
 		return true
 	}
@@ -96,25 +96,25 @@ func (String) IsNull() bool {
 	return false
 }
 
-func (this String) Eval(*Instance) (Node, error) {
-	return this, nil // errors.New("String can not be evaluate.")
+func (s String) Eval(*Instance) (Node, error) {
+	return s, nil // errors.New("String can not be evaluate.")
 }
 
-func (this String) Equals(n Node) bool {
+func (s String) Equals(n Node) bool {
 	ns, ok := n.(String)
-	return ok && this == ns
+	return ok && s == ns
 }
 
-func (this String) Plus(n Node) (Node, error) {
+func (s String) Plus(n Node) (Node, error) {
 	if value, ok := n.(String); ok {
-		return this + value, nil
+		return s + value, nil
 	}
 	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n))
 }
 
-func (this String) LessThan(n Node) (Node, error) {
+func (s String) LessThan(n Node) (Node, error) {
 	if value, ok := n.(String); ok {
-		if this < value {
+		if s < value {
 			return True, nil
 		}
 		return Null, nil
@@ -124,27 +124,27 @@ func (this String) LessThan(n Node) (Node, error) {
 
 type Symbol string
 
-func (this Symbol) PrintTo(w io.Writer) {
-	io.WriteString(w, string(this))
+func (s Symbol) PrintTo(w io.Writer) {
+	io.WriteString(w, string(s))
 }
 
-func (this Symbol) PrincTo(w io.Writer) {
-	io.WriteString(w, string(this))
+func (s Symbol) PrincTo(w io.Writer) {
+	io.WriteString(w, string(s))
 }
 
-func (this Symbol) IsNull() bool {
+func (Symbol) IsNull() bool {
 	return false
 }
 
-func (this Symbol) Eval(ins *Instance) (Node, error) {
-	name := string(this)
+func (s Symbol) Eval(ins *Instance) (Node, error) {
+	name := string(s)
 	if value, ok := ins.globals[name]; ok {
 		return value, nil
 	}
 	return nil, fmt.Errorf("%w: `%s`", ErrVariableUnbound, name)
 }
 
-func (this Symbol) Equals(n Node) bool {
+func (s Symbol) Equals(n Node) bool {
 	ns, ok := n.(Symbol)
-	return ok && this == ns
+	return ok && s == ns
 }

@@ -39,8 +39,8 @@ func (f Function) Call(ins *Instance, n Node) (Node, error) {
 
 var ErrExpectedFunction = errors.New("expected function")
 
-func (this *Cons) Eval(ins *Instance) (Node, error) {
-	first := this.Car
+func (cons *Cons) Eval(ins *Instance) (Node, error) {
+	first := cons.Car
 	if p, ok := first.(*Cons); ok {
 		var err error
 		first, err = p.Eval(ins)
@@ -49,7 +49,7 @@ func (this *Cons) Eval(ins *Instance) (Node, error) {
 		}
 	}
 	if f, ok := first.(_Callable); ok {
-		return f.Call(ins, this.Cdr)
+		return f.Call(ins, cons.Cdr)
 	}
 	symbol, ok := first.(Symbol)
 	if !ok {
@@ -63,7 +63,7 @@ func (this *Cons) Eval(ins *Instance) (Node, error) {
 	if !ok {
 		return nil, fmt.Errorf("%s: %w", string(symbol), ErrExpectedFunction)
 	}
-	rv, err := function.Call(ins, this.Cdr)
+	rv, err := function.Call(ins, cons.Cdr)
 	if err != nil {
 		return rv, fmt.Errorf("%s: %w", string(symbol), err)
 	}

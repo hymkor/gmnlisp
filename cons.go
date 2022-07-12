@@ -9,21 +9,21 @@ type Cons struct {
 	Cdr Node
 }
 
-func (c *Cons) GetCar() Node {
-	if c.Car == nil {
+func (cons *Cons) GetCar() Node {
+	if cons.Car == nil {
 		return Null
 	}
-	return c.Car
+	return cons.Car
 }
 
-func (c *Cons) GetCdr() Node {
-	if c.Cdr == nil {
+func (cons *Cons) GetCdr() Node {
+	if cons.Cdr == nil {
 		return Null
 	}
-	return c.Cdr
+	return cons.Cdr
 }
 
-func (this *Cons) IsNull() bool {
+func (*Cons) IsNull() bool {
 	return false
 }
 
@@ -35,30 +35,30 @@ func IsNull(node Node) bool {
 	return node == nil || node.IsNull()
 }
 
-func (this *Cons) isTailNull() bool {
-	if IsNull(this.Cdr) {
+func (cons *Cons) isTailNull() bool {
+	if IsNull(cons.Cdr) {
 		return true
-	} else if next, ok := this.Cdr.(*Cons); ok {
+	} else if next, ok := cons.Cdr.(*Cons); ok {
 		return next.isTailNull()
 	} else {
 		return false
 	}
 }
 
-func (this *Cons) writeToWithoutKakko(w io.Writer, rich bool) {
-	if IsNull(this.Car) {
+func (cons *Cons) writeToWithoutKakko(w io.Writer, rich bool) {
+	if IsNull(cons.Car) {
 		io.WriteString(w, "()")
 	} else if rich {
-		this.Car.PrintTo(w)
+		cons.Car.PrintTo(w)
 	} else {
-		this.Car.PrincTo(w)
+		cons.Car.PrincTo(w)
 	}
 
-	if HasValue(this.Cdr) {
-		if this.isTailNull() {
+	if HasValue(cons.Cdr) {
+		if cons.isTailNull() {
 			// output as ( X Y Z ...)
 
-			for p, ok := this.Cdr.(*Cons); ok && HasValue(p); p, ok = p.Cdr.(*Cons) {
+			for p, ok := cons.Cdr.(*Cons); ok && HasValue(p); p, ok = p.Cdr.(*Cons) {
 				io.WriteString(w, " ")
 				if rich {
 					p.Car.PrintTo(w)
@@ -71,31 +71,31 @@ func (this *Cons) writeToWithoutKakko(w io.Writer, rich bool) {
 
 			io.WriteString(w, " . ")
 			if rich {
-				this.GetCdr().PrintTo(w)
+				cons.GetCdr().PrintTo(w)
 			} else {
-				this.GetCdr().PrincTo(w)
+				cons.GetCdr().PrincTo(w)
 			}
 		}
 	}
 }
 
-func (this *Cons) PrintTo(w io.Writer) {
+func (cons *Cons) PrintTo(w io.Writer) {
 	io.WriteString(w, "(")
-	this.writeToWithoutKakko(w, true)
+	cons.writeToWithoutKakko(w, true)
 	io.WriteString(w, ")")
 }
 
-func (this *Cons) PrincTo(w io.Writer) {
+func (cons *Cons) PrincTo(w io.Writer) {
 	io.WriteString(w, "(")
-	this.writeToWithoutKakko(w, false)
+	cons.writeToWithoutKakko(w, false)
 	io.WriteString(w, ")")
 }
 
-func (this *Cons) Equals(n Node) bool {
+func (cons *Cons) Equals(n Node) bool {
 	value, ok := n.(*Cons)
 	if !ok {
 		return false
 	}
-	return this.GetCar().Equals(value.Car) &&
-		this.GetCdr().Equals(value.Cdr)
+	return cons.GetCar().Equals(value.Car) &&
+		cons.GetCdr().Equals(value.Cdr)
 }

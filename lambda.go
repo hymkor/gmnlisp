@@ -115,22 +115,22 @@ func (nl *Lambda) PrincTo(w io.Writer) {
 	nl.prinX(w, false)
 }
 
-func (NL *Lambda) prinX(w io.Writer, rich bool) {
+func (nl *Lambda) prinX(w io.Writer, rich bool) {
 	io.WriteString(w, "(lambda (")
 	dem := ""
-	for _, name := range NL.param {
+	for _, name := range nl.param {
 		io.WriteString(w, dem)
 		io.WriteString(w, name)
 		dem = " "
 	}
 	io.WriteString(w, ") ")
-	if cons, ok := NL.code.(*Cons); ok {
+	if cons, ok := nl.code.(*Cons); ok {
 		cons.writeToWithoutKakko(w, rich)
 	} else {
 		if rich {
-			NL.code.PrintTo(w)
+			nl.code.PrintTo(w)
 		} else {
-			NL.code.PrincTo(w)
+			nl.code.PrincTo(w)
 		}
 	}
 	io.WriteString(w, ")")
@@ -140,10 +140,10 @@ func (*Lambda) IsNull() bool {
 	return false
 }
 
-func (NL *Lambda) Call(ins *Instance, n Node) (Node, error) {
+func (nl *Lambda) Call(ins *Instance, n Node) (Node, error) {
 	backups := map[string]Node{}
 	nobackups := map[string]struct{}{}
-	for _, name := range NL.param {
+	for _, name := range nl.param {
 		if value, ok := ins.globals[name]; ok {
 			backups[name] = value
 		} else {
@@ -171,15 +171,15 @@ func (NL *Lambda) Call(ins *Instance, n Node) (Node, error) {
 	}()
 	var errEarlyReturns *ErrEarlyReturns
 
-	result, err := progn(ins, NL.code)
-	if errors.As(err, &errEarlyReturns) && errEarlyReturns.Name == string(NL.name) {
+	result, err := progn(ins, nl.code)
+	if errors.As(err, &errEarlyReturns) && errEarlyReturns.Name == string(nl.name) {
 		return errEarlyReturns.Value, nil
 	}
 	return result, err
 }
 
-func (NL *Lambda) Eval(*Instance) (Node, error) {
-	return NL, nil
+func (nl *Lambda) Eval(*Instance) (Node, error) {
+	return nl, nil
 }
 
 func (*Lambda) Equals(Node) bool {

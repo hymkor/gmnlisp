@@ -7,82 +7,82 @@ import (
 
 type Integer int64
 
-func (n Integer) PrintTo(w io.Writer) {
-	fmt.Fprintf(w, "%d", int64(n))
+func (i Integer) PrintTo(w io.Writer) {
+	fmt.Fprintf(w, "%d", int64(i))
 }
 
-func (n Integer) PrincTo(w io.Writer) {
-	fmt.Fprintf(w, "%d", int64(n))
+func (i Integer) PrincTo(w io.Writer) {
+	fmt.Fprintf(w, "%d", int64(i))
 }
 
-func (this Integer) IsNull() bool {
+func (Integer) IsNull() bool {
 	return false
 }
 
-func (this Integer) Eval(*Instance) (Node, error) {
-	return this, nil // errors.New("Integer can not be evaluate.")
+func (i Integer) Eval(*Instance) (Node, error) {
+	return i, nil
 }
 
-func (this Integer) Equals(n Node) bool {
-	ni, ok := n.(Integer)
-	return ok && this == ni
+func (i Integer) Equals(n Node) bool {
+	_n, ok := n.(Integer)
+	return ok && i == _n
 }
 
-func (this Integer) Plus(n Node) (Node, error) {
-	if value, ok := n.(Integer); ok {
-		return this + value, nil
+func (i Integer) Plus(n Node) (Node, error) {
+	if _n, ok := n.(Integer); ok {
+		return i + _n, nil
 	}
-	if value, ok := n.(Float); ok {
-		return Float(this) + value, nil
+	if _n, ok := n.(Float); ok {
+		return Float(i) + _n, nil
 	}
 	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n))
 }
 
-func (this Integer) Minus(n Node) (Node, error) {
-	if value, ok := n.(Integer); ok {
-		return this - value, nil
+func (i Integer) Minus(n Node) (Node, error) {
+	if _n, ok := n.(Integer); ok {
+		return i - _n, nil
 	}
-	if value, ok := n.(Float); ok {
-		return Float(this) - value, nil
-	}
-	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n))
-}
-
-func (this Integer) Multi(n Node) (Node, error) {
-	if value, ok := n.(Integer); ok {
-		return this * value, nil
-	}
-	if value, ok := n.(Float); ok {
-		return Float(this) * value, nil
+	if _n, ok := n.(Float); ok {
+		return Float(i) - _n, nil
 	}
 	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n))
 }
 
-func (this Integer) Devide(n Node) (Node, error) {
-	if value, ok := n.(Integer); ok {
-		if value == 0 {
+func (i Integer) Multi(n Node) (Node, error) {
+	if _n, ok := n.(Integer); ok {
+		return i * _n, nil
+	}
+	if _n, ok := n.(Float); ok {
+		return Float(i) * _n, nil
+	}
+	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n))
+}
+
+func (i Integer) Devide(n Node) (Node, error) {
+	if _n, ok := n.(Integer); ok {
+		if _n == 0 {
 			return nil, ErrDevisionByZero
 		}
-		return this / value, nil
+		return i / _n, nil
 	}
-	if value, ok := n.(Float); ok {
-		if value == 0 {
+	if _n, ok := n.(Float); ok {
+		if _n == 0 {
 			return nil, ErrDevisionByZero
 		}
-		return Float(this) / value, nil
+		return Float(i) / _n, nil
 	}
 	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n))
 }
 
-func (this Integer) LessThan(n Node) (Node, error) {
-	if value, ok := n.(Integer); ok {
-		if this < value {
+func (i Integer) LessThan(n Node) (Node, error) {
+	if _n, ok := n.(Integer); ok {
+		if i < _n {
 			return True, nil
 		}
 		return Null, nil
 	}
-	if value, ok := n.(Float); ok {
-		if Float(this) < value {
+	if _n, ok := n.(Float); ok {
+		if Float(i) < _n {
 			return True, nil
 		}
 		return Null, nil
@@ -92,82 +92,82 @@ func (this Integer) LessThan(n Node) (Node, error) {
 
 type Float float64
 
-func (n Float) PrintTo(w io.Writer) {
-	fmt.Fprintf(w, "%f", float64(n))
+func (f Float) PrintTo(w io.Writer) {
+	fmt.Fprintf(w, "%f", float64(f))
 }
 
-func (n Float) PrincTo(w io.Writer) {
-	fmt.Fprintf(w, "%f", float64(n))
+func (f Float) PrincTo(w io.Writer) {
+	fmt.Fprintf(w, "%f", float64(f))
 }
 
 func (Float) IsNull() bool {
 	return false
 }
 
-func (nf Float) Eval(*Instance) (Node, error) {
-	return nf, nil
+func (f Float) Eval(*Instance) (Node, error) {
+	return f, nil
 }
 
-func (nf Float) Equals(n Node) bool {
+func (f Float) Equals(n Node) bool {
 	v, ok := n.(Float)
-	return ok && nf == v
+	return ok && f == v
 }
 
-func (this Float) Plus(n Node) (Node, error) {
-	if value, ok := n.(Float); ok {
-		return this + value, nil
+func (f Float) Plus(n Node) (Node, error) {
+	if _n, ok := n.(Float); ok {
+		return f + _n, nil
 	}
-	if value, ok := n.(Integer); ok {
-		return this + Float(value), nil
+	if _n, ok := n.(Integer); ok {
+		return f + Float(_n), nil
 	}
 	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n))
 }
 
-func (this Float) Minus(n Node) (Node, error) {
-	if value, ok := n.(Float); ok {
-		return this - value, nil
+func (f Float) Minus(n Node) (Node, error) {
+	if _n, ok := n.(Float); ok {
+		return f - _n, nil
 	}
-	if value, ok := n.(Integer); ok {
-		return this - Float(value), nil
-	}
-	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n))
-}
-
-func (this Float) Multi(n Node) (Node, error) {
-	if value, ok := n.(Float); ok {
-		return this * value, nil
-	}
-	if value, ok := n.(Integer); ok {
-		return this * Float(value), nil
+	if _n, ok := n.(Integer); ok {
+		return f - Float(_n), nil
 	}
 	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n))
 }
 
-func (this Float) Devide(n Node) (Node, error) {
-	if value, ok := n.(Float); ok {
-		if value == 0 {
+func (f Float) Multi(n Node) (Node, error) {
+	if _n, ok := n.(Float); ok {
+		return f * _n, nil
+	}
+	if _n, ok := n.(Integer); ok {
+		return f * Float(_n), nil
+	}
+	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n))
+}
+
+func (f Float) Devide(n Node) (Node, error) {
+	if _n, ok := n.(Float); ok {
+		if _n == 0 {
 			return nil, ErrDevisionByZero
 		}
-		return this / value, nil
+		return f / _n, nil
 	}
-	if value, ok := n.(Integer); ok {
-		if value == 0 {
+	if _n, ok := n.(Integer); ok {
+		if _n == 0 {
 			return nil, ErrDevisionByZero
 		}
-		return this / Float(value), nil
+		return f / Float(_n), nil
 	}
 	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n))
 }
 
-func (this Float) LessThan(n Node) (Node, error) {
-	if value, ok := n.(Float); ok {
-		if this < value {
+func (f Float) LessThan(n Node) (Node, error) {
+	if _n, ok := n.(Float); ok {
+		if f < _n {
 			return True, nil
 		}
 		return Null, nil
 	}
-	if value, ok := n.(Integer); ok {
-		if this < Float(value) {
+	if _n, ok := n.(Integer); ok {
+		if f < Float(_n) {
 			return True, nil
 		}
 		return Null, nil
