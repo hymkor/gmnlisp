@@ -47,6 +47,7 @@ func New() *World {
 			"return-from": Function(cmdReturnFrom),
 			"block":       Function(cmdBlock),
 			"truncate":    Function(cmdTruncate),
+			"list":        Function(cmdList),
 		},
 	}
 }

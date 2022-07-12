@@ -87,3 +87,21 @@ func cmdEqual(w *World, param Node) (Node, error) {
 	}
 	return True, nil
 }
+
+func cmdList(w *World, node Node) (Node, error) {
+	car, rest, err := w.shiftAndEvalCar(node)
+	if err != nil {
+		return nil, err
+	}
+	var cdr Node
+
+	if IsNull(rest) {
+		cdr = Null
+	} else {
+		cdr, err = cmdList(w, rest)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return &Cons{Car: car, Cdr: cdr}, nil
+}
