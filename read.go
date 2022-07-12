@@ -10,9 +10,9 @@ import (
 	"strings"
 )
 
-var rxFloat = regexp.MustCompile(`^[0-9]+\.[0-9]*$`)
+var rxFloat = regexp.MustCompile(`^-?[0-9]+\.[0-9]*$`)
 
-var rxInteger = regexp.MustCompile("^[0-9]+$")
+var rxInteger = regexp.MustCompile(`^-?[0-9]+$`)
 
 func nodes2cons(nodes []Node) Node {
 	switch len(nodes) {
