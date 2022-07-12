@@ -93,6 +93,13 @@ func TestEval(t *testing.T) {
 				(f2 (lambda (a b) (+ a b)))
 			)
 			(f2 4 5))`, Integer(9))
+
+	evalTest(t, `
+		(progn
+			(setq a 0)
+			(defun dummy (a b) (+ a b))
+			(dummy 7 8)
+			a)`, Integer(0))
 }
 
 func TestWorld(t *testing.T) {

@@ -134,11 +134,7 @@ func (s Symbol) PrincTo(w io.Writer) {
 }
 
 func (s Symbol) Eval(w *World) (Node, error) {
-	name := string(s)
-	if value, ok := w.globals[name]; ok {
-		return value, nil
-	}
-	return nil, fmt.Errorf("%w: `%s`", ErrVariableUnbound, name)
+	return w.Get(string(s))
 }
 
 func (s Symbol) Equals(n Node) bool {

@@ -6,48 +6,76 @@ import (
 	"os"
 )
 
-type World struct {
+type _NameSpace struct {
+	parent  *_NameSpace
 	globals map[string]Node
-	Stdout  io.Writer
+}
+
+type World struct {
+	Stdout    io.Writer
+	nameSpace *_NameSpace
+}
+
+func (w *World) Get(name string) (Node, error) {
+	p := w.nameSpace
+	for p != nil {
+		if value, ok := p.globals[name]; ok {
+			return value, nil
+		}
+		p = p.parent
+	}
+	return Null, ErrVariableUnbound
+}
+
+func (w *World) Set(name string, value Node) {
+	p := w.nameSpace
+	for p != nil {
+		if _, ok := p.globals[name]; ok || p.parent == nil {
+			p.globals[name] = value
+		}
+		p = p.parent
+	}
 }
 
 func New() *World {
 	return &World{
 		Stdout: os.Stdout,
-		globals: map[string]Node{
-			"T":           True,
-			"nil":         Null,
-			"print":       Function(cmdPrint),
-			"prin1":       Function(cmdPrin1),
-			"princ":       Function(cmdPrinc),
-			"terpri":      Function(cmdTerpri),
-			"quote":       Function(cmdQuote),
-			"+":           Function(cmdPlus),
-			"-":           Function(cmdMinus),
-			"*":           Function(cmdMulti),
-			"/":           Function(cmdDevide),
-			"<":           Function(cmdLessThan),
-			">":           Function(cmdGreaterThan),
-			"<=":          Function(cmdLessOrEqual),
-			">=":          Function(cmdGreaterOrEqual),
-			"=":           Function(cmdEqualOp),
-			"equalp":      Function(cmdEqualOp),
-			"cons":        Function(cmdCons),
-			"car":         Function(cmdCar),
-			"cdr":         Function(cmdCdr),
-			"atom":        Function(cmdAtom),
-			"equal":       Function(cmdEqual),
-			"lambda":      Function(cmdLambda),
-			"progn":       Function(cmdProgn),
-			"setq":        Function(cmdSetq),
-			"defun":       Function(cmdDefun),
-			"let":         Function(cmdLet),
-			"cond":        Function(cmdCond),
-			"return":      Function(cmdReturn),
-			"return-from": Function(cmdReturnFrom),
-			"block":       Function(cmdBlock),
-			"truncate":    Function(cmdTruncate),
-			"list":        Function(cmdList),
+		nameSpace: &_NameSpace{
+			globals: map[string]Node{
+				"T":           True,
+				"nil":         Null,
+				"print":       Function(cmdPrint),
+				"prin1":       Function(cmdPrin1),
+				"princ":       Function(cmdPrinc),
+				"terpri":      Function(cmdTerpri),
+				"quote":       Function(cmdQuote),
+				"+":           Function(cmdPlus),
+				"-":           Function(cmdMinus),
+				"*":           Function(cmdMulti),
+				"/":           Function(cmdDevide),
+				"<":           Function(cmdLessThan),
+				">":           Function(cmdGreaterThan),
+				"<=":          Function(cmdLessOrEqual),
+				">=":          Function(cmdGreaterOrEqual),
+				"=":           Function(cmdEqualOp),
+				"equalp":      Function(cmdEqualOp),
+				"cons":        Function(cmdCons),
+				"car":         Function(cmdCar),
+				"cdr":         Function(cmdCdr),
+				"atom":        Function(cmdAtom),
+				"equal":       Function(cmdEqual),
+				"lambda":      Function(cmdLambda),
+				"progn":       Function(cmdProgn),
+				"setq":        Function(cmdSetq),
+				"defun":       Function(cmdDefun),
+				"let":         Function(cmdLet),
+				"cond":        Function(cmdCond),
+				"return":      Function(cmdReturn),
+				"return-from": Function(cmdReturnFrom),
+				"block":       Function(cmdBlock),
+				"truncate":    Function(cmdTruncate),
+				"list":        Function(cmdList),
+			},
 		},
 	}
 }

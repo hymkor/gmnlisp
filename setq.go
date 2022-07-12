@@ -20,7 +20,7 @@ func cmdSetq(w *World, node Node) (Node, error) {
 			if err != nil {
 				return err
 			}
-			w.globals[name] = value
+			w.Set(name, value)
 			name = ""
 		}
 		return nil
@@ -35,8 +35,7 @@ func cmdLet(w *World, param Node) (Node, error) {
 	}
 	code := cons.Cdr
 
-	backups := map[string]Node{}
-	nobackups := map[string]struct{}{}
+	globals := map[string]Node{}
 
 	err := forEachWithoutEval(cons.Car, func(node Node) error {
 		cons, ok := node.(*Cons)
@@ -59,21 +58,15 @@ func cmdLet(w *World, param Node) (Node, error) {
 		if err != nil {
 			return err
 		}
-		if val, ok := w.globals[name]; ok {
-			backups[name] = val
-		} else {
-			nobackups[name] = struct{}{}
-		}
-		w.globals[name] = value
+		globals[name] = value
 		return nil
 	})
+	w.nameSpace = &_NameSpace{
+		globals: globals,
+		parent:  w.nameSpace,
+	}
 	defer func() {
-		for name := range nobackups {
-			delete(w.globals, name)
-		}
-		for name, value := range backups {
-			w.globals[name] = value
-		}
+		w.nameSpace = w.nameSpace.parent
 	}()
 
 	if err != nil {

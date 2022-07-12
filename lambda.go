@@ -137,34 +137,28 @@ func (nl *Lambda) prinX(w io.Writer, rich bool) {
 }
 
 func (nl *Lambda) Call(w *World, n Node) (Node, error) {
-	backups := map[string]Node{}
-	nobackups := map[string]struct{}{}
+	globals := map[string]Node{}
 	for _, name := range nl.param {
-		if value, ok := w.globals[name]; ok {
-			backups[name] = value
-		} else {
-			nobackups[name] = struct{}{}
-		}
-
 		if cons, ok := n.(*Cons); ok {
 			var err error
-			w.globals[name], err = cons.GetCar().Eval(w)
+
+			globals[name], err = cons.GetCar().Eval(w)
 			if err != nil {
 				return nil, err
 			}
 			n = cons.GetCdr()
 		} else {
-			w.globals[name] = Null
+			globals[name] = Null
 		}
 	}
+	w.nameSpace = &_NameSpace{
+		globals: globals,
+		parent:  w.nameSpace,
+	}
 	defer func() {
-		for name := range nobackups {
-			delete(w.globals, name)
-		}
-		for name, value := range backups {
-			w.globals[name] = value
-		}
+		w.nameSpace = w.nameSpace.parent
 	}()
+
 	var errEarlyReturns *ErrEarlyReturns
 
 	result, err := progn(w, nl.code)
@@ -201,7 +195,7 @@ func cmdDefun(w *World, node Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	w.globals[name] = lambda
+	w.Set(name, lambda)
 	return lambda, nil
 }
 
