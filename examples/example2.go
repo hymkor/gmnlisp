@@ -16,14 +16,10 @@ func mains() error {
 	if err != nil {
 		return err
 	}
-	value, err := lisp.Call(f,
-		&gmnlisp.Cons{
-			Car: gmnlisp.Float(1.0),
-			Cdr: &gmnlisp.Cons{
-				Car: gmnlisp.Float(2.0),
-				Cdr: gmnlisp.Null,
-			},
-		})
+	value, err := lisp.Call(
+		f,
+		gmnlisp.Float(1.0),
+		gmnlisp.Float(2.0))
 	if err != nil {
 		return err
 	}
