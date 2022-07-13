@@ -11,7 +11,7 @@ import (
 var flagExecute = flag.String("e", "", "execute string")
 
 func mains(args []string) error {
-	var last gmnlisp.Node
+	var last = gmnlisp.Null
 	var err error
 
 	lisp := gmnlisp.New()
