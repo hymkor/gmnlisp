@@ -13,27 +13,28 @@ Example
 package main
 
 import (
-    "fmt"
-    "os"
+	"fmt"
+	"os"
 
-    "github.com/hymkor/gmnlisp"
+	"github.com/hymkor/gmnlisp"
 )
 
 func main() {
-    lisp := gmnlisp.New()
-    value, err := lisp.Interpret("(+ 1 2)")
-    if err != nil {
-        fmt.Fprintln(os.Stderr, err.Error())
-        return
-    }
-
-    value.PrintTo(os.Stdout)
-    fmt.Println()
+	lisp := gmnlisp.New()
+	lisp.Set("a", gmnlisp.Integer(1))
+	lisp.Set("b", gmnlisp.Integer(2))
+	value, err := lisp.Interpret("(+ a b)")
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err.Error())
+		return
+	}
+	value.PrintTo(os.Stdout)
+	fmt.Println()
 }
 ```
 
 ```
-$ go run example.go
+$ go run examples/example1.go
 3
 ```
 

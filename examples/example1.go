@@ -12,12 +12,13 @@ import (
 
 func main() {
 	lisp := gmnlisp.New()
-	value, err := lisp.Interpret("(+ 1 2)")
+	lisp.Set("a", gmnlisp.Integer(1))
+	lisp.Set("b", gmnlisp.Integer(2))
+	value, err := lisp.Interpret("(+ a b)")
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err.Error())
 		return
 	}
-
 	value.PrintTo(os.Stdout)
 	fmt.Println()
 }
