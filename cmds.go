@@ -1,16 +1,5 @@
 package gmnlisp
 
-import (
-	"errors"
-)
-
-var (
-	ErrTooFewOrTooManyArguments = errors.New("Too few or too many arguments")
-	ErrExpectedCons             = errors.New("Expected CONS")
-	ErrExpectedNumber           = errors.New("Expected a number")
-	ErrExpectedSymbol           = errors.New("Expected symbol")
-)
-
 func cmdCons(w *World, node Node) (Node, error) {
 	first, rest, err := w.shiftAndEvalCar(node)
 	if err != nil {

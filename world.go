@@ -1,9 +1,21 @@
 package gmnlisp
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"os"
+)
+
+var (
+	ErrDevisionByZero           = errors.New("Devision by zeor")
+	ErrExpectedCons             = errors.New("Expected CONS")
+	ErrExpectedFunction         = errors.New("expected function")
+	ErrExpectedNumber           = errors.New("Expected number")
+	ErrExpectedSymbol           = errors.New("Expected symbol")
+	ErrTooFewOrTooManyArguments = errors.New("Too few or too many arguments")
+	ErrTooShortTokens           = errors.New("too short tokens")
+	ErrVariableUnbound          = errors.New("Unbound variable")
 )
 
 type _Scope struct {

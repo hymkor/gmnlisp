@@ -2,7 +2,6 @@ package gmnlisp
 
 import (
 	"bytes"
-	"errors"
 	"fmt"
 	"io"
 	"regexp"
@@ -29,8 +28,6 @@ func nodes2cons(nodes []Node) Node {
 		return &Cons{Car: nodes[0], Cdr: nodes2cons(nodes[1:])}
 	}
 }
-
-var ErrTooShortTokens = errors.New("too short tokens")
 
 func readTokens(sc *_TokenScanner) (Node, error) {
 	token := sc.Token()

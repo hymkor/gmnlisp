@@ -1,7 +1,6 @@
 package gmnlisp
 
 import (
-	"errors"
 	"fmt"
 	"io"
 )
@@ -36,8 +35,6 @@ func (f Function) EqualP(n Node) bool {
 func (f Function) Call(w *World, n Node) (Node, error) {
 	return f(w, n)
 }
-
-var ErrExpectedFunction = errors.New("expected function")
 
 func (cons *Cons) Eval(w *World) (Node, error) {
 	first := cons.Car

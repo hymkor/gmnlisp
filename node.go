@@ -1,15 +1,9 @@
 package gmnlisp
 
 import (
-	"errors"
 	"fmt"
 	"io"
 	"strings"
-)
-
-var (
-	ErrDevisionByZero  = errors.New("Devision by zeor")
-	ErrVariableUnbound = errors.New("Unbound variable")
 )
 
 type Node interface {
