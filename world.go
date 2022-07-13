@@ -164,3 +164,11 @@ func (w *World) newWorld(globals map[string]Node, ns *_Scope) *World {
 		Stdout: w.Stdout,
 	}
 }
+
+func (w *World) Call(f Node, param Node) (Node, error) {
+	_f, ok := f.(_Callable)
+	if !ok {
+		return nil, ErrExpectedFunction
+	}
+	return _f.Call(w, param)
+}
