@@ -40,11 +40,12 @@ $ go run example.go
 Support functions
 -----------------
 
+- *
+- +
+- -
+- /
+- =
 - T
-- \*
-- \+
-- \-
-- \/
 - \<
 - \<=
 - \>
@@ -60,6 +61,8 @@ Support functions
 - equalp
 - lambda
 - let
+- list
+- nil
 - prin1
 - princ
 - print
