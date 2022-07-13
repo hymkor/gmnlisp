@@ -172,3 +172,18 @@ func (w *World) Call(f Node, param Node) (Node, error) {
 	}
 	return _f.Call(w, param)
 }
+
+func List(nodes ...Node) Node {
+	first := &Cons{Cdr: Null}
+	last := first
+	for len(nodes) > 0 {
+		tmp := &Cons{
+			Car: nodes[0],
+			Cdr: Null,
+		}
+		last.Cdr = tmp
+		last = tmp
+		nodes = nodes[1:]
+	}
+	return first.Cdr
+}

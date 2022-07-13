@@ -166,21 +166,18 @@ func TestWorld(t *testing.T) {
 	}
 }
 
+func TestList(t *testing.T) {
+	evalTest(t, `(list 1 2 3 4)`,
+		List(Integer(1), Integer(2), Integer(3), Integer(4)))
+}
+
 func TestTokenizer(t *testing.T) {
-	evalTest(t,`
+	evalTest(t, `
 		(list 1 2 ;
 		  3;
-		  4)`, &Cons{
-		Car: Integer(1),
-		Cdr: &Cons{
-			Car: Integer(2),
-			Cdr: &Cons{
-				Car: Integer(3),
-				Cdr: &Cons{
-					Car: Integer(4),
-					Cdr: Null,
-				},
-			},
-		},
-	})
+		  4)`,
+		List(Integer(1),
+			Integer(2),
+			Integer(3),
+			Integer(4)))
 }
