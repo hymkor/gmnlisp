@@ -75,7 +75,16 @@ func (nl *Lambda) prinX(w io.Writer, rich bool) {
 
 func (nl *Lambda) Call(w *World, n Node) (Node, error) {
 	globals := map[string]Node{}
+	foundSlash := false
 	for _, name := range nl.param {
+		if name == "/" {
+			foundSlash = true
+			continue
+		}
+		if foundSlash {
+			globals[name] = Null
+			continue
+		}
 		cons, ok := n.(*Cons)
 		if !ok {
 			return nil, ErrTooFewOrTooManyArguments

@@ -181,3 +181,26 @@ func TestTokenizer(t *testing.T) {
 			Integer(3),
 			Integer(4)))
 }
+
+func TestAutoLispFunc(t *testing.T) {
+	evalTest(t, `(setq c "a") c`, String("a"))
+
+	evalTest(t, `
+		(setq c "a")
+		(defun f (a)
+			(let ((c "b"))
+				(+ a 1)
+			)
+		)
+		(list (f 4) c)`,
+		List(Integer(5), String("a")))
+
+	evalTest(t, `
+		(setq c "a")
+		(defun f (a / c)
+			(setq c "b")
+			(+ a 1)
+		)
+		(list (f 4) c)`,
+		List(Integer(5), String("a")))
+}
