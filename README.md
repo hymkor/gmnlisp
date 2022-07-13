@@ -41,9 +41,9 @@ $ go run examples/example1.go
 Support functions
 -----------------
 
-- *
-- +
-- -
+- \*
+- \+
+- \-
 - /
 - =
 - T
