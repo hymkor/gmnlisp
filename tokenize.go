@@ -37,6 +37,11 @@ func newTokenScanner(r io.Reader) *_TokenScanner {
 	tr := &_TokenScanner{}
 	tr.sc.Init(r)
 	tr.lastRune = tr.sc.Next()
+	if tr.lastRune == '#' || tr.lastRune == '@' {
+		for tr.lastRune != scanner.EOF && tr.lastRune != '\n' {
+			tr.lastRune = tr.sc.Next()
+		}
+	}
 	return tr
 }
 
