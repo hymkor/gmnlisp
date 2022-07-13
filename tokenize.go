@@ -13,7 +13,7 @@ func readtoken(r *scanner.Scanner, lastRune rune) (string, rune) {
 	quote := false
 	for lastRune != scanner.EOF {
 		if !quote {
-			if lastRune == ')' || lastRune == '(' || unicode.IsSpace(lastRune) {
+			if lastRune == ')' || lastRune == '(' || lastRune == ';' || unicode.IsSpace(lastRune) {
 				break
 			}
 		}
@@ -37,7 +37,7 @@ func newTokenScanner(r io.Reader) *_TokenScanner {
 	tr := &_TokenScanner{}
 	tr.sc.Init(r)
 	tr.lastRune = tr.sc.Next()
-	if tr.lastRune == '#' || tr.lastRune == '@' {
+	if tr.lastRune == '#' || tr.lastRune == '@' || tr.lastRune == ';' {
 		for tr.lastRune != scanner.EOF && tr.lastRune != '\n' {
 			tr.lastRune = tr.sc.Next()
 		}
@@ -61,6 +61,12 @@ func (tr *_TokenScanner) Scan() bool {
 				tr.EOF = true
 				return false
 			}
+		}
+		if tr.lastRune == ';' {
+			for tr.lastRune != scanner.EOF && tr.lastRune != '\n' {
+				tr.lastRune = tr.sc.Next()
+			}
+			continue
 		}
 		if strings.ContainsRune("'()", tr.lastRune) {
 			tr.lastToken = string(tr.lastRune)

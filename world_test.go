@@ -165,3 +165,22 @@ func TestWorld(t *testing.T) {
 		return
 	}
 }
+
+func TestTokenizer(t *testing.T) {
+	evalTest(t,`
+		(list 1 2 ;
+		  3;
+		  4)`, &Cons{
+		Car: Integer(1),
+		Cdr: &Cons{
+			Car: Integer(2),
+			Cdr: &Cons{
+				Car: Integer(3),
+				Cdr: &Cons{
+					Car: Integer(4),
+					Cdr: Null,
+				},
+			},
+		},
+	})
+}
