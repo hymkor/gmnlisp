@@ -110,6 +110,28 @@ func TestEval(t *testing.T) {
 		&Cons{Car: Integer(1), Cdr: Null})
 }
 
+func TestLambdaParameter(t *testing.T) {
+	w := New()
+	_, err := w.Interpret(`(defun f (x y) (+ x y))`)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	_, err = w.Interpret(`(f 1)`)
+	if !errors.Is(err, ErrTooFewOrTooManyArguments) {
+		t.Fatal("Few argumenets error did not occur")
+	}
+
+	_, err = w.Interpret(`(f 1 2)`)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+
+	_, err = w.Interpret(`(f 1 2 3)`)
+	if !errors.Is(err, ErrTooFewOrTooManyArguments) {
+		t.Fatal("Few argumenets error did not occur")
+	}
+}
+
 func TestWorld(t *testing.T) {
 	w1 := New()
 	if _, err := w1.Interpret(`(setq a "A")`); err != nil {

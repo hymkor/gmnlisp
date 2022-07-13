@@ -76,17 +76,20 @@ func (nl *Lambda) prinX(w io.Writer, rich bool) {
 func (nl *Lambda) Call(w *World, n Node) (Node, error) {
 	globals := map[string]Node{}
 	for _, name := range nl.param {
-		if cons, ok := n.(*Cons); ok {
-			var err error
-
-			globals[name], err = cons.GetCar().Eval(w)
-			if err != nil {
-				return nil, err
-			}
-			n = cons.GetCdr()
-		} else {
-			globals[name] = Null
+		cons, ok := n.(*Cons)
+		if !ok {
+			return nil, ErrTooFewOrTooManyArguments
 		}
+		var err error
+
+		globals[name], err = cons.GetCar().Eval(w)
+		if err != nil {
+			return nil, err
+		}
+		n = cons.GetCdr()
+	}
+	if HasValue(n) {
+		return nil, ErrTooFewOrTooManyArguments
 	}
 	newWorld := w.newWorld(globals, nl.scope)
 
