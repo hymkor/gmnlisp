@@ -88,13 +88,7 @@ func (nl *Lambda) Call(w *World, n Node) (Node, error) {
 			globals[name] = Null
 		}
 	}
-	newWorld := &World{
-		nameSpace: &_NameSpace{
-			globals: globals,
-			parent:  nl.nameSpace,
-		},
-		Stdout: w.Stdout,
-	}
+	newWorld := w.newWorld(globals, nl.nameSpace)
 
 	var errEarlyReturns *ErrEarlyReturns
 

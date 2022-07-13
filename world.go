@@ -142,3 +142,13 @@ func (w *World) InterpretBytes(code []byte) (Node, error) {
 	}
 	return compiled.Eval(w)
 }
+
+func (w *World) newWorld(globals map[string]Node, ns *_NameSpace) *World {
+	return &World{
+		nameSpace: &_NameSpace{
+			globals: globals,
+			parent:  ns,
+		},
+		Stdout: w.Stdout,
+	}
+}
