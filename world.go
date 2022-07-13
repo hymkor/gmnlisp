@@ -44,6 +44,7 @@ func (w *World) Set(name string, value Node) {
 	for p != nil {
 		if _, ok := p.globals[name]; ok || p.parent == nil {
 			p.globals[name] = value
+			return
 		}
 		p = p.parent
 	}
