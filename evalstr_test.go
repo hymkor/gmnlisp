@@ -100,6 +100,14 @@ func TestEval(t *testing.T) {
 			(defun dummy (a b) (+ a b))
 			(dummy 7 8)
 			a)`, Integer(0))
+
+	evalTest(t, `
+		(let ((x 1))
+		  (defun f ()
+			(list x)))
+		(let ((x 2))
+			(f))`,
+		&Cons{Car: Integer(1), Cdr: Null})
 }
 
 func TestWorld(t *testing.T) {

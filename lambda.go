@@ -7,16 +7,17 @@ import (
 )
 
 type Lambda struct {
-	param []string
-	code  Node
-	name  string
+	param     []string
+	code      Node
+	name      string
+	nameSpace *_NameSpace
 }
 
-func cmdLambda(_ *World, node Node) (Node, error) {
-	return newLambda(node, "")
+func cmdLambda(w *World, node Node) (Node, error) {
+	return newLambda(w, node, "")
 }
 
-func newLambda(node Node, blockName string) (Node, error) {
+func newLambda(w *World, node Node, blockName string) (Node, error) {
 	// (lambda (param) code)
 
 	cons, ok := node.(*Cons)
@@ -36,9 +37,10 @@ func newLambda(node Node, blockName string) (Node, error) {
 	}
 
 	return &Lambda{
-		param: params,
-		code:  cons.GetCdr(),
-		name:  blockName,
+		param:     params,
+		code:      cons.GetCdr(),
+		name:      blockName,
+		nameSpace: w.nameSpace,
 	}, nil
 }
 
@@ -86,17 +88,17 @@ func (nl *Lambda) Call(w *World, n Node) (Node, error) {
 			globals[name] = Null
 		}
 	}
-	w.nameSpace = &_NameSpace{
-		globals: globals,
-		parent:  w.nameSpace,
+	newWorld := &World{
+		nameSpace: &_NameSpace{
+			globals: globals,
+			parent:  nl.nameSpace,
+		},
+		Stdout: w.Stdout,
 	}
-	defer func() {
-		w.nameSpace = w.nameSpace.parent
-	}()
 
 	var errEarlyReturns *ErrEarlyReturns
 
-	result, err := progn(w, nl.code)
+	result, err := progn(newWorld, nl.code)
 	if errors.As(err, &errEarlyReturns) && errEarlyReturns.Name == string(nl.name) {
 		return errEarlyReturns.Value, nil
 	}
@@ -126,7 +128,7 @@ func cmdDefun(w *World, node Node) (Node, error) {
 	}
 	name := string(_name)
 
-	lambda, err := newLambda(cons.Cdr, string(_name))
+	lambda, err := newLambda(w, cons.Cdr, string(_name))
 	if err != nil {
 		return nil, err
 	}
