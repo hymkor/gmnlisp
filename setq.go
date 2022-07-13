@@ -61,12 +61,12 @@ func cmdLet(w *World, param Node) (Node, error) {
 		globals[name] = value
 		return nil
 	})
-	w.nameSpace = &_NameSpace{
+	w.scope = &_Scope{
 		globals: globals,
-		parent:  w.nameSpace,
+		parent:  w.scope,
 	}
 	defer func() {
-		w.nameSpace = w.nameSpace.parent
+		w.scope = w.scope.parent
 	}()
 
 	if err != nil {

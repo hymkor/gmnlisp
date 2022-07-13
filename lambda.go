@@ -7,10 +7,10 @@ import (
 )
 
 type Lambda struct {
-	param     []string
-	code      Node
-	name      string
-	nameSpace *_NameSpace
+	param []string
+	code  Node
+	name  string
+	scope *_Scope
 }
 
 func cmdLambda(w *World, node Node) (Node, error) {
@@ -37,10 +37,10 @@ func newLambda(w *World, node Node, blockName string) (Node, error) {
 	}
 
 	return &Lambda{
-		param:     params,
-		code:      cons.GetCdr(),
-		name:      blockName,
-		nameSpace: w.nameSpace,
+		param: params,
+		code:  cons.GetCdr(),
+		name:  blockName,
+		scope: w.scope,
 	}, nil
 }
 
@@ -88,7 +88,7 @@ func (nl *Lambda) Call(w *World, n Node) (Node, error) {
 			globals[name] = Null
 		}
 	}
-	newWorld := w.newWorld(globals, nl.nameSpace)
+	newWorld := w.newWorld(globals, nl.scope)
 
 	var errEarlyReturns *ErrEarlyReturns
 

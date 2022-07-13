@@ -6,18 +6,18 @@ import (
 	"os"
 )
 
-type _NameSpace struct {
-	parent  *_NameSpace
+type _Scope struct {
+	parent  *_Scope
 	globals map[string]Node
 }
 
 type World struct {
-	Stdout    io.Writer
-	nameSpace *_NameSpace
+	Stdout io.Writer
+	scope  *_Scope
 }
 
 func (w *World) Get(name string) (Node, error) {
-	p := w.nameSpace
+	p := w.scope
 	for p != nil {
 		if value, ok := p.globals[name]; ok {
 			return value, nil
@@ -28,7 +28,7 @@ func (w *World) Get(name string) (Node, error) {
 }
 
 func (w *World) Set(name string, value Node) {
-	p := w.nameSpace
+	p := w.scope
 	for p != nil {
 		if _, ok := p.globals[name]; ok || p.parent == nil {
 			p.globals[name] = value
@@ -40,7 +40,7 @@ func (w *World) Set(name string, value Node) {
 func New() *World {
 	return &World{
 		Stdout: os.Stdout,
-		nameSpace: &_NameSpace{
+		scope: &_Scope{
 			globals: map[string]Node{
 				"T":           True,
 				"nil":         Null,
@@ -143,9 +143,9 @@ func (w *World) InterpretBytes(code []byte) (Node, error) {
 	return compiled.Eval(w)
 }
 
-func (w *World) newWorld(globals map[string]Node, ns *_NameSpace) *World {
+func (w *World) newWorld(globals map[string]Node, ns *_Scope) *World {
 	return &World{
-		nameSpace: &_NameSpace{
+		scope: &_Scope{
 			globals: globals,
 			parent:  ns,
 		},
