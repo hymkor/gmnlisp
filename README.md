@@ -51,6 +51,7 @@ Support functions
 - \<=
 - \>
 - \>=
+- append
 - atom
 - block
 - car
