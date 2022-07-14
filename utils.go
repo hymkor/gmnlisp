@@ -48,16 +48,16 @@ func List(nodes ...Node) Node {
 	return first.Cdr
 }
 
-func forEachList(this Node, f func(Node) error) error {
-	for HasValue(this) {
-		cons, ok := this.(*Cons)
+func forEachList(list Node, f func(Node) error) error {
+	for HasValue(list) {
+		cons, ok := list.(*Cons)
 		if !ok {
-			return fmt.Errorf("%w (%s)", ErrExpectedCons, toString(this))
+			return fmt.Errorf("%w (%s)", ErrExpectedCons, toString(list))
 		}
 		if err := f(cons.Car); err != nil {
 			return err
 		}
-		this = cons.Cdr
+		list = cons.Cdr
 	}
 	return nil
 }

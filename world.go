@@ -97,8 +97,8 @@ func (w *World) evalListAll(list Node, result []Node) error {
 	return nil
 }
 
-func (w *World) shiftAndEvalCar(node Node) (Node, Node, error) {
-	cons, ok := node.(*Cons)
+func (w *World) shiftAndEvalCar(list Node) (Node, Node, error) {
+	cons, ok := list.(*Cons)
 	if !ok {
 		return nil, nil, ErrTooFewArguments
 	}
@@ -109,16 +109,16 @@ func (w *World) shiftAndEvalCar(node Node) (Node, Node, error) {
 	return value, cons.Cdr, nil
 }
 
-func (w *World) inject(this Node, f func(left, right Node) (Node, error)) (Node, error) {
-	result, rest, err := w.shiftAndEvalCar(this)
+func (w *World) inject(list Node, f func(left, right Node) (Node, error)) (Node, error) {
+	result, list, err := w.shiftAndEvalCar(list)
 	if err != nil {
 		return nil, err
 	}
-	for HasValue(rest) {
+	for HasValue(list) {
 		var next Node
 		var err error
 
-		next, rest, err = w.shiftAndEvalCar(rest)
+		next, list, err = w.shiftAndEvalCar(list)
 		if err != nil {
 			return nil, err
 		}
