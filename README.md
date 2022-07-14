@@ -61,6 +61,7 @@ Support functions
 - defun
 - equal
 - equalp
+- if
 - lambda
 - let
 - list
