@@ -110,19 +110,18 @@ func cmdAppend(w *World, node Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	second, rest, err := w.shiftAndEvalCar(rest)
-	if err != nil {
-		return nil, err
-	}
-	if HasValue(rest) {
-		return nil, ErrTooManyArguments
-	}
+	for HasValue(rest) {
+		var next Node
 
-	last, err := lastOfList(first)
-	if err != nil {
-		return nil, err
+		next, rest, err = w.shiftAndEvalCar(rest)
+		if err != nil {
+			return nil, err
+		}
+		last, err := lastOfList(first)
+		if err != nil {
+			return nil, err
+		}
+		last.Cdr = next
 	}
-	last.Cdr = second
-
 	return first, nil
 }
