@@ -25,7 +25,7 @@ func newLambda(w *World, node Node, blockName string) (Node, error) {
 		return nil, fmt.Errorf("%w for parameter list", ErrExpectedCons)
 	}
 	params := []string{}
-	if err := forEachWithoutEval(cons.Car, func(n Node) error {
+	if err := forEachList(cons.Car, func(n Node) error {
 		name, ok := n.(Symbol)
 		if !ok {
 			return ErrExpectedSymbol

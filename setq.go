@@ -7,7 +7,7 @@ import (
 func cmdSetq(w *World, node Node) (Node, error) {
 	var name string
 	var value Node = Null
-	err := forEachWithoutEval(node, func(n Node) error {
+	err := forEachList(node, func(n Node) error {
 		if name == "" {
 			_name, ok := n.(Symbol)
 			if !ok {
@@ -40,7 +40,7 @@ func cmdLet(w *World, param Node) (Node, error) {
 
 	globals := map[string]Node{}
 
-	err := forEachWithoutEval(cons.Car, func(node Node) error {
+	err := forEachList(cons.Car, func(node Node) error {
 		var argv [2]Node
 
 		if err := listToSlice(node, argv[:]); err != nil {

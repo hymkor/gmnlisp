@@ -48,7 +48,7 @@ func List(nodes ...Node) Node {
 	return first.Cdr
 }
 
-func forEachWithoutEval(this Node, f func(Node) error) error {
+func forEachList(this Node, f func(Node) error) error {
 	for HasValue(this) {
 		cons, ok := this.(*Cons)
 		if !ok {
