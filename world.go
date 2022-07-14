@@ -36,7 +36,7 @@ func (w *World) Get(name string) (Node, error) {
 		}
 		p = p.parent
 	}
-	return Null, ErrVariableUnbound
+	return Null, fmt.Errorf("%w `%s`", ErrVariableUnbound, name)
 }
 
 func (w *World) Set(name string, value Node) {
