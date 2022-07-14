@@ -87,7 +87,7 @@ func (nl *Lambda) Call(w *World, n Node) (Node, error) {
 		}
 		cons, ok := n.(*Cons)
 		if !ok {
-			return nil, ErrTooFewOrTooManyArguments
+			return nil, ErrTooFewArguments
 		}
 		var err error
 
@@ -98,7 +98,7 @@ func (nl *Lambda) Call(w *World, n Node) (Node, error) {
 		n = cons.GetCdr()
 	}
 	if HasValue(n) {
-		return nil, ErrTooFewOrTooManyArguments
+		return nil, ErrTooManyArguments
 	}
 	newWorld := w.newWorld(globals, nl.scope)
 

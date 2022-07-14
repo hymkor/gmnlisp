@@ -25,7 +25,7 @@ func macroQuote(node Node) (Node, error) {
 	// Find single quotation mark
 	cons, ok = cons.Cdr.(*Cons)
 	if !ok {
-		return nil, fmt.Errorf("quote: %w", ErrTooFewOrTooManyArguments)
+		return nil, fmt.Errorf("quote: %w", ErrTooFewArguments)
 	}
 	quoted, err := macroQuote(cons.Car)
 	if err != nil {

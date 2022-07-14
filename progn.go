@@ -119,13 +119,13 @@ func cmdCond(w *World, node Node) (Node, error) {
 func cmdIf(w *World, param Node) (Node, error) {
 	cons, ok := param.(*Cons)
 	if !ok {
-		return nil, ErrTooFewOrTooManyArguments
+		return nil, ErrTooFewArguments
 	}
 	condNode := cons.Car
 
 	cons = cons.Cdr.(*Cons)
 	if !ok {
-		return nil, ErrTooFewOrTooManyArguments
+		return nil, ErrTooFewArguments
 	}
 	thenNode := cons.Car
 
@@ -133,12 +133,12 @@ func cmdIf(w *World, param Node) (Node, error) {
 	if HasValue(cons.Cdr) {
 		cons, ok = cons.Cdr.(*Cons)
 		if !ok {
-			return nil, ErrTooFewOrTooManyArguments
+			return nil, ErrTooFewArguments
 		}
 		elseNode = cons.Car
 
 		if HasValue(cons.Cdr) {
-			return nil, ErrTooFewOrTooManyArguments
+			return nil, ErrTooManyArguments
 		}
 	}
 	condValue, err := condNode.Eval(w)

@@ -14,7 +14,7 @@ func cmdCons(w *World, node Node) (Node, error) {
 		return nil, err
 	}
 	if HasValue(rest) {
-		return nil, ErrTooFewOrTooManyArguments
+		return nil, ErrTooManyArguments
 	}
 	return &Cons{Car: first, Cdr: second}, err
 }
@@ -46,7 +46,7 @@ func cmdCdr(w *World, param Node) (Node, error) {
 func cmdQuote(_ *World, param Node) (Node, error) {
 	cons, ok := param.(*Cons)
 	if !ok {
-		return nil, ErrTooFewOrTooManyArguments
+		return nil, ErrTooFewArguments
 	}
 	return cons.Car, nil
 }
@@ -122,7 +122,7 @@ func cmdAppend(w *World, node Node) (Node, error) {
 		return nil, err
 	}
 	if HasValue(rest) {
-		return nil, ErrTooFewOrTooManyArguments
+		return nil, ErrTooManyArguments
 	}
 
 	last, err := lastOfList(first)

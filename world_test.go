@@ -118,7 +118,7 @@ func TestLambdaParameter(t *testing.T) {
 		t.Fatal(err.Error())
 	}
 	_, err = w.Interpret(`(f 1)`)
-	if !errors.Is(err, ErrTooFewOrTooManyArguments) {
+	if !errors.Is(err, ErrTooFewArguments) {
 		t.Fatal("Few argumenets error did not occur")
 	}
 
@@ -128,7 +128,7 @@ func TestLambdaParameter(t *testing.T) {
 	}
 
 	_, err = w.Interpret(`(f 1 2 3)`)
-	if !errors.Is(err, ErrTooFewOrTooManyArguments) {
+	if !errors.Is(err, ErrTooManyArguments) {
 		t.Fatal("Few argumenets error did not occur")
 	}
 }

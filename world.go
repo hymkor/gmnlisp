@@ -8,14 +8,15 @@ import (
 )
 
 var (
-	ErrDevisionByZero           = errors.New("Devision by zeor")
-	ErrExpectedCons             = errors.New("Expected CONS")
-	ErrExpectedFunction         = errors.New("expected function")
-	ErrExpectedNumber           = errors.New("Expected number")
-	ErrExpectedSymbol           = errors.New("Expected symbol")
-	ErrTooFewOrTooManyArguments = errors.New("Too few or too many arguments")
-	ErrTooShortTokens           = errors.New("too short tokens")
-	ErrVariableUnbound          = errors.New("Unbound variable")
+	ErrDevisionByZero   = errors.New("Devision by zeor")
+	ErrExpectedCons     = errors.New("Expected CONS")
+	ErrExpectedFunction = errors.New("expected function")
+	ErrExpectedNumber   = errors.New("Expected number")
+	ErrExpectedSymbol   = errors.New("Expected symbol")
+	ErrTooManyArguments = errors.New("Too many arguments")
+	ErrTooFewArguments  = errors.New("Too few arguments")
+	ErrTooShortTokens   = errors.New("too short tokens")
+	ErrVariableUnbound  = errors.New("Unbound variable")
 )
 
 type _Scope struct {
@@ -98,7 +99,7 @@ func New() *World {
 func (w *World) shiftAndEvalCar(node Node) (Node, Node, error) {
 	cons, ok := node.(*Cons)
 	if !ok {
-		return nil, nil, ErrTooFewOrTooManyArguments
+		return nil, nil, ErrTooFewArguments
 	}
 	value, err := cons.GetCar().Eval(w)
 	if err != nil {

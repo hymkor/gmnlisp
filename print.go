@@ -15,8 +15,11 @@ func init() {
 
 func cmdPrinX(w *World, this Node, f func(node Node)) (Node, error) {
 	cons, ok := this.(*Cons)
-	if !ok || HasValue(cons.Cdr) {
-		return nil, ErrTooFewOrTooManyArguments
+	if !ok {
+		return nil, ErrTooFewArguments
+	}
+	if HasValue(cons.Cdr) {
+		return nil, ErrTooManyArguments
 	}
 	value, err := cons.GetCar().Eval(w)
 	if err != nil {
