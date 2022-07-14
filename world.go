@@ -1,22 +1,9 @@
 package gmnlisp
 
 import (
-	"errors"
 	"fmt"
 	"io"
 	"os"
-)
-
-var (
-	ErrDevisionByZero   = errors.New("Devision by zeor")
-	ErrExpectedCons     = errors.New("Expected CONS")
-	ErrExpectedFunction = errors.New("expected function")
-	ErrExpectedNumber   = errors.New("Expected number")
-	ErrExpectedSymbol   = errors.New("Expected symbol")
-	ErrTooManyArguments = errors.New("Too many arguments")
-	ErrTooFewArguments  = errors.New("Too few arguments")
-	ErrTooShortTokens   = errors.New("too short tokens")
-	ErrVariableUnbound  = errors.New("Unbound variable")
 )
 
 type _Scope struct {
@@ -96,21 +83,6 @@ func New() *World {
 	}
 }
 
-func listToSlice(list Node, slice []Node) error {
-	for i := 0; i < len(slice); i++ {
-		cons, ok := list.(*Cons)
-		if !ok {
-			return ErrTooFewArguments
-		}
-		slice[i] = cons.Car
-		list = cons.Cdr
-	}
-	if HasValue(list) {
-		return ErrTooManyArguments
-	}
-	return nil
-}
-
 func (w *World) evalListAll(list Node, result []Node) error {
 	if err := listToSlice(list, result); err != nil {
 		return err
@@ -158,20 +130,6 @@ func (w *World) inject(this Node, f func(left, right Node) (Node, error)) (Node,
 	return result, nil
 }
 
-func forEachWithoutEval(this Node, f func(Node) error) error {
-	for HasValue(this) {
-		cons, ok := this.(*Cons)
-		if !ok {
-			return fmt.Errorf("%w (%s)", ErrExpectedCons, toString(this))
-		}
-		if err := f(cons.Car); err != nil {
-			return err
-		}
-		this = cons.Cdr
-	}
-	return nil
-}
-
 func (w *World) Interpret(code string) (Node, error) {
 	compiled, err := ReadString(code)
 	if err != nil {
@@ -204,19 +162,4 @@ func (w *World) Call(f Node, params ...Node) (Node, error) {
 		return nil, ErrExpectedFunction
 	}
 	return _f.Call(w, List(params...))
-}
-
-func List(nodes ...Node) Node {
-	first := &Cons{Cdr: Null}
-	last := first
-	for len(nodes) > 0 {
-		tmp := &Cons{
-			Car: nodes[0],
-			Cdr: Null,
-		}
-		last.Cdr = tmp
-		last = tmp
-		nodes = nodes[1:]
-	}
-	return first.Cdr
 }

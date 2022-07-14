@@ -23,22 +23,6 @@ func (cons *Cons) GetCdr() Node {
 	return cons.Cdr
 }
 
-func HasValue(node Node) bool {
-	if node == nil {
-		return false
-	}
-	_, ok := node.(_NullType)
-	return !ok
-}
-
-func IsNull(node Node) bool {
-	if node == nil {
-		return true
-	}
-	_, ok := node.(_NullType)
-	return ok
-}
-
 func (cons *Cons) isTailNull() bool {
 	if IsNull(cons.Cdr) {
 		return true
