@@ -1,5 +1,9 @@
 package gmnlisp
 
+import (
+	"fmt"
+)
+
 func cmdCons(w *World, node Node) (Node, error) {
 	first, rest, err := w.shiftAndEvalCar(node)
 	if err != nil {
@@ -93,4 +97,39 @@ func cmdList(w *World, node Node) (Node, error) {
 		}
 	}
 	return &Cons{Car: car, Cdr: cdr}, nil
+}
+
+func lastOfList(node Node) (*Cons, error) {
+	for {
+		cons, ok := node.(*Cons)
+		if !ok {
+			return nil, fmt.Errorf("%w `%s`", ErrExpectedCons, node)
+		}
+		if IsNull(cons.Cdr) {
+			return cons, nil
+		}
+		node = cons.Cdr
+	}
+}
+
+func cmdAppend(w *World, node Node) (Node, error) {
+	first, rest, err := w.shiftAndEvalCar(node)
+	if err != nil {
+		return nil, err
+	}
+	second, rest, err := w.shiftAndEvalCar(rest)
+	if err != nil {
+		return nil, err
+	}
+	if HasValue(rest) {
+		return nil, ErrTooFewOrTooManyArguments
+	}
+
+	last, err := lastOfList(first)
+	if err != nil {
+		return nil, err
+	}
+	last.Cdr = second
+
+	return first, nil
 }

@@ -65,6 +65,7 @@ func New() *World {
 				">":           Function(cmdGreaterThan),
 				">=":          Function(cmdGreaterOrEqual),
 				"T":           True,
+				"append":      Function(cmdAppend),
 				"atom":        Function(cmdAtom),
 				"block":       Function(cmdBlock),
 				"car":         Function(cmdCar),

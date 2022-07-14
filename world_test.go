@@ -60,6 +60,7 @@ func TestOperators(t *testing.T) {
 	evalTest(t, `(equalp (cons 1 (cons 2 nil)) '(1 2))`, True)
 	evalTest(t, `(equalp (cons 1 2) '(1))`, Null)
 	evalTest(t, `(equal (list 1 (+ 1 1) (+ 1 2)) '(1 2 3))`, True)
+	evalTest(t, `(append '(1 2) '(3 4))`, List(Integer(1), Integer(2), Integer(3), Integer(4)))
 }
 
 func TestCmdCond(t *testing.T) {
