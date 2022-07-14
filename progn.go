@@ -41,21 +41,14 @@ func cmdReturnFrom(w *World, n Node) (Node, error) {
 	return nil, &ErrEarlyReturns{Value: value, Name: string(symbol)}
 }
 
-func progn(w *World, c Node) (Node, error) {
-	var last Node
-	for HasValue(c) {
-		cons, ok := c.(*Cons)
-		if !ok {
-			return nil, ErrExpectedCons
-		}
-		var err error
-		last, err = cons.GetCar().Eval(w)
+func progn(w *World, n Node) (value Node, err error) {
+	for HasValue(n) {
+		value, n, err = w.shiftAndEvalCar(n)
 		if err != nil {
 			return nil, err
 		}
-		c = cons.Cdr
 	}
-	return last, nil
+	return
 }
 
 func cmdProgn(w *World, c Node) (Node, error) {
