@@ -117,39 +117,17 @@ func cmdCond(w *World, node Node) (Node, error) {
 }
 
 func cmdIf(w *World, param Node) (Node, error) {
-	cons, ok := param.(*Cons)
-	if !ok {
-		return nil, ErrTooFewArguments
+	var argv [3]Node
+	if err := listToSlice(param, argv[:]); err != nil {
+		return nil, err
 	}
-	condNode := cons.Car
-
-	cons = cons.Cdr.(*Cons)
-	if !ok {
-		return nil, ErrTooFewArguments
-	}
-	thenNode := cons.Car
-
-	elseNode := Null
-	if HasValue(cons.Cdr) {
-		cons, ok = cons.Cdr.(*Cons)
-		if !ok {
-			return nil, ErrTooFewArguments
-		}
-		elseNode = cons.Car
-
-		if HasValue(cons.Cdr) {
-			return nil, ErrTooManyArguments
-		}
-	}
-	condValue, err := condNode.Eval(w)
+	cond, err := argv[0].Eval(w)
 	if err != nil {
 		return nil, err
 	}
-	if HasValue(condValue) {
-		return thenNode.Eval(w)
+	if HasValue(cond) {
+		return argv[1].Eval(w)
+	} else {
+		return argv[2].Eval(w)
 	}
-	if HasValue(elseNode) {
-		return elseNode.Eval(w)
-	}
-	return Null, nil
 }

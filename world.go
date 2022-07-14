@@ -96,6 +96,21 @@ func New() *World {
 	}
 }
 
+func listToSlice(list Node, slice []Node) error {
+	for i := 0; i < len(slice); i++ {
+		cons, ok := list.(*Cons)
+		if !ok {
+			return ErrTooFewArguments
+		}
+		slice[i] = cons.Car
+		list = cons.Cdr
+	}
+	if HasValue(list) {
+		return ErrTooManyArguments
+	}
+	return nil
+}
+
 func (w *World) shiftAndEvalCar(node Node) (Node, Node, error) {
 	cons, ok := node.(*Cons)
 	if !ok {
