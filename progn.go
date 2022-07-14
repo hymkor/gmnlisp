@@ -115,3 +115,41 @@ func cmdCond(w *World, node Node) (Node, error) {
 	}
 	return Null, nil
 }
+
+func cmdIf(w *World, param Node) (Node, error) {
+	cons, ok := param.(*Cons)
+	if !ok {
+		return nil, ErrTooFewOrTooManyArguments
+	}
+	condNode := cons.Car
+
+	cons = cons.Cdr.(*Cons)
+	if !ok {
+		return nil, ErrTooFewOrTooManyArguments
+	}
+	thenNode := cons.Car
+
+	elseNode := Null
+	if HasValue(cons.Cdr) {
+		cons, ok = cons.Cdr.(*Cons)
+		if !ok {
+			return nil, ErrTooFewOrTooManyArguments
+		}
+		elseNode = cons.Car
+
+		if HasValue(cons.Cdr) {
+			return nil, ErrTooFewOrTooManyArguments
+		}
+	}
+	condValue, err := condNode.Eval(w)
+	if err != nil {
+		return nil, err
+	}
+	if HasValue(condValue) {
+		return thenNode.Eval(w)
+	}
+	if HasValue(elseNode) {
+		return elseNode.Eval(w)
+	}
+	return Null, nil
+}

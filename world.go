@@ -75,6 +75,7 @@ func New() *World {
 				"defun":       Function(cmdDefun),
 				"equal":       Function(cmdEqual),
 				"equalp":      Function(cmdEqualOp),
+				"if":          Function(cmdIf),
 				"lambda":      Function(cmdLambda),
 				"let":         Function(cmdLet),
 				"list":        Function(cmdList),
