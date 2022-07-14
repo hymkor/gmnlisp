@@ -25,6 +25,9 @@ func cmdSetq(w *World, node Node) (Node, error) {
 		}
 		return nil
 	})
+	if name != "" {
+		return value, ErrTooFewArguments
+	}
 	return value, err
 }
 
@@ -38,29 +41,26 @@ func cmdLet(w *World, param Node) (Node, error) {
 	globals := map[string]Node{}
 
 	err := forEachWithoutEval(cons.Car, func(node Node) error {
-		cons, ok := node.(*Cons)
-		if !ok {
-			return fmt.Errorf("%w: `%s`",
-				ErrExpectedCons, toString(node))
+		var argv [2]Node
+
+		if err := listToSlice(node, argv[:]); err != nil {
+			return err
 		}
-		_name, ok := cons.Car.(Symbol)
+		symbol, ok := argv[0].(Symbol)
 		if !ok {
-			return fmt.Errorf("%w: `%s`",
-				ErrExpectedSymbol, toString(cons.Car))
+			return fmt.Errorf("%w `%s`", ErrExpectedSymbol, toString(argv[0]))
 		}
-		name := string(_name)
-		cons, ok = cons.Cdr.(*Cons)
-		if !ok {
-			return fmt.Errorf("%w: `%s`",
-				ErrExpectedCons, toString(cons.Cdr))
-		}
-		value, err := cons.Car.Eval(w)
+		value, err := argv[1].Eval(w)
 		if err != nil {
 			return err
 		}
-		globals[name] = value
+		globals[string(symbol)] = value
 		return nil
 	})
+	if err != nil {
+		return nil, err
+	}
+
 	w.scope = &_Scope{
 		globals: globals,
 		parent:  w.scope,
@@ -69,13 +69,5 @@ func cmdLet(w *World, param Node) (Node, error) {
 		w.scope = w.scope.parent
 	}()
 
-	if err != nil {
-		return nil, err
-	}
-
-	result, err := progn(w, code)
-	if err != nil {
-		return result, err
-	}
-	return result, nil
+	return progn(w, code)
 }
