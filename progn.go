@@ -17,32 +17,24 @@ func (e *ErrEarlyReturns) Error() string {
 	return fmt.Sprintf("Unexpected (return-from %s)", e.Name)
 }
 
-func cmdReturn(w *World, node Node) (Node, error) {
-	cons, ok := node.(*Cons)
-	if !ok {
-		return nil, ErrExpectedCons
-	}
-	value, err := cons.GetCar().Eval(w)
-	if err != nil {
+func cmdReturn(w *World, n Node) (Node, error) {
+	var argv [1]Node
+	if err := w.evalListAll(n, argv[:]); err != nil {
 		return nil, err
 	}
-	return nil, &ErrEarlyReturns{Value: value, Name: ""}
+	return nil, &ErrEarlyReturns{Value: argv[0], Name: ""}
 }
 
-func cmdReturnFrom(w *World, node Node) (Node, error) {
-	cons, ok := node.(*Cons)
-	if !ok {
-		return nil, ErrExpectedCons
+func cmdReturnFrom(w *World, n Node) (Node, error) {
+	var argv [2]Node
+	if err := listToSlice(n, argv[:]); err != nil {
+		return nil, err
 	}
-	symbol, ok := cons.Car.(Symbol)
+	symbol, ok := argv[0].(Symbol)
 	if !ok {
 		return nil, ErrExpectedSymbol
 	}
-	cons, ok = cons.Cdr.(*Cons)
-	if !ok {
-		return nil, ErrExpectedCons
-	}
-	value, err := cons.GetCar().Eval(w)
+	value, err := argv[1].Eval(w)
 	if err != nil {
 		return nil, err
 	}

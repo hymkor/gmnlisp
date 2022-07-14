@@ -13,20 +13,13 @@ func init() {
 	}
 }
 
-func cmdPrinX(w *World, this Node, f func(node Node)) (Node, error) {
-	cons, ok := this.(*Cons)
-	if !ok {
-		return nil, ErrTooFewArguments
-	}
-	if HasValue(cons.Cdr) {
-		return nil, ErrTooManyArguments
-	}
-	value, err := cons.GetCar().Eval(w)
-	if err != nil {
+func cmdPrinX(w *World, n Node, f func(node Node)) (Node, error) {
+	var argv [1]Node
+	if err := w.evalListAll(n, argv[:]); err != nil {
 		return nil, err
 	}
-	f(value)
-	return value, nil
+	f(argv[0])
+	return argv[0], nil
 }
 
 func cmdPrint(w *World, this Node) (Node, error) {

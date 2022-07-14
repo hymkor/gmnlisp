@@ -4,59 +4,52 @@ import (
 	"fmt"
 )
 
-func cmdCons(w *World, node Node) (Node, error) {
-	first, rest, err := w.shiftAndEvalCar(node)
-	if err != nil {
+func cmdCons(w *World, n Node) (Node, error) {
+	var argv [2]Node
+	if err := w.evalListAll(n, argv[:]); err != nil {
 		return nil, err
 	}
-	second, rest, err := w.shiftAndEvalCar(rest)
-	if err != nil {
-		return nil, err
-	}
-	if HasValue(rest) {
-		return nil, ErrTooManyArguments
-	}
-	return &Cons{Car: first, Cdr: second}, err
+	return &Cons{Car: argv[0], Cdr: argv[1]}, nil
 }
 
-func cmdCar(w *World, param Node) (Node, error) {
-	first, _, err := w.shiftAndEvalCar(param)
-	if err != nil {
+func cmdCar(w *World, n Node) (Node, error) {
+	var argv [1]Node
+	if err := w.evalListAll(n, argv[:]); err != nil {
 		return nil, err
 	}
-	cons, ok := first.(*Cons)
+	cons, ok := argv[0].(*Cons)
 	if !ok {
 		return nil, ErrExpectedCons
 	}
 	return cons.Car, nil
 }
 
-func cmdCdr(w *World, param Node) (Node, error) {
-	first, _, err := w.shiftAndEvalCar(param)
-	if err != nil {
+func cmdCdr(w *World, n Node) (Node, error) {
+	var argv [1]Node
+	if err := w.evalListAll(n, argv[:]); err != nil {
 		return nil, err
 	}
-	cons, ok := first.(*Cons)
+	cons, ok := argv[0].(*Cons)
 	if !ok {
 		return nil, ErrExpectedCons
 	}
 	return cons.Cdr, nil
 }
 
-func cmdQuote(_ *World, param Node) (Node, error) {
-	cons, ok := param.(*Cons)
-	if !ok {
-		return nil, ErrTooFewArguments
+func cmdQuote(_ *World, n Node) (Node, error) {
+	var argv [1]Node
+	if err := listToSlice(n, argv[:]); err != nil {
+		return nil, err
 	}
-	return cons.Car, nil
+	return argv[0], nil
 }
 
-func cmdAtom(_ *World, param Node) (Node, error) {
-	cons, ok := param.(*Cons)
-	if !ok {
-		return nil, ErrExpectedCons
+func cmdAtom(w *World, n Node) (Node, error) {
+	var argv [1]Node
+	if err := w.evalListAll(n, argv[:]); err != nil {
+		return nil, err
 	}
-	if _, ok := cons.Car.(*Cons); ok {
+	if _, ok := argv[0].(*Cons); ok {
 		return Null, nil
 	}
 	return True, nil
