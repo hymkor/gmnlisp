@@ -9,7 +9,7 @@ import (
 type Node interface {
 	Eval(*World) (Node, error)
 	Equals(Node) bool
-	EqualP(Node) bool
+	Equalp(Node) bool
 	PrintTo(io.Writer)
 	PrincTo(io.Writer)
 }
@@ -44,7 +44,7 @@ func (_TrueType) Equals(n Node) bool {
 	return ok
 }
 
-func (t _TrueType) EqualP(n Node) bool {
+func (t _TrueType) Equalp(n Node) bool {
 	_, ok := n.(_TrueType)
 	return ok
 }
@@ -71,7 +71,7 @@ func (nt _NullType) Equals(n Node) bool {
 	return ok
 }
 
-func (nt _NullType) EqualP(n Node) bool {
+func (nt _NullType) Equalp(n Node) bool {
 	return nt.Equals(n)
 }
 
@@ -96,7 +96,7 @@ func (s String) Equals(n Node) bool {
 	return ok && s == ns
 }
 
-func (s String) EqualP(n Node) bool {
+func (s String) Equalp(n Node) bool {
 	if ns, ok := n.(String); ok {
 		return strings.EqualFold(string(s), string(ns))
 	}
@@ -136,7 +136,7 @@ func (s Symbol) Equals(n Node) bool {
 	return ok && s == ns
 }
 
-func (s Symbol) EqualP(n Node) bool {
+func (s Symbol) Equalp(n Node) bool {
 	ns, ok := n.(Symbol)
 	return ok && strings.EqualFold(string(s), string(ns))
 }

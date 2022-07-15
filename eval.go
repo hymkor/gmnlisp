@@ -28,7 +28,7 @@ func (f Function) Equals(n Node) bool {
 	return false
 }
 
-func (f Function) EqualP(n Node) bool {
+func (f Function) Equalp(n Node) bool {
 	return false
 }
 

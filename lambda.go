@@ -119,7 +119,7 @@ func (*Lambda) Equals(Node) bool {
 	return false
 }
 
-func (*Lambda) EqualP(Node) bool {
+func (*Lambda) Equalp(Node) bool {
 	return false
 }
 

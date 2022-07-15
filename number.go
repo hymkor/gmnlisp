@@ -24,7 +24,7 @@ func (i Integer) Equals(n Node) bool {
 	return ok && i == _n
 }
 
-func (i Integer) EqualP(n Node) bool {
+func (i Integer) Equalp(n Node) bool {
 	if _n, ok := n.(Integer); ok && i == _n {
 		return true
 	}
@@ -107,7 +107,7 @@ func (f Float) Equals(n Node) bool {
 	return ok && f == v
 }
 
-func (f Float) EqualP(n Node) bool {
+func (f Float) Equalp(n Node) bool {
 	if _n, ok := n.(Float); ok && f == _n {
 		return true
 	}
