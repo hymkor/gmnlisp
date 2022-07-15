@@ -10,6 +10,14 @@ import (
 
 var flagExecute = flag.String("e", "", "execute string")
 
+func setArgv(w *gmnlisp.World, args []string) {
+	posixArgv := []gmnlisp.Node{}
+	for _, s := range args {
+		posixArgv = append(posixArgv, gmnlisp.String(s))
+	}
+	w.Set("*posix-argv*", gmnlisp.List(posixArgv...))
+}
+
 func mains(args []string) error {
 	var last = gmnlisp.Null
 	var err error
@@ -17,23 +25,22 @@ func mains(args []string) error {
 	lisp := gmnlisp.New()
 
 	if *flagExecute != "" {
+		setArgv(lisp, args)
 		last, err = lisp.Interpret(*flagExecute)
-		if err != nil {
-			return err
-		}
-	}
-	for _, fname := range args {
-		var script []byte
+	} else if len(args) > 0 {
+		setArgv(lisp, args[1:])
 
-		script, err = os.ReadFile(fname)
+		var script []byte
+		script, err = os.ReadFile(args[0])
 		if err != nil {
 			return err
 		}
 		last, err = lisp.InterpretBytes(script)
-		if err != nil {
-			return err
-		}
 	}
+	if err != nil {
+		return err
+	}
+
 	lisp.Interpret("(terpri)")
 	last.PrintTo(os.Stdout)
 	lisp.Interpret("(terpri)")
