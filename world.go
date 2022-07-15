@@ -83,6 +83,7 @@ func New() *World {
 				"terpri":        Function(cmdTerpri),
 				"truncate":      Function(cmdTruncate),
 				"while":         Function(cmdWhile),
+				"write-line":    Function(cmdWriteLine),
 			},
 		},
 	}

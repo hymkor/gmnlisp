@@ -35,6 +35,11 @@ type Reader struct {
 	io.Closer
 }
 
+type Writer struct {
+	Dummy
+	io.WriteCloser
+}
+
 func cmdOpen(w *World, n Node) (Node, error) {
 	var argv [2]Node
 	if err := w.evalListAll(n, argv[:]); err != nil {
@@ -62,6 +67,14 @@ func cmdOpen(w *World, n Node) (Node, error) {
 			scanner: bufio.NewScanner(file),
 			Closer:  file,
 		}, nil
+	} else if mode == "w" {
+		file, err := os.Create(fname)
+		if err != nil {
+			return nil, err
+		}
+		return &Writer{
+			WriteCloser: file,
+		}, nil
 	}
 	return nil, fmt.Errorf("no such a option `%s`", argv[1])
 }
@@ -79,6 +92,33 @@ func cmdReadLine(w *World, n Node) (Node, error) {
 		return Null, nil
 	}
 	return String(reader.scanner.Text()), nil
+}
+
+func cmdWriteLine(w *World, n Node) (Node, error) {
+	_s, n, err := w.shiftAndEvalCar(n)
+	if err != nil {
+		return nil, err
+	}
+	s, ok := _s.(String)
+	if !ok {
+		return nil, fmt.Errorf("%w `%s`", ErrExpectedString, toString(_s))
+	}
+	var writer io.Writer = w.Stdout
+	if HasValue(n) {
+		_writer, n, err := w.shiftAndEvalCar(n)
+		if err != nil {
+			return nil, err
+		}
+		writer, ok = _writer.(io.Writer)
+		if !ok {
+			return nil, fmt.Errorf("Expected Writer `%s`", toString(_writer))
+		}
+		if HasValue(n) {
+			return nil, ErrTooManyArguments
+		}
+	}
+	fmt.Fprintln(writer, string(s))
+	return s, nil
 }
 
 func cmdClose(w *World, n Node) (Node, error) {
