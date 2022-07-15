@@ -34,11 +34,11 @@ func cmdPlus(w *World, param Node) (Node, error) {
 func cmdMinus(w *World, param Node) (Node, error) {
 	type CanMinus interface {
 		Node
-		Minus(Node) (Node, error)
+		Sub(Node) (Node, error)
 	}
 	return w.inject(param, func(left, right Node) (Node, error) {
 		if _left, ok := left.(CanMinus); ok {
-			return _left.Minus(right)
+			return _left.Sub(right)
 		}
 		return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(left))
 	})

@@ -42,7 +42,7 @@ func (i Integer) Add(n Node) (Node, error) {
 	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n))
 }
 
-func (i Integer) Minus(n Node) (Node, error) {
+func (i Integer) Sub(n Node) (Node, error) {
 	if _n, ok := n.(Integer); ok {
 		return i - _n, nil
 	}
@@ -125,7 +125,7 @@ func (f Float) Add(n Node) (Node, error) {
 	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n))
 }
 
-func (f Float) Minus(n Node) (Node, error) {
+func (f Float) Sub(n Node) (Node, error) {
 	if _n, ok := n.(Float); ok {
 		return f - _n, nil
 	}
