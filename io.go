@@ -7,41 +7,40 @@ import (
 	"os"
 )
 
-type Dummy struct{}
+type _Dummy struct{}
 
-func (d Dummy) Eval(*World) (Node, error) {
+func (d _Dummy) Eval(*World) (Node, error) {
 	return d, nil
 }
 
-func (d Dummy) Equals(Node) bool {
+func (d _Dummy) Equals(Node) bool {
 	return false
 }
 
-func (d Dummy) Equalp(Node) bool {
+func (d _Dummy) Equalp(Node) bool {
 	return false
 }
 
-func (d Dummy) PrintTo(w io.Writer) {
+func (d _Dummy) PrintTo(w io.Writer) {
 	io.WriteString(w, "(binary)")
 }
 
-func (d Dummy) PrincTo(w io.Writer) {
+func (d _Dummy) PrincTo(w io.Writer) {
 	io.WriteString(w, "(binary)")
-}
-
-type Reader struct {
-	Dummy
-	scanner *bufio.Scanner
-	io.Closer
-}
-
-type Writer struct {
-	Dummy
-	io.WriteCloser
 }
 
 func cmdOpen(w *World, n Node) (Node, error) {
+	type Reader struct {
+		_Dummy
+		*bufio.Reader
+		io.Closer
+	}
+	type Writer struct {
+		_Dummy
+		io.WriteCloser
+	}
 	var argv [2]Node
+
 	if err := w.evalListAll(n, argv[:]); err != nil {
 		return nil, err
 	}
@@ -64,8 +63,8 @@ func cmdOpen(w *World, n Node) (Node, error) {
 			return nil, err
 		}
 		return &Reader{
-			scanner: bufio.NewScanner(file),
-			Closer:  file,
+			Reader: bufio.NewReader(file),
+			Closer: file,
 		}, nil
 	} else if mode == "w" {
 		file, err := os.Create(fname)
@@ -79,25 +78,42 @@ func cmdOpen(w *World, n Node) (Node, error) {
 	return nil, fmt.Errorf("no such a option `%s`", argv[1])
 }
 
+func chomp(s string) string {
+	L := len(s)
+	if L > 0 && s[L-1] == '\n' {
+		L--
+		s = s[:L]
+		if L > 0 && s[L-1] == '\r' {
+			s = s[:L-1]
+		}
+	}
+	return s
+}
+
 func cmdReadLine(w *World, n Node) (Node, error) {
+	type ReadStringer interface {
+		ReadString(byte) (string, error)
+	}
+
 	var argv [1]Node
 	if err := w.evalListAll(n, argv[:]); err != nil {
 		return nil, err
 	}
-	reader, ok := argv[0].(*Reader)
+	r, ok := argv[0].(ReadStringer)
 	if !ok {
 		return nil, fmt.Errorf("Expected Reader `%s`", toString(argv[0]))
 	}
-	if !reader.scanner.Scan() {
+	s, err := r.ReadString('\n')
+	if err == io.EOF {
 		return Null, nil
 	}
-	return String(reader.scanner.Text()), nil
+	return String(chomp(s)), err
 }
 
 func getWriterAndString(w *World, n Node) (io.Writer, String, error) {
 	_s, n, err := w.shiftAndEvalCar(n)
 	if err != nil {
-		return Writer{}, "", err
+		return nil, "", err
 	}
 	s, ok := _s.(String)
 	if !ok {
@@ -145,7 +161,7 @@ func cmdClose(w *World, n Node) (Node, error) {
 	}
 	c, ok := argv[0].(io.Closer)
 	if !ok {
-		return nil, fmt.Errorf("Expected Reader `%s`", toString(argv[0]))
+		return nil, fmt.Errorf("Expected Closer `%s`", toString(argv[0]))
 	}
 	return Null, c.Close()
 }
