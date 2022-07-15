@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func evalTest(t *testing.T, equation string, expect Node) {
+func assertEqual(t *testing.T, equation string, expect Node) {
 	w := New()
 	result, err := w.Interpret(equation)
 	if err != nil {
@@ -19,13 +19,13 @@ func evalTest(t *testing.T, equation string, expect Node) {
 }
 
 func TestCmdCond(t *testing.T) {
-	evalTest(t, `(cond (nil 1) (T 2))`, Integer(2))
-	evalTest(t, `(cond ((equal 1 1) "a") ((equal 1 2) "b"))`, String("a"))
+	assertEqual(t, `(cond (nil 1) (T 2))`, Integer(2))
+	assertEqual(t, `(cond ((equal 1 1) "a") ((equal 1 2) "b"))`, String("a"))
 }
 
 func TestProgn(t *testing.T) {
-	evalTest(t, `(progn 1)`, Integer(1))
-	evalTest(t, `(progn 1 2)`, Integer(2))
+	assertEqual(t, `(progn 1)`, Integer(1))
+	assertEqual(t, `(progn 1 2)`, Integer(2))
 }
 
 func TestWorld(t *testing.T) {
@@ -63,7 +63,7 @@ func TestWorld(t *testing.T) {
 }
 
 func TestTokenizer(t *testing.T) {
-	evalTest(t, `
+	assertEqual(t, `
 		(list 1 2 ;
 		  3;
 		  4)`,
