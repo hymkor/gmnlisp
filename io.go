@@ -92,3 +92,26 @@ func cmdClose(w *World, n Node) (Node, error) {
 	}
 	return Null, c.Close()
 }
+
+func cmdWhile(w *World, n Node) (Node, error) {
+	cons, ok := n.(*Cons)
+	if !ok {
+		return nil, ErrTooFewArguments
+	}
+	cond := cons.Car
+	statements := cons.Cdr
+	var last Node = Null
+	for {
+		cont, err := cond.Eval(w)
+		if err != nil {
+			return nil, err
+		}
+		if IsNull(cont) {
+			return last, nil
+		}
+		last, err = progn(w, statements)
+		if err != nil {
+			return nil, err
+		}
+	}
+}
