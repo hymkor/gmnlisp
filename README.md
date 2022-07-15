@@ -6,8 +6,8 @@ Gommon Lisp
 Now under constructing.  
 Experimental implementing
 
-Example
--------
+Example-1
+---------
 
 ```go
 package main
@@ -36,6 +36,20 @@ func main() {
 ```
 $ go run examples/example1.go
 3
+```
+
+Example-2
+---------
+
+```
+$ cat examples/factorical.lsp
+(defun factorial (n)
+  (if (<= n 1)
+    1
+    (* n (factorial (- n 1)))))
+(factorial (parse-integer (car *posix-argv*)))
+$ gmnlisp.exe examples/factorical.lsp 6
+720
 ```
 
 Support functions
@@ -76,29 +90,3 @@ Support functions
 - setq
 - terpri
 - truncate
-
-```
-$ cat t/seq.lsp
-(defun seq (n)
-  (print n)
-  (cond
-    ((equal n 0)
-      (return-from seq nil))
-    (T
-      (seq (- n 1)))
-  )
-)
-(seq 10)
-$ gmnlisp.exe t/seq.lsp
-10
-9
-8
-7
-6
-5
-4
-3
-2
-1
-0
-```
