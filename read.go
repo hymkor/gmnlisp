@@ -72,9 +72,9 @@ func readTokens(sc *_TokenScanner) (Node, error) {
 	return Symbol(token), nil
 }
 
-type NodeSlice []Node
+type Slice []Node
 
-func (ns NodeSlice) Eval(w *World) (Node, error) {
+func (ns Slice) Eval(w *World) (Node, error) {
 	var result Node
 	var err error
 
@@ -87,7 +87,7 @@ func (ns NodeSlice) Eval(w *World) (Node, error) {
 	return result, nil
 }
 
-func Read(r io.Reader) (NodeSlice, error) {
+func Read(r io.Reader) (Slice, error) {
 	sc := newTokenScanner(r)
 	if !sc.Scan() {
 		return nil, nil
@@ -104,13 +104,13 @@ func Read(r io.Reader) (NodeSlice, error) {
 		}
 		result = append(result, token)
 	}
-	return NodeSlice(result), nil
+	return Slice(result), nil
 }
 
-func ReadString(s string) (NodeSlice, error) {
+func ReadString(s string) (Slice, error) {
 	return Read(strings.NewReader(s))
 }
 
-func ReadBytes(bin []byte) (NodeSlice, error) {
+func ReadBytes(bin []byte) (Slice, error) {
 	return Read(bytes.NewReader(bin))
 }
