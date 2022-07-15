@@ -18,7 +18,7 @@ func notNullToTrue(v Node, err error) (Node, error) {
 	return True, err
 }
 
-func cmdPlus(w *World, param Node) (Node, error) {
+func cmdAdd(w *World, param Node) (Node, error) {
 	type CanPlus interface {
 		Node
 		Add(Node) (Node, error)

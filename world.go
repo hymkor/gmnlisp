@@ -44,7 +44,7 @@ func New() *World {
 		scope: &_Scope{
 			globals: map[string]Node{
 				"*":             Function(cmdMulti),
-				"+":             Function(cmdPlus),
+				"+":             Function(cmdAdd),
 				"-":             Function(cmdMinus),
 				"/":             Function(cmdDevide),
 				"<":             Function(cmdLessThan),
