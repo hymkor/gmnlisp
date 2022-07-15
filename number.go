@@ -32,7 +32,7 @@ func (i Integer) EqualP(n Node) bool {
 	return ok && Float(i) == _n
 }
 
-func (i Integer) Plus(n Node) (Node, error) {
+func (i Integer) Add(n Node) (Node, error) {
 	if _n, ok := n.(Integer); ok {
 		return i + _n, nil
 	}
@@ -115,7 +115,7 @@ func (f Float) EqualP(n Node) bool {
 	return ok && f == Float(_n)
 }
 
-func (f Float) Plus(n Node) (Node, error) {
+func (f Float) Add(n Node) (Node, error) {
 	if _n, ok := n.(Float); ok {
 		return f + _n, nil
 	}

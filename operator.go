@@ -21,11 +21,11 @@ func notNullToTrue(v Node, err error) (Node, error) {
 func cmdPlus(w *World, param Node) (Node, error) {
 	type CanPlus interface {
 		Node
-		Plus(Node) (Node, error)
+		Add(Node) (Node, error)
 	}
 	return w.inject(param, func(left, right Node) (Node, error) {
 		if _left, ok := left.(CanPlus); ok {
-			return _left.Plus(right)
+			return _left.Add(right)
 		}
 		return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(left))
 	})

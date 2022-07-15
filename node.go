@@ -103,7 +103,7 @@ func (s String) EqualP(n Node) bool {
 	return false
 }
 
-func (s String) Plus(n Node) (Node, error) {
+func (s String) Add(n Node) (Node, error) {
 	if value, ok := n.(String); ok {
 		return s + value, nil
 	}
