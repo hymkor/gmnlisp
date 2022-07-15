@@ -41,6 +41,10 @@ func cmdLet(w *World, param Node) (Node, error) {
 	globals := map[string]Node{}
 
 	err := forEachList(cons.Car, func(node Node) error {
+		if symbol, ok := node.(Symbol); ok {
+			globals[string(symbol)] = Null
+			return nil
+		}
 		var argv [2]Node
 
 		if err := listToArray(node, argv[:]); err != nil {
