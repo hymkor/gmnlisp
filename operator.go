@@ -31,7 +31,7 @@ func cmdAdd(w *World, param Node) (Node, error) {
 	})
 }
 
-func cmdMinus(w *World, param Node) (Node, error) {
+func cmdSub(w *World, param Node) (Node, error) {
 	type CanMinus interface {
 		Node
 		Sub(Node) (Node, error)

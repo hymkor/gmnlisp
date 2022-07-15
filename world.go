@@ -45,7 +45,7 @@ func New() *World {
 			globals: map[string]Node{
 				"*":             Function(cmdMulti),
 				"+":             Function(cmdAdd),
-				"-":             Function(cmdMinus),
+				"-":             Function(cmdSub),
 				"/":             Function(cmdDevide),
 				"<":             Function(cmdLessThan),
 				"<=":            Function(cmdLessOrEqual),
