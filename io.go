@@ -94,28 +94,45 @@ func cmdReadLine(w *World, n Node) (Node, error) {
 	return String(reader.scanner.Text()), nil
 }
 
-func cmdWriteLine(w *World, n Node) (Node, error) {
+func getWriterAndString(w *World, n Node) (io.Writer, String, error) {
 	_s, n, err := w.shiftAndEvalCar(n)
 	if err != nil {
-		return nil, err
+		return Writer{}, "", err
 	}
 	s, ok := _s.(String)
 	if !ok {
-		return nil, fmt.Errorf("%w `%s`", ErrExpectedString, toString(_s))
+		return nil, "", fmt.Errorf("%w `%s`", ErrExpectedString, toString(_s))
 	}
 	var writer io.Writer = w.Stdout
 	if HasValue(n) {
 		_writer, n, err := w.shiftAndEvalCar(n)
 		if err != nil {
-			return nil, err
+			return nil, "", err
 		}
 		writer, ok = _writer.(io.Writer)
 		if !ok {
-			return nil, fmt.Errorf("Expected Writer `%s`", toString(_writer))
+			return nil, "", fmt.Errorf("Expected Writer `%s`", toString(_writer))
 		}
 		if HasValue(n) {
-			return nil, ErrTooManyArguments
+			return nil, "", ErrTooManyArguments
 		}
+	}
+	return writer, s, nil
+}
+
+func cmdWrite(w *World, n Node) (Node, error) {
+	writer, s, err := getWriterAndString(w, n)
+	if err != nil {
+		return nil, err
+	}
+	io.WriteString(writer, string(s))
+	return s, nil
+}
+
+func cmdWriteLine(w *World, n Node) (Node, error) {
+	writer, s, err := getWriterAndString(w, n)
+	if err != nil {
+		return nil, err
 	}
 	fmt.Fprintln(writer, string(s))
 	return s, nil
