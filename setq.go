@@ -43,7 +43,7 @@ func cmdLet(w *World, param Node) (Node, error) {
 	err := forEachList(cons.Car, func(node Node) error {
 		var argv [2]Node
 
-		if err := listToSlice(node, argv[:]); err != nil {
+		if err := listToArray(node, argv[:]); err != nil {
 			return err
 		}
 		symbol, ok := argv[0].(Symbol)

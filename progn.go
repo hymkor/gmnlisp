@@ -27,7 +27,7 @@ func cmdReturn(w *World, n Node) (Node, error) {
 
 func cmdReturnFrom(w *World, n Node) (Node, error) {
 	var argv [2]Node
-	if err := listToSlice(n, argv[:]); err != nil {
+	if err := listToArray(n, argv[:]); err != nil {
 		return nil, err
 	}
 	symbol, ok := argv[0].(Symbol)
@@ -103,7 +103,7 @@ func cmdCond(w *World, node Node) (Node, error) {
 
 func cmdIf(w *World, param Node) (Node, error) {
 	var argv [3]Node
-	if err := listToSlice(param, argv[:]); err != nil {
+	if err := listToArray(param, argv[:]); err != nil {
 		return nil, err
 	}
 	cond, err := argv[0].Eval(w)

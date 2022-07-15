@@ -85,7 +85,7 @@ func New() *World {
 }
 
 func (w *World) evalListAll(list Node, result []Node) error {
-	if err := listToSlice(list, result); err != nil {
+	if err := listToArray(list, result); err != nil {
 		return err
 	}
 	for i := 0; i < len(result); i++ {

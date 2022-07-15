@@ -63,7 +63,7 @@ func forEachList(list Node, f func(Node) error) error {
 	return nil
 }
 
-func listToSlice(list Node, slice []Node) error {
+func listToArray(list Node, slice []Node) error {
 	for i := 0; i < len(slice); i++ {
 		cons, ok := list.(*Cons)
 		if !ok {

@@ -39,7 +39,7 @@ func cmdCdr(w *World, n Node) (Node, error) {
 
 func cmdQuote(_ *World, n Node) (Node, error) {
 	var argv [1]Node
-	if err := listToSlice(n, argv[:]); err != nil {
+	if err := listToArray(n, argv[:]); err != nil {
 		return nil, err
 	}
 	return argv[0], nil
