@@ -29,22 +29,26 @@ func nodes2cons(nodes []Node) Node {
 	}
 }
 
-func readTokens(sc *_TokenScanner) (Node, error) {
-	token := sc.Token()
-	sc.Scan()
+func readNode(tokenGetter func() (string, error)) (Node, error) {
+	token, err := tokenGetter()
+	if err != nil {
+		return nil, err
+	}
 	if token == "(" {
 		nodes := []Node{}
 		for {
-			if sc.EOF {
-				return nil, ErrTooShortTokens
+			if err != nil {
+				if err == io.EOF {
+					return nil, ErrTooShortTokens
+				}
+				return nil, err
 			}
-			if sc.Token() == ")" {
-				sc.Scan()
-				return nodes2cons(nodes), nil
-			}
-			node1, err := readTokens(sc)
+			node1, err := readNode(tokenGetter)
 			if err != nil {
 				return nil, err
+			}
+			if node1 == Symbol(")") {
+				return nodes2cons(nodes), nil
 			}
 			nodes = append(nodes, node1)
 		}
@@ -87,15 +91,15 @@ func (ns Slice) Eval(w *World) (Node, error) {
 	return result, nil
 }
 
-func Read(r io.Reader) (Slice, error) {
-	sc := newTokenScanner(r)
-	if !sc.Scan() {
-		return nil, nil
-	}
+func Read(r io.RuneReader) (Slice, error) {
+	tokenGetter := newTokenizer(r)
 	result := []Node{}
-	for !sc.EOF {
-		token, err := readTokens(sc)
+	for {
+		token, err := readNode(tokenGetter)
 		if err != nil {
+			if err == io.EOF {
+				return result, nil
+			}
 			return nil, err
 		}
 		token, err = macroQuote(token)
