@@ -45,4 +45,14 @@ func TestOperators(t *testing.T) {
 	assertEqual(t, `(equalp "GHQ" "ghq")`, True)
 	assertEqual(t, `(equalp (cons 1 (cons 2 nil)) '(1 2))`, True)
 	assertEqual(t, `(equalp (cons 1 2) '(1))`, Null)
+	assertEqual(t, `(and 1)`, Integer(1))
+	assertEqual(t, `(and 1 2)`, Integer(2))
+	assertEqual(t, `(and 1 2 3)`, Integer(3))
+	assertEqual(t, `(and 1 nil 3)`, Null)
+	assertEqual(t, `(or 1)`, Integer(1))
+	assertEqual(t, `(or 1 2)`, Integer(1))
+	assertEqual(t, `(or 1 2 3)`, Integer(1))
+	assertEqual(t, `(or 1 nil 3)`, Integer(1))
+	assertEqual(t, `(or nil 3)`, Integer(3))
+
 }

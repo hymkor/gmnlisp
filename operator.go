@@ -157,6 +157,42 @@ func cmdLessOrEqual(w *World, param Node) (Node, error) {
 	}))
 }
 
+func cmdAnd(w *World, param Node) (Node, error) {
+	for {
+		var value Node
+		var err error
+
+		value, param, err = w.shiftAndEvalCar(param)
+		if err != nil {
+			return nil, err
+		}
+		if IsNull(value) {
+			return Null, nil
+		}
+		if IsNull(param) {
+			return value, nil
+		}
+	}
+}
+
+func cmdOr(w *World, param Node) (Node, error) {
+	for {
+		var value Node
+		var err error
+
+		value, param, err = w.shiftAndEvalCar(param)
+		if err != nil {
+			return nil, err
+		}
+		if HasValue(value) {
+			return value, nil
+		}
+		if IsNull(param) {
+			return Null, nil
+		}
+	}
+}
+
 func cmdTruncate(w *World, this Node) (Node, error) {
 	first, _, err := w.shiftAndEvalCar(this)
 	if err != nil {
