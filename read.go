@@ -14,6 +14,9 @@ var rxFloat = regexp.MustCompile(`^-?[0-9]+\.[0-9]*$`)
 var rxInteger = regexp.MustCompile(`^-?[0-9]+$`)
 
 func nodes2cons(nodes []Node) Node {
+	if nodes == nil {
+		return Null
+	}
 	switch len(nodes) {
 	case 0:
 		return Null
@@ -43,7 +46,8 @@ func readNode(tokenGetter func() (string, error)) (Node, error) {
 				}
 				return nil, err
 			}
-			node1, err := readNode(tokenGetter)
+			var node1 Node
+			node1, err = readNode(tokenGetter)
 			if err != nil {
 				return nil, err
 			}
@@ -79,7 +83,7 @@ func readNode(tokenGetter func() (string, error)) (Node, error) {
 type Slice []Node
 
 func (ns Slice) Eval(w *World) (Node, error) {
-	var result Node
+	var result Node = Null
 	var err error
 
 	for _, c := range ns {
