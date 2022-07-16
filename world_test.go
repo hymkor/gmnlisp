@@ -60,6 +60,16 @@ func TestWorld(t *testing.T) {
 		}
 		return
 	}
+
+	w3 := New()
+	_, err = w3.Interpret("( 1")
+	if !errors.Is(err, ErrTooShortTokens) {
+		if err == nil {
+			t.Fatal("error had to occur when equation is not closed")
+		} else {
+			t.Fatal(err.Error())
+		}
+	}
 }
 
 func TestTokenizer(t *testing.T) {
