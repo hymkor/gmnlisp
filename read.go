@@ -49,6 +49,9 @@ func readNode(tokenGetter func() (string, error)) (Node, error) {
 			var node1 Node
 			node1, err = readNode(tokenGetter)
 			if err != nil {
+				if err == io.EOF {
+					return nil, ErrTooShortTokens
+				}
 				return nil, err
 			}
 			if node1 == Symbol(")") {
