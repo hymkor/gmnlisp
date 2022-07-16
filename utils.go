@@ -77,3 +77,16 @@ func listToArray(list Node, slice []Node) error {
 	}
 	return nil
 }
+
+func listToSlice(list Node) ([]Node, error) {
+	slice := []Node{}
+	for HasValue(list) {
+		cons, ok := list.(*Cons)
+		if !ok {
+			return nil, ErrExpectedCons
+		}
+		slice = append(slice, cons.Car)
+		list = cons.Cdr
+	}
+	return slice, nil
+}

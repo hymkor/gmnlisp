@@ -102,9 +102,15 @@ func cmdCond(w *World, node Node) (Node, error) {
 }
 
 func cmdIf(w *World, param Node) (Node, error) {
-	var argv [3]Node
-	if err := listToArray(param, argv[:]); err != nil {
+	argv, err := listToSlice(param)
+	if err != nil {
 		return nil, err
+	}
+	if len(argv) > 3 {
+		return nil, ErrTooManyArguments
+	}
+	if len(argv) < 2 {
+		return nil, ErrTooFewArguments
 	}
 	cond, err := argv[0].Eval(w)
 	if err != nil {
@@ -112,7 +118,8 @@ func cmdIf(w *World, param Node) (Node, error) {
 	}
 	if HasValue(cond) {
 		return argv[1].Eval(w)
-	} else {
+	} else if len(argv) == 3 {
 		return argv[2].Eval(w)
 	}
+	return Null, nil
 }
