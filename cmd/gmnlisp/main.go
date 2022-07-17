@@ -12,7 +12,6 @@ import (
 	"github.com/hymkor/gmnlisp"
 	"github.com/mattn/go-colorable"
 	"github.com/nyaosorg/go-readline-ny"
-	"github.com/nyaosorg/go-readline-ny/coloring"
 	"github.com/nyaosorg/go-readline-ny/simplehistory"
 )
 
@@ -30,13 +29,43 @@ func defaultPrompt() (int, error) {
 	return fmt.Print("gmnlisp> ")
 }
 
+type Coloring struct {
+	bits int
+	last rune
+}
+
+func (c *Coloring) Init() int {
+	c.bits = 0
+	c.last = 0
+	return readline.White
+}
+
+func (c *Coloring) Next(ch rune) int {
+	prebits := c.bits
+	if c.last != '\\' && ch == '"' {
+		c.bits ^= 1
+	}
+	var color int
+	if (c.bits&1) != 0 || (prebits&1) != 0 {
+		color = readline.Magenta
+	} else if ch == '(' || ch == ')' {
+		color = readline.Cyan
+	} else if ch == '\\' {
+		color = readline.Red
+	} else {
+		color = readline.White
+	}
+	c.last = ch
+	return color
+}
+
 func interactive(lisp *gmnlisp.World) error {
 	history := simplehistory.New()
 	editor := readline.Editor{
 		Prompt:         defaultPrompt,
 		Writer:         colorable.NewColorableStdout(),
 		History:        history,
-		Coloring:       &coloring.VimBatch{},
+		Coloring:       &Coloring{},
 		HistoryCycling: true,
 	}
 	ctx := context.Background()
