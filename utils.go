@@ -17,6 +17,7 @@ var (
 	ErrTooManyArguments = errors.New("Too many arguments")
 	ErrTooShortTokens   = errors.New("too short tokens")
 	ErrVariableUnbound  = errors.New("Unbound variable")
+	ErrQuit             = errors.New("Bye")
 )
 
 func IsNull(node Node) bool {

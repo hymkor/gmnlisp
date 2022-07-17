@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"fmt"
 	"io"
@@ -72,6 +73,9 @@ func interactive(lisp *gmnlisp.World) error {
 		}
 		result, err := nodes.Eval(lisp)
 		if err != nil {
+			if errors.Is(err, gmnlisp.ErrQuit) {
+				return nil
+			}
 			fmt.Fprintln(os.Stderr, err.Error())
 			continue
 		}
@@ -104,7 +108,6 @@ func mains(args []string) error {
 	if err != nil {
 		return err
 	}
-
 	lisp.Interpret("(terpri)")
 	last.PrintTo(os.Stdout)
 	lisp.Interpret("(terpri)")
@@ -114,7 +117,9 @@ func mains(args []string) error {
 func main() {
 	flag.Parse()
 	if err := mains(flag.Args()); err != nil {
-		fmt.Fprintln(os.Stderr, err.Error())
-		os.Exit(1)
+		if !errors.Is(err, gmnlisp.ErrQuit) {
+			fmt.Fprintln(os.Stderr, err.Error())
+			os.Exit(1)
+		}
 	}
 }

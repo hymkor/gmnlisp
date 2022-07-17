@@ -144,3 +144,7 @@ func cmdParseInt(w *World, node Node) (Node, error) {
 	}
 	return Integer(value), nil
 }
+
+func cmdQuit(*World, Node) (Node, error) {
+	return Null, ErrQuit
+}
