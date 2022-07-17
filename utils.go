@@ -52,8 +52,9 @@ func princTo(node Node, w io.Writer) {
 	}
 	if _node, ok := node.(canPrinc); ok {
 		_node.PrincTo(w)
+	} else {
+		node.PrintTo(w)
 	}
-	node.PrintTo(w)
 }
 
 func List(nodes ...Node) Node {
