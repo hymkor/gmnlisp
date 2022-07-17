@@ -55,6 +55,7 @@ func interactive(lisp *gmnlisp.World) error {
 			fmt.Printf("ERR=%s\n", err.Error())
 			return nil
 		}
+		history.Add(line)
 		buffer.WriteString(line)
 
 		nodes, err := gmnlisp.ReadString(buffer.String())
