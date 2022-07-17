@@ -74,8 +74,12 @@ func readNode(tokenGetter func() (string, error)) (Node, error) {
 		}
 		return Integer(val), nil
 	}
-	if strings.HasPrefix(token, "\"") {
-		return String(strings.Replace(token, "\"", "", -1)), nil
+	if len(token) > 0 && token[0] == '"' {
+		token = token[1:]
+		if L := len(token); L > 0 && token[L-1] == '"' {
+			token = token[:L-1]
+		}
+		return String(token), nil
 	}
 	if token == "nil" {
 		return Null, nil

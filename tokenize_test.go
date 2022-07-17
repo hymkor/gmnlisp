@@ -35,4 +35,6 @@ func TestTokenizer1(t *testing.T) {
 	if err == nil {
 		t.Fatal("empty string")
 	}
+
+	assertEqual(t, `"\""`, String(`\"`))
 }
