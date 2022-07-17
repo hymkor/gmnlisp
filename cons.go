@@ -93,8 +93,6 @@ func (cons *Cons) Equalp(n Node) bool {
 	if !ok {
 		return false
 	}
-	if !cons.GetCar().Equalp(_n.GetCar()) {
-		return false
-	}
-	return cons.GetCdr().Equalp(_n.GetCdr())
+	return equalp(cons.GetCar(), _n.GetCar()) &&
+		equalp(cons.GetCdr(), _n.GetCdr())
 }

@@ -17,10 +17,6 @@ func (d _Dummy) Equals(Node) bool {
 	return false
 }
 
-func (d _Dummy) Equalp(Node) bool {
-	return false
-}
-
 func (d _Dummy) PrintTo(w io.Writer) {
 	io.WriteString(w, "(binary)")
 }

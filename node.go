@@ -9,7 +9,6 @@ import (
 type Node interface {
 	Eval(*World) (Node, error)
 	Equals(Node) bool
-	Equalp(Node) bool
 	PrintTo(io.Writer)
 	PrincTo(io.Writer)
 }
@@ -44,11 +43,6 @@ func (_TrueType) Equals(n Node) bool {
 	return ok
 }
 
-func (t _TrueType) Equalp(n Node) bool {
-	_, ok := n.(_TrueType)
-	return ok
-}
-
 type _NullType struct{}
 
 func (_NullType) PrintTo(w io.Writer) {
@@ -69,10 +63,6 @@ func (nt _NullType) Equals(n Node) bool {
 	}
 	_, ok := n.(_NullType)
 	return ok
-}
-
-func (nt _NullType) Equalp(n Node) bool {
-	return nt.Equals(n)
 }
 
 var Null Node = _NullType{}

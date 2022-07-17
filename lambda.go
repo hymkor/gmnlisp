@@ -119,10 +119,6 @@ func (*Lambda) Equals(Node) bool {
 	return false
 }
 
-func (*Lambda) Equalp(Node) bool {
-	return false
-}
-
 func cmdDefun(w *World, node Node) (Node, error) {
 	cons, ok := node.(*Cons)
 	if !ok {

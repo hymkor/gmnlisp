@@ -28,10 +28,6 @@ func (f Function) Equals(n Node) bool {
 	return false
 }
 
-func (f Function) Equalp(n Node) bool {
-	return false
-}
-
 func (f Function) Call(w *World, n Node) (Node, error) {
 	return f(w, n)
 }
