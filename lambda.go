@@ -67,7 +67,7 @@ func (nl *Lambda) prinX(w io.Writer, rich bool) {
 		if rich {
 			nl.code.PrintTo(w)
 		} else {
-			nl.code.PrincTo(w)
+			princTo(nl.code, w)
 		}
 	}
 	io.WriteString(w, ")")

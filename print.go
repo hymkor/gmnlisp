@@ -32,7 +32,7 @@ func cmdPrin1(w *World, this Node) (Node, error) {
 }
 
 func cmdPrinc(w *World, this Node) (Node, error) {
-	return cmdPrinX(w, this, func(node Node) { node.PrincTo(w.Stdout) })
+	return cmdPrinX(w, this, func(node Node) { princTo(node, w.Stdout) })
 }
 
 func cmdTerpri(w *World, _ Node) (Node, error) {

@@ -11,10 +11,6 @@ func (i Integer) PrintTo(w io.Writer) {
 	fmt.Fprintf(w, "%d", int64(i))
 }
 
-func (i Integer) PrincTo(w io.Writer) {
-	fmt.Fprintf(w, "%d", int64(i))
-}
-
 func (i Integer) Eval(*World) (Node, error) {
 	return i, nil
 }
@@ -91,10 +87,6 @@ func (i Integer) LessThan(n Node) (bool, error) {
 type Float float64
 
 func (f Float) PrintTo(w io.Writer) {
-	fmt.Fprintf(w, "%f", float64(f))
-}
-
-func (f Float) PrincTo(w io.Writer) {
 	fmt.Fprintf(w, "%f", float64(f))
 }
 

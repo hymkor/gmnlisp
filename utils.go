@@ -3,6 +3,7 @@ package gmnlisp
 import (
 	"errors"
 	"fmt"
+	"io"
 )
 
 var (
@@ -42,6 +43,16 @@ func equalp(left, right Node) bool {
 		return _left.Equalp(right)
 	}
 	return left.Equals(right)
+}
+
+func princTo(node Node, w io.Writer) {
+	type canPrinc interface {
+		PrincTo(io.Writer)
+	}
+	if _node, ok := node.(canPrinc); ok {
+		_node.PrincTo(w)
+	}
+	node.PrintTo(w)
 }
 
 func List(nodes ...Node) Node {

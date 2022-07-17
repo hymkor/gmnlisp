@@ -10,7 +10,6 @@ type Node interface {
 	Eval(*World) (Node, error)
 	Equals(Node) bool
 	PrintTo(io.Writer)
-	PrincTo(io.Writer)
 }
 
 func toString(node Node) string {
@@ -28,10 +27,6 @@ func (_TrueType) PrintTo(w io.Writer) {
 	io.WriteString(w, "T")
 }
 
-func (_TrueType) PrincTo(w io.Writer) {
-	io.WriteString(w, "T")
-}
-
 func (t _TrueType) Eval(*World) (Node, error) {
 	return t, nil
 }
@@ -46,10 +41,6 @@ func (_TrueType) Equals(n Node) bool {
 type _NullType struct{}
 
 func (_NullType) PrintTo(w io.Writer) {
-	io.WriteString(w, "nil")
-}
-
-func (_NullType) PrincTo(w io.Writer) {
 	io.WriteString(w, "nil")
 }
 
@@ -110,10 +101,6 @@ func (s String) LessThan(n Node) (bool, error) {
 type Symbol string
 
 func (s Symbol) PrintTo(w io.Writer) {
-	io.WriteString(w, string(s))
-}
-
-func (s Symbol) PrincTo(w io.Writer) {
 	io.WriteString(w, string(s))
 }
 
