@@ -25,28 +25,55 @@ func (d _Dummy) PrincTo(w io.Writer) {
 	io.WriteString(w, "(binary)")
 }
 
-func cmdOpen(w *World, n Node) (Node, error) {
+func openAsRead(fname string) (Node, error) {
 	type Reader struct {
 		_Dummy
 		*bufio.Reader
 		io.Closer
 	}
+	file, err := os.Open(fname)
+	if err != nil {
+		return nil, err
+	}
+	return &Reader{
+		Reader: bufio.NewReader(file),
+		Closer: file,
+	}, nil
+}
+
+func openAsWrite(fname string) (Node, error) {
 	type Writer struct {
 		_Dummy
 		io.WriteCloser
 	}
-	var argv [2]Node
-
-	if err := w.evalListAll(n, argv[:]); err != nil {
+	file, err := os.Create(fname)
+	if err != nil {
 		return nil, err
 	}
+	return &Writer{
+		WriteCloser: file,
+	}, nil
+}
 
+func cmdOpen(w *World, n Node) (Node, error) {
+	argv, err := listToSlice(n)
+	if err != nil {
+		return nil, err
+	}
+	if len(argv) <= 0 {
+		return nil, ErrTooFewArguments
+	}
+	if len(argv) >= 3 {
+		return nil, ErrTooManyArguments
+	}
 	_fname, ok := argv[0].(String)
 	if !ok {
 		return nil, fmt.Errorf("%w `%s`", ErrExpectedString, toString(_fname))
 	}
 	fname := string(_fname)
-
+	if len(argv) < 2 {
+		return openAsRead(fname)
+	}
 	_mode, ok := argv[1].(String)
 	if !ok {
 		return nil, fmt.Errorf("%w `%s`", ErrExpectedString, toString(_mode))
@@ -54,22 +81,9 @@ func cmdOpen(w *World, n Node) (Node, error) {
 	mode := string(_mode)
 
 	if mode == "r" {
-		file, err := os.Open(fname)
-		if err != nil {
-			return nil, err
-		}
-		return &Reader{
-			Reader: bufio.NewReader(file),
-			Closer: file,
-		}, nil
+		return openAsRead(fname)
 	} else if mode == "w" {
-		file, err := os.Create(fname)
-		if err != nil {
-			return nil, err
-		}
-		return &Writer{
-			WriteCloser: file,
-		}, nil
+		return openAsWrite(fname)
 	}
 	return nil, fmt.Errorf("no such a option `%s`", argv[1])
 }
