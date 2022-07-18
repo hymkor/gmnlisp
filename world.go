@@ -76,6 +76,7 @@ func New() *World {
 				"cond":                Function(cmdCond),
 				"cons":                Function(cmdCons),
 				"defun":               Function(cmdDefun),
+				"defmacro":            Function(cmdDefMacro),
 				"equal":               Function(cmdEqual),
 				"equalp":              Function(cmdEqualOp),
 				"exit":                Function(cmdQuit),
