@@ -75,6 +75,7 @@ Support functions
 - `close`
 - `cond`
 - `cons`
+- `defmacro`
 - `defun`
 - `equal`
 - `equalp`
@@ -83,6 +84,7 @@ Support functions
 - `lambda`
 - `let`
 - `list`
+- `macroexpand`
 - `nil`
 - `open`
 - `or`
