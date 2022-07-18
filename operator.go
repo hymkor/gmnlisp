@@ -60,11 +60,11 @@ func cmdMulti(w *World, param Node) (Node, error) {
 func cmdDevide(w *World, param Node) (Node, error) {
 	type CanDevide interface {
 		Node
-		Devide(Node) (Node, error)
+		Divide(Node) (Node, error)
 	}
 	return w.inject(param, func(left, right Node) (Node, error) {
 		if _left, ok := left.(CanDevide); ok {
-			return _left.Devide(right)
+			return _left.Divide(right)
 		}
 		return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(left))
 	})

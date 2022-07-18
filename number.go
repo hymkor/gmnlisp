@@ -58,7 +58,7 @@ func (i Integer) Multi(n Node) (Node, error) {
 	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n))
 }
 
-func (i Integer) Devide(n Node) (Node, error) {
+func (i Integer) Divide(n Node) (Node, error) {
 	if _n, ok := n.(Integer); ok {
 		if _n == 0 {
 			return nil, ErrDevisionByZero
@@ -137,7 +137,7 @@ func (f Float) Multi(n Node) (Node, error) {
 	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n))
 }
 
-func (f Float) Devide(n Node) (Node, error) {
+func (f Float) Divide(n Node) (Node, error) {
 	if _n, ok := n.(Float); ok {
 		if _n == 0 {
 			return nil, ErrDevisionByZero
