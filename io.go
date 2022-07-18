@@ -21,10 +21,6 @@ func (d _Dummy) PrintTo(w io.Writer) {
 	io.WriteString(w, "(binary)")
 }
 
-func (d _Dummy) PrincTo(w io.Writer) {
-	io.WriteString(w, "(binary)")
-}
-
 func openAsRead(fname string) (Node, error) {
 	type Reader struct {
 		_Dummy
