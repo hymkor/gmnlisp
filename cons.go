@@ -73,6 +73,12 @@ func (cons *Cons) PrintTo(w io.Writer) {
 	io.WriteString(w, ")")
 }
 
+func (cons *Cons) PrincTo(w io.Writer) {
+	io.WriteString(w, "(")
+	cons.writeToWithoutKakko(w, false)
+	io.WriteString(w, ")")
+}
+
 func (cons *Cons) Equals(n Node) bool {
 	value, ok := n.(*Cons)
 	if !ok {
