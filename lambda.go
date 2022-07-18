@@ -17,12 +17,10 @@ func cmdLambda(w *World, node Node) (Node, error) {
 	return newLambda(w, node, "")
 }
 
-func newLambda(w *World, node Node, blockName string) (Node, error) {
-	// (lambda (param) code)
-
+func getParameterList(node Node) ([]string, Node, error) {
 	cons, ok := node.(*Cons)
 	if !ok {
-		return nil, fmt.Errorf("%w for parameter list", ErrExpectedCons)
+		return nil, nil, fmt.Errorf("%w for parameter list", ErrExpectedCons)
 	}
 	params := []string{}
 	if err := forEachList(cons.Car, func(n Node) error {
@@ -33,12 +31,20 @@ func newLambda(w *World, node Node, blockName string) (Node, error) {
 		params = append(params, string(name))
 		return nil
 	}); err != nil {
+		return nil, nil, err
+	}
+	return params, cons.GetCdr(), nil
+}
+
+func newLambda(w *World, node Node, blockName string) (Node, error) {
+	// (lambda (param) code)
+	params, code, err := getParameterList(node)
+	if err != nil {
 		return nil, err
 	}
-
 	return &Lambda{
 		param: params,
-		code:  cons.GetCdr(),
+		code:  code,
 		name:  blockName,
 		scope: w.scope,
 	}, nil

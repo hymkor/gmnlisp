@@ -114,25 +114,13 @@ func cmdDefMacro(w *World, n Node) (Node, error) {
 	if !ok {
 		return nil, ErrExpectedSymbol
 	}
-	cons, ok = cons.Cdr.(*Cons)
-	if !ok {
-		return nil, ErrExpectedCons
-	}
-	param := []string{}
-	err := forEachList(cons.Car, func(p Node) error {
-		symbol, ok := p.(Symbol)
-		if !ok {
-			return ErrExpectedSymbol
-		}
-		param = append(param, string(symbol))
-		return nil
-	})
+	param, code, err := getParameterList(cons.Cdr)
 	if err != nil {
 		return nil, err
 	}
 	value := &_Macro{
 		param: param,
-		code:  cons.Cdr,
+		code:  code,
 	}
 	w.Set(string(macroName), value)
 	return value, nil
