@@ -67,7 +67,7 @@ func replaceMacro(n Node, table map[string]Node) Node {
 		}
 		return &Cons{Car: car, Cdr: cdr}
 	}
-	if macroParam, ok := n.(_MacroParam); ok {
+	if macroParam, ok := n.(_PlaceHolder); ok {
 		if result, ok := table[string(macroParam)]; ok {
 			return result
 		}
@@ -102,20 +102,20 @@ func (m *_Macro) Call(w *World, n Node) (Node, error) {
 	return code.Eval(w)
 }
 
-type _MacroParam string
+type _PlaceHolder string
 
-func (mp _MacroParam) PrintTo(w io.Writer) {
+func (mp _PlaceHolder) PrintTo(w io.Writer) {
 	fmt.Fprintf(w, "$(%s)", string(mp))
 }
 
-func (mp _MacroParam) Equals(n Node) bool {
-	if _n, ok := n.(_MacroParam); ok {
+func (mp _PlaceHolder) Equals(n Node) bool {
+	if _n, ok := n.(_PlaceHolder); ok {
 		return mp == _n
 	}
 	return false
 }
 
-func (mp _MacroParam) Eval(*World) (Node, error) {
+func (mp _PlaceHolder) Eval(*World) (Node, error) {
 	return mp, nil
 }
 
@@ -135,7 +135,7 @@ func cmdDefMacro(w *World, n Node) (Node, error) {
 
 	globals := map[string]Node{}
 	for _, name := range param {
-		globals[name] = _MacroParam(name)
+		globals[name] = _PlaceHolder(name)
 	}
 	nw := w.newWorld(globals, w.scope)
 
