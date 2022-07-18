@@ -148,3 +148,15 @@ func cmdParseInt(w *World, node Node) (Node, error) {
 func cmdQuit(*World, Node) (Node, error) {
 	return Null, ErrQuit
 }
+
+func cmdGetAllSymbols(w *World, n Node) (Node, error) {
+	var cons Node = Null
+	w.each(func(name string, _ Node) bool {
+		cons = &Cons{
+			Car: String(name),
+			Cdr: cons,
+		}
+		return true
+	})
+	return cons, nil
+}

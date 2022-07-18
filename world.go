@@ -16,6 +16,18 @@ type World struct {
 	scope  *_Scope
 }
 
+func (w *World) each(f func(string, Node) bool) {
+	s := w.scope
+	for s != nil {
+		for name, value := range s.globals {
+			if !f(name, value) {
+				return
+			}
+		}
+		s = s.parent
+	}
+}
+
 func (w *World) Get(name string) (Node, error) {
 	p := w.scope
 	for p != nil {
@@ -43,52 +55,53 @@ func New() *World {
 		Stdout: os.Stdout,
 		scope: &_Scope{
 			globals: map[string]Node{
-				"*":             Function(cmdMulti),
-				"+":             Function(cmdAdd),
-				"-":             Function(cmdSub),
-				"/":             Function(cmdDevide),
-				"<":             Function(cmdLessThan),
-				"<=":            Function(cmdLessOrEqual),
-				"=":             Function(cmdEqualOp),
-				">":             Function(cmdGreaterThan),
-				">=":            Function(cmdGreaterOrEqual),
-				"T":             True,
-				"and":           Function(cmdAnd),
-				"append":        Function(cmdAppend),
-				"atom":          Function(cmdAtom),
-				"block":         Function(cmdBlock),
-				"car":           Function(cmdCar),
-				"cdr":           Function(cmdCdr),
-				"close":         Function(cmdClose),
-				"cond":          Function(cmdCond),
-				"cons":          Function(cmdCons),
-				"defun":         Function(cmdDefun),
-				"equal":         Function(cmdEqual),
-				"equalp":        Function(cmdEqualOp),
-				"exit":          Function(cmdQuit),
-				"if":            Function(cmdIf),
-				"lambda":        Function(cmdLambda),
-				"let":           Function(cmdLet),
-				"list":          Function(cmdList),
-				"nil":           Null,
-				"open":          Function(cmdOpen),
-				"or":            Function(cmdOr),
-				"parse-integer": Function(cmdParseInt),
-				"prin1":         Function(cmdPrin1),
-				"princ":         Function(cmdPrinc),
-				"print":         Function(cmdPrint),
-				"progn":         Function(cmdProgn),
-				"quit":          Function(cmdQuit),
-				"quote":         Function(cmdQuote),
-				"read-line":     Function(cmdReadLine),
-				"return":        Function(cmdReturn),
-				"return-from":   Function(cmdReturnFrom),
-				"setq":          Function(cmdSetq),
-				"terpri":        Function(cmdTerpri),
-				"truncate":      Function(cmdTruncate),
-				"while":         Function(cmdWhile),
-				"write":         Function(cmdWrite),
-				"write-line":    Function(cmdWriteLine),
+				"*":                   Function(cmdMulti),
+				"+":                   Function(cmdAdd),
+				"-":                   Function(cmdSub),
+				"--get-all-symbols--": Function(cmdGetAllSymbols),
+				"/":                   Function(cmdDevide),
+				"<":                   Function(cmdLessThan),
+				"<=":                  Function(cmdLessOrEqual),
+				"=":                   Function(cmdEqualOp),
+				">":                   Function(cmdGreaterThan),
+				">=":                  Function(cmdGreaterOrEqual),
+				"T":                   True,
+				"and":                 Function(cmdAnd),
+				"append":              Function(cmdAppend),
+				"atom":                Function(cmdAtom),
+				"block":               Function(cmdBlock),
+				"car":                 Function(cmdCar),
+				"cdr":                 Function(cmdCdr),
+				"close":               Function(cmdClose),
+				"cond":                Function(cmdCond),
+				"cons":                Function(cmdCons),
+				"defun":               Function(cmdDefun),
+				"equal":               Function(cmdEqual),
+				"equalp":              Function(cmdEqualOp),
+				"exit":                Function(cmdQuit),
+				"if":                  Function(cmdIf),
+				"lambda":              Function(cmdLambda),
+				"let":                 Function(cmdLet),
+				"list":                Function(cmdList),
+				"nil":                 Null,
+				"open":                Function(cmdOpen),
+				"or":                  Function(cmdOr),
+				"parse-integer":       Function(cmdParseInt),
+				"prin1":               Function(cmdPrin1),
+				"princ":               Function(cmdPrinc),
+				"print":               Function(cmdPrint),
+				"progn":               Function(cmdProgn),
+				"quit":                Function(cmdQuit),
+				"quote":               Function(cmdQuote),
+				"read-line":           Function(cmdReadLine),
+				"return":              Function(cmdReturn),
+				"return-from":         Function(cmdReturnFrom),
+				"setq":                Function(cmdSetq),
+				"terpri":              Function(cmdTerpri),
+				"truncate":            Function(cmdTruncate),
+				"while":               Function(cmdWhile),
+				"write":               Function(cmdWrite),
+				"write-line":          Function(cmdWriteLine),
 			},
 		},
 	}
