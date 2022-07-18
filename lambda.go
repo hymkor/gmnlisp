@@ -6,7 +6,7 @@ import (
 	"io"
 )
 
-type Lambda struct {
+type _Lambda struct {
 	param []string
 	code  Node
 	name  string
@@ -42,7 +42,7 @@ func newLambda(w *World, node Node, blockName string) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Lambda{
+	return &_Lambda{
 		param: params,
 		code:  code,
 		name:  blockName,
@@ -50,15 +50,15 @@ func newLambda(w *World, node Node, blockName string) (Node, error) {
 	}, nil
 }
 
-func (nl *Lambda) PrintTo(w io.Writer) {
+func (nl *_Lambda) PrintTo(w io.Writer) {
 	nl.prinX(w, true)
 }
 
-func (nl *Lambda) PrincTo(w io.Writer) {
+func (nl *_Lambda) PrincTo(w io.Writer) {
 	nl.prinX(w, false)
 }
 
-func (nl *Lambda) prinX(w io.Writer, rich bool) {
+func (nl *_Lambda) prinX(w io.Writer, rich bool) {
 	io.WriteString(w, "(lambda (")
 	dem := ""
 	for _, name := range nl.param {
@@ -79,7 +79,7 @@ func (nl *Lambda) prinX(w io.Writer, rich bool) {
 	io.WriteString(w, ")")
 }
 
-func (nl *Lambda) Call(w *World, n Node) (Node, error) {
+func (nl *_Lambda) Call(w *World, n Node) (Node, error) {
 	globals := map[string]Node{}
 	foundSlash := false
 	for _, name := range nl.param {
@@ -117,11 +117,11 @@ func (nl *Lambda) Call(w *World, n Node) (Node, error) {
 	return result, err
 }
 
-func (nl *Lambda) Eval(*World) (Node, error) {
+func (nl *_Lambda) Eval(*World) (Node, error) {
 	return nl, nil
 }
 
-func (*Lambda) Equals(Node) bool {
+func (*_Lambda) Equals(Node) bool {
 	return false
 }
 
