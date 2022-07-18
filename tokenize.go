@@ -34,6 +34,14 @@ func readtoken(r io.RuneReader, lastRune rune) (string, rune, error) {
 
 func newTokenizer(r io.RuneReader) func() (string, error) {
 	lastRune, _, err := r.ReadRune()
+	if err == nil && (lastRune == '#' || lastRune == '@') {
+		for {
+			lastRune, _, err = r.ReadRune()
+			if err != nil || lastRune == '\n' {
+				break
+			}
+		}
+	}
 	return func() (string, error) {
 		for {
 			if err != nil {

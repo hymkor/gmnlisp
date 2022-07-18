@@ -38,3 +38,12 @@ func TestTokenizer1(t *testing.T) {
 
 	assertEqual(t, `"\""`, String(`\"`))
 }
+
+func TestShebang(t *testing.T) {
+	assertEqual(t, `@gmnlisp.exe "%~f0" & exit /b
+		(+ 1 2)`, Integer(3))
+
+	assertEqual(t, `#!gmnlisp
+		(+ 3 4)`, Integer(7))
+
+}
