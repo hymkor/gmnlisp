@@ -3,6 +3,7 @@ package gmnlisp
 import (
 	"errors"
 	"fmt"
+	"io"
 )
 
 func macroQuote(node Node) (Node, error) {
@@ -66,8 +67,8 @@ func replaceMacro(n Node, table map[string]Node) Node {
 		}
 		return &Cons{Car: car, Cdr: cdr}
 	}
-	if symbol, ok := n.(Symbol); ok {
-		if result, ok := table[string(symbol)]; ok {
+	if macroParam, ok := n.(_MacroParam); ok {
+		if result, ok := table[string(macroParam)]; ok {
 			return result
 		}
 	}
@@ -94,15 +95,28 @@ func (m *_Macro) expand(n Node) (Node, error) {
 }
 
 func (m *_Macro) Call(w *World, n Node) (Node, error) {
-	resultCode, err := m.expand(n)
-	if err != nil {
-		return nil, err
-	}
-	code, err := progn(w, resultCode)
+	code, err := m.expand(n)
 	if err != nil {
 		return nil, err
 	}
 	return code.Eval(w)
+}
+
+type _MacroParam string
+
+func (mp _MacroParam) PrintTo(w io.Writer) {
+	fmt.Fprintf(w, "$(%s)", string(mp))
+}
+
+func (mp _MacroParam) Equals(n Node) bool {
+	if _n, ok := n.(_MacroParam); ok {
+		return mp == _n
+	}
+	return false
+}
+
+func (mp _MacroParam) Eval(*World) (Node, error) {
+	return mp, nil
 }
 
 func cmdDefMacro(w *World, n Node) (Node, error) {
@@ -118,6 +132,19 @@ func cmdDefMacro(w *World, n Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	globals := map[string]Node{}
+	for _, name := range param {
+		globals[name] = _MacroParam(name)
+	}
+	nw := w.newWorld(globals, w.scope)
+
+	code, err = progn(nw, code)
+	if err != nil {
+		return nil, err
+	}
+	// code.PrintTo(os.Stdout)
+
 	value := &_Macro{
 		param: param,
 		code:  code,
