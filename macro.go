@@ -1,6 +1,7 @@
 package gmnlisp
 
 import (
+	"errors"
 	"fmt"
 )
 
@@ -73,7 +74,7 @@ func replaceMacro(n Node, table map[string]Node) Node {
 	return n
 }
 
-func (m *_Macro) Call(w *World, n Node) (Node, error) {
+func (m *_Macro) expand(n Node) (Node, error) {
 	replaceTbl := map[string]Node{}
 	for _, name := range m.param {
 		if IsNull(n) {
@@ -89,7 +90,14 @@ func (m *_Macro) Call(w *World, n Node) (Node, error) {
 	if HasValue(n) {
 		return nil, ErrTooManyArguments
 	}
-	resultCode := replaceMacro(m.code, replaceTbl)
+	return replaceMacro(m.code, replaceTbl), nil
+}
+
+func (m *_Macro) Call(w *World, n Node) (Node, error) {
+	resultCode, err := m.expand(n)
+	if err != nil {
+		return nil, err
+	}
 	code, err := progn(w, resultCode)
 	if err != nil {
 		return nil, err
@@ -128,4 +136,29 @@ func cmdDefMacro(w *World, n Node) (Node, error) {
 	}
 	w.Set(string(macroName), value)
 	return value, nil
+}
+
+func cmdMacroExpand(w *World, n Node) (Node, error) {
+	var err error
+	n, _, err = w.shiftAndEvalCar(n)
+	if err != nil {
+		return nil, err
+	}
+	cons, ok := n.(*Cons)
+	if !ok {
+		return nil, ErrExpectedCons
+	}
+	macroName, ok := cons.Car.(Symbol)
+	if !ok {
+		return nil, ErrExpectedSymbol
+	}
+	node, err := w.Get(string(macroName))
+	if err != nil {
+		return nil, err
+	}
+	macro, ok := node.(*_Macro)
+	if !ok {
+		return nil, errors.New("Expected Macro")
+	}
+	return macro.expand(cons.Cdr)
 }
