@@ -125,7 +125,7 @@ func getWriterAndString(w *World, n Node) (io.Writer, String, error) {
 	if !ok {
 		return nil, "", fmt.Errorf("%w `%s`", ErrExpectedString, toString(_s))
 	}
-	var writer io.Writer = w.Stdout
+	var writer io.Writer
 	if HasValue(n) {
 		_writer, n, err := w.shiftAndEvalCar(n)
 		if err != nil {
@@ -137,6 +137,11 @@ func getWriterAndString(w *World, n Node) (io.Writer, String, error) {
 		}
 		if HasValue(n) {
 			return nil, "", ErrTooManyArguments
+		}
+	} else {
+		writer, err = w.Stdout()
+		if err != nil {
+			return nil, "", err
 		}
 	}
 	return writer, s, nil

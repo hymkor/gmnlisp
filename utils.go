@@ -16,6 +16,7 @@ var (
 	ErrTooManyArguments = errors.New("Too many arguments")
 	ErrTooShortTokens   = errors.New("too short tokens")
 	ErrVariableUnbound  = errors.New("Unbound variable")
+	ErrExpectedWriter   = errors.New("Expected Writer")
 	ErrQuit             = errors.New("Bye")
 )
 

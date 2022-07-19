@@ -12,8 +12,12 @@ type _Scope struct {
 }
 
 type World struct {
-	Stdout io.Writer
-	scope  *_Scope
+	scope *_Scope
+}
+
+type Writer struct {
+	_Dummy
+	io.Writer
 }
 
 func (w *World) each(f func(string, Node) bool) {
@@ -50,11 +54,25 @@ func (w *World) Set(name string, value Node) {
 	}
 }
 
+const standardOutput = "*standard-output*"
+
+func (w *World) Stdout() (io.Writer, error) {
+	stdout, err := w.Get(standardOutput)
+	if err != nil {
+		return nil, err
+	}
+	_stdout, ok := stdout.(io.Writer)
+	if !ok {
+		return nil, ErrExpectedWriter
+	}
+	return _stdout, nil
+}
+
 func New() *World {
 	return &World{
-		Stdout: os.Stdout,
 		scope: &_Scope{
 			globals: map[string]Node{
+				standardOutput:        &Writer{Writer: os.Stdout},
 				"*":                   Function(cmdMulti),
 				"+":                   Function(cmdAdd),
 				"-":                   Function(cmdSub),
@@ -178,7 +196,6 @@ func (w *World) newWorld(globals map[string]Node, ns *_Scope) *World {
 			globals: globals,
 			parent:  ns,
 		},
-		Stdout: w.Stdout,
 	}
 }
 
