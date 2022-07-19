@@ -137,7 +137,7 @@ func cmdDefMacro(w *World, n Node) (Node, error) {
 	for _, name := range param {
 		globals[name] = _PlaceHolder(name)
 	}
-	nw := w.newWorld(globals, w.scope)
+	nw := &World{globals: globals, parent: w}
 
 	code, err = progn(nw, code)
 	if err != nil {

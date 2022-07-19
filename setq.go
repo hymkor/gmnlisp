@@ -65,13 +65,9 @@ func cmdLet(w *World, param Node) (Node, error) {
 		return nil, err
 	}
 
-	w.scope = &_Scope{
+	newWorld := &World{
 		globals: globals,
-		parent:  w.scope,
+		parent:  w,
 	}
-	defer func() {
-		w.scope = w.scope.parent
-	}()
-
-	return progn(w, code)
+	return progn(newWorld, code)
 }

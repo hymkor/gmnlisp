@@ -6,13 +6,9 @@ import (
 	"os"
 )
 
-type _Scope struct {
-	parent  *_Scope
-	globals map[string]Node
-}
-
 type World struct {
-	scope *_Scope
+	parent  *World
+	globals map[string]Node
 }
 
 type Writer struct {
@@ -21,36 +17,33 @@ type Writer struct {
 }
 
 func (w *World) each(f func(string, Node) bool) {
-	s := w.scope
-	for s != nil {
-		for name, value := range s.globals {
+	for w != nil {
+		for name, value := range w.globals {
 			if !f(name, value) {
 				return
 			}
 		}
-		s = s.parent
+		w = w.parent
 	}
 }
 
 func (w *World) Get(name string) (Node, error) {
-	p := w.scope
-	for p != nil {
-		if value, ok := p.globals[name]; ok {
+	for w != nil {
+		if value, ok := w.globals[name]; ok {
 			return value, nil
 		}
-		p = p.parent
+		w = w.parent
 	}
 	return Null, fmt.Errorf("%w `%s`", ErrVariableUnbound, name)
 }
 
 func (w *World) Set(name string, value Node) {
-	p := w.scope
-	for p != nil {
-		if _, ok := p.globals[name]; ok || p.parent == nil {
-			p.globals[name] = value
+	for w != nil {
+		if _, ok := w.globals[name]; ok || w.parent == nil {
+			w.globals[name] = value
 			return
 		}
-		p = p.parent
+		w = w.parent
 	}
 }
 
@@ -70,59 +63,57 @@ func (w *World) Stdout() (io.Writer, error) {
 
 func New() *World {
 	return &World{
-		scope: &_Scope{
-			globals: map[string]Node{
-				standardOutput:        &Writer{Writer: os.Stdout},
-				"*":                   Function(cmdMulti),
-				"+":                   Function(cmdAdd),
-				"-":                   Function(cmdSub),
-				"--get-all-symbols--": Function(cmdGetAllSymbols),
-				"/":                   Function(cmdDevide),
-				"<":                   Function(cmdLessThan),
-				"<=":                  Function(cmdLessOrEqual),
-				"=":                   Function(cmdEqualOp),
-				">":                   Function(cmdGreaterThan),
-				">=":                  Function(cmdGreaterOrEqual),
-				"T":                   True,
-				"and":                 Function(cmdAnd),
-				"append":              Function(cmdAppend),
-				"atom":                Function(cmdAtom),
-				"block":               Function(cmdBlock),
-				"car":                 Function(cmdCar),
-				"cdr":                 Function(cmdCdr),
-				"close":               Function(cmdClose),
-				"cond":                Function(cmdCond),
-				"cons":                Function(cmdCons),
-				"defun":               Function(cmdDefun),
-				"defmacro":            Function(cmdDefMacro),
-				"equal":               Function(cmdEqual),
-				"equalp":              Function(cmdEqualOp),
-				"exit":                Function(cmdQuit),
-				"if":                  Function(cmdIf),
-				"lambda":              Function(cmdLambda),
-				"let":                 Function(cmdLet),
-				"list":                Function(cmdList),
-				"macroexpand":         Function(cmdMacroExpand),
-				"nil":                 Null,
-				"open":                Function(cmdOpen),
-				"or":                  Function(cmdOr),
-				"parse-integer":       Function(cmdParseInt),
-				"prin1":               Function(cmdPrin1),
-				"princ":               Function(cmdPrinc),
-				"print":               Function(cmdPrint),
-				"progn":               Function(cmdProgn),
-				"quit":                Function(cmdQuit),
-				"quote":               Function(cmdQuote),
-				"read-line":           Function(cmdReadLine),
-				"return":              Function(cmdReturn),
-				"return-from":         Function(cmdReturnFrom),
-				"setq":                Function(cmdSetq),
-				"terpri":              Function(cmdTerpri),
-				"truncate":            Function(cmdTruncate),
-				"while":               Function(cmdWhile),
-				"write":               Function(cmdWrite),
-				"write-line":          Function(cmdWriteLine),
-			},
+		globals: map[string]Node{
+			standardOutput:        &Writer{Writer: os.Stdout},
+			"*":                   Function(cmdMulti),
+			"+":                   Function(cmdAdd),
+			"-":                   Function(cmdSub),
+			"--get-all-symbols--": Function(cmdGetAllSymbols),
+			"/":                   Function(cmdDevide),
+			"<":                   Function(cmdLessThan),
+			"<=":                  Function(cmdLessOrEqual),
+			"=":                   Function(cmdEqualOp),
+			">":                   Function(cmdGreaterThan),
+			">=":                  Function(cmdGreaterOrEqual),
+			"T":                   True,
+			"and":                 Function(cmdAnd),
+			"append":              Function(cmdAppend),
+			"atom":                Function(cmdAtom),
+			"block":               Function(cmdBlock),
+			"car":                 Function(cmdCar),
+			"cdr":                 Function(cmdCdr),
+			"close":               Function(cmdClose),
+			"cond":                Function(cmdCond),
+			"cons":                Function(cmdCons),
+			"defun":               Function(cmdDefun),
+			"defmacro":            Function(cmdDefMacro),
+			"equal":               Function(cmdEqual),
+			"equalp":              Function(cmdEqualOp),
+			"exit":                Function(cmdQuit),
+			"if":                  Function(cmdIf),
+			"lambda":              Function(cmdLambda),
+			"let":                 Function(cmdLet),
+			"list":                Function(cmdList),
+			"macroexpand":         Function(cmdMacroExpand),
+			"nil":                 Null,
+			"open":                Function(cmdOpen),
+			"or":                  Function(cmdOr),
+			"parse-integer":       Function(cmdParseInt),
+			"prin1":               Function(cmdPrin1),
+			"princ":               Function(cmdPrinc),
+			"print":               Function(cmdPrint),
+			"progn":               Function(cmdProgn),
+			"quit":                Function(cmdQuit),
+			"quote":               Function(cmdQuote),
+			"read-line":           Function(cmdReadLine),
+			"return":              Function(cmdReturn),
+			"return-from":         Function(cmdReturnFrom),
+			"setq":                Function(cmdSetq),
+			"terpri":              Function(cmdTerpri),
+			"truncate":            Function(cmdTruncate),
+			"while":               Function(cmdWhile),
+			"write":               Function(cmdWrite),
+			"write-line":          Function(cmdWriteLine),
 		},
 	}
 }
@@ -188,15 +179,6 @@ func (w *World) InterpretBytes(code []byte) (Node, error) {
 		return nil, err
 	}
 	return compiled.Eval(w)
-}
-
-func (w *World) newWorld(globals map[string]Node, ns *_Scope) *World {
-	return &World{
-		scope: &_Scope{
-			globals: globals,
-			parent:  ns,
-		},
-	}
 }
 
 func (w *World) Call(f Node, params ...Node) (Node, error) {
