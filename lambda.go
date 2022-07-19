@@ -50,15 +50,7 @@ func newLambda(w *World, node Node, blockName string) (Node, error) {
 	}, nil
 }
 
-func (nl *_Lambda) PrintTo(w io.Writer) {
-	nl.prinX(w, true)
-}
-
-func (nl *_Lambda) PrincTo(w io.Writer) {
-	nl.prinX(w, false)
-}
-
-func (nl *_Lambda) prinX(w io.Writer, rich bool) {
+func (nl *_Lambda) PrintTo(w io.Writer, m PrintMode) {
 	io.WriteString(w, "(lambda (")
 	dem := ""
 	for _, name := range nl.param {
@@ -68,13 +60,9 @@ func (nl *_Lambda) prinX(w io.Writer, rich bool) {
 	}
 	io.WriteString(w, ") ")
 	if cons, ok := nl.code.(*Cons); ok {
-		cons.writeToWithoutKakko(w, rich)
+		cons.writeToWithoutKakko(w, m)
 	} else {
-		if rich {
-			nl.code.PrintTo(w)
-		} else {
-			princTo(nl.code, w)
-		}
+		nl.code.PrintTo(w, m)
 	}
 	io.WriteString(w, ")")
 }

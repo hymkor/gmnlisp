@@ -24,15 +24,15 @@ func cmdPrinX(w *World, n Node, f func(node Node)) (Node, error) {
 
 func cmdPrint(w *World, this Node) (Node, error) {
 	terpri(w.Stdout)
-	return cmdPrinX(w, this, func(node Node) { node.PrintTo(w.Stdout) })
+	return cmdPrinX(w, this, func(node Node) { node.PrintTo(w.Stdout, PRINT) })
 }
 
 func cmdPrin1(w *World, this Node) (Node, error) {
-	return cmdPrinX(w, this, func(node Node) { node.PrintTo(w.Stdout) })
+	return cmdPrinX(w, this, func(node Node) { node.PrintTo(w.Stdout, PRINT) })
 }
 
 func cmdPrinc(w *World, this Node) (Node, error) {
-	return cmdPrinX(w, this, func(node Node) { princTo(node, w.Stdout) })
+	return cmdPrinX(w, this, func(node Node) { node.PrintTo(w.Stdout, PRINC) })
 }
 
 func cmdTerpri(w *World, _ Node) (Node, error) {

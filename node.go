@@ -13,10 +13,17 @@ const (
 	EQUALP
 )
 
+type PrintMode int
+
+const (
+	PRINT PrintMode = iota
+	PRINC
+)
+
 type Node interface {
 	Eval(*World) (Node, error)
 	Equals(Node, EqlMode) bool
-	PrintTo(io.Writer)
+	PrintTo(io.Writer, PrintMode)
 }
 
 func toString(node Node) string {
@@ -24,13 +31,13 @@ func toString(node Node) string {
 		return "()"
 	}
 	var buffer strings.Builder
-	node.PrintTo(&buffer)
+	node.PrintTo(&buffer, PRINT)
 	return buffer.String()
 }
 
 type _TrueType struct{}
 
-func (_TrueType) PrintTo(w io.Writer) {
+func (_TrueType) PrintTo(w io.Writer, m PrintMode) {
 	io.WriteString(w, "T")
 }
 
@@ -47,7 +54,7 @@ func (_TrueType) Equals(n Node, m EqlMode) bool {
 
 type _NullType struct{}
 
-func (_NullType) PrintTo(w io.Writer) {
+func (_NullType) PrintTo(w io.Writer, m PrintMode) {
 	io.WriteString(w, "nil")
 }
 
@@ -67,12 +74,12 @@ var Null Node = _NullType{}
 
 type String string
 
-func (s String) PrintTo(w io.Writer) {
-	fmt.Fprintf(w, "\"%s\"", string(s))
-}
-
-func (s String) PrincTo(w io.Writer) {
-	io.WriteString(w, string(s))
+func (s String) PrintTo(w io.Writer, m PrintMode) {
+	if m == PRINC {
+		io.WriteString(w, string(s))
+	} else {
+		fmt.Fprintf(w, "\"%s\"", string(s))
+	}
 }
 
 func (s String) Eval(*World) (Node, error) {
@@ -104,7 +111,7 @@ func (s String) LessThan(n Node) (bool, error) {
 
 type Symbol string
 
-func (s Symbol) PrintTo(w io.Writer) {
+func (s Symbol) PrintTo(w io.Writer, m PrintMode) {
 	io.WriteString(w, string(s))
 }
 

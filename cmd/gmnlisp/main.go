@@ -109,7 +109,7 @@ func interactive(lisp *gmnlisp.World) error {
 			fmt.Fprintln(os.Stderr, err.Error())
 			continue
 		}
-		result.PrintTo(os.Stdout)
+		result.PrintTo(os.Stdout, gmnlisp.PRINT)
 		fmt.Println()
 	}
 }
@@ -139,7 +139,7 @@ func mains(args []string) error {
 		return err
 	}
 	lisp.Interpret("(terpri)")
-	last.PrintTo(os.Stdout)
+	last.PrintTo(os.Stdout, gmnlisp.PRINT)
 	lisp.Interpret("(terpri)")
 	return nil
 }

@@ -7,7 +7,7 @@ import (
 
 type Integer int64
 
-func (i Integer) PrintTo(w io.Writer) {
+func (i Integer) PrintTo(w io.Writer, m PrintMode) {
 	fmt.Fprintf(w, "%d", int64(i))
 }
 
@@ -86,7 +86,7 @@ func (i Integer) LessThan(n Node) (bool, error) {
 
 type Float float64
 
-func (f Float) PrintTo(w io.Writer) {
+func (f Float) PrintTo(w io.Writer, m PrintMode) {
 	fmt.Fprintf(w, "%f", float64(f))
 }
 

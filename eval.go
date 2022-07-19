@@ -12,11 +12,7 @@ type _Callable interface {
 
 type Function func(*World, Node) (Node, error)
 
-func (Function) PrintTo(w io.Writer) {
-	io.WriteString(w, "buildin function")
-}
-
-func (Function) PrincTo(w io.Writer) {
+func (Function) PrintTo(w io.Writer, m PrintMode) {
 	io.WriteString(w, "buildin function")
 }
 

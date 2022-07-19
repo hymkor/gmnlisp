@@ -3,7 +3,6 @@ package gmnlisp
 import (
 	"errors"
 	"fmt"
-	"io"
 )
 
 var (
@@ -34,17 +33,6 @@ func HasValue(node Node) bool {
 	}
 	_, ok := node.(_NullType)
 	return !ok
-}
-
-func princTo(node Node, w io.Writer) {
-	type canPrinc interface {
-		PrincTo(io.Writer)
-	}
-	if _node, ok := node.(canPrinc); ok {
-		_node.PrincTo(w)
-	} else {
-		node.PrintTo(w)
-	}
 }
 
 func List(nodes ...Node) Node {

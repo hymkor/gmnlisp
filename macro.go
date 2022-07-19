@@ -104,7 +104,7 @@ func (m *_Macro) Call(w *World, n Node) (Node, error) {
 
 type _PlaceHolder string
 
-func (mp _PlaceHolder) PrintTo(w io.Writer) {
+func (mp _PlaceHolder) PrintTo(w io.Writer, m PrintMode) {
 	fmt.Fprintf(w, "$(%s)", string(mp))
 }
 

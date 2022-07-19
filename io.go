@@ -17,7 +17,7 @@ func (d _Dummy) Equals(Node, EqlMode) bool {
 	return false
 }
 
-func (d _Dummy) PrintTo(w io.Writer) {
+func (d _Dummy) PrintTo(w io.Writer, m PrintMode) {
 	io.WriteString(w, "(binary)")
 }
 
