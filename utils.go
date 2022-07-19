@@ -12,12 +12,13 @@ var (
 	ErrExpectedNumber   = errors.New("Expected number")
 	ErrExpectedString   = errors.New("Expected string")
 	ErrExpectedSymbol   = errors.New("Expected symbol")
+	ErrExpectedWriter   = errors.New("Expected Writer")
+	ErrNotSupportType   = errors.New("Not support type")
+	ErrQuit             = errors.New("Bye")
 	ErrTooFewArguments  = errors.New("Too few arguments")
 	ErrTooManyArguments = errors.New("Too many arguments")
 	ErrTooShortTokens   = errors.New("too short tokens")
 	ErrVariableUnbound  = errors.New("Unbound variable")
-	ErrExpectedWriter   = errors.New("Expected Writer")
-	ErrQuit             = errors.New("Bye")
 )
 
 func IsNull(node Node) bool {

@@ -1,12 +1,9 @@
 package gmnlisp
 
 import (
-	"errors"
 	"fmt"
 	"math"
 )
-
-var ErrNotSupportType = errors.New("Not support type")
 
 func notNullToTrue(v Node, err error) (Node, error) {
 	if v == nil || err != nil {
