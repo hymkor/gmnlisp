@@ -90,6 +90,7 @@ func New() *World {
 			"equal":               Function(cmdEqual),
 			"equalp":              Function(cmdEqualOp),
 			"exit":                Function(cmdQuit),
+			"foreach":             Function(cmdForeach),
 			"if":                  Function(cmdIf),
 			"lambda":              Function(cmdLambda),
 			"let":                 Function(cmdLet),

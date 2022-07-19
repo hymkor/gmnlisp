@@ -160,3 +160,37 @@ func cmdGetAllSymbols(w *World, n Node) (Node, error) {
 	})
 	return cons, nil
 }
+
+func cmdForeach(w *World, n Node) (Node, error) {
+	cons, ok := n.(*Cons)
+	if !ok {
+		return nil, fmt.Errorf("(1): %w", ErrExpectedCons)
+	}
+	symbol, ok := cons.Car.(Symbol)
+	if !ok {
+		return nil, fmt.Errorf("(1): %w", ErrExpectedSymbol)
+	}
+
+	list, code, err := w.shiftAndEvalCar(cons.Cdr)
+	if err != nil {
+		return nil, err
+	}
+
+	var last Node
+	for HasValue(list) {
+		var err error
+		var val Node
+
+		val, list, err = w.shiftAndEvalCar(list)
+		if err != nil {
+			return nil, err
+		}
+		w.Set(string(symbol), val)
+
+		last, err = progn(w, code)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return last, nil
+}
