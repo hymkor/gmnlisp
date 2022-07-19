@@ -59,6 +59,7 @@ Support functions
 - `--get-all-symbols--`
 - `*`
 - `*posix-argv*`
+- `*standard-output*`
 - `/`
 - `+`
 - `<`
