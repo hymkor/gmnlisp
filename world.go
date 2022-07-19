@@ -95,6 +95,7 @@ func New() *World {
 			"lambda":              Function(cmdLambda),
 			"let":                 Function(cmdLet),
 			"list":                Function(cmdList),
+			"listp":               Function(cmdListp),
 			"macroexpand":         Function(cmdMacroExpand),
 			"member":              Function(cmdMember),
 			"nil":                 Null,
