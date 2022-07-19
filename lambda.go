@@ -118,16 +118,16 @@ func cmdDefun(w *World, node Node) (Node, error) {
 	if !ok {
 		return nil, ErrExpectedCons
 	}
-	_name, ok := cons.Car.(Symbol)
+	symbol, ok := cons.Car.(Symbol)
 	if !ok {
 		return nil, ErrExpectedSymbol
 	}
-	name := string(_name)
+	name := string(symbol)
 
-	lambda, err := newLambda(w, cons.Cdr, string(_name))
+	lambda, err := newLambda(w, cons.Cdr, name)
 	if err != nil {
 		return nil, err
 	}
 	w.Set(name, lambda)
-	return lambda, nil
+	return symbol, nil
 }
