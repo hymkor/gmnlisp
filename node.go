@@ -6,9 +6,16 @@ import (
 	"strings"
 )
 
+type EqlMode int
+
+const (
+	EQUAL EqlMode = iota
+	EQUALP
+)
+
 type Node interface {
 	Eval(*World) (Node, error)
-	Equals(Node) bool
+	Equals(Node, EqlMode) bool
 	PrintTo(io.Writer)
 }
 
@@ -33,7 +40,7 @@ func (t _TrueType) Eval(*World) (Node, error) {
 
 var True Node = _TrueType{}
 
-func (_TrueType) Equals(n Node) bool {
+func (_TrueType) Equals(n Node, m EqlMode) bool {
 	_, ok := n.(_TrueType)
 	return ok
 }
@@ -48,7 +55,7 @@ func (nt _NullType) Eval(*World) (Node, error) {
 	return nt, nil
 }
 
-func (nt _NullType) Equals(n Node) bool {
+func (nt _NullType) Equals(n Node, m EqlMode) bool {
 	if n == nil {
 		return true
 	}
@@ -72,16 +79,13 @@ func (s String) Eval(*World) (Node, error) {
 	return s, nil // errors.New("String can not be evaluate.")
 }
 
-func (s String) Equals(n Node) bool {
+func (s String) Equals(n Node, m EqlMode) bool {
 	ns, ok := n.(String)
-	return ok && s == ns
-}
-
-func (s String) Equalp(n Node) bool {
-	if ns, ok := n.(String); ok {
-		return strings.EqualFold(string(s), string(ns))
+	if m == EQUALP {
+		return ok && strings.EqualFold(string(s), string(ns))
+	} else {
+		return ok && s == ns
 	}
-	return false
 }
 
 func (s String) Add(n Node) (Node, error) {
@@ -108,12 +112,11 @@ func (s Symbol) Eval(w *World) (Node, error) {
 	return w.Get(string(s))
 }
 
-func (s Symbol) Equals(n Node) bool {
+func (s Symbol) Equals(n Node, m EqlMode) bool {
 	ns, ok := n.(Symbol)
-	return ok && s == ns
-}
-
-func (s Symbol) Equalp(n Node) bool {
-	ns, ok := n.(Symbol)
-	return ok && strings.EqualFold(string(s), string(ns))
+	if m == EQUALP {
+		return ok && strings.EqualFold(string(s), string(ns))
+	} else {
+		return ok && s == ns
+	}
 }

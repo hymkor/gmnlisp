@@ -107,17 +107,11 @@ func cmdGreaterThan(w *World, param Node) (Node, error) {
 }
 
 func cmdEqualOp(w *World, param Node) (Node, error) {
-	type CanEqualP interface {
-		Equalp(Node) bool
-	}
 	return notNullToTrue(w.inject(param, func(left, right Node) (Node, error) {
-		if _left, ok := left.(CanEqualP); ok {
-			if _left.Equalp(right) {
-				return right, nil
-			}
-			return Null, nil
+		if left.Equals(right, EQUALP) {
+			return right, nil
 		}
-		return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(right))
+		return Null, nil
 	}))
 }
 

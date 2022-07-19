@@ -12,7 +12,7 @@ func macroQuote(node Node) (Node, error) {
 		return node, nil
 	}
 	// normal pair
-	if !cons.GetCar().Equals(Symbol("'")) {
+	if !cons.GetCar().Equals(Symbol("'"), EQUAL) {
 		car, err := macroQuote(cons.Car)
 		if err != nil {
 			return nil, err
@@ -108,7 +108,7 @@ func (mp _PlaceHolder) PrintTo(w io.Writer) {
 	fmt.Fprintf(w, "$(%s)", string(mp))
 }
 
-func (mp _PlaceHolder) Equals(n Node) bool {
+func (mp _PlaceHolder) Equals(n Node, m EqlMode) bool {
 	if _n, ok := n.(_PlaceHolder); ok {
 		return mp == _n
 	}

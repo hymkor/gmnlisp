@@ -68,7 +68,7 @@ func cmdEqual(w *World, param Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		if !first.Equals(next) {
+		if !first.Equals(next, EQUAL) {
 			return Null, nil
 		}
 	}

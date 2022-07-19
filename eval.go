@@ -24,7 +24,7 @@ func (f Function) Eval(_ *World) (Node, error) {
 	return f, nil
 }
 
-func (f Function) Equals(n Node) bool {
+func (f Function) Equals(n Node, m EqlMode) bool {
 	return false
 }
 

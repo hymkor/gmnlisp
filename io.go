@@ -13,7 +13,7 @@ func (d _Dummy) Eval(*World) (Node, error) {
 	return d, nil
 }
 
-func (d _Dummy) Equals(Node) bool {
+func (d _Dummy) Equals(Node, EqlMode) bool {
 	return false
 }
 

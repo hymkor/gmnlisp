@@ -15,17 +15,17 @@ func (i Integer) Eval(*World) (Node, error) {
 	return i, nil
 }
 
-func (i Integer) Equals(n Node) bool {
-	_n, ok := n.(Integer)
-	return ok && i == _n
-}
-
-func (i Integer) Equalp(n Node) bool {
-	if _n, ok := n.(Integer); ok && i == _n {
-		return true
+func (i Integer) Equals(n Node, m EqlMode) bool {
+	if m == EQUALP {
+		if _n, ok := n.(Integer); ok && i == _n {
+			return true
+		}
+		_n, ok := n.(Float)
+		return ok && Float(i) == _n
+	} else {
+		_n, ok := n.(Integer)
+		return ok && i == _n
 	}
-	_n, ok := n.(Float)
-	return ok && Float(i) == _n
 }
 
 func (i Integer) Add(n Node) (Node, error) {
@@ -94,17 +94,17 @@ func (f Float) Eval(*World) (Node, error) {
 	return f, nil
 }
 
-func (f Float) Equals(n Node) bool {
-	v, ok := n.(Float)
-	return ok && f == v
-}
-
-func (f Float) Equalp(n Node) bool {
-	if _n, ok := n.(Float); ok && f == _n {
-		return true
+func (f Float) Equals(n Node, m EqlMode) bool {
+	if m == EQUALP {
+		if _n, ok := n.(Float); ok && f == _n {
+			return true
+		}
+		_n, ok := n.(Integer)
+		return ok && f == Float(_n)
+	} else {
+		v, ok := n.(Float)
+		return ok && f == v
 	}
-	_n, ok := n.(Integer)
-	return ok && f == Float(_n)
 }
 
 func (f Float) Add(n Node) (Node, error) {

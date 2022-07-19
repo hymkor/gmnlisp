@@ -121,7 +121,7 @@ func (nl *_Lambda) Eval(*World) (Node, error) {
 	return nl, nil
 }
 
-func (*_Lambda) Equals(Node) bool {
+func (*_Lambda) Equals(Node, EqlMode) bool {
 	return false
 }
 

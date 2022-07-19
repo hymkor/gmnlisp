@@ -79,20 +79,11 @@ func (cons *Cons) PrincTo(w io.Writer) {
 	io.WriteString(w, ")")
 }
 
-func (cons *Cons) Equals(n Node) bool {
+func (cons *Cons) Equals(n Node, m EqlMode) bool {
 	value, ok := n.(*Cons)
 	if !ok {
 		return false
 	}
-	return cons.GetCar().Equals(value.Car) &&
-		cons.GetCdr().Equals(value.Cdr)
-}
-
-func (cons *Cons) Equalp(n Node) bool {
-	_n, ok := n.(*Cons)
-	if !ok {
-		return false
-	}
-	return equalp(cons.GetCar(), _n.GetCar()) &&
-		equalp(cons.GetCdr(), _n.GetCdr())
+	return cons.GetCar().Equals(value.Car, m) &&
+		cons.GetCdr().Equals(value.Cdr, m)
 }

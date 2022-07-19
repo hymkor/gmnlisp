@@ -36,16 +36,6 @@ func HasValue(node Node) bool {
 	return !ok
 }
 
-func equalp(left, right Node) bool {
-	type canEqualp interface {
-		Equalp(Node) bool
-	}
-	if _left, ok := left.(canEqualp); ok {
-		return _left.Equalp(right)
-	}
-	return left.Equals(right)
-}
-
 func princTo(node Node, w io.Writer) {
 	type canPrinc interface {
 		PrincTo(io.Writer)
