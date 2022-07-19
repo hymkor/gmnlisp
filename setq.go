@@ -25,10 +25,13 @@ func cmdSetq(w *World, node Node) (Node, error) {
 		}
 		return nil
 	})
+	if err != nil {
+		return nil, err
+	}
 	if name != "" {
 		return value, ErrTooFewArguments
 	}
-	return value, err
+	return value, nil
 }
 
 func cmdLet(w *World, param Node) (Node, error) {
