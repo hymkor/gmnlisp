@@ -26,4 +26,6 @@ func TestCmdGo(t *testing.T) {
 						)
 						x
 					)`, Integer(15))
+	assertEqual(t, `(member 'c '(a b c d e))`,
+		List(Symbol("c"), Symbol("d"), Symbol("e")))
 }

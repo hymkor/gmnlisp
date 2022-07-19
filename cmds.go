@@ -194,3 +194,23 @@ func cmdForeach(w *World, n Node) (Node, error) {
 	}
 	return last, nil
 }
+
+func cmdMember(w *World, n Node) (Node, error) {
+	var argv [2]Node
+	if err := w.evalListAll(n, argv[:]); err != nil {
+		return nil, err
+	}
+	expr := argv[0]
+	list := argv[1]
+	for HasValue(list) {
+		cons, ok := list.(*Cons)
+		if !ok {
+			return nil, ErrExpectedCons
+		}
+		if expr.Equals(cons.Car, EQUAL) {
+			return list, nil
+		}
+		list = cons.Cdr
+	}
+	return Null, nil
+}
