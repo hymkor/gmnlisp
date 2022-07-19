@@ -101,7 +101,7 @@ func interactive(lisp *gmnlisp.World) error {
 			fmt.Fprintln(os.Stderr, err.Error())
 			continue
 		}
-		result, err := nodes.Eval(lisp)
+		result, err := lisp.InterpretNodes(nodes)
 		if err != nil {
 			if errors.Is(err, gmnlisp.ErrQuit) {
 				return nil

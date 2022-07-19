@@ -87,22 +87,7 @@ func readNode(tokenGetter func() (string, error)) (Node, error) {
 	return Symbol(token), nil
 }
 
-type Slice []Node
-
-func (ns Slice) Eval(w *World) (Node, error) {
-	var result Node = Null
-	var err error
-
-	for _, c := range ns {
-		result, err = c.Eval(w)
-		if err != nil {
-			return result, err
-		}
-	}
-	return result, nil
-}
-
-func Read(r io.RuneReader) (Slice, error) {
+func Read(r io.RuneReader) ([]Node, error) {
 	tokenGetter := newTokenizer(r)
 	result := []Node{}
 	for {
@@ -119,13 +104,13 @@ func Read(r io.RuneReader) (Slice, error) {
 		}
 		result = append(result, token)
 	}
-	return Slice(result), nil
+	return result, nil
 }
 
-func ReadString(s string) (Slice, error) {
+func ReadString(s string) ([]Node, error) {
 	return Read(strings.NewReader(s))
 }
 
-func ReadBytes(bin []byte) (Slice, error) {
+func ReadBytes(bin []byte) ([]Node, error) {
 	return Read(bytes.NewReader(bin))
 }

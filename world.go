@@ -165,12 +165,25 @@ func (w *World) inject(list Node, f func(left, right Node) (Node, error)) (Node,
 	return result, nil
 }
 
+func (w *World) InterpretNodes(ns []Node) (Node, error) {
+	var result Node = Null
+	var err error
+
+	for _, c := range ns {
+		result, err = c.Eval(w)
+		if err != nil {
+			return result, err
+		}
+	}
+	return result, nil
+}
+
 func (w *World) Interpret(code string) (Node, error) {
 	compiled, err := ReadString(code)
 	if err != nil {
 		return nil, err
 	}
-	return compiled.Eval(w)
+	return w.InterpretNodes(compiled)
 }
 
 func (w *World) InterpretBytes(code []byte) (Node, error) {
@@ -178,7 +191,7 @@ func (w *World) InterpretBytes(code []byte) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	return compiled.Eval(w)
+	return w.InterpretNodes(compiled)
 }
 
 func (w *World) Call(f Node, params ...Node) (Node, error) {
