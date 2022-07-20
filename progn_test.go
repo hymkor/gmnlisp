@@ -20,4 +20,10 @@ func TestIf(t *testing.T) {
 	if !errors.Is(err, ErrTooFewArguments) {
 		t.Fatal("ErrTooFewArguments have to be occured")
 	}
+
+	assertEqual(t, `
+	(cond
+		((= (setq aa (strcat "a" "a")) "ab") "A")
+		((= aa "aa") "B")
+		(T "fail"))`, String("B"))
 }
