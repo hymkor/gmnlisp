@@ -256,3 +256,14 @@ func cmdLoad(w *World, n Node) (Node, error) {
 	}
 	return w.InterpretBytes(script)
 }
+
+func cmdNotEqual(w *World, n Node) (Node, error) {
+	var args [2]Node
+	if err := w.evalListAll(n, args[:]); err != nil {
+		return nil, err
+	}
+	if args[0].Equals(args[1], EQUALP) {
+		return Null, nil
+	}
+	return True, nil
+}

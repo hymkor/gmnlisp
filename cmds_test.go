@@ -33,4 +33,6 @@ func TestCmdGo(t *testing.T) {
 	assertEqual(t, `(listp '(1 2 3))`, True)
 	assertEqual(t, `(not nil)`, True)
 	assertEqual(t, `(not T)`, Null)
+	assertEqual(t, `(/= 1 2)`, True)
+	assertEqual(t, `(/= 1 1)`, Null)
 }

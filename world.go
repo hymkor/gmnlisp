@@ -70,6 +70,7 @@ func New() *World {
 			"-":                   Function(cmdSub),
 			"--get-all-symbols--": Function(cmdGetAllSymbols),
 			"/":                   Function(cmdDevide),
+			"/=":                  Function(cmdNotEqual),
 			"<":                   Function(cmdLessThan),
 			"<=":                  Function(cmdLessOrEqual),
 			"=":                   Function(cmdEqualOp),
