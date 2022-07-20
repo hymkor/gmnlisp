@@ -2,6 +2,7 @@ package gmnlisp
 
 import (
 	"fmt"
+	"os"
 	"strconv"
 )
 
@@ -238,4 +239,20 @@ func cmdNot(w *World, n Node) (Node, error) {
 		return True, nil
 	}
 	return Null, nil
+}
+
+func cmdLoad(w *World, n Node) (Node, error) {
+	var args [1]Node
+	if err := w.evalListAll(n, args[:]); err != nil {
+		return nil, err
+	}
+	fname, ok := args[0].(String)
+	if !ok {
+		return nil, ErrExpectedString
+	}
+	script, err := os.ReadFile(string(fname))
+	if err != nil {
+		return nil, err
+	}
+	return w.InterpretBytes(script)
 }
