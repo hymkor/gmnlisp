@@ -81,6 +81,7 @@ func New() *World {
 			"append":              Function(cmdAppend),
 			"atom":                Function(cmdAtom),
 			"block":               Function(cmdBlock),
+			"cadr":                Function(cmdCadr),
 			"car":                 Function(cmdCar),
 			"cdr":                 Function(cmdCdr),
 			"close":               Function(cmdClose),

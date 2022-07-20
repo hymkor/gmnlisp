@@ -38,6 +38,18 @@ func cmdCdr(w *World, n Node) (Node, error) {
 	return cons.Cdr, nil
 }
 
+func cmdCadr(w *World, n Node) (Node, error) {
+	cdr,err := cmdCdr(w,n)
+	if err != nil {
+		return nil,err
+	}
+	cons, ok := cdr.(*Cons)
+	if !ok {
+		return Null, nil
+	}
+	return cons.Car, nil
+}
+
 func cmdQuote(_ *World, n Node) (Node, error) {
 	var argv [1]Node
 	if err := listToArray(n, argv[:]); err != nil {
