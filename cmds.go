@@ -66,6 +66,10 @@ func cmdCaddr(w *World, n Node) (Node, error) {
 	return nth(w, n, 2)
 }
 
+func cmdCadddr(w *World, n Node) (Node, error) {
+	return nth(w, n, 3)
+}
+
 func cmdQuote(_ *World, n Node) (Node, error) {
 	var argv [1]Node
 	if err := listToArray(n, argv[:]); err != nil {
