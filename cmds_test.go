@@ -36,4 +36,5 @@ func TestCmdGo(t *testing.T) {
 	assertEqual(t, `(/= 1 2)`, True)
 	assertEqual(t, `(/= 1 1)`, Null)
 	assertEqual(t, `(cadr '(1 2 3))`, Integer(2))
+	assertEqual(t, `(caddr '(1 2 3))`, Integer(3))
 }

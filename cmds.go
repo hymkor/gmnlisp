@@ -38,16 +38,32 @@ func cmdCdr(w *World, n Node) (Node, error) {
 	return cons.Cdr, nil
 }
 
-func cmdCadr(w *World, n Node) (Node, error) {
-	cdr,err := cmdCdr(w,n)
-	if err != nil {
-		return nil,err
+func nth(w *World, node Node, n int) (Node, error) {
+	var args [1]Node
+	if err := w.evalListAll(node, args[:]); err != nil {
+		return nil, err
 	}
-	cons, ok := cdr.(*Cons)
+	list := args[0]
+	for i := 0; i < n; i++ {
+		cons, ok := list.(*Cons)
+		if !ok {
+			return Null, nil
+		}
+		list = cons.Cdr
+	}
+	cons, ok := list.(*Cons)
 	if !ok {
 		return Null, nil
 	}
 	return cons.Car, nil
+}
+
+func cmdCadr(w *World, n Node) (Node, error) {
+	return nth(w, n, 1)
+}
+
+func cmdCaddr(w *World, n Node) (Node, error) {
+	return nth(w, n, 2)
 }
 
 func cmdQuote(_ *World, n Node) (Node, error) {
