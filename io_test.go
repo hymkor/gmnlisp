@@ -25,4 +25,7 @@ func TestIo(t *testing.T) {
 			line)`, String("hogehoge"))
 
 	os.Remove("temp.txt")
+
+	// not exist file test
+	assertEqual(t, `(open "temp.txt" "r")`, Null)
 }

@@ -2,6 +2,7 @@ package gmnlisp
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -76,12 +77,18 @@ func cmdOpen(w *World, n Node) (Node, error) {
 	}
 	mode := string(_mode)
 
+	var result Node
 	if mode == "r" {
-		return openAsRead(fname)
+		result, err = openAsRead(fname)
 	} else if mode == "w" {
-		return openAsWrite(fname)
+		result, err = openAsWrite(fname)
+	} else {
+		return nil, fmt.Errorf("no such a option `%s`", argv[1])
 	}
-	return nil, fmt.Errorf("no such a option `%s`", argv[1])
+	if errors.Is(err, os.ErrNotExist) {
+		return Null, nil
+	}
+	return result, err
 }
 
 func chomp(s string) string {
