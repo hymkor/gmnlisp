@@ -75,11 +75,17 @@ var Null Node = _NullType{}
 
 type String string
 
+var unescapeSequenceReplacer = strings.NewReplacer(
+	"\n", "\\n",
+	"\r", "\\r",
+	"\"", "\\\"",
+)
+
 func (s String) PrintTo(w io.Writer, m PrintMode) {
 	if m == PRINC {
 		io.WriteString(w, string(s))
 	} else {
-		fmt.Fprintf(w, "\"%s\"", string(s))
+		fmt.Fprintf(w, `"%s"`, unescapeSequenceReplacer.Replace(string(s)))
 	}
 }
 

@@ -32,6 +32,12 @@ func nodes2cons(nodes []Node) Node {
 	}
 }
 
+var escapeSequenceReplacer = strings.NewReplacer(
+	"\\r", "\r",
+	"\\n", "\n",
+	"\\\"", "\"",
+)
+
 func readNode(tokenGetter func() (string, error)) (Node, error) {
 	token, err := tokenGetter()
 	if err != nil {
@@ -79,6 +85,7 @@ func readNode(tokenGetter func() (string, error)) (Node, error) {
 		if L := len(token); L > 0 && token[L-1] == '"' {
 			token = token[:L-1]
 		}
+		token = escapeSequenceReplacer.Replace(token)
 		return String(token), nil
 	}
 	if token == "nil" {
