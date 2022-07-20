@@ -114,6 +114,7 @@ func New() *World {
 			"return-from":         Function(cmdReturnFrom),
 			"setq":                Function(cmdSetq),
 			"strcat":              Function(cmdStrCat),
+			"strlen":              Function(cmdStrLen),
 			"terpri":              Function(cmdTerpri),
 			"truncate":            Function(cmdTruncate),
 			"while":               Function(cmdWhile),
