@@ -228,3 +228,14 @@ func cmdListp(w *World, n Node) (Node, error) {
 	}
 	return Null, nil
 }
+
+func cmdNot(w *World, n Node) (Node, error) {
+	cons, ok := n.(*Cons)
+	if !ok {
+		return nil, ErrExpectedCons
+	}
+	if IsNull(cons.Car) {
+		return True, nil
+	}
+	return Null, nil
+}

@@ -99,6 +99,7 @@ func New() *World {
 			"macroexpand":         Function(cmdMacroExpand),
 			"member":              Function(cmdMember),
 			"nil":                 Null,
+			"not":                 Function(cmdNot),
 			"open":                Function(cmdOpen),
 			"or":                  Function(cmdOr),
 			"parse-integer":       Function(cmdParseInt),
