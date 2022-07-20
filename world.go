@@ -116,6 +116,7 @@ func New() *World {
 			"strcat":              Function(cmdStrCat),
 			"strcase":             Function(cmdStrCase),
 			"strlen":              Function(cmdStrLen),
+			"substr":              Function(cmdSubStr),
 			"terpri":              Function(cmdTerpri),
 			"truncate":            Function(cmdTruncate),
 			"while":               Function(cmdWhile),
