@@ -43,13 +43,9 @@ func nth(w *World, node Node, n int) (Node, error) {
 	if err := w.evalListAll(node, args[:]); err != nil {
 		return nil, err
 	}
-	list := args[0]
-	for i := 0; i < n; i++ {
-		cons, ok := list.(*Cons)
-		if !ok {
-			return Null, nil
-		}
-		list = cons.Cdr
+	list, err := shiftList(args[0], n)
+	if err != nil {
+		return nil, err
 	}
 	cons, ok := list.(*Cons)
 	if !ok {
@@ -68,6 +64,22 @@ func cmdCaddr(w *World, n Node) (Node, error) {
 
 func cmdCadddr(w *World, n Node) (Node, error) {
 	return nth(w, n, 3)
+}
+
+func cmdCddr(w *World, n Node) (Node, error) {
+	var args [1]Node
+	if err := w.evalListAll(n, args[:]); err != nil {
+		return nil, err
+	}
+	return shiftList(args[0], 2)
+}
+
+func cmdCdddr(w *World, n Node) (Node, error) {
+	var args [1]Node
+	if err := w.evalListAll(n, args[:]); err != nil {
+		return nil, err
+	}
+	return shiftList(args[0], 3)
 }
 
 func cmdQuote(_ *World, n Node) (Node, error) {

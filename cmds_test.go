@@ -38,4 +38,8 @@ func TestCmdGo(t *testing.T) {
 	assertEqual(t, `(cadr '(1 2 3))`, Integer(2))
 	assertEqual(t, `(caddr '(1 2 3 4 5 ))`, Integer(3))
 	assertEqual(t, `(cadddr '(1 2 3 4 5))`, Integer(4))
+	assertEqual(t, `(cddr '(1 2 3 4 5))`,
+		List(Integer(3), Integer(4), Integer(5)))
+	assertEqual(t, `(cdddr '(1 2 3 4 5))`,
+		List(Integer(4), Integer(5)))
 }

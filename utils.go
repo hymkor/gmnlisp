@@ -93,3 +93,17 @@ func listToSlice(list Node) ([]Node, error) {
 	}
 	return slice, nil
 }
+
+func shiftList(list Node, count int) (Node, error) {
+	for i := 0; i < count; i++ {
+		if IsNull(list) {
+			return Null, nil
+		}
+		cons, ok := list.(*Cons)
+		if !ok {
+			return nil, ErrExpectedCons
+		}
+		list = cons.Cdr
+	}
+	return list, nil
+}

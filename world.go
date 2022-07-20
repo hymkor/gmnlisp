@@ -86,6 +86,8 @@ func New() *World {
 			"cadddr":              Function(cmdCadddr),
 			"car":                 Function(cmdCar),
 			"cdr":                 Function(cmdCdr),
+			"cddr":                Function(cmdCddr),
+			"cdddr":               Function(cmdCdddr),
 			"close":               Function(cmdClose),
 			"cond":                Function(cmdCond),
 			"cons":                Function(cmdCons),
