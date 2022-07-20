@@ -127,3 +127,22 @@ func (s Symbol) Equals(n Node, m EqlMode) bool {
 		return ok && s == ns
 	}
 }
+
+func cmdStrCat(w *World, n Node) (Node, error) {
+	var buffer strings.Builder
+	for HasValue(n) {
+		var s Node
+		var err error
+
+		s, n, err = w.shiftAndEvalCar(n)
+		if err != nil {
+			return nil, err
+		}
+		str, ok := s.(String)
+		if !ok {
+			return nil, ErrExpectedString
+		}
+		buffer.WriteString(string(str))
+	}
+	return String(buffer.String()), nil
+}

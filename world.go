@@ -113,6 +113,7 @@ func New() *World {
 			"return":              Function(cmdReturn),
 			"return-from":         Function(cmdReturnFrom),
 			"setq":                Function(cmdSetq),
+			"strcat":              Function(cmdStrCat),
 			"terpri":              Function(cmdTerpri),
 			"truncate":            Function(cmdTruncate),
 			"while":               Function(cmdWhile),
