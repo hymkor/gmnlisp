@@ -21,7 +21,7 @@ func TestCmdGo(t *testing.T) {
 	assertEqual(t, `(append '(1 2) '(3 4) '(5 6))`,
 		List(Integer(1), Integer(2), Integer(3), Integer(4), Integer(5), Integer(6)))
 	assertEqual(t, `(let ((x 0)(i 0))
-						(foreach i (list 1 2 3 4 5)
+						(foreach i (list 1 (+ 1 1) (* 1 3) 4 5)
 							(setq x (+ x i))
 						)
 						x

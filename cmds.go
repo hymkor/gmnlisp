@@ -21,7 +21,7 @@ func cmdCar(w *World, n Node) (Node, error) {
 	}
 	cons, ok := argv[0].(*Cons)
 	if !ok {
-		return nil, ErrExpectedCons
+		return nil, fmt.Errorf("%w: %s", ErrExpectedCons, toString(argv[0]))
 	}
 	return cons.Car, nil
 }
@@ -180,13 +180,13 @@ func cmdForeach(w *World, n Node) (Node, error) {
 	var last Node
 	for HasValue(list) {
 		var err error
-		var val Node
 
-		val, list, err = w.shiftAndEvalCar(list)
-		if err != nil {
-			return nil, err
+		cons, ok := list.(*Cons)
+		if !ok {
+			return nil, ErrExpectedCons
 		}
-		w.Set(string(symbol), val)
+		w.Set(string(symbol), cons.Car)
+		list = cons.Cdr
 
 		last, err = progn(w, code)
 		if err != nil {
