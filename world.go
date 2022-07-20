@@ -111,6 +111,7 @@ func New() *World {
 			"progn":               Function(cmdProgn),
 			"quit":                Function(cmdQuit),
 			"quote":               Function(cmdQuote),
+			"read":                Function(cmdRead),
 			"read-line":           Function(cmdReadLine),
 			"return":              Function(cmdReturn),
 			"return-from":         Function(cmdReturnFrom),

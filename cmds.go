@@ -267,3 +267,22 @@ func cmdNotEqual(w *World, n Node) (Node, error) {
 	}
 	return True, nil
 }
+
+func cmdRead(w *World, n Node) (Node, error) {
+	var args [1]Node
+	if err := w.evalListAll(n, args[:]); err != nil {
+		return nil, err
+	}
+	script, ok := args[0].(String)
+	if !ok {
+		return nil, ErrExpectedString
+	}
+	nodes, err := ReadString(string(script))
+	if err != nil {
+		return nil, err
+	}
+	if len(nodes) < 1 {
+		return Null, nil
+	}
+	return nodes[0], nil
+}
