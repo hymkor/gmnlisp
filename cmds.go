@@ -231,11 +231,11 @@ func cmdListp(w *World, n Node) (Node, error) {
 }
 
 func cmdNot(w *World, n Node) (Node, error) {
-	cons, ok := n.(*Cons)
-	if !ok {
-		return nil, ErrExpectedCons
+	var args [1]Node
+	if err := w.evalListAll(n, args[:]); err != nil {
+		return nil, err
 	}
-	if IsNull(cons.Car) {
+	if IsNull(args[0]) {
 		return True, nil
 	}
 	return Null, nil
