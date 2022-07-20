@@ -158,3 +158,15 @@ func cmdStrLen(w *World, n Node) (Node, error) {
 	}
 	return Integer(len(string(str))), nil
 }
+
+func cmdStrCase(w *World, n Node) (Node, error) {
+	var argv [1]Node
+	if err := w.evalListAll(n, argv[:]); err != nil {
+		return nil, err
+	}
+	str, ok := argv[0].(String)
+	if !ok {
+		return nil, ErrExpectedString
+	}
+	return String(strings.ToUpper(string(str))), nil
+}
