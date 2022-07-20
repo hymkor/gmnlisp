@@ -53,37 +53,35 @@ func openAsWrite(fname string) (Node, error) {
 }
 
 func cmdOpen(w *World, n Node) (Node, error) {
-	argv, err := listToSlice(n)
+	fname, n, err := w.shiftAndEvalCar(n)
 	if err != nil {
 		return nil, err
 	}
-	if len(argv) <= 0 {
-		return nil, ErrTooFewArguments
-	}
-	if len(argv) >= 3 {
-		return nil, ErrTooManyArguments
-	}
-	_fname, ok := argv[0].(String)
+	_fname, ok := fname.(String)
 	if !ok {
 		return nil, fmt.Errorf("%w `%s`", ErrExpectedString, toString(_fname))
 	}
-	fname := string(_fname)
-	if len(argv) < 2 {
-		return openAsRead(fname)
+	if IsNull(n) {
+		return openAsRead(string(_fname))
 	}
-	_mode, ok := argv[1].(String)
+
+	mode, n, err := w.shiftAndEvalCar(n)
+	if HasValue(n) {
+		return nil, ErrTooManyArguments
+	}
+	_mode, ok := mode.(String)
 	if !ok {
 		return nil, fmt.Errorf("%w `%s`", ErrExpectedString, toString(_mode))
 	}
-	mode := string(_mode)
 
 	var result Node
-	if mode == "r" {
-		result, err = openAsRead(fname)
-	} else if mode == "w" {
-		result, err = openAsWrite(fname)
-	} else {
-		return nil, fmt.Errorf("no such a option `%s`", argv[1])
+	switch string(_mode) {
+	case "r":
+		result, err = openAsRead(string(_fname))
+	case "w":
+		result, err = openAsWrite(string(_fname))
+	default:
+		return nil, fmt.Errorf("no such a option `%s`", string(_mode))
 	}
 	if errors.Is(err, os.ErrNotExist) {
 		return Null, nil

@@ -8,14 +8,14 @@ import (
 func TestIo(t *testing.T) {
 	assertEqual(t, `
 		(let (fd line)
-			(setq fd (open "LICENSE" "r")
+			(setq fd (open (quote "LICENSE") (quote "r"))
 				  line (read-line fd))
 			(close fd)
 			line
 		)`, String("MIT License"))
 
 	assertEqual(t, `
-		(let ((fd (open "temp.txt" "w")))
+		(let ((fd (open (quote "temp.txt") "w")))
 			(write-line "hogehoge" fd)
 			(close fd))
 		(let (fd line)
