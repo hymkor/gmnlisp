@@ -38,12 +38,20 @@ func cmdCdr(w *World, n Node) (Node, error) {
 	return cons.Cdr, nil
 }
 
-func nth(w *World, node Node, n int) (Node, error) {
+func nthcdr(w *World, node Node, n int) (Node, error) {
 	var args [1]Node
 	if err := w.evalListAll(node, args[:]); err != nil {
 		return nil, err
 	}
 	list, err := shiftList(args[0], n)
+	if err != nil {
+		return nil, err
+	}
+	return list, nil
+}
+
+func nth(w *World, node Node, n int) (Node, error) {
+	list, err := nthcdr(w, node, n)
 	if err != nil {
 		return nil, err
 	}
@@ -67,19 +75,11 @@ func cmdCadddr(w *World, n Node) (Node, error) {
 }
 
 func cmdCddr(w *World, n Node) (Node, error) {
-	var args [1]Node
-	if err := w.evalListAll(n, args[:]); err != nil {
-		return nil, err
-	}
-	return shiftList(args[0], 2)
+	return nthcdr(w, n, 2)
 }
 
 func cmdCdddr(w *World, n Node) (Node, error) {
-	var args [1]Node
-	if err := w.evalListAll(n, args[:]); err != nil {
-		return nil, err
-	}
-	return shiftList(args[0], 3)
+	return nthcdr(w, n, 3)
 }
 
 func cmdQuote(_ *World, n Node) (Node, error) {
