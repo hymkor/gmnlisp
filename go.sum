@@ -8,6 +8,8 @@ github.com/mattn/go-runewidth v0.0.13 h1:lTGmDsbAYt5DmK6OnoV7EuIF1wEIFAcxld6ypU4
 github.com/mattn/go-runewidth v0.0.13/go.mod h1:Jdepj2loyihRzMpdS35Xk/zdY8IAYHsh153qUoGf23w=
 github.com/nyaosorg/go-readline-ny v0.8.1 h1:EvTCrv2QeoJHAsyi9RC+BqIFSzw/5pScbQVi9PZgLx8=
 github.com/nyaosorg/go-readline-ny v0.8.1/go.mod h1:aoTnObwqS04NL0T9zwUvIO8h7v8fcKawdzJXRnV97T4=
+github.com/nyaosorg/go-windows-mbcs v0.0.0-20220625075624-7e48d6c9b323 h1:PeTubCi/OPZjb3aq3tIPvdaMXrkUXDLOLfXJRRDjsUc=
+github.com/nyaosorg/go-windows-mbcs v0.0.0-20220625075624-7e48d6c9b323/go.mod h1:f3y7pRJkWtCxZhCtTiTCrGkB1z4bbRKhx+z7emCkQNU=
 github.com/rivo/uniseg v0.2.0 h1:S1pD9weZBuJdFmowNwbpi7BJ8TNftyUImj/0WQi72jY=
 github.com/rivo/uniseg v0.2.0/go.mod h1:J6wj4VEh+S6ZtnVlnTBMWIodfgj8LQOQFoIToxlJtxc=
 golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
