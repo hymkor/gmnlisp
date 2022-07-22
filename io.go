@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"os/exec"
+	"strings"
 )
 
 type _Dummy struct{}
@@ -203,4 +205,29 @@ func cmdWhile(w *World, n Node) (Node, error) {
 			return nil, err
 		}
 	}
+}
+
+func cmdCommand(w *World, n Node) (Node, error) {
+	argv, err := w.evalListToSlice(n)
+	if err != nil {
+		return nil, err
+	}
+	if len(argv) < 1 {
+		return nil, ErrTooFewArguments
+	}
+	_argv := make([]string, 0, len(argv))
+	var buffer strings.Builder
+	for _, n := range argv {
+		n.PrintTo(&buffer, PRINC)
+		_argv = append(_argv, buffer.String())
+		buffer.Reset()
+	}
+	cmd := exec.Command(_argv[0], _argv[1:]...)
+	cmd.Stdout, err = w.Stdout()
+	if err != nil {
+		return nil, err
+	}
+	cmd.Stderr = os.Stderr
+	cmd.Stdin = os.Stdin
+	return Null, cmd.Run()
 }

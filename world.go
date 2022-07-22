@@ -89,6 +89,7 @@ func New() *World {
 			"cddr":                Function(cmdCddr),
 			"cdddr":               Function(cmdCdddr),
 			"close":               Function(cmdClose),
+			"command":             Function(cmdCommand),
 			"cond":                Function(cmdCond),
 			"cons":                Function(cmdCons),
 			"defmacro":            Function(cmdDefMacro),
