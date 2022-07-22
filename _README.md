@@ -11,7 +11,7 @@ Now under constructing. Experimental implementing
 (defun detab (src)
     (let ((i 1) (result "") tmp)
         (while (<= i (strlen src))
-            (setq result 
+            (setq result
                 (strcat result
                     (if (= "\t" (setq tmp (substr src i 1)))
                         "    "
@@ -30,7 +30,7 @@ Now under constructing. Experimental implementing
             (setq count 0)
             (while (setq line (read-line fd))
                 (if (>= count 3)
-                    (write (strcat (detab line) "\r\n")))
+                    (write-line (detab line))))
                 (setq count (+ count 1))
             )
             (close fd)
@@ -41,7 +41,7 @@ Now under constructing. Experimental implementing
 
 ```
 $ go run examples/example1.go
-3
+(command "go" "run" "examples/example1.go")
 ```
 
 Support functions
@@ -49,4 +49,4 @@ Support functions
 
 (let (name)
     (foreach name (--get-all-symbols--)
-        (write (strcat "- `" name "`\r\n"))))
+        (write-line (strcat "- `" name "`"))))
