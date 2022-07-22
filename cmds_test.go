@@ -42,4 +42,10 @@ func TestCmdGo(t *testing.T) {
 		List(Integer(3), Integer(4), Integer(5)))
 	assertEqual(t, `(cdddr '(1 2 3 4 5))`,
 		List(Integer(4), Integer(5)))
+	assertEqual(t, `(mapcar (function +) '(1 2 3) '(4 5 6))`,
+		List(Integer(5), Integer(7), Integer(9)))
+	assertEqual(t, `(mapcar #'+ '(1 2 3) '(4 5 6))`,
+		List(Integer(5), Integer(7), Integer(9)))
+	assertEqual(t, `(mapcar '+ '(1 2 3) '(4 5 6))`,
+		List(Integer(5), Integer(7), Integer(9)))
 }
