@@ -3,6 +3,7 @@ package gmnlisp
 import (
 	"fmt"
 	"os"
+	"sort"
 	"strconv"
 )
 
@@ -195,14 +196,19 @@ func cmdQuit(*World, Node) (Node, error) {
 }
 
 func cmdGetAllSymbols(w *World, n Node) (Node, error) {
+	names := []string{}
 	var cons Node = Null
 	w.each(func(name string, _ Node) bool {
-		cons = &Cons{
-			Car: String(name),
-			Cdr: cons,
-		}
+		names = append(names, name)
 		return true
 	})
+	sort.Strings(names)
+	for i := len(names) - 1; i >= 0; i-- {
+		cons = &Cons{
+			Car: String(names[i]),
+			Cdr: cons,
+		}
+	}
 	return cons, nil
 }
 
