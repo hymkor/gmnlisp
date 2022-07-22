@@ -35,6 +35,7 @@ func nodes2cons(nodes []Node) Node {
 var escapeSequenceReplacer = strings.NewReplacer(
 	"\\r", "\r",
 	"\\n", "\n",
+	"\\t", "\t",
 	"\\\"", "\"",
 )
 
