@@ -2,6 +2,7 @@ package gmnlisp
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"sort"
 	"strconv"
@@ -335,4 +336,71 @@ func cmdRead(w *World, n Node) (Node, error) {
 		return Null, nil
 	}
 	return nodes[0], nil
+}
+
+type FunctionCell struct {
+	Value _Callable
+}
+
+func (fc FunctionCell) Eval(w *World) (Node, error) {
+	return fc.Value, nil
+}
+
+func (fc FunctionCell) Equals(Node, EqlMode) bool {
+	return false
+}
+
+func (fc FunctionCell) PrintTo(w io.Writer, m PrintMode) {
+	io.WriteString(w, "(functionCell)")
+}
+
+func cmdFunction(w *World, node Node) (Node, error) {
+	var argv [1]Node
+	if err := w.evalListAll(node, argv[:]); err != nil {
+		return nil, err
+	}
+	f, ok := argv[0].(_Callable)
+	if !ok {
+		return nil, ErrExpectedFunction
+	}
+	return FunctionCell{Value: f}, nil
+}
+
+func cmdMapCar(w *World, n Node) (Node, error) {
+	first, n, err := w.shiftAndEvalCar(n)
+	if err != nil {
+		return nil, err
+	}
+	f, err := first.Eval(w)
+	if err != nil {
+		return nil, err
+	}
+	_f, ok := f.(_Callable)
+	if !ok {
+		return nil, ErrExpectedFunction
+	}
+	list, err := w.evalListToSlice(n)
+	if err != nil {
+		return nil, err
+	}
+	resultSet := []Node{}
+	for {
+		paramSet := make([]Node, len(list))
+		for i := 0; i < len(list); i++ {
+			if IsNull(list[i]) {
+				return List(resultSet...), nil
+			}
+			cons, ok := list[i].(*Cons)
+			if !ok {
+				return nil, ErrExpectedCons
+			}
+			paramSet[i] = cons.Car
+			list[i] = cons.Cdr
+		}
+		result, err := _f.Call(w, List(paramSet...))
+		if err != nil {
+			return nil, err
+		}
+		resultSet = append(resultSet, result)
+	}
 }
