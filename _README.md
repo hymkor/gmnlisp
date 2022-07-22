@@ -30,7 +30,7 @@ Now under constructing. Experimental implementing
             (setq count 0)
             (while (setq line (read-line fd))
                 (if (>= count 3)
-                    (write-line (detab line))))
+                    (write-line (detab line)))
                 (setq count (+ count 1))
             )
             (close fd)
