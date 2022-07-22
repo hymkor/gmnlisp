@@ -6,28 +6,10 @@ import (
 	"io"
 )
 
-func macroQuote(node Node) (Node, error) {
-	cons, ok := node.(*Cons)
+func _macroQuote(name string, list Node) (Node, error) {
+	cons, ok := list.(*Cons)
 	if !ok {
-		return node, nil
-	}
-	// normal pair
-	if !cons.GetCar().Equals(Symbol("'"), EQUAL) {
-		car, err := macroQuote(cons.Car)
-		if err != nil {
-			return nil, err
-		}
-		cdr, err := macroQuote(cons.Cdr)
-		if err != nil {
-			return nil, err
-		}
-		return &Cons{Car: car, Cdr: cdr}, nil
-	}
-
-	// Find single quotation mark
-	cons, ok = cons.Cdr.(*Cons)
-	if !ok {
-		return nil, fmt.Errorf("quote: %w", ErrTooFewArguments)
+		return nil, fmt.Errorf("%s: %w", name, ErrTooFewArguments)
 	}
 	quoted, err := macroQuote(cons.Car)
 	if err != nil {
@@ -39,7 +21,7 @@ func macroQuote(node Node) (Node, error) {
 	}
 	return &Cons{
 		Car: &Cons{
-			Car: Symbol("quote"),
+			Car: Symbol(name),
 			Cdr: &Cons{
 				Car: quoted,
 				Cdr: nil,
@@ -47,6 +29,29 @@ func macroQuote(node Node) (Node, error) {
 		},
 		Cdr: rest,
 	}, nil
+}
+
+func macroQuote(node Node) (Node, error) {
+	cons, ok := node.(*Cons)
+	if !ok {
+		return node, nil
+	}
+	// normal pair
+
+	if car := cons.GetCar(); car.Equals(Symbol("'"), EQUAL) {
+		return _macroQuote("quote", cons.Cdr)
+	} else if car.Equals(Symbol("#'"), EQUAL) {
+		return _macroQuote("function", cons.Cdr)
+	}
+	car, err := macroQuote(cons.Car)
+	if err != nil {
+		return nil, err
+	}
+	cdr, err := macroQuote(cons.Cdr)
+	if err != nil {
+		return nil, err
+	}
+	return &Cons{Car: car, Cdr: cdr}, nil
 }
 
 type _Macro struct {

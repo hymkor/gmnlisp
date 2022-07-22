@@ -12,19 +12,23 @@ func readtoken(r io.RuneReader, lastRune rune) (string, rune, error) {
 	var err error
 
 	quote := false
-	backSlash := false
+	lastLastRune := '\u0000'
 	for {
 		if !quote {
 			if lastRune == ')' || lastRune == '(' || lastRune == ';' || unicode.IsSpace(lastRune) {
 				return buffer.String(), lastRune, nil
 			}
 		}
-		if !backSlash && lastRune == '"' {
+		if lastLastRune != '\\' && lastRune == '"' {
 			quote = !quote
 		}
 		buffer.WriteRune(lastRune)
-		backSlash = (lastRune == '\\')
 
+		if !quote && lastLastRune == '#' && lastRune == '\'' {
+			lastRune, _, err = r.ReadRune()
+			return buffer.String(), lastRune, err
+		}
+		lastLastRune = lastRune
 		lastRune, _, err = r.ReadRune()
 		if err != nil {
 			return buffer.String(), lastRune, err
