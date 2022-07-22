@@ -201,7 +201,7 @@ func cmdSubStr(w *World, n Node) (Node, error) {
 	if _pos < 1 {
 		return nil, errors.New("position has to be more than 0")
 	}
-	if int(_pos) >= len(_str) {
+	if int(_pos) > len(_str) {
 		return nil, errors.New("position is bigger than string length")
 	}
 
