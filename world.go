@@ -148,6 +148,21 @@ func (w *World) evalListAll(list Node, result []Node) error {
 	return nil
 }
 
+func (w *World) evalListToSlice(list Node) ([]Node, error) {
+	result, err := listToSlice(list)
+	if err != nil {
+		return nil, err
+	}
+	for i := 0; i < len(result); i++ {
+		value, err := result[i].Eval(w)
+		if err != nil {
+			return nil, err
+		}
+		result[i] = value
+	}
+	return result, nil
+}
+
 func (w *World) shiftAndEvalCar(list Node) (Node, Node, error) {
 	cons, ok := list.(*Cons)
 	if !ok {
