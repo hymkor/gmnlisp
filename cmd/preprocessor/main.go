@@ -48,7 +48,10 @@ func replaceReader(lisp *gmnlisp.World, fd io.Reader) error {
 				}
 				line, err := br.ReadBytes('\n')
 				if err != nil {
-					break
+					if err == io.EOF {
+						return fmt.Errorf("Too near EOF")
+					}
+					return err
 				}
 				buffer.Write(line)
 			}
