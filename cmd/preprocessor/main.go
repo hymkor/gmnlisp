@@ -26,6 +26,24 @@ func replaceFile(lisp *gmnlisp.World, fname string) error {
 	return replaceReader(lisp, fd)
 }
 
+func countNoClosedParen(b []byte) int {
+	count := 0
+	quote := false
+	for _, c := range b {
+		if c == '"' {
+			quote = !quote
+		}
+		if !quote {
+			if c == '(' {
+				count++
+			} else if c == ')' {
+				count--
+			}
+		}
+	}
+	return count
+}
+
 func replaceReader(lisp *gmnlisp.World, fd io.Reader) error {
 	br := bufio.NewReader(fd)
 	for {
@@ -34,29 +52,28 @@ func replaceReader(lisp *gmnlisp.World, fd io.Reader) error {
 			return err
 		}
 		if rxLisp.Match(line) {
-			var buffer strings.Builder
+			if countNoClosedParen(line) == 0 {
+				_, err := lisp.InterpretBytes(line)
+				if err != nil {
+					return err
+				}
+				continue
+			}
+			var buffer bytes.Buffer
 			buffer.Write(line)
-			var nodes []gmnlisp.Node
-			var err error
+
 			for {
-				nodes, err = gmnlisp.ReadString(buffer.String())
-				if err != gmnlisp.ErrTooShortTokens {
-					if err != nil {
+				line, err = br.ReadBytes('\n')
+				if err != nil {
+					return err
+				}
+				buffer.Write(line)
+				if b := buffer.Bytes(); countNoClosedParen(b) == 0 {
+					if _, err := lisp.InterpretBytes(b); err != nil {
 						return err
 					}
 					break
 				}
-				line, err := br.ReadBytes('\n')
-				if err != nil {
-					if err == io.EOF {
-						return fmt.Errorf("Too near EOF")
-					}
-					return err
-				}
-				buffer.Write(line)
-			}
-			if _, err = lisp.InterpretNodes(nodes); err != nil {
-				return err
 			}
 			continue
 		}
