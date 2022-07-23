@@ -3,6 +3,7 @@ package gmnlisp
 import (
 	"errors"
 	"fmt"
+	"io"
 )
 
 type ErrEarlyReturns struct {
@@ -74,31 +75,26 @@ func cmdBlock(w *World, node Node) (Node, error) {
 	return rv, err
 }
 
-func cmdCond(w *World, node Node) (Node, error) {
-	for HasValue(node) {
-		cons, ok := node.(*Cons)
-		if !ok {
-			return nil, ErrExpectedCons
-		}
-		node = cons.Cdr
-
-		conditionAndActions, ok := cons.Car.(*Cons)
-		if !ok {
-			return nil, fmt.Errorf("%w: %s", ErrExpectedCons, toString(cons.Car))
-		}
-		condition, err := conditionAndActions.GetCar().Eval(w)
+func cmdCond(w *World, list Node) (Node, error) {
+	var last Node
+	err := forEachList(list, func(condAndAct Node) error {
+		cond, act, err := w.shiftAndEvalCar(condAndAct)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		if HasValue(condition) {
-			result, err := progn(w, conditionAndActions.Cdr)
-			if err != nil {
-				return result, err
-			}
-			return result, err
+		if IsNull(cond) {
+			return nil
 		}
+		last, err = progn(w, act)
+		if err == nil {
+			err = io.EOF
+		}
+		return err
+	})
+	if err == io.EOF {
+		err = nil
 	}
-	return Null, nil
+	return last, err
 }
 
 func cmdIf(w *World, param Node) (Node, error) {
