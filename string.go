@@ -2,38 +2,8 @@ package gmnlisp
 
 import (
 	"errors"
-	"io"
 	"strings"
 )
-
-type EqlMode int
-
-const (
-	EQUAL EqlMode = iota
-	EQUALP
-)
-
-type PrintMode int
-
-const (
-	PRINT PrintMode = iota
-	PRINC
-)
-
-type Node interface {
-	Eval(*World) (Node, error)
-	Equals(Node, EqlMode) bool
-	PrintTo(io.Writer, PrintMode)
-}
-
-func toString(node Node) string {
-	if node == nil {
-		return "()"
-	}
-	var buffer strings.Builder
-	node.PrintTo(&buffer, PRINT)
-	return buffer.String()
-}
 
 func cmdStrCat(w *World, n Node) (Node, error) {
 	var buffer strings.Builder
