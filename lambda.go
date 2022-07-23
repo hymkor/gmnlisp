@@ -106,7 +106,7 @@ func (nl *_Lambda) Call(w *World, n Node) (Node, error) {
 }
 
 func (nl *_Lambda) Eval(*World) (Node, error) {
-	return nil, ErrIllegalFunctionCall
+	return nl, nil
 }
 
 func (*_Lambda) Equals(Node, EqlMode) bool {
