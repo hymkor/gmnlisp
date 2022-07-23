@@ -1,6 +1,7 @@
 package gmnlisp
 
 import (
+	"fmt"
 	"io"
 )
 
@@ -70,4 +71,35 @@ func (cons *Cons) Equals(n Node, m EqlMode) bool {
 	}
 	return cons.GetCar().Equals(value.Car, m) &&
 		cons.GetCdr().Equals(value.Cdr, m)
+}
+
+func (cons *Cons) Eval(w *World) (Node, error) {
+	first := cons.Car
+	if p, ok := first.(*Cons); ok {
+		var err error
+		first, err = p.Eval(w)
+		if err != nil {
+			return nil, err
+		}
+	}
+	if f, ok := first.(_Callable); ok {
+		return f.Call(w, cons.Cdr)
+	}
+	symbol, ok := first.(Symbol)
+	if !ok {
+		return nil, fmt.Errorf("cons: %w", ErrExpectedFunction)
+	}
+	value, err := symbol.Eval(w)
+	if err != nil {
+		return nil, err
+	}
+	function, ok := value.(_Callable)
+	if !ok {
+		return nil, fmt.Errorf("%s: %w", string(symbol), ErrExpectedFunction)
+	}
+	rv, err := function.Call(w, cons.Cdr)
+	if err != nil {
+		return rv, fmt.Errorf("%s: %w", string(symbol), err)
+	}
+	return rv, nil
 }

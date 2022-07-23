@@ -143,3 +143,26 @@ func cmdFunCall(w *World, node Node) (Node, error) {
 	}
 	return _f.Call(w, node)
 }
+
+type _Callable interface {
+	Node
+	Call(*World, Node) (Node, error)
+}
+
+type Function func(*World, Node) (Node, error)
+
+func (Function) PrintTo(w io.Writer, m PrintMode) {
+	io.WriteString(w, "buildin function")
+}
+
+func (f Function) Eval(_ *World) (Node, error) {
+	return f, nil
+}
+
+func (f Function) Equals(n Node, m EqlMode) bool {
+	return false
+}
+
+func (f Function) Call(w *World, n Node) (Node, error) {
+	return f(w, n)
+}
