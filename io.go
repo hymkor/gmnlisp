@@ -123,55 +123,6 @@ func cmdReadLine(w *World, n Node) (Node, error) {
 	return String(chomp(s)), err
 }
 
-func getWriterAndString(w *World, n Node) (io.Writer, String, error) {
-	_s, n, err := w.shiftAndEvalCar(n)
-	if err != nil {
-		return nil, "", err
-	}
-	s, ok := _s.(String)
-	if !ok {
-		return nil, "", fmt.Errorf("%w `%s`", ErrExpectedString, toString(_s))
-	}
-	var writer io.Writer
-	if HasValue(n) {
-		_writer, n, err := w.shiftAndEvalCar(n)
-		if err != nil {
-			return nil, "", err
-		}
-		writer, ok = _writer.(io.Writer)
-		if !ok {
-			return nil, "", fmt.Errorf("Expected Writer `%s`", toString(_writer))
-		}
-		if HasValue(n) {
-			return nil, "", ErrTooManyArguments
-		}
-	} else {
-		writer, err = w.Stdout()
-		if err != nil {
-			return nil, "", err
-		}
-	}
-	return writer, s, nil
-}
-
-func cmdWrite(w *World, n Node) (Node, error) {
-	writer, s, err := getWriterAndString(w, n)
-	if err != nil {
-		return nil, err
-	}
-	io.WriteString(writer, string(s))
-	return s, nil
-}
-
-func cmdWriteLine(w *World, n Node) (Node, error) {
-	writer, s, err := getWriterAndString(w, n)
-	if err != nil {
-		return nil, err
-	}
-	fmt.Fprintln(writer, string(s))
-	return s, nil
-}
-
 func cmdClose(w *World, n Node) (Node, error) {
 	var argv [1]Node
 	if err := w.evalListAll(n, argv[:]); err != nil {
