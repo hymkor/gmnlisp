@@ -86,4 +86,8 @@ func TestFunCall(t *testing.T) {
 	assertEqual(t, `
 		(setq f (function (lambda (a b) (+ a b))))
 		(funcall f 1 2)`, Integer(3))
+
+	assertEqual(t, `
+		(setq f (lambda (a b) (+ a b)))
+		(funcall f 1 2)`, Integer(3))
 }

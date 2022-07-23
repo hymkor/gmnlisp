@@ -2,7 +2,6 @@ package gmnlisp
 
 import (
 	"fmt"
-	"io"
 	"os"
 	"sort"
 	"strconv"
@@ -338,22 +337,6 @@ func cmdRead(w *World, n Node) (Node, error) {
 	return nodes[0], nil
 }
 
-type FunctionCell struct {
-	Value _Callable
-}
-
-func (fc FunctionCell) Eval(w *World) (Node, error) {
-	return fc.Value, nil
-}
-
-func (fc FunctionCell) Equals(Node, EqlMode) bool {
-	return false
-}
-
-func (fc FunctionCell) PrintTo(w io.Writer, m PrintMode) {
-	io.WriteString(w, "(functionCell)")
-}
-
 func cmdFunction(w *World, node Node) (Node, error) {
 	var argv [1]Node
 	if err := w.evalListAll(node, argv[:]); err != nil {
@@ -363,7 +346,7 @@ func cmdFunction(w *World, node Node) (Node, error) {
 	if !ok {
 		return nil, ErrExpectedFunction
 	}
-	return FunctionCell{Value: f}, nil
+	return f, nil
 }
 
 func cmdMapCar(w *World, n Node) (Node, error) {

@@ -48,4 +48,8 @@ func TestCmdGo(t *testing.T) {
 		List(Integer(5), Integer(7), Integer(9)))
 	assertEqual(t, `(mapcar '+ '(1 2 3) '(4 5 6))`,
 		List(Integer(5), Integer(7), Integer(9)))
+	assertEqual(t, `(mapcar (lambda (a b) (+ a b)) '(1 2 3) '(4 5 6))`,
+		List(Integer(5), Integer(7), Integer(9)))
+	assertEqual(t, `(mapcar #'(lambda (a b) (+ a b)) '(1 2 3) '(4 5 6))`,
+		List(Integer(5), Integer(7), Integer(9)))
 }

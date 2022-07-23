@@ -133,11 +133,7 @@ func cmdDefun(w *World, node Node) (Node, error) {
 }
 
 func cmdFunCall(w *World, node Node) (Node, error) {
-	fc, node, err := w.shiftAndEvalCar(node)
-	if err != nil {
-		return nil, err
-	}
-	f, err := fc.Eval(w)
+	f, node, err := w.shiftAndEvalCar(node)
 	if err != nil {
 		return nil, err
 	}
