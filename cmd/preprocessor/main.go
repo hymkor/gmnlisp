@@ -24,11 +24,18 @@ func replaceFile(lisp *gmnlisp.World, fname string) error {
 func replaceReader(lisp *gmnlisp.World, r io.Reader, w io.Writer) (err error) {
 	br := bufio.NewReader(r)
 	bw := bufio.NewWriter(w)
+	orgStdout, err := lisp.Stdout()
+	if err != nil {
+		return err
+	}
+	lisp.SetStdout(bw)
+
 	defer func() {
 		if err == io.EOF {
 			err = nil
 		}
 		bw.Flush()
+		lisp.SetStdout(orgStdout)
 	}()
 
 	for {
