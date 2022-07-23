@@ -116,15 +116,3 @@ func cmdRead(w *World, n Node) (Node, error) {
 	}
 	return nodes[0], nil
 }
-
-func cmdFunction(w *World, node Node) (Node, error) {
-	var argv [1]Node
-	if err := w.evalListAll(node, argv[:]); err != nil {
-		return nil, err
-	}
-	f, ok := argv[0].(_Callable)
-	if !ok {
-		return nil, ErrExpectedFunction
-	}
-	return f, nil
-}

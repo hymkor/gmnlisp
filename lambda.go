@@ -166,3 +166,15 @@ func (f Function) Equals(n Node, m EqlMode) bool {
 func (f Function) Call(w *World, n Node) (Node, error) {
 	return f(w, n)
 }
+
+func cmdFunction(w *World, node Node) (Node, error) {
+	var argv [1]Node
+	if err := w.evalListAll(node, argv[:]); err != nil {
+		return nil, err
+	}
+	f, ok := argv[0].(_Callable)
+	if !ok {
+		return nil, ErrExpectedFunction
+	}
+	return f, nil
+}
