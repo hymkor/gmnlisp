@@ -3,7 +3,6 @@ package gmnlisp
 import (
 	"os"
 	"sort"
-	"strconv"
 )
 
 func cmdQuote(_ *World, n Node) (Node, error) {
@@ -42,24 +41,6 @@ func cmdEqual(w *World, param Node) (Node, error) {
 		}
 	}
 	return True, nil
-}
-
-func cmdParseInt(w *World, node Node) (Node, error) {
-	var argv [1]Node
-
-	if err := w.evalListAll(node, argv[:]); err != nil {
-		return nil, err
-	}
-
-	s, ok := argv[0].(String)
-	if !ok {
-		return nil, ErrExpectedString
-	}
-	value, err := strconv.Atoi(string(s))
-	if err != nil {
-		return Null, nil
-	}
-	return Integer(value), nil
 }
 
 func cmdQuit(*World, Node) (Node, error) {

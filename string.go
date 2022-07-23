@@ -2,6 +2,7 @@ package gmnlisp
 
 import (
 	"errors"
+	"strconv"
 	"strings"
 )
 
@@ -98,4 +99,22 @@ func cmdSubStr(w *World, n Node) (Node, error) {
 		_str = _str[:int(_leng)]
 	}
 	return String(_str), nil
+}
+
+func cmdParseInt(w *World, node Node) (Node, error) {
+	var argv [1]Node
+
+	if err := w.evalListAll(node, argv[:]); err != nil {
+		return nil, err
+	}
+
+	s, ok := argv[0].(String)
+	if !ok {
+		return nil, ErrExpectedString
+	}
+	value, err := strconv.Atoi(string(s))
+	if err != nil {
+		return Null, nil
+	}
+	return Integer(value), nil
 }
