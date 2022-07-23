@@ -180,3 +180,7 @@ func cmdWhile(w *World, n Node) (Node, error) {
 		}
 	}
 }
+
+func cmdQuit(*World, Node) (Node, error) {
+	return Null, ErrQuit
+}

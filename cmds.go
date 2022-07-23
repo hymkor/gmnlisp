@@ -43,10 +43,6 @@ func cmdEqual(w *World, param Node) (Node, error) {
 	return True, nil
 }
 
-func cmdQuit(*World, Node) (Node, error) {
-	return Null, ErrQuit
-}
-
 func cmdGetAllSymbols(w *World, n Node) (Node, error) {
 	names := []string{}
 	var cons Node = Null
