@@ -190,3 +190,17 @@ func cmdMapCar(w *World, n Node) (Node, error) {
 		resultSet = append(resultSet, result)
 	}
 }
+
+func cmdListp(w *World, n Node) (Node, error) {
+	var argv [1]Node
+	if err := w.evalListAll(n, argv[:]); err != nil {
+		return nil, err
+	}
+	if IsNull(argv[0]) {
+		return True, nil
+	}
+	if _, ok := argv[0].(*Cons); ok {
+		return True, nil
+	}
+	return Null, nil
+}

@@ -38,4 +38,7 @@ func TestList(t *testing.T) {
 		List(Integer(5), Integer(7), Integer(9)))
 	assertEqual(t, `(mapcar #'(lambda (a b) (+ a b)) '(1 2 3) '(4 5 6))`,
 		List(Integer(5), Integer(7), Integer(9)))
+	assertEqual(t, `(listp ())`, True)
+	assertEqual(t, `(listp 1)`, Null)
+	assertEqual(t, `(listp '(1 2 3))`, True)
 }
