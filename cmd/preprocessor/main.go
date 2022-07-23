@@ -2,20 +2,15 @@ package main
 
 import (
 	"bufio"
-	"bytes"
 	"flag"
 	"fmt"
 	"io"
 	"os"
-	"regexp"
 	"strings"
 
 	"github.com/hymkor/gmnlisp"
 	"github.com/nyaosorg/go-windows-mbcs"
 )
-
-var rxPattern = regexp.MustCompile(`%[^%]+%`)
-var rxLisp = regexp.MustCompile(`^\s*\(`)
 
 func replaceFile(lisp *gmnlisp.World, fname string) error {
 	fd, err := os.Open(fname)
@@ -23,74 +18,90 @@ func replaceFile(lisp *gmnlisp.World, fname string) error {
 		return err
 	}
 	defer fd.Close()
-	return replaceReader(lisp, fd)
+	return replaceReader(lisp, fd, os.Stdout)
 }
 
-func countNoClosedParen(b []byte) int {
-	count := 0
-	quote := false
-	for _, c := range b {
-		if c == '"' {
-			quote = !quote
+func replaceReader(lisp *gmnlisp.World, r io.Reader, w io.Writer) (err error) {
+	br := bufio.NewReader(r)
+	bw := bufio.NewWriter(w)
+	defer func() {
+		if err == io.EOF {
+			err = nil
 		}
-		if !quote {
-			if c == '(' {
-				count++
-			} else if c == ')' {
-				count--
-			}
-		}
-	}
-	return count
-}
+		bw.Flush()
+	}()
 
-func replaceReader(lisp *gmnlisp.World, fd io.Reader) error {
-	br := bufio.NewReader(fd)
 	for {
-		line, err := br.ReadBytes('\n')
-		if err != nil && err != io.EOF {
-			return err
+		var ch rune
+		ch, _, err = br.ReadRune()
+		if err != nil {
+			return
 		}
-		if rxLisp.Match(line) {
-			if countNoClosedParen(line) == 0 {
-				_, err := lisp.InterpretBytes(line)
-				if err != nil {
-					return err
-				}
+		if ch == '(' {
+			ch, _, err = br.ReadRune()
+			if err != nil {
+				return
+			}
+			if ch != '%' {
+				bw.WriteRune('(')
+				bw.WriteRune(ch)
 				continue
 			}
-			var buffer bytes.Buffer
-			buffer.Write(line)
+			ch, _, err = br.ReadRune()
+			if err != nil {
+				return
+			}
+			evalStyle := false
+			if ch == '=' {
+				evalStyle = true
+			} else {
+				br.UnreadRune()
+			}
 
+			var buffer strings.Builder
 			for {
-				line, err = br.ReadBytes('\n')
+				ch, _, err = br.ReadRune()
 				if err != nil {
-					return err
+					return
 				}
-				buffer.Write(line)
-				if b := buffer.Bytes(); countNoClosedParen(b) == 0 {
-					if _, err := lisp.InterpretBytes(b); err != nil {
-						return err
+				if ch == '%' {
+					ch, _, err = br.ReadRune()
+					if err != nil {
+						return
 					}
-					break
+					if ch == ')' {
+						var value gmnlisp.Node
+
+						bw.Flush()
+						value, err = lisp.Interpret(buffer.String())
+						if err != nil {
+							return
+						}
+						if evalStyle {
+							value.PrintTo(bw, gmnlisp.PRINC)
+						}
+						ch, _, err = br.ReadRune()
+						if err != nil {
+							return
+						}
+						if ch == '\r' {
+							ch, _, err = br.ReadRune()
+							if err != nil {
+								return
+							}
+						}
+						if ch != '\n' {
+							br.UnreadRune()
+						}
+						break
+					}
+					buffer.WriteRune('%')
 				}
+				buffer.WriteRune(ch)
 			}
 			continue
 		}
-		line = rxPattern.ReplaceAllFunc(line, func(s []byte) []byte {
-			name := string(s[1 : len(s)-1])
-			value, err := lisp.Interpret(name)
-			if err != nil {
-				return s
-			}
-			var buffer bytes.Buffer
-			value.PrintTo(&buffer, gmnlisp.PRINC)
-			return buffer.Bytes()
-		})
-		os.Stdout.Write(line)
-		if err == io.EOF {
-			return nil
-		}
+		bw.WriteRune(ch)
 	}
 }
 
@@ -122,7 +133,7 @@ func mains(args []string) error {
 		}
 	}
 	if fileCount <= 0 {
-		if err := replaceReader(lisp, os.Stdin); err != nil {
+		if err := replaceReader(lisp, os.Stdin, os.Stdout); err != nil {
 			return err
 		}
 	}
