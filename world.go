@@ -61,6 +61,10 @@ func (w *World) Stdout() (io.Writer, error) {
 	return _stdout, nil
 }
 
+func (w *World) SetStdout(writer io.Writer) {
+	w.Set(standardOutput, Writer{Writer: writer})
+}
+
 func New() *World {
 	return &World{
 		globals: map[string]Node{
