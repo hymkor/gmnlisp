@@ -81,3 +81,9 @@ func TestLambdaGo(t *testing.T) {
 		t.Fatal("Few argumenets error did not occur")
 	}
 }
+
+func TestFunCall(t *testing.T) {
+	assertEqual(t, `
+		(setq f (function (lambda (a b) (+ a b))))
+		(funcall f 1 2)`, Integer(3))
+}

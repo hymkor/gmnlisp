@@ -131,3 +131,19 @@ func cmdDefun(w *World, node Node) (Node, error) {
 	w.Set(name, lambda)
 	return symbol, nil
 }
+
+func cmdFunCall(w *World, node Node) (Node, error) {
+	fc, node, err := w.shiftAndEvalCar(node)
+	if err != nil {
+		return nil, err
+	}
+	f, err := fc.Eval(w)
+	if err != nil {
+		return nil, err
+	}
+	_f, ok := f.(_Callable)
+	if !ok {
+		return nil, ErrExpectedFunction
+	}
+	return _f.Call(w, node)
+}

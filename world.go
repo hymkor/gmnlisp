@@ -103,6 +103,7 @@ func New() *World {
 			"exit":                Function(cmdQuit),
 			"foreach":             Function(cmdForeach),
 			"function":            Function(cmdFunction),
+			"funcall":             Function(cmdFunCall),
 			"if":                  Function(cmdIf),
 			"lambda":              Function(cmdLambda),
 			"let":                 Function(cmdLet),
