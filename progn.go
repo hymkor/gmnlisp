@@ -123,3 +123,60 @@ func cmdIf(w *World, param Node) (Node, error) {
 	}
 	return Null, nil
 }
+
+func cmdForeach(w *World, n Node) (Node, error) {
+	cons, ok := n.(*Cons)
+	if !ok {
+		return nil, fmt.Errorf("(1): %w", ErrExpectedCons)
+	}
+	symbol, ok := cons.Car.(Symbol)
+	if !ok {
+		return nil, fmt.Errorf("(1): %w", ErrExpectedSymbol)
+	}
+
+	list, code, err := w.shiftAndEvalCar(cons.Cdr)
+	if err != nil {
+		return nil, err
+	}
+
+	var last Node
+	for HasValue(list) {
+		var err error
+
+		cons, ok := list.(*Cons)
+		if !ok {
+			return nil, ErrExpectedCons
+		}
+		w.Set(string(symbol), cons.Car)
+		list = cons.Cdr
+
+		last, err = progn(w, code)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return last, nil
+}
+
+func cmdWhile(w *World, n Node) (Node, error) {
+	cons, ok := n.(*Cons)
+	if !ok {
+		return nil, ErrTooFewArguments
+	}
+	cond := cons.Car
+	statements := cons.Cdr
+	var last Node = Null
+	for {
+		cont, err := cond.Eval(w)
+		if err != nil {
+			return nil, err
+		}
+		if IsNull(cont) {
+			return last, nil
+		}
+		last, err = progn(w, statements)
+		if err != nil {
+			return nil, err
+		}
+	}
+}
