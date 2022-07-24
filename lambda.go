@@ -50,27 +50,27 @@ func newLambda(w *World, node Node, blockName string) (Node, error) {
 	}, nil
 }
 
-func (nl *_Lambda) PrintTo(w io.Writer, m PrintMode) {
+func (L *_Lambda) PrintTo(w io.Writer, m PrintMode) {
 	io.WriteString(w, "(lambda (")
 	dem := ""
-	for _, name := range nl.param {
+	for _, name := range L.param {
 		io.WriteString(w, dem)
 		io.WriteString(w, name)
 		dem = " "
 	}
 	io.WriteString(w, ") ")
-	if cons, ok := nl.code.(*Cons); ok {
+	if cons, ok := L.code.(*Cons); ok {
 		cons.writeToWithoutKakko(w, m)
 	} else {
-		nl.code.PrintTo(w, m)
+		L.code.PrintTo(w, m)
 	}
 	io.WriteString(w, ")")
 }
 
-func (nl *_Lambda) Call(w *World, n Node) (Node, error) {
+func (L *_Lambda) Call(w *World, n Node) (Node, error) {
 	globals := map[string]Node{}
 	foundSlash := false
-	for _, name := range nl.param {
+	for _, name := range L.param {
 		if name == "/" {
 			foundSlash = true
 			continue
@@ -79,34 +79,28 @@ func (nl *_Lambda) Call(w *World, n Node) (Node, error) {
 			globals[name] = Null
 			continue
 		}
-		cons, ok := n.(*Cons)
-		if !ok {
-			return nil, ErrTooFewArguments
-		}
 		var err error
-
-		globals[name], err = cons.GetCar().Eval(w)
+		globals[name], n, err = w.shiftAndEvalCar(n)
 		if err != nil {
 			return nil, err
 		}
-		n = cons.GetCdr()
 	}
 	if HasValue(n) {
 		return nil, ErrTooManyArguments
 	}
-	newWorld := &World{globals: globals, parent: nl.lexical}
+	newWorld := &World{globals: globals, parent: L.lexical}
 
 	var errEarlyReturns *ErrEarlyReturns
 
-	result, err := progn(newWorld, nl.code)
-	if errors.As(err, &errEarlyReturns) && errEarlyReturns.Name == string(nl.name) {
+	result, err := progn(newWorld, L.code)
+	if errors.As(err, &errEarlyReturns) && errEarlyReturns.Name == string(L.name) {
 		return errEarlyReturns.Value, nil
 	}
 	return result, err
 }
 
-func (nl *_Lambda) Eval(*World) (Node, error) {
-	return nl, nil
+func (L *_Lambda) Eval(*World) (Node, error) {
+	return L, nil
 }
 
 func (*_Lambda) Equals(Node, EqlMode) bool {
