@@ -36,6 +36,7 @@ var escapeSequenceReplacer = strings.NewReplacer(
 	"\\r", "\r",
 	"\\n", "\n",
 	"\\t", "\t",
+	"\\b", "\b",
 	"\\\"", "\"",
 )
 
