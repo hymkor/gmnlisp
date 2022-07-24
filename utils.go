@@ -139,3 +139,12 @@ func shiftList(list Node, count int) (Node, error) {
 	}
 	return list, nil
 }
+
+func checkContext(ctx context.Context) error {
+	select {
+	case <-ctx.Done():
+		return ctx.Err()
+	default:
+		return nil
+	}
+}

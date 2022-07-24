@@ -72,6 +72,9 @@ func (L *_Lambda) PrintTo(w io.Writer, m PrintMode) {
 var trace = map[string]int{}
 
 func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
+	if err := checkContext(ctx); err != nil {
+		return nil, err
+	}
 	globals := map[string]Node{}
 	foundSlash := false
 	traceCount, traceDo := trace[L.name]
@@ -123,7 +126,6 @@ func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
 			L.name,
 			toString(result))
 	}
-
 	return result, err
 }
 
@@ -186,6 +188,9 @@ func (f Function) Equals(n Node, m EqlMode) bool {
 }
 
 func (f Function) Call(ctx context.Context, w *World, n Node) (Node, error) {
+	if err := checkContext(ctx); err != nil {
+		return nil, err
+	}
 	return f(ctx, w, n)
 }
 
