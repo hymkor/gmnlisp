@@ -90,7 +90,7 @@ func TestContextWhile(t *testing.T) {
 		context.Background(),
 		100*time.Millisecond)
 	w := New()
-	_, err := w.Interpret(ctx, `(while T T)`)
+	_, err := w.Interpret(ctx, `(while T (princ " \b"))`)
 	cancel()
 	if !errors.Is(err, context.DeadlineExceeded) {
 		if err == nil {
@@ -108,6 +108,7 @@ func TestContextLambda(t *testing.T) {
 	w := New()
 	_, err := w.Interpret(ctx, `
 		(defun foo ()
+			(princ " \b")
 			(foo)
 		)
 		(foo)`)
