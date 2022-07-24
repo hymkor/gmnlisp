@@ -77,11 +77,10 @@ func cmdPrinX(w *World, n Node, f func(node Node, out io.Writer)) (Node, error) 
 }
 
 func cmdPrint(w *World, this Node) (Node, error) {
-	if _, err := cmdTerpri(w, this); err != nil {
-		return nil, err
-	}
 	return cmdPrinX(w, this, func(node Node, out io.Writer) {
+		out.Write([]byte{'\n'})
 		node.PrintTo(out, PRINT)
+		out.Write([]byte{' '})
 	})
 }
 
