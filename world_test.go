@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"testing"
+	"time"
 )
 
 func assertEqual(t *testing.T, equation string, expect Node) {
@@ -82,4 +83,21 @@ func TestTokenizer(t *testing.T) {
 			Integer(2),
 			Integer(3),
 			Integer(4)))
+}
+
+func TestContext(t *testing.T) {
+	ctx, cancel := context.WithTimeout(
+		context.Background(),
+		100*time.Millisecond)
+	defer cancel()
+
+	w := New()
+	_, err := w.Interpret(ctx, `(while T T)`)
+	if !errors.Is(err, context.DeadlineExceeded) {
+		if err == nil {
+			t.Fatal("time out did not work(err=nil)")
+		} else {
+			t.Fatalf("time out did not work(err=%s)", err.Error())
+		}
+	}
 }
