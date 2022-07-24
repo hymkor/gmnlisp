@@ -74,6 +74,7 @@ Support functions
 - `equalp`
 - `exit`
 - `foreach`
+- `funcall`
 - `function`
 - `if`
 - `lambda`
@@ -107,6 +108,7 @@ Support functions
 - `strlen`
 - `substr`
 - `terpri`
+- `trace`
 - `truncate`
 - `while`
 - `write`
