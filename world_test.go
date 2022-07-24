@@ -85,14 +85,34 @@ func TestTokenizer(t *testing.T) {
 			Integer(4)))
 }
 
-func TestContext(t *testing.T) {
+func TestContextWhile(t *testing.T) {
 	ctx, cancel := context.WithTimeout(
 		context.Background(),
 		100*time.Millisecond)
-	defer cancel()
-
 	w := New()
 	_, err := w.Interpret(ctx, `(while T T)`)
+	cancel()
+	if !errors.Is(err, context.DeadlineExceeded) {
+		if err == nil {
+			t.Fatal("time out did not work(err=nil)")
+		} else {
+			t.Fatalf("time out did not work(err=%s)", err.Error())
+		}
+	}
+}
+
+func TestContextLambda(t *testing.T) {
+	ctx, cancel := context.WithTimeout(
+		context.Background(),
+		10*time.Millisecond)
+	w := New()
+	_, err := w.Interpret(ctx, `
+		(defun foo ()
+			(foo)
+		)
+		(foo)`)
+	cancel()
+
 	if !errors.Is(err, context.DeadlineExceeded) {
 		if err == nil {
 			t.Fatal("time out did not work(err=nil)")
