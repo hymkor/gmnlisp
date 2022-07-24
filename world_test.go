@@ -1,13 +1,14 @@
 package gmnlisp
 
 import (
+	"context"
 	"errors"
 	"testing"
 )
 
 func assertEqual(t *testing.T, equation string, expect Node) {
 	w := New()
-	result, err := w.Interpret(equation)
+	result, err := w.Interpret(context.TODO(), equation)
 	if err != nil {
 		t.Fatalf("%s: %s", equation, err.Error())
 		return
@@ -30,11 +31,11 @@ func TestProgn(t *testing.T) {
 
 func TestWorld(t *testing.T) {
 	w1 := New()
-	if _, err := w1.Interpret(`(setq a "A")`); err != nil {
+	if _, err := w1.Interpret(context.TODO(), `(setq a "A")`); err != nil {
 		t.Fatal(err.Error())
 		return
 	}
-	value, err := w1.Interpret("a")
+	value, err := w1.Interpret(context.TODO(), "a")
 	if err != nil {
 		t.Fatal(err.Error())
 		return
@@ -50,7 +51,7 @@ func TestWorld(t *testing.T) {
 	}
 
 	w2 := New()
-	value, err = w2.Interpret(`a`)
+	value, err = w2.Interpret(context.TODO(), `a`)
 
 	if !errors.Is(err, ErrVariableUnbound) {
 		if err == nil {
@@ -62,7 +63,7 @@ func TestWorld(t *testing.T) {
 	}
 
 	w3 := New()
-	_, err = w3.Interpret("( 1")
+	_, err = w3.Interpret(context.TODO(), "( 1")
 	if !errors.Is(err, ErrTooShortTokens) {
 		if err == nil {
 			t.Fatal("error had to occur when equation is not closed")

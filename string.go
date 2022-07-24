@@ -1,18 +1,19 @@
 package gmnlisp
 
 import (
+	"context"
 	"errors"
 	"strconv"
 	"strings"
 )
 
-func cmdStrCat(w *World, n Node) (Node, error) {
+func cmdStrCat(ctx context.Context, w *World, n Node) (Node, error) {
 	var buffer strings.Builder
 	for HasValue(n) {
 		var s Node
 		var err error
 
-		s, n, err = w.shiftAndEvalCar(n)
+		s, n, err = w.shiftAndEvalCar(ctx, n)
 		if err != nil {
 			return nil, err
 		}
@@ -25,9 +26,9 @@ func cmdStrCat(w *World, n Node) (Node, error) {
 	return String(buffer.String()), nil
 }
 
-func cmdStrLen(w *World, n Node) (Node, error) {
+func cmdStrLen(ctx context.Context, w *World, n Node) (Node, error) {
 	var argv [1]Node
-	if err := w.evalListAll(n, argv[:]); err != nil {
+	if err := w.evalListAll(ctx, n, argv[:]); err != nil {
 		return nil, err
 	}
 	str, ok := argv[0].(String)
@@ -37,9 +38,9 @@ func cmdStrLen(w *World, n Node) (Node, error) {
 	return Integer(len(string(str))), nil
 }
 
-func cmdStrCase(w *World, n Node) (Node, error) {
+func cmdStrCase(ctx context.Context, w *World, n Node) (Node, error) {
 	var argv [1]Node
-	if err := w.evalListAll(n, argv[:]); err != nil {
+	if err := w.evalListAll(ctx, n, argv[:]); err != nil {
 		return nil, err
 	}
 	str, ok := argv[0].(String)
@@ -49,8 +50,8 @@ func cmdStrCase(w *World, n Node) (Node, error) {
 	return String(strings.ToUpper(string(str))), nil
 }
 
-func cmdSubStr(w *World, n Node) (Node, error) {
-	str, n, err := w.shiftAndEvalCar(n)
+func cmdSubStr(ctx context.Context, w *World, n Node) (Node, error) {
+	str, n, err := w.shiftAndEvalCar(ctx, n)
 	if err != nil {
 		return nil, err
 	}
@@ -60,7 +61,7 @@ func cmdSubStr(w *World, n Node) (Node, error) {
 	}
 
 	var pos Node
-	pos, n, err = w.shiftAndEvalCar(n)
+	pos, n, err = w.shiftAndEvalCar(ctx, n)
 	if err != nil {
 		return nil, err
 	}
@@ -79,7 +80,7 @@ func cmdSubStr(w *World, n Node) (Node, error) {
 	if HasValue(n) {
 		var leng Node
 
-		leng, n, err = w.shiftAndEvalCar(n)
+		leng, n, err = w.shiftAndEvalCar(ctx, n)
 		if err != nil {
 			return nil, err
 		}
@@ -101,10 +102,10 @@ func cmdSubStr(w *World, n Node) (Node, error) {
 	return String(_str), nil
 }
 
-func cmdParseInt(w *World, node Node) (Node, error) {
+func cmdParseInt(ctx context.Context, w *World, node Node) (Node, error) {
 	var argv [1]Node
 
-	if err := w.evalListAll(node, argv[:]); err != nil {
+	if err := w.evalListAll(ctx, node, argv[:]); err != nil {
 		return nil, err
 	}
 

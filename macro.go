@@ -1,6 +1,7 @@
 package gmnlisp
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"io"
@@ -99,12 +100,12 @@ func (m *_Macro) expand(n Node) (Node, error) {
 	return replaceMacro(m.code, replaceTbl), nil
 }
 
-func (m *_Macro) Call(w *World, n Node) (Node, error) {
+func (m *_Macro) Call(ctx context.Context, w *World, n Node) (Node, error) {
 	code, err := m.expand(n)
 	if err != nil {
 		return nil, err
 	}
-	return code.Eval(w)
+	return code.Eval(ctx, w)
 }
 
 type _PlaceHolder string
@@ -120,11 +121,11 @@ func (mp _PlaceHolder) Equals(n Node, m EqlMode) bool {
 	return false
 }
 
-func (mp _PlaceHolder) Eval(*World) (Node, error) {
+func (mp _PlaceHolder) Eval(context.Context, *World) (Node, error) {
 	return mp, nil
 }
 
-func cmdDefMacro(w *World, n Node) (Node, error) {
+func cmdDefMacro(ctx context.Context, w *World, n Node) (Node, error) {
 	cons, ok := n.(*Cons)
 	if !ok {
 		return nil, ErrExpectedCons
@@ -144,7 +145,7 @@ func cmdDefMacro(w *World, n Node) (Node, error) {
 	}
 	nw := &World{globals: globals, parent: w}
 
-	code, err = progn(nw, code)
+	code, err = progn(ctx, nw, code)
 	if err != nil {
 		return nil, err
 	}
@@ -158,9 +159,9 @@ func cmdDefMacro(w *World, n Node) (Node, error) {
 	return value, nil
 }
 
-func cmdMacroExpand(w *World, n Node) (Node, error) {
+func cmdMacroExpand(ctx context.Context, w *World, n Node) (Node, error) {
 	var err error
-	n, _, err = w.shiftAndEvalCar(n)
+	n, _, err = w.shiftAndEvalCar(ctx, n)
 	if err != nil {
 		return nil, err
 	}

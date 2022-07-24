@@ -1,11 +1,12 @@
 package gmnlisp
 
 import (
+	"context"
 	"os"
 	"sort"
 )
 
-func cmdQuote(_ *World, n Node) (Node, error) {
+func cmdQuote(_ context.Context, _ *World, n Node) (Node, error) {
 	var argv [1]Node
 	if err := listToArray(n, argv[:]); err != nil {
 		return nil, err
@@ -13,9 +14,9 @@ func cmdQuote(_ *World, n Node) (Node, error) {
 	return argv[0], nil
 }
 
-func cmdAtom(w *World, n Node) (Node, error) {
+func cmdAtom(ctx context.Context, w *World, n Node) (Node, error) {
 	var argv [1]Node
-	if err := w.evalListAll(n, argv[:]); err != nil {
+	if err := w.evalListAll(ctx, n, argv[:]); err != nil {
 		return nil, err
 	}
 	if _, ok := argv[0].(*Cons); ok {
@@ -24,15 +25,15 @@ func cmdAtom(w *World, n Node) (Node, error) {
 	return True, nil
 }
 
-func cmdEqual(w *World, param Node) (Node, error) {
-	first, rest, err := w.shiftAndEvalCar(param)
+func cmdEqual(ctx context.Context, w *World, param Node) (Node, error) {
+	first, rest, err := w.shiftAndEvalCar(ctx, param)
 	if err != nil {
 		return nil, err
 	}
 	for HasValue(rest) {
 		var next Node
 
-		next, rest, err = w.shiftAndEvalCar(rest)
+		next, rest, err = w.shiftAndEvalCar(ctx, rest)
 		if err != nil {
 			return nil, err
 		}
@@ -43,7 +44,7 @@ func cmdEqual(w *World, param Node) (Node, error) {
 	return True, nil
 }
 
-func cmdGetAllSymbols(w *World, n Node) (Node, error) {
+func cmdGetAllSymbols(ctx context.Context, w *World, n Node) (Node, error) {
 	names := []string{}
 	var cons Node = Null
 	w.each(func(name string, _ Node) bool {
@@ -60,9 +61,9 @@ func cmdGetAllSymbols(w *World, n Node) (Node, error) {
 	return cons, nil
 }
 
-func cmdNot(w *World, n Node) (Node, error) {
+func cmdNot(ctx context.Context, w *World, n Node) (Node, error) {
 	var args [1]Node
-	if err := w.evalListAll(n, args[:]); err != nil {
+	if err := w.evalListAll(ctx, n, args[:]); err != nil {
 		return nil, err
 	}
 	if IsNull(args[0]) {
@@ -71,9 +72,9 @@ func cmdNot(w *World, n Node) (Node, error) {
 	return Null, nil
 }
 
-func cmdLoad(w *World, n Node) (Node, error) {
+func cmdLoad(ctx context.Context, w *World, n Node) (Node, error) {
 	var args [1]Node
-	if err := w.evalListAll(n, args[:]); err != nil {
+	if err := w.evalListAll(ctx, n, args[:]); err != nil {
 		return nil, err
 	}
 	fname, ok := args[0].(String)
@@ -84,12 +85,12 @@ func cmdLoad(w *World, n Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	return w.InterpretBytes(script)
+	return w.InterpretBytes(ctx, script)
 }
 
-func cmdNotEqual(w *World, n Node) (Node, error) {
+func cmdNotEqual(ctx context.Context, w *World, n Node) (Node, error) {
 	var args [2]Node
-	if err := w.evalListAll(n, args[:]); err != nil {
+	if err := w.evalListAll(ctx, n, args[:]); err != nil {
 		return nil, err
 	}
 	if args[0].Equals(args[1], EQUALP) {
@@ -98,9 +99,9 @@ func cmdNotEqual(w *World, n Node) (Node, error) {
 	return True, nil
 }
 
-func cmdRead(w *World, n Node) (Node, error) {
+func cmdRead(ctx context.Context, w *World, n Node) (Node, error) {
 	var args [1]Node
-	if err := w.evalListAll(n, args[:]); err != nil {
+	if err := w.evalListAll(ctx, n, args[:]); err != nil {
 		return nil, err
 	}
 	script, ok := args[0].(String)

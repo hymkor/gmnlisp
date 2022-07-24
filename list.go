@@ -1,12 +1,13 @@
 package gmnlisp
 
 import (
+	"context"
 	"fmt"
 )
 
-func cmdCar(w *World, n Node) (Node, error) {
+func cmdCar(ctx context.Context, w *World, n Node) (Node, error) {
 	var argv [1]Node
-	if err := w.evalListAll(n, argv[:]); err != nil {
+	if err := w.evalListAll(ctx, n, argv[:]); err != nil {
 		return nil, err
 	}
 	cons, ok := argv[0].(*Cons)
@@ -16,9 +17,9 @@ func cmdCar(w *World, n Node) (Node, error) {
 	return cons.Car, nil
 }
 
-func cmdCdr(w *World, n Node) (Node, error) {
+func cmdCdr(ctx context.Context, w *World, n Node) (Node, error) {
 	var argv [1]Node
-	if err := w.evalListAll(n, argv[:]); err != nil {
+	if err := w.evalListAll(ctx, n, argv[:]); err != nil {
 		return nil, err
 	}
 	cons, ok := argv[0].(*Cons)
@@ -28,9 +29,9 @@ func cmdCdr(w *World, n Node) (Node, error) {
 	return cons.Cdr, nil
 }
 
-func nthcdr(w *World, node Node, n int) (Node, error) {
+func nthcdr(ctx context.Context, w *World, node Node, n int) (Node, error) {
 	var args [1]Node
-	if err := w.evalListAll(node, args[:]); err != nil {
+	if err := w.evalListAll(ctx, node, args[:]); err != nil {
 		return nil, err
 	}
 	list, err := shiftList(args[0], n)
@@ -40,8 +41,8 @@ func nthcdr(w *World, node Node, n int) (Node, error) {
 	return list, nil
 }
 
-func nth(w *World, node Node, n int) (Node, error) {
-	list, err := nthcdr(w, node, n)
+func nth(ctx context.Context, w *World, node Node, n int) (Node, error) {
+	list, err := nthcdr(ctx, w, node, n)
 	if err != nil {
 		return nil, err
 	}
@@ -52,28 +53,28 @@ func nth(w *World, node Node, n int) (Node, error) {
 	return cons.Car, nil
 }
 
-func cmdCadr(w *World, n Node) (Node, error) {
-	return nth(w, n, 1)
+func cmdCadr(ctx context.Context, w *World, n Node) (Node, error) {
+	return nth(ctx, w, n, 1)
 }
 
-func cmdCaddr(w *World, n Node) (Node, error) {
-	return nth(w, n, 2)
+func cmdCaddr(ctx context.Context, w *World, n Node) (Node, error) {
+	return nth(ctx, w, n, 2)
 }
 
-func cmdCadddr(w *World, n Node) (Node, error) {
-	return nth(w, n, 3)
+func cmdCadddr(ctx context.Context, w *World, n Node) (Node, error) {
+	return nth(ctx, w, n, 3)
 }
 
-func cmdCddr(w *World, n Node) (Node, error) {
-	return nthcdr(w, n, 2)
+func cmdCddr(ctx context.Context, w *World, n Node) (Node, error) {
+	return nthcdr(ctx, w, n, 2)
 }
 
-func cmdCdddr(w *World, n Node) (Node, error) {
-	return nthcdr(w, n, 3)
+func cmdCdddr(ctx context.Context, w *World, n Node) (Node, error) {
+	return nthcdr(ctx, w, n, 3)
 }
 
-func cmdList(w *World, node Node) (Node, error) {
-	car, rest, err := w.shiftAndEvalCar(node)
+func cmdList(ctx context.Context, w *World, node Node) (Node, error) {
+	car, rest, err := w.shiftAndEvalCar(ctx, node)
 	if err != nil {
 		return nil, err
 	}
@@ -82,7 +83,7 @@ func cmdList(w *World, node Node) (Node, error) {
 	if IsNull(rest) {
 		cdr = Null
 	} else {
-		cdr, err = cmdList(w, rest)
+		cdr, err = cmdList(ctx, w, rest)
 		if err != nil {
 			return nil, err
 		}
@@ -103,15 +104,15 @@ func lastOfList(node Node) (*Cons, error) {
 	}
 }
 
-func cmdAppend(w *World, node Node) (Node, error) {
-	first, rest, err := w.shiftAndEvalCar(node)
+func cmdAppend(ctx context.Context, w *World, node Node) (Node, error) {
+	first, rest, err := w.shiftAndEvalCar(ctx, node)
 	if err != nil {
 		return nil, err
 	}
 	for HasValue(rest) {
 		var next Node
 
-		next, rest, err = w.shiftAndEvalCar(rest)
+		next, rest, err = w.shiftAndEvalCar(ctx, rest)
 		if err != nil {
 			return nil, err
 		}
@@ -124,9 +125,9 @@ func cmdAppend(w *World, node Node) (Node, error) {
 	return first, nil
 }
 
-func cmdMember(w *World, n Node) (Node, error) {
+func cmdMember(ctx context.Context, w *World, n Node) (Node, error) {
 	var argv [2]Node
-	if err := w.evalListAll(n, argv[:]); err != nil {
+	if err := w.evalListAll(ctx, n, argv[:]); err != nil {
 		return nil, err
 	}
 	expr := argv[0]
@@ -144,20 +145,20 @@ func cmdMember(w *World, n Node) (Node, error) {
 	return Null, nil
 }
 
-func cmdCons(w *World, n Node) (Node, error) {
+func cmdCons(ctx context.Context, w *World, n Node) (Node, error) {
 	var argv [2]Node
-	if err := w.evalListAll(n, argv[:]); err != nil {
+	if err := w.evalListAll(ctx, n, argv[:]); err != nil {
 		return nil, err
 	}
 	return &Cons{Car: argv[0], Cdr: argv[1]}, nil
 }
 
-func cmdMapCar(w *World, n Node) (Node, error) {
-	first, n, err := w.shiftAndEvalCar(n)
+func cmdMapCar(ctx context.Context, w *World, n Node) (Node, error) {
+	first, n, err := w.shiftAndEvalCar(ctx, n)
 	if err != nil {
 		return nil, err
 	}
-	f, err := first.Eval(w)
+	f, err := first.Eval(ctx, w)
 	if err != nil {
 		return nil, err
 	}
@@ -165,7 +166,7 @@ func cmdMapCar(w *World, n Node) (Node, error) {
 	if !ok {
 		return nil, ErrExpectedFunction
 	}
-	list, err := w.evalListToSlice(n)
+	list, err := w.evalListToSlice(ctx, n)
 	if err != nil {
 		return nil, err
 	}
@@ -183,7 +184,7 @@ func cmdMapCar(w *World, n Node) (Node, error) {
 			paramSet[i] = cons.Car
 			list[i] = cons.Cdr
 		}
-		result, err := _f.Call(w, List(paramSet...))
+		result, err := _f.Call(ctx, w, List(paramSet...))
 		if err != nil {
 			return nil, err
 		}
@@ -191,9 +192,9 @@ func cmdMapCar(w *World, n Node) (Node, error) {
 	}
 }
 
-func cmdListp(w *World, n Node) (Node, error) {
+func cmdListp(ctx context.Context, w *World, n Node) (Node, error) {
 	var argv [1]Node
-	if err := w.evalListAll(n, argv[:]); err != nil {
+	if err := w.evalListAll(ctx, n, argv[:]); err != nil {
 		return nil, err
 	}
 	if IsNull(argv[0]) {

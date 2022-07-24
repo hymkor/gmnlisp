@@ -1,6 +1,7 @@
 package gmnlisp
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"io"
@@ -18,15 +19,15 @@ func (e *ErrEarlyReturns) Error() string {
 	return fmt.Sprintf("Unexpected (return-from %s)", e.Name)
 }
 
-func cmdReturn(w *World, n Node) (Node, error) {
+func cmdReturn(ctx context.Context, w *World, n Node) (Node, error) {
 	var argv [1]Node
-	if err := w.evalListAll(n, argv[:]); err != nil {
+	if err := w.evalListAll(ctx, n, argv[:]); err != nil {
 		return nil, err
 	}
 	return nil, &ErrEarlyReturns{Value: argv[0], Name: ""}
 }
 
-func cmdReturnFrom(w *World, n Node) (Node, error) {
+func cmdReturnFrom(ctx context.Context, w *World, n Node) (Node, error) {
 	var argv [2]Node
 	if err := listToArray(n, argv[:]); err != nil {
 		return nil, err
@@ -35,16 +36,16 @@ func cmdReturnFrom(w *World, n Node) (Node, error) {
 	if !ok {
 		return nil, ErrExpectedSymbol
 	}
-	value, err := argv[1].Eval(w)
+	value, err := argv[1].Eval(ctx, w)
 	if err != nil {
 		return nil, err
 	}
 	return nil, &ErrEarlyReturns{Value: value, Name: string(symbol)}
 }
 
-func progn(w *World, n Node) (value Node, err error) {
+func progn(ctx context.Context, w *World, n Node) (value Node, err error) {
 	for HasValue(n) {
-		value, n, err = w.shiftAndEvalCar(n)
+		value, n, err = w.shiftAndEvalCar(ctx, n)
 		if err != nil {
 			return nil, err
 		}
@@ -52,11 +53,11 @@ func progn(w *World, n Node) (value Node, err error) {
 	return
 }
 
-func cmdProgn(w *World, c Node) (Node, error) {
-	return progn(w, c)
+func cmdProgn(ctx context.Context, w *World, c Node) (Node, error) {
+	return progn(ctx, w, c)
 }
 
-func cmdBlock(w *World, node Node) (Node, error) {
+func cmdBlock(ctx context.Context, w *World, node Node) (Node, error) {
 	cons, ok := node.(*Cons)
 	if !ok {
 		return nil, ErrExpectedCons
@@ -68,24 +69,24 @@ func cmdBlock(w *World, node Node) (Node, error) {
 	name := string(_name)
 
 	var errEarlyReturns *ErrEarlyReturns
-	rv, err := progn(w, cons.Cdr)
+	rv, err := progn(ctx, w, cons.Cdr)
 	if errors.As(err, &errEarlyReturns) && errEarlyReturns.Name == name {
 		return errEarlyReturns.Value, nil
 	}
 	return rv, err
 }
 
-func cmdCond(w *World, list Node) (Node, error) {
+func cmdCond(ctx context.Context, w *World, list Node) (Node, error) {
 	var last Node
 	err := forEachList(list, func(condAndAct Node) error {
-		cond, act, err := w.shiftAndEvalCar(condAndAct)
+		cond, act, err := w.shiftAndEvalCar(ctx, condAndAct)
 		if err != nil {
 			return err
 		}
 		if IsNull(cond) {
 			return nil
 		}
-		last, err = progn(w, act)
+		last, err = progn(ctx, w, act)
 		if err == nil {
 			err = io.EOF
 		}
@@ -97,7 +98,7 @@ func cmdCond(w *World, list Node) (Node, error) {
 	return last, err
 }
 
-func cmdIf(w *World, param Node) (Node, error) {
+func cmdIf(ctx context.Context, w *World, param Node) (Node, error) {
 	argv, err := listToSlice(param)
 	if err != nil {
 		return nil, err
@@ -108,19 +109,19 @@ func cmdIf(w *World, param Node) (Node, error) {
 	if len(argv) < 2 {
 		return nil, ErrTooFewArguments
 	}
-	cond, err := argv[0].Eval(w)
+	cond, err := argv[0].Eval(ctx, w)
 	if err != nil {
 		return nil, err
 	}
 	if HasValue(cond) {
-		return argv[1].Eval(w)
+		return argv[1].Eval(ctx, w)
 	} else if len(argv) == 3 {
-		return argv[2].Eval(w)
+		return argv[2].Eval(ctx, w)
 	}
 	return Null, nil
 }
 
-func cmdForeach(w *World, n Node) (Node, error) {
+func cmdForeach(ctx context.Context, w *World, n Node) (Node, error) {
 	cons, ok := n.(*Cons)
 	if !ok {
 		return nil, fmt.Errorf("(1): %w", ErrExpectedCons)
@@ -130,7 +131,7 @@ func cmdForeach(w *World, n Node) (Node, error) {
 		return nil, fmt.Errorf("(1): %w", ErrExpectedSymbol)
 	}
 
-	list, code, err := w.shiftAndEvalCar(cons.Cdr)
+	list, code, err := w.shiftAndEvalCar(ctx, cons.Cdr)
 	if err != nil {
 		return nil, err
 	}
@@ -146,7 +147,7 @@ func cmdForeach(w *World, n Node) (Node, error) {
 		w.Set(string(symbol), cons.Car)
 		list = cons.Cdr
 
-		last, err = progn(w, code)
+		last, err = progn(ctx, w, code)
 		if err != nil {
 			return nil, err
 		}
@@ -154,7 +155,7 @@ func cmdForeach(w *World, n Node) (Node, error) {
 	return last, nil
 }
 
-func cmdWhile(w *World, n Node) (Node, error) {
+func cmdWhile(ctx context.Context, w *World, n Node) (Node, error) {
 	cons, ok := n.(*Cons)
 	if !ok {
 		return nil, ErrTooFewArguments
@@ -163,20 +164,20 @@ func cmdWhile(w *World, n Node) (Node, error) {
 	statements := cons.Cdr
 	var last Node = Null
 	for {
-		cont, err := cond.Eval(w)
+		cont, err := cond.Eval(ctx, w)
 		if err != nil {
 			return nil, err
 		}
 		if IsNull(cont) {
 			return last, nil
 		}
-		last, err = progn(w, statements)
+		last, err = progn(ctx, w, statements)
 		if err != nil {
 			return nil, err
 		}
 	}
 }
 
-func cmdQuit(*World, Node) (Node, error) {
+func cmdQuit(context.Context, *World, Node) (Node, error) {
 	return Null, ErrQuit
 }

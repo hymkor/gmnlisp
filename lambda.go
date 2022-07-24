@@ -1,6 +1,7 @@
 package gmnlisp
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"io"
@@ -14,7 +15,7 @@ type _Lambda struct {
 	lexical *World
 }
 
-func cmdLambda(w *World, node Node) (Node, error) {
+func cmdLambda(ctx context.Context, w *World, node Node) (Node, error) {
 	return newLambda(w, node, "")
 }
 
@@ -70,7 +71,7 @@ func (L *_Lambda) PrintTo(w io.Writer, m PrintMode) {
 
 var trace = map[string]int{}
 
-func (L *_Lambda) Call(w *World, n Node) (Node, error) {
+func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
 	globals := map[string]Node{}
 	foundSlash := false
 	traceCount, traceDo := trace[L.name]
@@ -92,7 +93,7 @@ func (L *_Lambda) Call(w *World, n Node) (Node, error) {
 		}
 		var err error
 		var value Node
-		value, n, err = w.shiftAndEvalCar(n)
+		value, n, err = w.shiftAndEvalCar(ctx, n)
 		if err != nil {
 			return nil, err
 		}
@@ -112,7 +113,7 @@ func (L *_Lambda) Call(w *World, n Node) (Node, error) {
 
 	var errEarlyReturns *ErrEarlyReturns
 
-	result, err := progn(newWorld, L.code)
+	result, err := progn(ctx, newWorld, L.code)
 	if errors.As(err, &errEarlyReturns) && errEarlyReturns.Name == string(L.name) {
 		return errEarlyReturns.Value, nil
 	}
@@ -126,7 +127,7 @@ func (L *_Lambda) Call(w *World, n Node) (Node, error) {
 	return result, err
 }
 
-func (L *_Lambda) Eval(*World) (Node, error) {
+func (L *_Lambda) Eval(context.Context, *World) (Node, error) {
 	return L, nil
 }
 
@@ -134,7 +135,7 @@ func (*_Lambda) Equals(Node, EqlMode) bool {
 	return false
 }
 
-func cmdDefun(w *World, node Node) (Node, error) {
+func cmdDefun(ctx context.Context, w *World, node Node) (Node, error) {
 	cons, ok := node.(*Cons)
 	if !ok {
 		return nil, ErrExpectedCons
@@ -153,8 +154,8 @@ func cmdDefun(w *World, node Node) (Node, error) {
 	return symbol, nil
 }
 
-func cmdFunCall(w *World, node Node) (Node, error) {
-	f, node, err := w.shiftAndEvalCar(node)
+func cmdFunCall(ctx context.Context, w *World, node Node) (Node, error) {
+	f, node, err := w.shiftAndEvalCar(ctx, node)
 	if err != nil {
 		return nil, err
 	}
@@ -162,21 +163,21 @@ func cmdFunCall(w *World, node Node) (Node, error) {
 	if !ok {
 		return nil, ErrExpectedFunction
 	}
-	return _f.Call(w, node)
+	return _f.Call(ctx, w, node)
 }
 
 type _Callable interface {
 	Node
-	Call(*World, Node) (Node, error)
+	Call(context.Context, *World, Node) (Node, error)
 }
 
-type Function func(*World, Node) (Node, error)
+type Function func(context.Context, *World, Node) (Node, error)
 
 func (Function) PrintTo(w io.Writer, m PrintMode) {
 	io.WriteString(w, "buildin function")
 }
 
-func (f Function) Eval(_ *World) (Node, error) {
+func (f Function) Eval(context.Context, *World) (Node, error) {
 	return f, nil
 }
 
@@ -184,13 +185,13 @@ func (f Function) Equals(n Node, m EqlMode) bool {
 	return false
 }
 
-func (f Function) Call(w *World, n Node) (Node, error) {
-	return f(w, n)
+func (f Function) Call(ctx context.Context, w *World, n Node) (Node, error) {
+	return f(ctx, w, n)
 }
 
-func cmdFunction(w *World, node Node) (Node, error) {
+func cmdFunction(ctx context.Context, w *World, node Node) (Node, error) {
 	var argv [1]Node
-	if err := w.evalListAll(node, argv[:]); err != nil {
+	if err := w.evalListAll(ctx, node, argv[:]); err != nil {
 		return nil, err
 	}
 	f, ok := argv[0].(_Callable)
@@ -200,7 +201,7 @@ func cmdFunction(w *World, node Node) (Node, error) {
 	return f, nil
 }
 
-func cmdTrace(w *World, list Node) (Node, error) {
+func cmdTrace(ctx context.Context, w *World, list Node) (Node, error) {
 	if len(trace) > 0 {
 		trace = map[string]int{}
 	}

@@ -1,6 +1,7 @@
 package gmnlisp
 
 import (
+	"context"
 	"fmt"
 	"io"
 )
@@ -11,7 +12,7 @@ func (i Integer) PrintTo(w io.Writer, m PrintMode) {
 	fmt.Fprintf(w, "%d", int64(i))
 }
 
-func (i Integer) Eval(*World) (Node, error) {
+func (i Integer) Eval(context.Context, *World) (Node, error) {
 	return i, nil
 }
 
@@ -90,7 +91,7 @@ func (f Float) PrintTo(w io.Writer, m PrintMode) {
 	fmt.Fprintf(w, "%f", float64(f))
 }
 
-func (f Float) Eval(*World) (Node, error) {
+func (f Float) Eval(context.Context, *World) (Node, error) {
 	return f, nil
 }
 

@@ -1,6 +1,7 @@
 package gmnlisp
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"io"
@@ -38,7 +39,7 @@ const (
 )
 
 type Node interface {
-	Eval(*World) (Node, error)
+	Eval(context.Context, *World) (Node, error)
 	Equals(Node, EqlMode) bool
 	PrintTo(io.Writer, PrintMode)
 }

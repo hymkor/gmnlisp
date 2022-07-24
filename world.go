@@ -1,6 +1,7 @@
 package gmnlisp
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"os"
@@ -143,12 +144,12 @@ func New() *World {
 	}
 }
 
-func (w *World) evalListAll(list Node, result []Node) error {
+func (w *World) evalListAll(ctx context.Context, list Node, result []Node) error {
 	if err := listToArray(list, result); err != nil {
 		return err
 	}
 	for i := 0; i < len(result); i++ {
-		value, err := result[i].Eval(w)
+		value, err := result[i].Eval(ctx, w)
 		if err != nil {
 			return err
 		}
@@ -157,13 +158,13 @@ func (w *World) evalListAll(list Node, result []Node) error {
 	return nil
 }
 
-func (w *World) evalListToSlice(list Node) ([]Node, error) {
+func (w *World) evalListToSlice(ctx context.Context, list Node) ([]Node, error) {
 	result, err := listToSlice(list)
 	if err != nil {
 		return nil, err
 	}
 	for i := 0; i < len(result); i++ {
-		value, err := result[i].Eval(w)
+		value, err := result[i].Eval(ctx, w)
 		if err != nil {
 			return nil, err
 		}
@@ -172,20 +173,20 @@ func (w *World) evalListToSlice(list Node) ([]Node, error) {
 	return result, nil
 }
 
-func (w *World) shiftAndEvalCar(list Node) (Node, Node, error) {
+func (w *World) shiftAndEvalCar(ctx context.Context, list Node) (Node, Node, error) {
 	cons, ok := list.(*Cons)
 	if !ok {
 		return nil, nil, ErrTooFewArguments
 	}
-	value, err := cons.GetCar().Eval(w)
+	value, err := cons.GetCar().Eval(ctx, w)
 	if err != nil {
 		return nil, nil, err
 	}
 	return value, cons.Cdr, nil
 }
 
-func (w *World) inject(list Node, f func(left, right Node) (Node, error)) (Node, error) {
-	result, list, err := w.shiftAndEvalCar(list)
+func (w *World) inject(ctx context.Context, list Node, f func(left, right Node) (Node, error)) (Node, error) {
+	result, list, err := w.shiftAndEvalCar(ctx, list)
 	if err != nil {
 		return nil, err
 	}
@@ -193,7 +194,7 @@ func (w *World) inject(list Node, f func(left, right Node) (Node, error)) (Node,
 		var next Node
 		var err error
 
-		next, list, err = w.shiftAndEvalCar(list)
+		next, list, err = w.shiftAndEvalCar(ctx, list)
 		if err != nil {
 			return nil, err
 		}
@@ -205,12 +206,12 @@ func (w *World) inject(list Node, f func(left, right Node) (Node, error)) (Node,
 	return result, nil
 }
 
-func (w *World) InterpretNodes(ns []Node) (Node, error) {
+func (w *World) InterpretNodes(ctx context.Context, ns []Node) (Node, error) {
 	var result Node = Null
 	var err error
 
 	for _, c := range ns {
-		result, err = c.Eval(w)
+		result, err = c.Eval(ctx, w)
 		if err != nil {
 			return result, err
 		}
@@ -218,26 +219,26 @@ func (w *World) InterpretNodes(ns []Node) (Node, error) {
 	return result, nil
 }
 
-func (w *World) Interpret(code string) (Node, error) {
+func (w *World) Interpret(ctx context.Context, code string) (Node, error) {
 	compiled, err := ReadString(code)
 	if err != nil {
 		return nil, err
 	}
-	return w.InterpretNodes(compiled)
+	return w.InterpretNodes(ctx, compiled)
 }
 
-func (w *World) InterpretBytes(code []byte) (Node, error) {
+func (w *World) InterpretBytes(ctx context.Context, code []byte) (Node, error) {
 	compiled, err := ReadBytes(code)
 	if err != nil {
 		return nil, err
 	}
-	return w.InterpretNodes(compiled)
+	return w.InterpretNodes(ctx, compiled)
 }
 
-func (w *World) Call(f Node, params ...Node) (Node, error) {
+func (w *World) Call(ctx context.Context, f Node, params ...Node) (Node, error) {
 	_f, ok := f.(_Callable)
 	if !ok {
 		return nil, ErrExpectedFunction
 	}
-	return _f.Call(w, List(params...))
+	return _f.Call(ctx, w, List(params...))
 }

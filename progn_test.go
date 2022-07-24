@@ -1,6 +1,7 @@
 package gmnlisp
 
 import (
+	"context"
 	"errors"
 	"testing"
 )
@@ -12,11 +13,12 @@ func TestIf(t *testing.T) {
 	assertEqual(t, "(if nil 3)", Null)
 
 	w := New()
-	_, err := w.Interpret("(if T 1 2 3)")
+	ctx := context.TODO()
+	_, err := w.Interpret(ctx, "(if T 1 2 3)")
 	if !errors.Is(err, ErrTooManyArguments) {
 		t.Fatal("ErrTooManyArguments have to be occured")
 	}
-	_, err = w.Interpret("(if)")
+	_, err = w.Interpret(ctx, "(if)")
 	if !errors.Is(err, ErrTooFewArguments) {
 		t.Fatal("ErrTooFewArguments have to be occured")
 	}

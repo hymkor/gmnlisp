@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"context"
 	"flag"
 	"fmt"
 	"io"
@@ -80,7 +81,7 @@ func replaceReader(lisp *gmnlisp.World, r io.Reader, w io.Writer) (err error) {
 						var value gmnlisp.Node
 
 						bw.Flush()
-						value, err = lisp.Interpret(buffer.String())
+						value, err = lisp.Interpret(context.TODO(), buffer.String())
 						if err != nil {
 							return
 						}

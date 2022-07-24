@@ -1,10 +1,11 @@
 package gmnlisp
 
 import (
+	"context"
 	"fmt"
 )
 
-func cmdSetq(w *World, node Node) (Node, error) {
+func cmdSetq(ctx context.Context, w *World, node Node) (Node, error) {
 	var name string
 	var value Node = Null
 	err := forEachList(node, func(n Node) error {
@@ -16,7 +17,7 @@ func cmdSetq(w *World, node Node) (Node, error) {
 			name = string(_name)
 		} else {
 			var err error
-			value, err = n.Eval(w)
+			value, err = n.Eval(ctx, w)
 			if err != nil {
 				return err
 			}
@@ -34,7 +35,7 @@ func cmdSetq(w *World, node Node) (Node, error) {
 	return value, nil
 }
 
-func cmdLet(w *World, param Node) (Node, error) {
+func cmdLet(ctx context.Context, w *World, param Node) (Node, error) {
 	cons, ok := param.(*Cons)
 	if !ok {
 		return nil, fmt.Errorf("%w: `%s`", ErrExpectedCons, toString(param))
@@ -57,7 +58,7 @@ func cmdLet(w *World, param Node) (Node, error) {
 		if !ok {
 			return fmt.Errorf("%w `%s`", ErrExpectedSymbol, toString(argv[0]))
 		}
-		value, err := argv[1].Eval(w)
+		value, err := argv[1].Eval(ctx, w)
 		if err != nil {
 			return err
 		}
@@ -72,5 +73,5 @@ func cmdLet(w *World, param Node) (Node, error) {
 		globals: globals,
 		parent:  w,
 	}
-	return progn(newWorld, code)
+	return progn(ctx, newWorld, code)
 }

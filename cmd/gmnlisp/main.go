@@ -101,7 +101,7 @@ func interactive(lisp *gmnlisp.World) error {
 			fmt.Fprintln(os.Stderr, err.Error())
 			continue
 		}
-		result, err := lisp.InterpretNodes(nodes)
+		result, err := lisp.InterpretNodes(ctx, nodes)
 		if err != nil {
 			if errors.Is(err, gmnlisp.ErrQuit) {
 				return nil
@@ -118,11 +118,13 @@ func mains(args []string) error {
 	var last = gmnlisp.Null
 	var err error
 
+	ctx := context.TODO()
+
 	lisp := gmnlisp.New()
 
 	if *flagExecute != "" {
 		setArgv(lisp, args)
-		last, err = lisp.Interpret(*flagExecute)
+		last, err = lisp.Interpret(ctx, *flagExecute)
 	} else if len(args) > 0 {
 		setArgv(lisp, args[1:])
 
@@ -131,16 +133,16 @@ func mains(args []string) error {
 		if err != nil {
 			return err
 		}
-		last, err = lisp.InterpretBytes(script)
+		last, err = lisp.InterpretBytes(ctx, script)
 	} else {
 		return interactive(lisp)
 	}
 	if err != nil {
 		return err
 	}
-	lisp.Interpret("(terpri)")
+	lisp.Interpret(ctx, "(terpri)")
 	last.PrintTo(os.Stdout, gmnlisp.PRINT)
-	lisp.Interpret("(terpri)")
+	lisp.Interpret(ctx, "(terpri)")
 	return nil
 }
 

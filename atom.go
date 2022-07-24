@@ -1,6 +1,7 @@
 package gmnlisp
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"strings"
@@ -12,7 +13,7 @@ func (_TrueType) PrintTo(w io.Writer, m PrintMode) {
 	io.WriteString(w, "T")
 }
 
-func (t _TrueType) Eval(*World) (Node, error) {
+func (t _TrueType) Eval(context.Context, *World) (Node, error) {
 	return t, nil
 }
 
@@ -29,7 +30,7 @@ func (_NullType) PrintTo(w io.Writer, m PrintMode) {
 	io.WriteString(w, "nil")
 }
 
-func (nt _NullType) Eval(*World) (Node, error) {
+func (nt _NullType) Eval(context.Context, *World) (Node, error) {
 	return nt, nil
 }
 
@@ -60,7 +61,7 @@ func (s String) PrintTo(w io.Writer, m PrintMode) {
 	}
 }
 
-func (s String) Eval(*World) (Node, error) {
+func (s String) Eval(context.Context, *World) (Node, error) {
 	return s, nil // errors.New("String can not be evaluate.")
 }
 
@@ -93,7 +94,7 @@ func (s Symbol) PrintTo(w io.Writer, m PrintMode) {
 	io.WriteString(w, string(s))
 }
 
-func (s Symbol) Eval(w *World) (Node, error) {
+func (s Symbol) Eval(_ context.Context, w *World) (Node, error) {
 	return w.Get(string(s))
 }
 

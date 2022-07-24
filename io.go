@@ -2,6 +2,7 @@ package gmnlisp
 
 import (
 	"bufio"
+	"context"
 	"errors"
 	"fmt"
 	"io"
@@ -12,7 +13,7 @@ import (
 
 type _Dummy struct{}
 
-func (d _Dummy) Eval(*World) (Node, error) {
+func (d _Dummy) Eval(context.Context, *World) (Node, error) {
 	return d, nil
 }
 
@@ -54,8 +55,8 @@ func openAsWrite(fname string) (Node, error) {
 	}, nil
 }
 
-func cmdOpen(w *World, n Node) (Node, error) {
-	fname, n, err := w.shiftAndEvalCar(n)
+func cmdOpen(ctx context.Context, w *World, n Node) (Node, error) {
+	fname, n, err := w.shiftAndEvalCar(ctx, n)
 	if err != nil {
 		return nil, err
 	}
@@ -67,7 +68,7 @@ func cmdOpen(w *World, n Node) (Node, error) {
 		return openAsRead(string(_fname))
 	}
 
-	mode, n, err := w.shiftAndEvalCar(n)
+	mode, n, err := w.shiftAndEvalCar(ctx, n)
 	if HasValue(n) {
 		return nil, ErrTooManyArguments
 	}
@@ -103,13 +104,13 @@ func chomp(s string) string {
 	return s
 }
 
-func cmdReadLine(w *World, n Node) (Node, error) {
+func cmdReadLine(ctx context.Context, w *World, n Node) (Node, error) {
 	type ReadStringer interface {
 		ReadString(byte) (string, error)
 	}
 
 	var argv [1]Node
-	if err := w.evalListAll(n, argv[:]); err != nil {
+	if err := w.evalListAll(ctx, n, argv[:]); err != nil {
 		return nil, err
 	}
 	r, ok := argv[0].(ReadStringer)
@@ -123,9 +124,9 @@ func cmdReadLine(w *World, n Node) (Node, error) {
 	return String(chomp(s)), err
 }
 
-func cmdClose(w *World, n Node) (Node, error) {
+func cmdClose(ctx context.Context, w *World, n Node) (Node, error) {
 	var argv [1]Node
-	if err := w.evalListAll(n, argv[:]); err != nil {
+	if err := w.evalListAll(ctx, n, argv[:]); err != nil {
 		return nil, err
 	}
 	c, ok := argv[0].(io.Closer)
@@ -135,8 +136,8 @@ func cmdClose(w *World, n Node) (Node, error) {
 	return Null, c.Close()
 }
 
-func cmdCommand(w *World, n Node) (Node, error) {
-	argv, err := w.evalListToSlice(n)
+func cmdCommand(ctx context.Context, w *World, n Node) (Node, error) {
+	argv, err := w.evalListToSlice(ctx, n)
 	if err != nil {
 		return nil, err
 	}
