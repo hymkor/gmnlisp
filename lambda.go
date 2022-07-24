@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"os"
 )
 
 type _Lambda struct {
@@ -67,9 +68,19 @@ func (L *_Lambda) PrintTo(w io.Writer, m PrintMode) {
 	io.WriteString(w, ")")
 }
 
+var trace = map[string]int{}
+
 func (L *_Lambda) Call(w *World, n Node) (Node, error) {
 	globals := map[string]Node{}
 	foundSlash := false
+	traceCount, traceDo := trace[L.name]
+	if traceDo {
+		fmt.Fprintf(os.Stderr, "[%d: (%s", traceCount, L.name)
+		trace[L.name]++
+		defer func() {
+			trace[L.name]--
+		}()
+	}
 	for _, name := range L.param {
 		if name == "/" {
 			foundSlash = true
@@ -80,11 +91,20 @@ func (L *_Lambda) Call(w *World, n Node) (Node, error) {
 			continue
 		}
 		var err error
-		globals[name], n, err = w.shiftAndEvalCar(n)
+		var value Node
+		value, n, err = w.shiftAndEvalCar(n)
 		if err != nil {
 			return nil, err
 		}
+		globals[name] = value
+		if traceDo {
+			fmt.Fprintf(os.Stderr, " %s", toString(value))
+		}
 	}
+	if traceDo {
+		fmt.Fprintln(os.Stderr, ")]")
+	}
+
 	if HasValue(n) {
 		return nil, ErrTooManyArguments
 	}
@@ -96,6 +116,13 @@ func (L *_Lambda) Call(w *World, n Node) (Node, error) {
 	if errors.As(err, &errEarlyReturns) && errEarlyReturns.Name == string(L.name) {
 		return errEarlyReturns.Value, nil
 	}
+	if traceDo {
+		fmt.Fprintf(os.Stderr, "[%d: %s returned %s]\n",
+			traceCount,
+			L.name,
+			toString(result))
+	}
+
 	return result, err
 }
 
@@ -171,4 +198,18 @@ func cmdFunction(w *World, node Node) (Node, error) {
 		return nil, ErrExpectedFunction
 	}
 	return f, nil
+}
+
+func cmdTrace(w *World, list Node) (Node, error) {
+	if len(trace) > 0 {
+		trace = map[string]int{}
+	}
+	return Null, forEachList(list, func(node Node) error {
+		symbol, ok := node.(Symbol)
+		if !ok {
+			return ErrExpectedSymbol
+		}
+		trace[string(symbol)] = 0
+		return nil
+	})
 }

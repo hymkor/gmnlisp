@@ -134,6 +134,7 @@ func New() *World {
 			"strlen":              Function(cmdStrLen),
 			"substr":              Function(cmdSubStr),
 			"terpri":              Function(cmdTerpri),
+			"trace":               Function(cmdTrace),
 			"truncate":            Function(cmdTruncate),
 			"while":               Function(cmdWhile),
 			"write":               Function(cmdWrite),
