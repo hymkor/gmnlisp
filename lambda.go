@@ -213,12 +213,19 @@ func cmdTrace(ctx context.Context, w *World, list Node) (Node, error) {
 	if len(trace) > 0 {
 		trace = map[string]int{}
 	}
-	return Null, forEachList(list, func(node Node) error {
-		symbol, ok := node.(Symbol)
+	for HasValue(list) {
+		var symbolNode Node
+		var err error
+
+		symbolNode, list, err = shift(list)
+		if err != nil {
+			return nil, err
+		}
+		symbol, ok := symbolNode.(Symbol)
 		if !ok {
-			return ErrExpectedSymbol
+			return nil, ErrExpectedSymbol
 		}
 		trace[string(symbol)] = 0
-		return nil
-	})
+	}
+	return Null, nil
 }
