@@ -41,4 +41,7 @@ func TestList(t *testing.T) {
 	assertEqual(t, `(listp ())`, True)
 	assertEqual(t, `(listp 1)`, Null)
 	assertEqual(t, `(listp '(1 2 3))`, True)
+
+	assertEqual(t, `(length (list 1 2 3 4))`, Integer(4))
+	assertEqual(t, `(length '(list 1 2 3))`, Integer(4))
 }

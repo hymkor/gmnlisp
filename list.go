@@ -205,3 +205,21 @@ func cmdListp(ctx context.Context, w *World, n Node) (Node, error) {
 	}
 	return Null, nil
 }
+
+func cmdLength(ctx context.Context, w *World, n Node) (Node, error) {
+	var argv [1]Node
+	if err := w.evalListAll(ctx, n, argv[:]); err != nil {
+		return nil, err
+	}
+	length := 0
+	list := argv[0]
+	for HasValue(list) {
+		cons, ok := list.(*Cons)
+		if !ok {
+			return nil, ErrExpectedCons
+		}
+		length++
+		list = cons.Cdr
+	}
+	return Integer(length), nil
+}

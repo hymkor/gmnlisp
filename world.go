@@ -107,6 +107,7 @@ func New() *World {
 			"funcall":             Function(cmdFunCall),
 			"if":                  Function(cmdIf),
 			"lambda":              Function(cmdLambda),
+			"length":              Function(cmdLength),
 			"let":                 Function(cmdLet),
 			"list":                Function(cmdList),
 			"listp":               Function(cmdListp),
