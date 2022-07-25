@@ -160,12 +160,10 @@ func cmdForeach(ctx context.Context, w *World, args Node) (Node, error) {
 }
 
 func cmdWhile(ctx context.Context, w *World, n Node) (Node, error) {
-	cons, ok := n.(*Cons)
-	if !ok {
-		return nil, ErrTooFewArguments
+	cond, statements, err := shift(n)
+	if err != nil {
+		return nil, err
 	}
-	cond := cons.Car
-	statements := cons.Cdr
 	var last Node = Null
 	for {
 		if err := checkContext(ctx); err != nil {
