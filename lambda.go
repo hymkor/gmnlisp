@@ -137,18 +137,18 @@ func (*_Lambda) Equals(Node, EqlMode) bool {
 	return false
 }
 
-func cmdDefun(ctx context.Context, w *World, node Node) (Node, error) {
-	cons, ok := node.(*Cons)
-	if !ok {
-		return nil, ErrExpectedCons
+func cmdDefun(ctx context.Context, w *World, list Node) (Node, error) {
+	_symbol, list, err := shift(list)
+	if err != nil {
+		return nil, err
 	}
-	symbol, ok := cons.Car.(Symbol)
+	symbol, ok := _symbol.(Symbol)
 	if !ok {
 		return nil, ErrExpectedSymbol
 	}
 	name := string(symbol)
 
-	lambda, err := newLambda(w, cons.Cdr, name)
+	lambda, err := newLambda(w, list, name)
 	if err != nil {
 		return nil, err
 	}
