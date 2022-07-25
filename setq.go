@@ -5,32 +5,26 @@ import (
 	"fmt"
 )
 
-func cmdSetq(ctx context.Context, w *World, node Node) (Node, error) {
-	var name string
+func cmdSetq(ctx context.Context, w *World, params Node) (Node, error) {
 	var value Node = Null
-	err := forEachList(node, func(n Node) error {
-		if name == "" {
-			_name, ok := n.(Symbol)
-			if !ok {
-				return fmt.Errorf("%w: `%s`", ErrExpectedSymbol, toString(node))
-			}
-			name = string(_name)
-		} else {
-			var err error
-			value, err = n.Eval(ctx, w)
-			if err != nil {
-				return err
-			}
-			w.Set(name, value)
-			name = ""
+
+	for HasValue(params) {
+		var nameNode Node
+		var err error
+
+		nameNode, params, err = shift(params)
+		if err != nil {
+			return nil, err
 		}
-		return nil
-	})
-	if err != nil {
-		return nil, err
-	}
-	if name != "" {
-		return value, ErrTooFewArguments
+		nameSymbol, ok := nameNode.(Symbol)
+		if !ok {
+			return nil, fmt.Errorf("%w: `%s`", ErrExpectedSymbol, toString(nameSymbol))
+		}
+		value, params, err = w.shiftAndEvalCar(ctx, params)
+		if err != nil {
+			return nil, err
+		}
+		w.Set(string(nameSymbol), value)
 	}
 	return value, nil
 }
