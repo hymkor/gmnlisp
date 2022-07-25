@@ -98,27 +98,27 @@ func forEachList(list Node, f func(Node) error) error {
 	return nil
 }
 
-func listToArray(list Node, slice []Node) error {
-	for i := 0; i < len(slice); i++ {
-		cons, ok := list.(*Cons)
-		if !ok {
-			return ErrTooFewArguments
-		}
-		slice[i] = cons.Car
-		list = cons.Cdr
-	}
-	if HasValue(list) {
-		return ErrTooManyArguments
-	}
-	return nil
-}
-
 func shift(list Node) (Node, Node, error) {
 	cons, ok := list.(*Cons)
 	if !ok {
 		return nil, nil, ErrTooFewArguments
 	}
 	return cons.GetCar(), cons.Cdr, nil
+}
+
+func listToArray(list Node, slice []Node) error {
+	for i := 0; i < len(slice); i++ {
+		var err error
+
+		slice[i], list, err = shift(list)
+		if err != nil {
+			return err
+		}
+	}
+	if HasValue(list) {
+		return ErrTooManyArguments
+	}
+	return nil
 }
 
 func checkContext(ctx context.Context) error {
