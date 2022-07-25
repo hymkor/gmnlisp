@@ -98,27 +98,32 @@ func cmdCond(ctx context.Context, w *World, list Node) (Node, error) {
 	return last, err
 }
 
-func cmdIf(ctx context.Context, w *World, param Node) (Node, error) {
-	argv, err := listToSlice(param)
+func cmdIf(ctx context.Context, w *World, params Node) (Node, error) {
+	cond, params, err := w.shiftAndEvalCar(ctx, params)
 	if err != nil {
 		return nil, err
 	}
-	if len(argv) > 3 {
-		return nil, ErrTooManyArguments
-	}
-	if len(argv) < 2 {
-		return nil, ErrTooFewArguments
-	}
-	cond, err := argv[0].Eval(ctx, w)
+	thenClause, params, err := shift(params)
 	if err != nil {
 		return nil, err
+	}
+	var elseClause Node = Null
+	if HasValue(params) {
+		elseClause, params, err = shift(params)
+		if err != nil {
+			return nil, err
+		}
+		if HasValue(params) {
+			return nil, ErrTooManyArguments
+		}
 	}
 	if HasValue(cond) {
-		return argv[1].Eval(ctx, w)
-	} else if len(argv) == 3 {
-		return argv[2].Eval(ctx, w)
+		return thenClause.Eval(ctx, w)
+	} else if HasValue(elseClause) {
+		return elseClause.Eval(ctx, w)
+	} else {
+		return Null, nil
 	}
-	return Null, nil
 }
 
 func cmdForeach(ctx context.Context, w *World, args Node) (Node, error) {
