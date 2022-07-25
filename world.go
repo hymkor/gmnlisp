@@ -159,21 +159,6 @@ func (w *World) evalListAll(ctx context.Context, list Node, result []Node) error
 	return nil
 }
 
-func (w *World) evalListToSlice(ctx context.Context, list Node) ([]Node, error) {
-	result, err := listToSlice(list)
-	if err != nil {
-		return nil, err
-	}
-	for i := 0; i < len(result); i++ {
-		value, err := result[i].Eval(ctx, w)
-		if err != nil {
-			return nil, err
-		}
-		result[i] = value
-	}
-	return result, nil
-}
-
 func (w *World) shiftAndEvalCar(ctx context.Context, list Node) (Node, Node, error) {
 	first, list, err := shift(list)
 	if err != nil {
