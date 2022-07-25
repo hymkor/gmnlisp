@@ -20,22 +20,25 @@ func cmdLambda(ctx context.Context, w *World, node Node) (Node, error) {
 }
 
 func getParameterList(node Node) ([]string, Node, error) {
-	cons, ok := node.(*Cons)
-	if !ok {
-		return nil, nil, fmt.Errorf("%w for parameter list", ErrExpectedCons)
-	}
-	params := []string{}
-	if err := forEachList(cons.Car, func(n Node) error {
-		name, ok := n.(Symbol)
-		if !ok {
-			return ErrExpectedSymbol
-		}
-		params = append(params, string(name))
-		return nil
-	}); err != nil {
+	list, rest, err := shift(node)
+	if err != nil {
 		return nil, nil, err
 	}
-	return params, cons.GetCdr(), nil
+	params := []string{}
+	for HasValue(list) {
+		var nameNode Node
+
+		nameNode, list, err = shift(list)
+		if err != nil {
+			return nil, nil, err
+		}
+		nameSymbol, ok := nameNode.(Symbol)
+		if !ok {
+			return nil, nil, ErrExpectedSymbol
+		}
+		params = append(params, string(nameSymbol))
+	}
+	return params, rest, nil
 }
 
 func newLambda(w *World, node Node, blockName string) (Node, error) {
