@@ -34,9 +34,14 @@ func nthcdr(ctx context.Context, w *World, node Node, n int) (Node, error) {
 	if err := w.evalListAll(ctx, node, args[:]); err != nil {
 		return nil, err
 	}
-	list, err := shiftList(args[0], n)
-	if err != nil {
-		return nil, err
+	list := args[0]
+	for i := 0; i < n; i++ {
+		var err error
+
+		_, list, err = shift(list)
+		if err != nil {
+			return nil, err
+		}
 	}
 	return list, nil
 }
