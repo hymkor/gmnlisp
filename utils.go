@@ -121,20 +121,6 @@ func shift(list Node) (Node, Node, error) {
 	return cons.GetCar(), cons.Cdr, nil
 }
 
-func shiftList(list Node, count int) (Node, error) {
-	for i := 0; i < count; i++ {
-		if IsNull(list) {
-			return Null, nil
-		}
-		cons, ok := list.(*Cons)
-		if !ok {
-			return nil, ErrExpectedCons
-		}
-		list = cons.Cdr
-	}
-	return list, nil
-}
-
 func checkContext(ctx context.Context) error {
 	select {
 	case <-ctx.Done():
