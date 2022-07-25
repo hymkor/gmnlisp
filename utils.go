@@ -3,7 +3,6 @@ package gmnlisp
 import (
 	"context"
 	"errors"
-	"fmt"
 	"io"
 	"strings"
 )
@@ -84,26 +83,28 @@ func List(nodes ...Node) Node {
 	return first.Cdr
 }
 
-func forEachList(list Node, f func(Node) error) error {
-	for HasValue(list) {
-		cons, ok := list.(*Cons)
-		if !ok {
-			return fmt.Errorf("%w (%s)", ErrExpectedCons, toString(list))
-		}
-		if err := f(cons.Car); err != nil {
-			return err
-		}
-		list = cons.Cdr
-	}
-	return nil
-}
-
 func shift(list Node) (Node, Node, error) {
 	cons, ok := list.(*Cons)
 	if !ok {
 		return nil, nil, ErrTooFewArguments
 	}
 	return cons.GetCar(), cons.Cdr, nil
+}
+
+func forEachList(list Node, f func(Node) error) error {
+	for HasValue(list) {
+		var value Node
+		var err error
+
+		value, list, err = shift(list)
+		if err != nil {
+			return err
+		}
+		if err := f(value); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func listToArray(list Node, slice []Node) error {
