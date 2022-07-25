@@ -91,22 +91,6 @@ func shift(list Node) (Node, Node, error) {
 	return cons.GetCar(), cons.Cdr, nil
 }
 
-func forEachList(list Node, f func(Node) error) error {
-	for HasValue(list) {
-		var value Node
-		var err error
-
-		value, list, err = shift(list)
-		if err != nil {
-			return err
-		}
-		if err := f(value); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
 func listToArray(list Node, slice []Node) error {
 	for i := 0; i < len(slice); i++ {
 		var err error
