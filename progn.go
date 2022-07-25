@@ -58,18 +58,18 @@ func cmdProgn(ctx context.Context, w *World, c Node) (Node, error) {
 }
 
 func cmdBlock(ctx context.Context, w *World, node Node) (Node, error) {
-	cons, ok := node.(*Cons)
-	if !ok {
-		return nil, ErrExpectedCons
+	nameNode, statements, err := shift(node)
+	if err != nil {
+		return nil, err
 	}
-	_name, ok := cons.Car.(Symbol)
+	nameSymbol, ok := nameNode.(Symbol)
 	if !ok {
 		return nil, ErrExpectedSymbol
 	}
-	name := string(_name)
+	name := string(nameSymbol)
 
 	var errEarlyReturns *ErrEarlyReturns
-	rv, err := progn(ctx, w, cons.Cdr)
+	rv, err := progn(ctx, w, statements)
 	if errors.As(err, &errEarlyReturns) && errEarlyReturns.Name == name {
 		return errEarlyReturns.Value, nil
 	}
