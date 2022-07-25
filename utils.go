@@ -126,6 +126,14 @@ func listToSlice(list Node) ([]Node, error) {
 	return slice, nil
 }
 
+func shift(list Node) (Node, Node, error) {
+	cons, ok := list.(*Cons)
+	if !ok {
+		return nil, nil, ErrTooFewArguments
+	}
+	return cons.GetCar(), cons.Cdr, nil
+}
+
 func shiftList(list Node, count int) (Node, error) {
 	for i := 0; i < count; i++ {
 		if IsNull(list) {

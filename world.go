@@ -175,15 +175,15 @@ func (w *World) evalListToSlice(ctx context.Context, list Node) ([]Node, error) 
 }
 
 func (w *World) shiftAndEvalCar(ctx context.Context, list Node) (Node, Node, error) {
-	cons, ok := list.(*Cons)
-	if !ok {
-		return nil, nil, ErrTooFewArguments
-	}
-	value, err := cons.GetCar().Eval(ctx, w)
+	first, list, err := shift(list)
 	if err != nil {
 		return nil, nil, err
 	}
-	return value, cons.Cdr, nil
+	value, err := first.Eval(ctx, w)
+	if err != nil {
+		return nil, nil, err
+	}
+	return value, list, nil
 }
 
 func (w *World) inject(ctx context.Context, list Node, f func(left, right Node) (Node, error)) (Node, error) {

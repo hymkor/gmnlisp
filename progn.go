@@ -121,31 +121,35 @@ func cmdIf(ctx context.Context, w *World, param Node) (Node, error) {
 	return Null, nil
 }
 
-func cmdForeach(ctx context.Context, w *World, n Node) (Node, error) {
-	cons, ok := n.(*Cons)
-	if !ok {
-		return nil, fmt.Errorf("(1): %w", ErrExpectedCons)
+func cmdForeach(ctx context.Context, w *World, args Node) (Node, error) {
+	var _symbol Node
+	var err error
+
+	_symbol, args, err = shift(args)
+	if err != nil {
+		return nil, err
 	}
-	symbol, ok := cons.Car.(Symbol)
+	symbol, ok := _symbol.(Symbol)
 	if !ok {
-		return nil, fmt.Errorf("(1): %w", ErrExpectedSymbol)
+		return nil, ErrExpectedSymbol
 	}
 
-	list, code, err := w.shiftAndEvalCar(ctx, cons.Cdr)
+	var list Node
+	var code Node
+	list, code, err = w.shiftAndEvalCar(ctx, args)
 	if err != nil {
 		return nil, err
 	}
 
 	var last Node
 	for HasValue(list) {
-		var err error
+		var value Node
 
-		cons, ok := list.(*Cons)
-		if !ok {
-			return nil, ErrExpectedCons
+		value, list, err = shift(list)
+		if err != nil {
+			return nil, err
 		}
-		w.Set(string(symbol), cons.Car)
-		list = cons.Cdr
+		w.Set(string(symbol), value)
 
 		last, err = progn(ctx, w, code)
 		if err != nil {
