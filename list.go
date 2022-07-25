@@ -153,8 +153,8 @@ func cmdCons(ctx context.Context, w *World, n Node) (Node, error) {
 	return &Cons{Car: argv[0], Cdr: argv[1]}, nil
 }
 
-func cmdMapCar(ctx context.Context, w *World, n Node) (Node, error) {
-	first, n, err := w.shiftAndEvalCar(ctx, n)
+func cmdMapCar(ctx context.Context, w *World, params Node) (Node, error) {
+	first, params, err := w.shiftAndEvalCar(ctx, params)
 	if err != nil {
 		return nil, err
 	}
@@ -166,23 +166,29 @@ func cmdMapCar(ctx context.Context, w *World, n Node) (Node, error) {
 	if !ok {
 		return nil, ErrExpectedFunction
 	}
-	list, err := w.evalListToSlice(ctx, n)
-	if err != nil {
-		return nil, err
+
+	listSet := []Node{}
+	for HasValue(params) {
+		var value Node
+
+		value, params, err = w.shiftAndEvalCar(ctx, params)
+		if err != nil {
+			return nil, err
+		}
+		listSet = append(listSet, value)
 	}
+
 	resultSet := []Node{}
 	for {
-		paramSet := make([]Node, len(list))
-		for i := 0; i < len(list); i++ {
-			if IsNull(list[i]) {
+		paramSet := make([]Node, len(listSet))
+		for i := 0; i < len(listSet); i++ {
+			if IsNull(listSet[i]) {
 				return List(resultSet...), nil
 			}
-			cons, ok := list[i].(*Cons)
-			if !ok {
-				return nil, ErrExpectedCons
+			paramSet[i], listSet[i], err = shift(listSet[i])
+			if err != nil {
+				return nil, err
 			}
-			paramSet[i] = cons.Car
-			list[i] = cons.Cdr
 		}
 		result, err := _f.Call(ctx, w, List(paramSet...))
 		if err != nil {
