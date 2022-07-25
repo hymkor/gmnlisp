@@ -29,43 +29,40 @@ func cmdSetq(ctx context.Context, w *World, params Node) (Node, error) {
 	return value, nil
 }
 
-func cmdLet(ctx context.Context, w *World, param Node) (Node, error) {
-	cons, ok := param.(*Cons)
-	if !ok {
-		return nil, fmt.Errorf("%w: `%s`", ErrExpectedCons, toString(param))
+func cmdLet(ctx context.Context, w *World, params Node) (Node, error) {
+	list, params, err := shift(params)
+	if err != nil {
+		return nil, err
 	}
-	code := cons.Cdr
-
 	globals := map[string]Node{}
 
-	err := forEachList(cons.Car, func(node Node) error {
-		if symbol, ok := node.(Symbol); ok {
+	for HasValue(list) {
+		var item Node
+
+		item, list, err = shift(list)
+		if symbol, ok := item.(Symbol); ok {
 			globals[string(symbol)] = Null
-			return nil
+			continue
 		}
 		var argv [2]Node
 
-		if err := listToArray(node, argv[:]); err != nil {
-			return err
+		if err := listToArray(item, argv[:]); err != nil {
+			return nil, err
 		}
 		symbol, ok := argv[0].(Symbol)
 		if !ok {
-			return fmt.Errorf("%w `%s`", ErrExpectedSymbol, toString(argv[0]))
+			return nil, fmt.Errorf("%w `%s`", ErrExpectedSymbol, toString(argv[0]))
 		}
 		value, err := argv[1].Eval(ctx, w)
 		if err != nil {
-			return err
+			return nil, err
 		}
 		globals[string(symbol)] = value
-		return nil
-	})
-	if err != nil {
-		return nil, err
 	}
 
 	newWorld := &World{
 		globals: globals,
 		parent:  w,
 	}
-	return progn(ctx, newWorld, code)
+	return progn(ctx, newWorld, params)
 }
