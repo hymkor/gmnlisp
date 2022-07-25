@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"io"
 )
 
 type ErrEarlyReturns struct {
@@ -77,25 +76,23 @@ func cmdBlock(ctx context.Context, w *World, node Node) (Node, error) {
 }
 
 func cmdCond(ctx context.Context, w *World, list Node) (Node, error) {
-	var last Node
-	err := forEachList(list, func(condAndAct Node) error {
+	for HasValue(list) {
+		var condAndAct Node
+		var err error
+
+		condAndAct, list, err = shift(list)
+		if err != nil {
+			return nil, err
+		}
 		cond, act, err := w.shiftAndEvalCar(ctx, condAndAct)
 		if err != nil {
-			return err
+			return nil, err
 		}
-		if IsNull(cond) {
-			return nil
+		if HasValue(cond) {
+			return progn(ctx, w, act)
 		}
-		last, err = progn(ctx, w, act)
-		if err == nil {
-			err = io.EOF
-		}
-		return err
-	})
-	if err == io.EOF {
-		err = nil
 	}
-	return last, err
+	return Null, nil
 }
 
 func cmdIf(ctx context.Context, w *World, params Node) (Node, error) {
