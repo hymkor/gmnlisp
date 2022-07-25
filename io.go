@@ -137,21 +137,26 @@ func cmdClose(ctx context.Context, w *World, n Node) (Node, error) {
 }
 
 func cmdCommand(ctx context.Context, w *World, n Node) (Node, error) {
-	argv, err := w.evalListToSlice(ctx, n)
-	if err != nil {
-		return nil, err
+	var err error
+
+	argv := []string{}
+	for HasValue(n) {
+		var buffer strings.Builder
+		var value Node
+
+		value, n, err = w.shiftAndEvalCar(ctx, n)
+		if err != nil {
+			return nil, err
+		}
+		value.PrintTo(&buffer, PRINC)
+
+		argv = append(argv, buffer.String())
 	}
 	if len(argv) < 1 {
 		return nil, ErrTooFewArguments
 	}
-	_argv := make([]string, 0, len(argv))
-	var buffer strings.Builder
-	for _, n := range argv {
-		n.PrintTo(&buffer, PRINC)
-		_argv = append(_argv, buffer.String())
-		buffer.Reset()
-	}
-	cmd := exec.Command(_argv[0], _argv[1:]...)
+
+	cmd := exec.Command(argv[0], argv[1:]...)
 	cmd.Stdout, err = w.Stdout()
 	if err != nil {
 		return nil, err
