@@ -23,5 +23,5 @@ preprocessor:
 test:
 	go test -v
 
-readme:
+readme: preprocessor
 	.$(D)preprocessor$(EXE) _README.md > README.md
