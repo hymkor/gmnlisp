@@ -55,6 +55,7 @@ Support functions
 - `T`
 - `and`
 - `append`
+- `assoc`
 - `atom`
 - `block`
 - `cadddr`
@@ -104,6 +105,7 @@ Support functions
 - `read-line`
 - `return`
 - `return-from`
+- `reverse`
 - `setq`
 - `strcase`
 - `strcat`
