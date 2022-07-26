@@ -243,17 +243,20 @@ func (f *EasyFunc) Equals(n Node, m EqlMode) bool {
 	return false
 }
 
+const maxParameterOfEasyFunc = 8
+
 func (f *EasyFunc) Call(ctx context.Context, w *World, list Node) (Node, error) {
-	argv := make([]Node, f.C)
-	if err := listToArray(list, argv); err != nil {
-		return nil, err
-	}
+	var argv [maxParameterOfEasyFunc]Node
+	var err error
+
 	for i := 0; i < f.C; i++ {
-		value, err := argv[i].Eval(ctx, w)
+		argv[i], list, err = w.shiftAndEvalCar(ctx, list)
 		if err != nil {
 			return nil, err
 		}
-		argv[i] = value
 	}
-	return f.F(ctx, w, argv)
+	if HasValue(list) {
+		return nil, ErrTooManyArguments
+	}
+	return f.F(ctx, w, argv[:f.C])
 }
