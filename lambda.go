@@ -226,20 +226,38 @@ func cmdTrace(ctx context.Context, w *World, list Node) (Node, error) {
 	return Null, nil
 }
 
-func Easy(n int, easyf func(context.Context, *World, []Node) (Node, error)) Function {
-	hardf := func(ctx context.Context, w *World, list Node) (Node, error) {
-		argv := make([]Node, n)
-		if err := listToArray(list, argv); err != nil {
+type EasyFunc struct {
+	C int
+	F func(context.Context, *World, []Node) (Node, error)
+}
+
+func (*EasyFunc) PrintTo(w io.Writer, m PrintMode) {
+	io.WriteString(w, "buildin function")
+}
+
+func (f *EasyFunc) Eval(context.Context, *World) (Node, error) {
+	return f, nil
+}
+
+func (f *EasyFunc) Equals(n Node, m EqlMode) bool {
+	return false
+}
+
+func (f *EasyFunc) Call(ctx context.Context, w *World, list Node) (Node, error) {
+	argv := make([]Node, f.C)
+	if err := listToArray(list, argv); err != nil {
+		return nil, err
+	}
+	for i := 0; i < f.C; i++ {
+		value, err := argv[i].Eval(ctx, w)
+		if err != nil {
 			return nil, err
 		}
-		for i := 0; i < n; i++ {
-			value, err := argv[i].Eval(ctx, w)
-			if err != nil {
-				return nil, err
-			}
-			argv[i] = value
-		}
-		return easyf(ctx, w, argv)
+		argv[i] = value
 	}
-	return Function(hardf)
+	return f.F(ctx, w, argv)
+}
+
+func Easy(c int, f func(context.Context, *World, []Node) (Node, error)) Node {
+	return &EasyFunc{C: c, F: f}
 }
