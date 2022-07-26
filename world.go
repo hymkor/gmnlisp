@@ -69,7 +69,6 @@ func (w *World) SetStdout(writer io.Writer) {
 func New() *World {
 	return &World{
 		globals: map[string]Node{
-			standardOutput:        &Writer{Writer: os.Stdout},
 			"*":                   Function(cmdMulti),
 			"+":                   Function(cmdAdd),
 			"-":                   Function(cmdSub),
@@ -87,13 +86,13 @@ func New() *World {
 			"assoc":               Function(cmdAssoc),
 			"atom":                Function(cmdAtom),
 			"block":               Function(cmdBlock),
-			"cadr":                Function(cmdCadr),
-			"caddr":               Function(cmdCaddr),
 			"cadddr":              Function(cmdCadddr),
+			"caddr":               Function(cmdCaddr),
+			"cadr":                Function(cmdCadr),
 			"car":                 Function(cmdCar),
-			"cdr":                 Function(cmdCdr),
-			"cddr":                Function(cmdCddr),
 			"cdddr":               Function(cmdCdddr),
+			"cddr":                Function(cmdCddr),
+			"cdr":                 Function(cmdCdr),
 			"close":               Function(cmdClose),
 			"command":             Function(cmdCommand),
 			"cond":                Function(cmdCond),
@@ -104,8 +103,8 @@ func New() *World {
 			"equalp":              Function(cmdEqualOp),
 			"exit":                Function(cmdQuit),
 			"foreach":             Function(cmdForeach),
-			"function":            Function(cmdFunction),
 			"funcall":             Function(cmdFunCall),
+			"function":            Function(cmdFunction),
 			"if":                  Function(cmdIf),
 			"lambda":              Function(cmdLambda),
 			"length":              Function(cmdLength),
@@ -143,6 +142,7 @@ func New() *World {
 			"while":               Function(cmdWhile),
 			"write":               Function(cmdWrite),
 			"write-line":          Function(cmdWriteLine),
+			standardOutput:        &Writer{Writer: os.Stdout},
 		},
 	}
 }
