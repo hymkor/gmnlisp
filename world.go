@@ -147,20 +147,6 @@ func New() *World {
 	}
 }
 
-func (w *World) evalListAll(ctx context.Context, list Node, result []Node) error {
-	if err := listToArray(list, result); err != nil {
-		return err
-	}
-	for i := 0; i < len(result); i++ {
-		value, err := result[i].Eval(ctx, w)
-		if err != nil {
-			return err
-		}
-		result[i] = value
-	}
-	return nil
-}
-
 func (w *World) shiftAndEvalCar(ctx context.Context, list Node) (Node, Node, error) {
 	first, list, err := shift(list)
 	if err != nil {

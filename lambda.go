@@ -226,12 +226,20 @@ func cmdTrace(ctx context.Context, w *World, list Node) (Node, error) {
 	return Null, nil
 }
 
-func Easy(n int, f func(context.Context, *World, []Node) (Node, error)) Function {
-	return Function(func(ctx context.Context, w *World, list Node) (Node, error) {
+func Easy(n int, easyf func(context.Context, *World, []Node) (Node, error)) Function {
+	hardf := func(ctx context.Context, w *World, list Node) (Node, error) {
 		argv := make([]Node, n)
-		if err := w.evalListAll(ctx, list, argv); err != nil {
+		if err := listToArray(list, argv); err != nil {
 			return nil, err
 		}
-		return f(ctx, w, argv)
-	})
+		for i := 0; i < n; i++ {
+			value, err := argv[i].Eval(ctx, w)
+			if err != nil {
+				return nil, err
+			}
+			argv[i] = value
+		}
+		return easyf(ctx, w, argv)
+	}
+	return Function(hardf)
 }
