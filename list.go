@@ -258,3 +258,30 @@ func cmdReverse(ctx context.Context, w *World, n Node) (Node, error) {
 	}
 	return result, nil
 }
+
+func cmdAssoc(ctx context.Context, w *World, n Node) (Node, error) {
+	var argv [2]Node
+	if err := w.evalListAll(ctx, n, argv[:]); err != nil {
+		return nil, err
+	}
+	key := argv[0]
+	list := argv[1]
+
+	for HasValue(list) {
+		var element Node
+		var err error
+
+		element, list, err = shift(list)
+		if err != nil {
+			return nil, err
+		}
+		cons, ok := element.(*Cons)
+		if !ok {
+			return nil, ErrExpectedCons
+		}
+		if key.Equals(cons.Car, EQUAL) {
+			return cons, nil
+		}
+	}
+	return Null, nil
+}
