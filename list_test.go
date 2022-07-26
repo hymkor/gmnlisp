@@ -44,4 +44,7 @@ func TestList(t *testing.T) {
 
 	assertEqual(t, `(length (list 1 2 3 4))`, Integer(4))
 	assertEqual(t, `(length '(list 1 2 3))`, Integer(4))
+
+	assertEqual(t, `(reverse '(1 2 3 4))`,
+		List(Integer(4), Integer(3), Integer(2), Integer(1)))
 }

@@ -234,3 +234,27 @@ func cmdLength(ctx context.Context, w *World, n Node) (Node, error) {
 	}
 	return Integer(length), nil
 }
+
+func cmdReverse(ctx context.Context, w *World, n Node) (Node, error) {
+	var argv [1]Node
+	if err := w.evalListAll(ctx, n, argv[:]); err != nil {
+		return nil, err
+	}
+	source := argv[0]
+	var result Node
+
+	for HasValue(source) {
+		var value Node
+		var err error
+
+		value, source, err = shift(source)
+		if err != nil {
+			return nil, err
+		}
+		result = &Cons{
+			Car: value,
+			Cdr: result,
+		}
+	}
+	return result, nil
+}

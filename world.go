@@ -130,6 +130,7 @@ func New() *World {
 			"read-line":           Function(cmdReadLine),
 			"return":              Function(cmdReturn),
 			"return-from":         Function(cmdReturnFrom),
+			"reverse":             Function(cmdReverse),
 			"setq":                Function(cmdSetq),
 			"strcase":             Function(cmdStrCase),
 			"strcat":              Function(cmdStrCat),
