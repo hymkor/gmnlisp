@@ -194,3 +194,23 @@ func cmdTruncate(ctx context.Context, w *World, argv []Node) (Node, error) {
 	}
 	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(argv[0]))
 }
+
+func cmdOnePlus(ctx context.Context, w *World, argv []Node) (Node, error) {
+	if value, ok := argv[0].(Integer); ok {
+		return value + 1, nil
+	}
+	if value, ok := argv[0].(Float); ok {
+		return value + 1, nil
+	}
+	return nil, ErrExpectedNumber
+}
+
+func cmdOneMinus(ctx context.Context, w *World, argv []Node) (Node, error) {
+	if value, ok := argv[0].(Integer); ok {
+		return value - 1, nil
+	}
+	if value, ok := argv[0].(Float); ok {
+		return value - 1, nil
+	}
+	return nil, ErrExpectedNumber
+}

@@ -54,5 +54,6 @@ func TestOperators(t *testing.T) {
 	assertEqual(t, `(or 1 2 3)`, Integer(1))
 	assertEqual(t, `(or 1 nil 3)`, Integer(1))
 	assertEqual(t, `(or nil 3)`, Integer(3))
-
+	assertEqual(t, `(1+ 10)`, Integer(11))
+	assertEqual(t, `(1- 10)`, Integer(9))
 }

@@ -71,8 +71,10 @@ func New() *World {
 		globals: map[string]Node{
 			"*":                   SpecialFunc(cmdMulti),
 			"+":                   SpecialFunc(cmdAdd),
+			"1+":                  &EasyFunc{C: 1, F: cmdOnePlus},
 			"-":                   SpecialFunc(cmdSub),
 			"--get-all-symbols--": SpecialFunc(cmdGetAllSymbols),
+			"1-":                  &EasyFunc{C: 1, F: cmdOneMinus},
 			"/":                   SpecialFunc(cmdDevide),
 			"/=":                  &EasyFunc{C: 2, F: cmdNotEqual},
 			"<":                   SpecialFunc(cmdLessThan),
