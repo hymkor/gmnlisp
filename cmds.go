@@ -14,11 +14,7 @@ func cmdQuote(_ context.Context, _ *World, n Node) (Node, error) {
 	return argv[0], nil
 }
 
-func cmdAtom(ctx context.Context, w *World, n Node) (Node, error) {
-	var argv [1]Node
-	if err := w.evalListAll(ctx, n, argv[:]); err != nil {
-		return nil, err
-	}
+func cmdAtom(ctx context.Context, w *World, argv []Node) (Node, error) {
 	if _, ok := argv[0].(*Cons); ok {
 		return Null, nil
 	}
@@ -61,23 +57,15 @@ func cmdGetAllSymbols(ctx context.Context, w *World, n Node) (Node, error) {
 	return cons, nil
 }
 
-func cmdNot(ctx context.Context, w *World, n Node) (Node, error) {
-	var args [1]Node
-	if err := w.evalListAll(ctx, n, args[:]); err != nil {
-		return nil, err
-	}
-	if IsNull(args[0]) {
+func cmdNot(ctx context.Context, w *World, argv []Node) (Node, error) {
+	if IsNull(argv[0]) {
 		return True, nil
 	}
 	return Null, nil
 }
 
-func cmdLoad(ctx context.Context, w *World, n Node) (Node, error) {
-	var args [1]Node
-	if err := w.evalListAll(ctx, n, args[:]); err != nil {
-		return nil, err
-	}
-	fname, ok := args[0].(String)
+func cmdLoad(ctx context.Context, w *World, argv []Node) (Node, error) {
+	fname, ok := argv[0].(String)
 	if !ok {
 		return nil, ErrExpectedString
 	}
@@ -88,22 +76,14 @@ func cmdLoad(ctx context.Context, w *World, n Node) (Node, error) {
 	return w.InterpretBytes(ctx, script)
 }
 
-func cmdNotEqual(ctx context.Context, w *World, n Node) (Node, error) {
-	var args [2]Node
-	if err := w.evalListAll(ctx, n, args[:]); err != nil {
-		return nil, err
-	}
-	if args[0].Equals(args[1], EQUALP) {
+func cmdNotEqual(ctx context.Context, w *World, argv []Node) (Node, error) {
+	if argv[0].Equals(argv[1], EQUALP) {
 		return Null, nil
 	}
 	return True, nil
 }
 
-func cmdRead(ctx context.Context, w *World, n Node) (Node, error) {
-	var args [1]Node
-	if err := w.evalListAll(ctx, n, args[:]); err != nil {
-		return nil, err
-	}
+func cmdRead(ctx context.Context, w *World, args []Node) (Node, error) {
 	script, ok := args[0].(String)
 	if !ok {
 		return nil, ErrExpectedString

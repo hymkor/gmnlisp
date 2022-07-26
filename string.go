@@ -26,11 +26,7 @@ func cmdStrCat(ctx context.Context, w *World, n Node) (Node, error) {
 	return String(buffer.String()), nil
 }
 
-func cmdStrLen(ctx context.Context, w *World, n Node) (Node, error) {
-	var argv [1]Node
-	if err := w.evalListAll(ctx, n, argv[:]); err != nil {
-		return nil, err
-	}
+func cmdStrLen(ctx context.Context, w *World, argv []Node) (Node, error) {
 	str, ok := argv[0].(String)
 	if !ok {
 		return nil, ErrExpectedString
@@ -38,11 +34,7 @@ func cmdStrLen(ctx context.Context, w *World, n Node) (Node, error) {
 	return Integer(len(string(str))), nil
 }
 
-func cmdStrCase(ctx context.Context, w *World, n Node) (Node, error) {
-	var argv [1]Node
-	if err := w.evalListAll(ctx, n, argv[:]); err != nil {
-		return nil, err
-	}
+func cmdStrCase(ctx context.Context, w *World, argv []Node) (Node, error) {
 	str, ok := argv[0].(String)
 	if !ok {
 		return nil, ErrExpectedString
@@ -102,13 +94,7 @@ func cmdSubStr(ctx context.Context, w *World, n Node) (Node, error) {
 	return String(_str), nil
 }
 
-func cmdParseInt(ctx context.Context, w *World, node Node) (Node, error) {
-	var argv [1]Node
-
-	if err := w.evalListAll(ctx, node, argv[:]); err != nil {
-		return nil, err
-	}
-
+func cmdParseInt(ctx context.Context, w *World, argv []Node) (Node, error) {
 	s, ok := argv[0].(String)
 	if !ok {
 		return nil, ErrExpectedString

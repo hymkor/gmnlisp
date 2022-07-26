@@ -197,11 +197,7 @@ func (f Function) Call(ctx context.Context, w *World, n Node) (Node, error) {
 	return f(ctx, w, n)
 }
 
-func cmdFunction(ctx context.Context, w *World, node Node) (Node, error) {
-	var argv [1]Node
-	if err := w.evalListAll(ctx, node, argv[:]); err != nil {
-		return nil, err
-	}
+func cmdFunction(ctx context.Context, w *World, argv []Node) (Node, error) {
 	f, ok := argv[0].(_Callable)
 	if !ok {
 		return nil, ErrExpectedFunction

@@ -64,11 +64,7 @@ func cmdTerpri(ctx context.Context, w *World, _ Node) (Node, error) {
 	return Null, nil
 }
 
-func cmdPrinX(ctx context.Context, w *World, n Node, f func(node Node, out io.Writer)) (Node, error) {
-	var argv [1]Node
-	if err := w.evalListAll(ctx, n, argv[:]); err != nil {
-		return nil, err
-	}
+func cmdPrinX(ctx context.Context, w *World, argv []Node, f func(node Node, out io.Writer)) (Node, error) {
 	out, err := w.Stdout()
 	if err != nil {
 		return nil, err
@@ -77,22 +73,22 @@ func cmdPrinX(ctx context.Context, w *World, n Node, f func(node Node, out io.Wr
 	return argv[0], nil
 }
 
-func cmdPrint(ctx context.Context, w *World, this Node) (Node, error) {
-	return cmdPrinX(ctx, w, this, func(node Node, out io.Writer) {
+func cmdPrint(ctx context.Context, w *World, argv []Node) (Node, error) {
+	return cmdPrinX(ctx, w, argv, func(node Node, out io.Writer) {
 		out.Write([]byte{'\n'})
 		node.PrintTo(out, PRINT)
 		out.Write([]byte{' '})
 	})
 }
 
-func cmdPrin1(ctx context.Context, w *World, this Node) (Node, error) {
-	return cmdPrinX(ctx, w, this, func(node Node, out io.Writer) {
+func cmdPrin1(ctx context.Context, w *World, argv []Node) (Node, error) {
+	return cmdPrinX(ctx, w, argv, func(node Node, out io.Writer) {
 		node.PrintTo(out, PRINT)
 	})
 }
 
-func cmdPrinc(ctx context.Context, w *World, this Node) (Node, error) {
-	return cmdPrinX(ctx, w, this, func(node Node, out io.Writer) {
+func cmdPrinc(ctx context.Context, w *World, argv []Node) (Node, error) {
+	return cmdPrinX(ctx, w, argv, func(node Node, out io.Writer) {
 		node.PrintTo(out, PRINC)
 	})
 }

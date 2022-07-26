@@ -185,16 +185,12 @@ func cmdOr(ctx context.Context, w *World, param Node) (Node, error) {
 	}
 }
 
-func cmdTruncate(ctx context.Context, w *World, this Node) (Node, error) {
-	first, _, err := w.shiftAndEvalCar(ctx, this)
-	if err != nil {
-		return nil, err
+func cmdTruncate(ctx context.Context, w *World, argv []Node) (Node, error) {
+	if value, ok := argv[0].(Integer); ok {
+		return value, nil
 	}
-	if value, ok := first.(Integer); ok {
-		return value, err
-	}
-	if value, ok := first.(Float); ok {
+	if value, ok := argv[0].(Float); ok {
 		return Integer(int(math.Trunc(float64(value)))), nil
 	}
-	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(first))
+	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(argv[0]))
 }

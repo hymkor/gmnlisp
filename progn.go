@@ -18,11 +18,7 @@ func (e *ErrEarlyReturns) Error() string {
 	return fmt.Sprintf("Unexpected (return-from %s)", e.Name)
 }
 
-func cmdReturn(ctx context.Context, w *World, n Node) (Node, error) {
-	var argv [1]Node
-	if err := w.evalListAll(ctx, n, argv[:]); err != nil {
-		return nil, err
-	}
+func cmdReturn(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return nil, &ErrEarlyReturns{Value: argv[0], Name: ""}
 }
 
