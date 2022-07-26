@@ -12,8 +12,12 @@ all:
 	go fmt
 	go build
 	go fmt cmd/gmnlisp/main.go
-	go fmt cmd/preprocessor/main.go
 	go build -o gmnlisp$(EXE) cmd/gmnlisp/main.go
+
+preprocessor:
+	go fmt
+	go build
+	go fmt cmd/preprocessor/main.go
 	go build -o preprocessor$(EXE) cmd/preprocessor/main.go
 
 test:
