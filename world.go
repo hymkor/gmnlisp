@@ -117,6 +117,8 @@ func New() *World {
 			"member":              &EasyFunc{C: 2, F: cmdMember},
 			"nil":                 Null,
 			"not":                 &EasyFunc{C: 1, F: cmdNot},
+			"nth":                 &EasyFunc{C: 2, F: cmdNth},
+			"nthcdr":              &EasyFunc{C: 2, F: cmdNthcdr},
 			"open":                SpecialFunc(cmdOpen),
 			"or":                  SpecialFunc(cmdOr),
 			"parse-integer":       &EasyFunc{C: 1, F: cmdParseInt},

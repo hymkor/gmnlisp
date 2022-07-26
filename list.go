@@ -21,8 +21,7 @@ func cmdCdr(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return cons.Cdr, nil
 }
 
-func nthcdr(ctx context.Context, w *World, argv []Node, n int) (Node, error) {
-	list := argv[0]
+func nthcdr(n int, list Node) (Node, error) {
 	for i := 0; i < n; i++ {
 		var err error
 
@@ -34,8 +33,17 @@ func nthcdr(ctx context.Context, w *World, argv []Node, n int) (Node, error) {
 	return list, nil
 }
 
-func nth(ctx context.Context, w *World, argv []Node, n int) (Node, error) {
-	list, err := nthcdr(ctx, w, argv, n)
+func cmdNthcdr(_ context.Context, _ *World, argv []Node) (Node, error) {
+	n, ok := argv[0].(Integer)
+	if !ok {
+		return nil, ErrExpectedNumber
+	}
+	return nthcdr(int(n), argv[1])
+}
+
+func nth(n int, list Node) (Node, error) {
+	var err error
+	list, err = nthcdr(n, list)
 	if err != nil {
 		return nil, err
 	}
@@ -46,24 +54,32 @@ func nth(ctx context.Context, w *World, argv []Node, n int) (Node, error) {
 	return cons.Car, nil
 }
 
+func cmdNth(_ context.Context, _ *World, argv []Node) (Node, error) {
+	n, ok := argv[0].(Integer)
+	if !ok {
+		return nil, ErrExpectedNumber
+	}
+	return nth(int(n), argv[1])
+}
+
 func cmdCadr(ctx context.Context, w *World, argv []Node) (Node, error) {
-	return nth(ctx, w, argv, 1)
+	return nth(1, argv[0])
 }
 
 func cmdCaddr(ctx context.Context, w *World, argv []Node) (Node, error) {
-	return nth(ctx, w, argv, 2)
+	return nth(2, argv[0])
 }
 
 func cmdCadddr(ctx context.Context, w *World, argv []Node) (Node, error) {
-	return nth(ctx, w, argv, 3)
+	return nth(3, argv[0])
 }
 
 func cmdCddr(ctx context.Context, w *World, argv []Node) (Node, error) {
-	return nthcdr(ctx, w, argv, 2)
+	return nthcdr(2, argv[0])
 }
 
 func cmdCdddr(ctx context.Context, w *World, argv []Node) (Node, error) {
-	return nthcdr(ctx, w, argv, 3)
+	return nthcdr(3, argv[0])
 }
 
 func cmdList(ctx context.Context, w *World, node Node) (Node, error) {
