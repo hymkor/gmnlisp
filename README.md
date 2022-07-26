@@ -47,6 +47,8 @@ Support functions
 - `--get-all-symbols--`
 - `/`
 - `/=`
+- `1+`
+- `1-`
 - `<`
 - `<=`
 - `=`
