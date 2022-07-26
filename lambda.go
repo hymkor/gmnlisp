@@ -176,21 +176,21 @@ type _Callable interface {
 	Call(context.Context, *World, Node) (Node, error)
 }
 
-type Function func(context.Context, *World, Node) (Node, error)
+type SpecialFunc func(context.Context, *World, Node) (Node, error)
 
-func (Function) PrintTo(w io.Writer, m PrintMode) {
+func (SpecialFunc) PrintTo(w io.Writer, m PrintMode) {
 	io.WriteString(w, "buildin function")
 }
 
-func (f Function) Eval(context.Context, *World) (Node, error) {
+func (f SpecialFunc) Eval(context.Context, *World) (Node, error) {
 	return f, nil
 }
 
-func (f Function) Equals(n Node, m EqlMode) bool {
+func (f SpecialFunc) Equals(n Node, m EqlMode) bool {
 	return false
 }
 
-func (f Function) Call(ctx context.Context, w *World, n Node) (Node, error) {
+func (f SpecialFunc) Call(ctx context.Context, w *World, n Node) (Node, error) {
 	if err := checkContext(ctx); err != nil {
 		return nil, err
 	}
