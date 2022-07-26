@@ -257,7 +257,3 @@ func (f *EasyFunc) Call(ctx context.Context, w *World, list Node) (Node, error) 
 	}
 	return f.F(ctx, w, argv)
 }
-
-func Easy(c int, f func(context.Context, *World, []Node) (Node, error)) Node {
-	return &EasyFunc{C: c, F: f}
-}
