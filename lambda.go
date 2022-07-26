@@ -249,6 +249,10 @@ func (f *EasyFunc) Call(ctx context.Context, w *World, list Node) (Node, error) 
 	var argv [maxParameterOfEasyFunc]Node
 	var err error
 
+	if err := checkContext(ctx); err != nil {
+		return nil, err
+	}
+
 	for i := 0; i < f.C; i++ {
 		argv[i], list, err = w.shiftAndEvalCar(ctx, list)
 		if err != nil {
