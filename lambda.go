@@ -229,3 +229,13 @@ func cmdTrace(ctx context.Context, w *World, list Node) (Node, error) {
 	}
 	return Null, nil
 }
+
+func Easy(n int, f func(context.Context, *World, []Node) (Node, error)) Function {
+	return Function(func(ctx context.Context, w *World, list Node) (Node, error) {
+		argv := make([]Node, n)
+		if err := w.evalListAll(ctx, list, argv); err != nil {
+			return nil, err
+		}
+		return f(ctx, w, argv)
+	})
+}
