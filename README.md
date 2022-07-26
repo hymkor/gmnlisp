@@ -92,6 +92,8 @@ Support functions
 - `name`
 - `nil`
 - `not`
+- `nth`
+- `nthcdr`
 - `open`
 - `or`
 - `parse-integer`
