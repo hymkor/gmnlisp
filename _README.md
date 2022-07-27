@@ -10,16 +10,15 @@ Now under constructing. Experimental implementing
 ```go
 (%
     (defun detab (src)
-        (let ((i 1) (result "") tmp)
-            (while (<= i (strlen src))
+        (let ((result "") c)
+            (foreach c (split-string src "")
                 (setq result
                     (strcat result
-                        (if (= "\t" (setq tmp (substr src i 1)))
+                        (if (= "\t" c)
                             "    "
-                            tmp
+                            c
                         )
                     )
-                    i (+ i 1)
                 )
             )
             result

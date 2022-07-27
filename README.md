@@ -111,6 +111,7 @@ Support functions
 - `return-from`
 - `reverse`
 - `setq`
+- `split-string`
 - `strcase`
 - `strcat`
 - `strlen`
