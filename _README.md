@@ -25,7 +25,7 @@ Now under constructing. Experimental implementing
             result
         )
     )
-    (let (fd count)
+    (let (fd count line)
         (if (setq fd (open "examples/example1.go"))
             (progn
                 (setq count 0)
