@@ -147,7 +147,7 @@ func cmdForeach(ctx context.Context, w *World, args Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		w.Set(string(symbol), value)
+		w.SetOrNew(string(symbol), value)
 
 		last, err = progn(ctx, w, code)
 		if err != nil {

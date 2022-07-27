@@ -24,7 +24,7 @@ func cmdSetq(ctx context.Context, w *World, params Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		w.Set(string(nameSymbol), value)
+		w.SetOrNew(string(nameSymbol), value)
 	}
 	return value, nil
 }
