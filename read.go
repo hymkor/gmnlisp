@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"unicode/utf8"
 )
 
 var rxFloat = regexp.MustCompile(`^-?[0-9]+\.[0-9]*$`)
@@ -81,6 +82,10 @@ func readNode(tokenGetter func() (string, error)) (Node, error) {
 			return nil, fmt.Errorf("%s: %w", token, err)
 		}
 		return Integer(val), nil
+	}
+	if strings.HasPrefix(token, "#\\") {
+		val, _ := utf8.DecodeRuneInString(token[2:])
+		return Rune(val), nil
 	}
 	if len(token) > 0 && token[0] == '"' {
 		token = token[1:]

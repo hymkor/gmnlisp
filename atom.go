@@ -107,3 +107,30 @@ func (s Symbol) Equals(n Node, m EqlMode) bool {
 		return ok && s == ns
 	}
 }
+
+type Rune rune
+
+func (r Rune) PrintTo(w io.Writer, m PrintMode) {
+	if m == PRINT {
+		fmt.Fprintf(w, "#\\%c", rune(r))
+	} else {
+		fmt.Fprintf(w, "%c", rune(r))
+	}
+}
+
+func (r Rune) Eval(_ context.Context, w *World) (Node, error) {
+	return r, nil
+}
+
+func (r Rune) Equals(n Node, m EqlMode) bool {
+	if value, ok := n.(Rune); ok {
+		return r == value
+	}
+	if m == EQUAL {
+		return false
+	}
+	if value, ok := n.(String); ok {
+		return len(string(value)) == 1 && string(r) == string(value)
+	}
+	return false
+}
