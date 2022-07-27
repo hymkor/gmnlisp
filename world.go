@@ -154,6 +154,7 @@ func New() *World {
 			"return-from":         SpecialFunc(cmdReturnFrom),
 			"reverse":             &EasyFunc{C: 1, F: cmdReverse},
 			"setq":                SpecialFunc(cmdSetq),
+			"split-string":        &EasyFunc{C: 2, F: cmdSplitString},
 			"strcase":             &EasyFunc{C: 1, F: cmdStrCase},
 			"strcat":              SpecialFunc(cmdStrCat),
 			"strlen":              &EasyFunc{C: 1, F: cmdStrLen},

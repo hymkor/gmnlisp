@@ -105,3 +105,24 @@ func cmdParseInt(ctx context.Context, w *World, argv []Node) (Node, error) {
 	}
 	return Integer(value), nil
 }
+
+func cmdSplitString(ctx context.Context, w *World, argv []Node) (Node, error) {
+	// from emacs-lisp
+	s, ok := argv[0].(String)
+	if !ok {
+		return nil, ErrExpectedString
+	}
+	sep, ok := argv[1].(String)
+	if !ok {
+		return nil, ErrExpectedString
+	}
+	result := strings.Split(string(s), string(sep))
+	var list Node = Null
+	for i := len(result) - 1; i >= 0; i-- {
+		list = &Cons{
+			Car: String(result[i]),
+			Cdr: list,
+		}
+	}
+	return list, nil
+}
