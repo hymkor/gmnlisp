@@ -48,7 +48,13 @@ func (w *World) SetOrNew(name string, value Node) {
 	}
 }
 
+var UseStrict = true
+
 func (w *World) Set(name string, value Node) error {
+	if !UseStrict {
+		w.SetOrNew(name, value)
+		return nil
+	}
 	for w != nil {
 		if _, ok := w.globals[name]; ok {
 			w.globals[name] = value
