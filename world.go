@@ -112,6 +112,7 @@ func New() *World {
 			"cons":                &EasyFunc{C: 2, F: cmdCons},
 			"defmacro":            SpecialFunc(cmdDefMacro),
 			"defun":               SpecialFunc(cmdDefun),
+			"defvar":              SpecialFunc(cmdDefvar),
 			"equal":               SpecialFunc(cmdEqual),
 			"equalp":              SpecialFunc(cmdEqualOp),
 			"exit":                SpecialFunc(cmdQuit),

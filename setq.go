@@ -66,3 +66,29 @@ func cmdLet(ctx context.Context, w *World, params Node) (Node, error) {
 	}
 	return progn(ctx, newWorld, params)
 }
+
+func cmdDefvar(ctx context.Context, w *World, list Node) (Node, error) {
+	var symbolNode Node
+	var err error
+
+	symbolNode, list, err = shift(list)
+	if err != nil {
+		return nil, err
+	}
+	symbol, ok := symbolNode.(Symbol)
+	if !ok {
+		return nil, ErrExpectedSymbol
+	}
+	var value Node = Null
+	if HasValue(list) {
+		value, list, err = w.shiftAndEvalCar(ctx, list)
+		if err != nil {
+			return nil, err
+		}
+	}
+	for w.parent != nil {
+		w = w.parent
+	}
+	w.globals[string(symbol)] = value
+	return value, nil
+}
