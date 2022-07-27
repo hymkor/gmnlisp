@@ -139,6 +139,7 @@ func New() *World {
 			"strcase":             &EasyFunc{C: 1, F: cmdStrCase},
 			"strcat":              SpecialFunc(cmdStrCat),
 			"strlen":              &EasyFunc{C: 1, F: cmdStrLen},
+			"subst":               &EasyFunc{C: 3, F: cmdSubst},
 			"substr":              SpecialFunc(cmdSubStr),
 			"terpri":              SpecialFunc(cmdTerpri),
 			"trace":               SpecialFunc(cmdTrace),

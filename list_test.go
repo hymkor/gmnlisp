@@ -55,4 +55,12 @@ func TestList(t *testing.T) {
 	assertEqual(t, `(nth 2 '(10 20 30 40))`, Integer(30))
 	assertEqual(t, `(nthcdr 2 '(10 20 30 40))`, List(Integer(30), Integer(40)))
 
+	assertEqual(t, `
+	(setq collection (list
+		(cons "X"  1) (cons "Y"  2) (cons "Z" 4)))
+	(subst (cons "X" 7) (assoc "X" collection) collection)`,
+		List(
+			&Cons{Car: String("X"), Cdr: Integer(7)},
+			&Cons{Car: String("Y"), Cdr: Integer(2)},
+			&Cons{Car: String("Z"), Cdr: Integer(4)}))
 }

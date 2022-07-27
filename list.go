@@ -265,3 +265,21 @@ func cmdAssoc(ctx context.Context, w *World, argv []Node) (Node, error) {
 	}
 	return Null, nil
 }
+
+func subst(newItem, oldItem, list Node) Node {
+	if list.Equals(oldItem, EQUAL) {
+		return newItem
+	}
+	cons, ok := list.(*Cons)
+	if ok {
+		return &Cons{
+			Car: subst(newItem, oldItem, cons.Car),
+			Cdr: subst(newItem, oldItem, cons.Cdr),
+		}
+	}
+	return list
+}
+
+func cmdSubst(ctx context.Context, w *World, argv []Node) (Node, error) {
+	return subst(argv[0], argv[1], argv[2]), nil
+}
