@@ -48,6 +48,17 @@ func (w *World) SetOrNew(name string, value Node) {
 	}
 }
 
+func (w *World) Set(name string, value Node) error {
+	for w != nil {
+		if _, ok := w.globals[name]; ok {
+			w.globals[name] = value
+			return nil
+		}
+		w = w.parent
+	}
+	return ErrVariableUnbound
+}
+
 const standardOutput = "*standard-output*"
 
 func (w *World) Stdout() (io.Writer, error) {
