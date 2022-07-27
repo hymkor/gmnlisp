@@ -24,6 +24,7 @@ func TestIf(t *testing.T) {
 	}
 
 	assertEqual(t, `
+	(defvar aa)
 	(cond
 		((= (setq aa (strcat "a" "a")) "ab") "A")
 		((= aa "aa") "B")

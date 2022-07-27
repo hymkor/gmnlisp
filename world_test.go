@@ -32,7 +32,7 @@ func TestProgn(t *testing.T) {
 
 func TestWorld(t *testing.T) {
 	w1 := New()
-	if _, err := w1.Interpret(context.TODO(), `(setq a "A")`); err != nil {
+	if _, err := w1.Interpret(context.TODO(), `(defvar a "A")`); err != nil {
 		t.Fatal(err.Error())
 		return
 	}

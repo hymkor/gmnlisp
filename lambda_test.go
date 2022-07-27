@@ -25,6 +25,7 @@ func TestLambdaGo(t *testing.T) {
 
 	assertEqual(t, `
 		(progn
+			(defvar a)
 			(setq a 0)
 			(defun dummy (a b) (+ a b))
 			(dummy 7 8)
@@ -38,10 +39,10 @@ func TestLambdaGo(t *testing.T) {
 			(f))`,
 		&Cons{Car: Integer(1), Cdr: Null})
 
-	assertEqual(t, `(setq c "a") c`, String("a"))
+	assertEqual(t, `(defvar c)(setq c "a") c`, String("a"))
 
 	assertEqual(t, `
-		(setq c "a")
+		(defvar c "a")
 		(defun f (a)
 			(let ((c "b"))
 				(+ a 1)
@@ -51,7 +52,7 @@ func TestLambdaGo(t *testing.T) {
 		List(Integer(5), String("a")))
 
 	assertEqual(t, `
-		(setq c "a")
+		(defvar c "a")
 		(defun f (a / c)
 			(setq c "b")
 			(+ a 1)
@@ -86,10 +87,10 @@ func TestLambdaGo(t *testing.T) {
 
 func TestFunCall(t *testing.T) {
 	assertEqual(t, `
-		(setq f (function (lambda (a b) (+ a b))))
-		(funcall f 1 2)`, Integer(3))
+		(let ((f (function (lambda (a b) (+ a b)))))
+			(funcall f 1 2))`, Integer(3))
 
 	assertEqual(t, `
-		(setq f (lambda (a b) (+ a b)))
-		(funcall f 1 2)`, Integer(3))
+		(let ((f (lambda (a b) (+ a b))))
+			(funcall f 1 2))`, Integer(3))
 }

@@ -48,17 +48,17 @@ func TestList(t *testing.T) {
 	assertEqual(t, `(reverse '(1 2 3 4))`,
 		List(Integer(4), Integer(3), Integer(2), Integer(1)))
 
-	assertEqual(t, `(setq collection '((a . 1) (b . 2) (c . 3)))
-			(assoc 'a collection)`,
+	assertEqual(t, `(let ((collection '((a . 1) (b . 2) (c . 3))))
+			(assoc 'a collection))`,
 		&Cons{Car: Symbol("a"), Cdr: Integer(1)})
 
 	assertEqual(t, `(nth 2 '(10 20 30 40))`, Integer(30))
 	assertEqual(t, `(nthcdr 2 '(10 20 30 40))`, List(Integer(30), Integer(40)))
 
 	assertEqual(t, `
-	(setq collection (list
-		(cons "X"  1) (cons "Y"  2) (cons "Z" 4)))
-	(subst (cons "X" 7) (assoc "X" collection) collection)`,
+	(let ((collection (list
+		(cons "X"  1) (cons "Y"  2) (cons "Z" 4))))
+		(subst (cons "X" 7) (assoc "X" collection) collection))`,
 		List(
 			&Cons{Car: String("X"), Cdr: Integer(7)},
 			&Cons{Car: String("Y"), Cdr: Integer(2)},
