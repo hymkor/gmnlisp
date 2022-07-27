@@ -114,6 +114,7 @@ Support functions
 - `strcase`
 - `strcat`
 - `strlen`
+- `subst`
 - `substr`
 - `terpri`
 - `trace`
