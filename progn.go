@@ -39,6 +39,7 @@ func cmdReturnFrom(ctx context.Context, w *World, n Node) (Node, error) {
 }
 
 func progn(ctx context.Context, w *World, n Node) (value Node, err error) {
+	value = Null
 	for HasValue(n) {
 		value, n, err = w.shiftAndEvalCar(ctx, n)
 		if err != nil {
