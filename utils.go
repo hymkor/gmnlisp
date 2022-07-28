@@ -69,18 +69,14 @@ func HasValue(node Node) bool {
 }
 
 func List(nodes ...Node) Node {
-	first := &Cons{Cdr: Null}
-	last := first
-	for len(nodes) > 0 {
-		tmp := &Cons{
-			Car: nodes[0],
-			Cdr: Null,
+	var cons Node = Null
+	for i := len(nodes) - 1; i >= 0; i-- {
+		cons = &Cons{
+			Car: nodes[i],
+			Cdr: cons,
 		}
-		last.Cdr = tmp
-		last = tmp
-		nodes = nodes[1:]
 	}
-	return first.Cdr
+	return cons
 }
 
 func shift(list Node) (Node, Node, error) {
