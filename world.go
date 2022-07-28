@@ -129,6 +129,7 @@ func New() *World {
 			"lambda":              SpecialFunc(cmdLambda),
 			"length":              &EasyFunc{C: 1, F: cmdLength},
 			"let":                 SpecialFunc(cmdLet),
+			"let*":                SpecialFunc(cmdLetX),
 			"list":                SpecialFunc(cmdList),
 			"listp":               &EasyFunc{C: 1, F: cmdListp},
 			"load":                &EasyFunc{C: 1, F: cmdLoad},
