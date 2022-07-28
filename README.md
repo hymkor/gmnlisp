@@ -85,6 +85,7 @@ Support functions
 - `lambda`
 - `length`
 - `let`
+- `let*`
 - `list`
 - `listp`
 - `load`
