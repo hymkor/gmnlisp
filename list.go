@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func cmdCar(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funCar(ctx context.Context, w *World, argv []Node) (Node, error) {
 	cons, ok := argv[0].(*Cons)
 	if !ok {
 		return nil, fmt.Errorf("%w: %s", ErrExpectedCons, toString(argv[0]))
@@ -13,7 +13,7 @@ func cmdCar(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return cons.Car, nil
 }
 
-func cmdCdr(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funCdr(ctx context.Context, w *World, argv []Node) (Node, error) {
 	cons, ok := argv[0].(*Cons)
 	if !ok {
 		return nil, ErrExpectedCons
@@ -33,7 +33,7 @@ func nthcdr(n int, list Node) (Node, error) {
 	return list, nil
 }
 
-func cmdNthcdr(_ context.Context, _ *World, argv []Node) (Node, error) {
+func funNthcdr(_ context.Context, _ *World, argv []Node) (Node, error) {
 	n, ok := argv[0].(Integer)
 	if !ok {
 		return nil, ErrExpectedNumber
@@ -54,7 +54,7 @@ func nth(n int, list Node) (Node, error) {
 	return cons.Car, nil
 }
 
-func cmdNth(_ context.Context, _ *World, argv []Node) (Node, error) {
+func funNth(_ context.Context, _ *World, argv []Node) (Node, error) {
 	n, ok := argv[0].(Integer)
 	if !ok {
 		return nil, ErrExpectedNumber
@@ -62,23 +62,23 @@ func cmdNth(_ context.Context, _ *World, argv []Node) (Node, error) {
 	return nth(int(n), argv[1])
 }
 
-func cmdCadr(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funCadr(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return nth(1, argv[0])
 }
 
-func cmdCaddr(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funCaddr(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return nth(2, argv[0])
 }
 
-func cmdCadddr(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funCadddr(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return nth(3, argv[0])
 }
 
-func cmdCddr(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funCddr(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return nthcdr(2, argv[0])
 }
 
-func cmdCdddr(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funCdddr(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return nthcdr(3, argv[0])
 }
 
@@ -122,7 +122,7 @@ func funAppend(ctx context.Context, w *World, list []Node) (Node, error) {
 	return last, nil
 }
 
-func cmdMember(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funMember(ctx context.Context, w *World, argv []Node) (Node, error) {
 	expr := argv[0]
 	list := argv[1]
 	for HasValue(list) {
@@ -138,7 +138,7 @@ func cmdMember(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return Null, nil
 }
 
-func cmdCons(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funCons(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return &Cons{Car: argv[0], Cdr: argv[1]}, nil
 }
 
@@ -176,7 +176,7 @@ func funMapCar(ctx context.Context, w *World, argv []Node) (Node, error) {
 	}
 }
 
-func cmdListp(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funListp(ctx context.Context, w *World, argv []Node) (Node, error) {
 	if IsNull(argv[0]) {
 		return True, nil
 	}
@@ -186,7 +186,7 @@ func cmdListp(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return Null, nil
 }
 
-func cmdLength(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funLength(ctx context.Context, w *World, argv []Node) (Node, error) {
 	length := 0
 	list := argv[0]
 	for HasValue(list) {
@@ -200,7 +200,7 @@ func cmdLength(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return Integer(length), nil
 }
 
-func cmdReverse(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funReverse(ctx context.Context, w *World, argv []Node) (Node, error) {
 	source := argv[0]
 	var result Node
 
@@ -220,7 +220,7 @@ func cmdReverse(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return result, nil
 }
 
-func cmdAssoc(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funAssoc(ctx context.Context, w *World, argv []Node) (Node, error) {
 	key := argv[0]
 	list := argv[1]
 
@@ -257,6 +257,6 @@ func subst(newItem, oldItem, list Node) Node {
 	return list
 }
 
-func cmdSubst(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funSubst(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return subst(argv[0], argv[1], argv[2]), nil
 }

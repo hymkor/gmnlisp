@@ -73,7 +73,7 @@ func cmdPrinX(ctx context.Context, w *World, argv []Node, f func(node Node, out 
 	return argv[0], nil
 }
 
-func cmdPrint(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funPrint(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return cmdPrinX(ctx, w, argv, func(node Node, out io.Writer) {
 		out.Write([]byte{'\n'})
 		node.PrintTo(out, PRINT)
@@ -81,13 +81,13 @@ func cmdPrint(ctx context.Context, w *World, argv []Node) (Node, error) {
 	})
 }
 
-func cmdPrin1(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funPrin1(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return cmdPrinX(ctx, w, argv, func(node Node, out io.Writer) {
 		node.PrintTo(out, PRINT)
 	})
 }
 
-func cmdPrinc(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funPrinc(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return cmdPrinX(ctx, w, argv, func(node Node, out io.Writer) {
 		node.PrintTo(out, PRINC)
 	})

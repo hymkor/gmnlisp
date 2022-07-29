@@ -19,7 +19,7 @@ func funStrCat(ctx context.Context, w *World, list []Node) (Node, error) {
 	return String(buffer.String()), nil
 }
 
-func cmdStrLen(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funStrLen(ctx context.Context, w *World, argv []Node) (Node, error) {
 	str, ok := argv[0].(String)
 	if !ok {
 		return nil, ErrExpectedString
@@ -27,7 +27,7 @@ func cmdStrLen(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return Integer(len(string(str))), nil
 }
 
-func cmdStrCase(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funStrCase(ctx context.Context, w *World, argv []Node) (Node, error) {
 	str, ok := argv[0].(String)
 	if !ok {
 		return nil, ErrExpectedString
@@ -87,7 +87,7 @@ func cmdSubStr(ctx context.Context, w *World, n Node) (Node, error) {
 	return String(_str), nil
 }
 
-func cmdParseInt(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funParseInt(ctx context.Context, w *World, argv []Node) (Node, error) {
 	s, ok := argv[0].(String)
 	if !ok {
 		return nil, ErrExpectedString
@@ -99,7 +99,7 @@ func cmdParseInt(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return Integer(value), nil
 }
 
-func cmdSplitString(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funSplitString(ctx context.Context, w *World, argv []Node) (Node, error) {
 	// from emacs-lisp
 	s, ok := argv[0].(String)
 	if !ok {

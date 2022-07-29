@@ -185,7 +185,7 @@ func cmdOr(ctx context.Context, w *World, param Node) (Node, error) {
 	}
 }
 
-func cmdTruncate(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funTruncate(ctx context.Context, w *World, argv []Node) (Node, error) {
 	if value, ok := argv[0].(Integer); ok {
 		return value, nil
 	}
@@ -195,7 +195,7 @@ func cmdTruncate(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(argv[0]))
 }
 
-func cmdOnePlus(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funOnePlus(ctx context.Context, w *World, argv []Node) (Node, error) {
 	if value, ok := argv[0].(Integer); ok {
 		return value + 1, nil
 	}
@@ -205,7 +205,7 @@ func cmdOnePlus(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return nil, ErrExpectedNumber
 }
 
-func cmdOneMinus(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funOneMinus(ctx context.Context, w *World, argv []Node) (Node, error) {
 	if value, ok := argv[0].(Integer); ok {
 		return value - 1, nil
 	}
