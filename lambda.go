@@ -262,3 +262,35 @@ func (f *Function) Call(ctx context.Context, w *World, list Node) (Node, error) 
 	}
 	return f.F(ctx, w, argv[:f.C])
 }
+
+type FunctionN func(context.Context, *World, []Node) (Node, error)
+
+func (f FunctionN) PrintTo(w io.Writer, m PrintMode) {
+	io.WriteString(w, "built-in function(N)")
+}
+
+func (f FunctionN) Eval(context.Context, *World) (Node, error) {
+	return f, nil
+}
+
+func (f FunctionN) Equals(n Node, m EqlMode) bool {
+	return false
+}
+
+func (f FunctionN) Call(ctx context.Context, w *World, list Node) (Node, error) {
+	if err := checkContext(ctx); err != nil {
+		return nil, err
+	}
+	argv := []Node{}
+	for HasValue(list) {
+		var tmp Node
+		var err error
+
+		tmp, list, err = w.shiftAndEvalCar(ctx, list)
+		if err != nil {
+			return nil, err
+		}
+		argv = append(argv, tmp)
+	}
+	return f(ctx, w, argv)
+}

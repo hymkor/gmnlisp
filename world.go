@@ -174,7 +174,7 @@ func New() *World {
 			"setq":                Special(cmdSetq),
 			"split-string":        &Function{C: 2, F: cmdSplitString},
 			"strcase":             &Function{C: 1, F: cmdStrCase},
-			"strcat":              Special(cmdStrCat),
+			"strcat":              FunctionN(funStrCat),
 			"strlen":              &Function{C: 1, F: cmdStrLen},
 			"subst":               &Function{C: 3, F: cmdSubst},
 			"substr":              Special(cmdSubStr),

@@ -7,17 +7,10 @@ import (
 	"strings"
 )
 
-func cmdStrCat(ctx context.Context, w *World, n Node) (Node, error) {
+func funStrCat(ctx context.Context, w *World, list []Node) (Node, error) {
 	var buffer strings.Builder
-	for HasValue(n) {
-		var s Node
-		var err error
-
-		s, n, err = w.shiftAndEvalCar(ctx, n)
-		if err != nil {
-			return nil, err
-		}
-		str, ok := s.(String)
+	for _, n := range list {
+		str, ok := n.(String)
 		if !ok {
 			return nil, ErrExpectedString
 		}
