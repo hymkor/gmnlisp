@@ -129,7 +129,7 @@ func New() *World {
 			"cddr":                &Function{C: 1, F: cmdCddr},
 			"cdr":                 &Function{C: 1, F: cmdCdr},
 			"close":               &Function{C: 1, F: cmdClose},
-			"command":             Special(cmdCommand),
+			"command":             FunctionN(funCommand),
 			"cond":                Special(cmdCond),
 			"cons":                &Function{C: 2, F: cmdCons},
 			"defmacro":            Special(cmdDefMacro),
