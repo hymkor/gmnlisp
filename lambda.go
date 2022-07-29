@@ -224,26 +224,26 @@ func cmdTrace(ctx context.Context, w *World, list Node) (Node, error) {
 	return Null, nil
 }
 
-type EasyFunc struct {
+type Function struct {
 	C int
 	F func(context.Context, *World, []Node) (Node, error)
 }
 
-func (*EasyFunc) PrintTo(w io.Writer, m PrintMode) {
+func (*Function) PrintTo(w io.Writer, m PrintMode) {
 	io.WriteString(w, "buildin function")
 }
 
-func (f *EasyFunc) Eval(context.Context, *World) (Node, error) {
+func (f *Function) Eval(context.Context, *World) (Node, error) {
 	return f, nil
 }
 
-func (f *EasyFunc) Equals(n Node, m EqlMode) bool {
+func (f *Function) Equals(n Node, m EqlMode) bool {
 	return false
 }
 
 const maxParameterOfEasyFunc = 8
 
-func (f *EasyFunc) Call(ctx context.Context, w *World, list Node) (Node, error) {
+func (f *Function) Call(ctx context.Context, w *World, list Node) (Node, error) {
 	var argv [maxParameterOfEasyFunc]Node
 	var err error
 
