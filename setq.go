@@ -113,12 +113,7 @@ func cmdDefvar(ctx context.Context, w *World, list Node) (Node, error) {
 			return nil, err
 		}
 	}
-	for w.parent != nil {
-		w = w.parent
-	}
-	if _, ok := w.globals[string(symbol)]; !ok {
-		w.globals[string(symbol)] = value
-	}
+	w.DefineVariable(string(symbol), value)
 	return symbol, nil
 }
 
@@ -142,9 +137,6 @@ func cmdDefparameter(ctx context.Context, w *World, list Node) (Node, error) {
 	if HasValue(list) {
 		return nil, ErrTooManyArguments
 	}
-	for w.parent != nil {
-		w = w.parent
-	}
-	w.globals[string(symbol)] = value
+	w.DefineParameter(string(symbol), value)
 	return symbol, nil
 }

@@ -48,6 +48,22 @@ func (w *World) SetOrNew(name string, value Node) {
 	}
 }
 
+func (w *World) DefineParameter(name string, value Node) {
+	for w.parent != nil {
+		w = w.parent
+	}
+	w.globals[name] = value
+}
+
+func (w *World) DefineVariable(name string, value Node) {
+	for w.parent != nil {
+		w = w.parent
+	}
+	if _, ok := w.globals[name]; !ok {
+		w.globals[name] = value
+	}
+}
+
 var UseStrict = true
 
 func (w *World) Set(name string, value Node) error {
