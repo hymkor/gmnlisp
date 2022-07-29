@@ -82,22 +82,15 @@ func cmdCdddr(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return nthcdr(3, argv[0])
 }
 
-func cmdList(ctx context.Context, w *World, node Node) (Node, error) {
-	car, rest, err := w.shiftAndEvalCar(ctx, node)
-	if err != nil {
-		return nil, err
-	}
-	var cdr Node
-
-	if IsNull(rest) {
-		cdr = Null
-	} else {
-		cdr, err = cmdList(ctx, w, rest)
-		if err != nil {
-			return nil, err
+func funList(ctx context.Context, w *World, list []Node) (Node, error) {
+	var cons Node = Null
+	for i := len(list) - 1; i >= 0; i-- {
+		cons = &Cons{
+			Car: list[i],
+			Cdr: cons,
 		}
 	}
-	return &Cons{Car: car, Cdr: cdr}, nil
+	return cons, nil
 }
 
 func lastOfList(node Node) (*Cons, error) {

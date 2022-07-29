@@ -147,7 +147,7 @@ func New() *World {
 			"length":              &Function{C: 1, F: cmdLength},
 			"let":                 Special(cmdLet),
 			"let*":                Special(cmdLetX),
-			"list":                Special(cmdList),
+			"list":                FunctionN(funList),
 			"listp":               &Function{C: 1, F: cmdListp},
 			"load":                &Function{C: 1, F: cmdLoad},
 			"macroexpand":         Special(cmdMacroExpand),
