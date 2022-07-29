@@ -38,7 +38,7 @@ func (w *World) Get(name string) (Node, error) {
 	return Null, fmt.Errorf("%w `%s`", ErrVariableUnbound, name)
 }
 
-func (w *World) SetOrNew(name string, value Node) {
+func (w *World) SetOrDefineParameter(name string, value Node) {
 	for w != nil {
 		if _, ok := w.globals[name]; ok || w.parent == nil {
 			w.globals[name] = value
@@ -68,7 +68,7 @@ var UseStrict = true
 
 func (w *World) Set(name string, value Node) error {
 	if !UseStrict {
-		w.SetOrNew(name, value)
+		w.SetOrDefineParameter(name, value)
 		return nil
 	}
 	for w != nil {
@@ -96,7 +96,7 @@ func (w *World) Stdout() (io.Writer, error) {
 }
 
 func (w *World) SetStdout(writer io.Writer) {
-	w.SetOrNew(standardOutput, Writer{Writer: writer})
+	w.DefineParameter(standardOutput, Writer{Writer: writer})
 }
 
 func New() *World {

@@ -155,7 +155,7 @@ func cmdDefun(ctx context.Context, w *World, list Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	w.SetOrNew(name, lambda)
+	w.SetOrDefineParameter(name, lambda)
 	return symbol, nil
 }
 
