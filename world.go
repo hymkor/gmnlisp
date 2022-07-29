@@ -9,7 +9,7 @@ import (
 
 type World struct {
 	parent  *World
-	globals map[string]Node
+	globals map[Symbol]Node
 }
 
 type Writer struct {
@@ -17,7 +17,7 @@ type Writer struct {
 	io.Writer
 }
 
-func (w *World) each(f func(string, Node) bool) {
+func (w *World) each(f func(Symbol, Node) bool) {
 	for w != nil {
 		for name, value := range w.globals {
 			if !f(name, value) {
@@ -28,7 +28,7 @@ func (w *World) each(f func(string, Node) bool) {
 	}
 }
 
-func (w *World) Get(name string) (Node, error) {
+func (w *World) Get(name Symbol) (Node, error) {
 	for w != nil {
 		if value, ok := w.globals[name]; ok {
 			return value, nil
@@ -38,7 +38,7 @@ func (w *World) Get(name string) (Node, error) {
 	return Null, fmt.Errorf("%w `%s`", ErrVariableUnbound, name)
 }
 
-func (w *World) SetOrDefineParameter(name string, value Node) {
+func (w *World) SetOrDefineParameter(name Symbol, value Node) {
 	for w != nil {
 		if _, ok := w.globals[name]; ok || w.parent == nil {
 			w.globals[name] = value
@@ -48,14 +48,14 @@ func (w *World) SetOrDefineParameter(name string, value Node) {
 	}
 }
 
-func (w *World) DefineParameter(name string, value Node) {
+func (w *World) DefineParameter(name Symbol, value Node) {
 	for w.parent != nil {
 		w = w.parent
 	}
 	w.globals[name] = value
 }
 
-func (w *World) DefineVariable(name string, value Node) {
+func (w *World) DefineVariable(name Symbol, value Node) {
 	for w.parent != nil {
 		w = w.parent
 	}
@@ -66,7 +66,7 @@ func (w *World) DefineVariable(name string, value Node) {
 
 var UseStrict = true
 
-func (w *World) Set(name string, value Node) error {
+func (w *World) Set(name Symbol, value Node) error {
 	if !UseStrict {
 		w.SetOrDefineParameter(name, value)
 		return nil
@@ -101,7 +101,7 @@ func (w *World) SetStdout(writer io.Writer) {
 
 func New() *World {
 	return &World{
-		globals: map[string]Node{
+		globals: map[Symbol]Node{
 			"*":                   SpecialFunc(cmdMulti),
 			"+":                   SpecialFunc(cmdAdd),
 			"-":                   SpecialFunc(cmdSub),

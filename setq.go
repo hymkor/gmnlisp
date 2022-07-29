@@ -24,19 +24,19 @@ func cmdSetq(ctx context.Context, w *World, params Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		w.Set(string(nameSymbol), value)
+		w.Set(nameSymbol, value)
 	}
 	return value, nil
 }
 
-func letValuesToVars(ctx context.Context, w *World, list Node, globals map[string]Node) error {
+func letValuesToVars(ctx context.Context, w *World, list Node, globals map[Symbol]Node) error {
 	for HasValue(list) {
 		var item Node
 		var err error
 
 		item, list, err = shift(list)
 		if symbol, ok := item.(Symbol); ok {
-			globals[string(symbol)] = Null
+			globals[symbol] = Null
 			continue
 		}
 		var argv [2]Node
@@ -52,7 +52,7 @@ func letValuesToVars(ctx context.Context, w *World, list Node, globals map[strin
 		if err != nil {
 			return err
 		}
-		globals[string(symbol)] = value
+		globals[symbol] = value
 	}
 	return nil
 }
@@ -62,7 +62,7 @@ func cmdLet(ctx context.Context, w *World, params Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	globals := map[string]Node{}
+	globals := map[Symbol]Node{}
 
 	if err := letValuesToVars(ctx, w, list, globals); err != nil {
 		return nil, err
@@ -80,7 +80,7 @@ func cmdLetX(ctx context.Context, w *World, params Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	globals := map[string]Node{}
+	globals := map[Symbol]Node{}
 
 	newWorld := &World{
 		globals: globals,
@@ -113,7 +113,7 @@ func cmdDefvar(ctx context.Context, w *World, list Node) (Node, error) {
 			return nil, err
 		}
 	}
-	w.DefineVariable(string(symbol), value)
+	w.DefineVariable(symbol, value)
 	return symbol, nil
 }
 
@@ -137,6 +137,6 @@ func cmdDefparameter(ctx context.Context, w *World, list Node) (Node, error) {
 	if HasValue(list) {
 		return nil, ErrTooManyArguments
 	}
-	w.DefineParameter(string(symbol), value)
+	w.DefineParameter(symbol, value)
 	return symbol, nil
 }

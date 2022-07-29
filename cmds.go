@@ -43,8 +43,8 @@ func cmdEqual(ctx context.Context, w *World, param Node) (Node, error) {
 func cmdGetAllSymbols(ctx context.Context, w *World, n Node) (Node, error) {
 	names := []string{}
 	var cons Node = Null
-	w.each(func(name string, _ Node) bool {
-		names = append(names, name)
+	w.each(func(name Symbol, _ Node) bool {
+		names = append(names, string(name))
 		return true
 	})
 	sort.Strings(names)

@@ -57,11 +57,11 @@ func macroQuote(node Node) (Node, error) {
 
 type _Macro struct {
 	_Dummy
-	param []string
+	param []Symbol
 	code  Node
 }
 
-func replaceMacro(n Node, table map[string]Node) Node {
+func replaceMacro(n Node, table map[Symbol]Node) Node {
 	if cons, ok := n.(*Cons); ok {
 		var car Node
 		var cdr Node
@@ -74,7 +74,7 @@ func replaceMacro(n Node, table map[string]Node) Node {
 		return &Cons{Car: car, Cdr: cdr}
 	}
 	if macroParam, ok := n.(_PlaceHolder); ok {
-		if result, ok := table[string(macroParam)]; ok {
+		if result, ok := table[Symbol(macroParam)]; ok {
 			return result
 		}
 	}
@@ -82,7 +82,7 @@ func replaceMacro(n Node, table map[string]Node) Node {
 }
 
 func (m *_Macro) expand(n Node) (Node, error) {
-	replaceTbl := map[string]Node{}
+	replaceTbl := map[Symbol]Node{}
 	for _, name := range m.param {
 		if IsNull(n) {
 			return nil, ErrTooFewArguments
@@ -139,7 +139,7 @@ func cmdDefMacro(ctx context.Context, w *World, n Node) (Node, error) {
 		return nil, err
 	}
 
-	globals := map[string]Node{}
+	globals := map[Symbol]Node{}
 	for _, name := range param {
 		globals[name] = _PlaceHolder(name)
 	}
@@ -155,7 +155,7 @@ func cmdDefMacro(ctx context.Context, w *World, n Node) (Node, error) {
 		param: param,
 		code:  code,
 	}
-	w.SetOrDefineParameter(string(macroName), value)
+	w.SetOrDefineParameter(macroName, value)
 	return value, nil
 }
 
@@ -173,7 +173,7 @@ func cmdMacroExpand(ctx context.Context, w *World, n Node) (Node, error) {
 	if !ok {
 		return nil, ErrExpectedSymbol
 	}
-	node, err := w.Get(string(macroName))
+	node, err := w.Get(macroName)
 	if err != nil {
 		return nil, err
 	}

@@ -9,9 +9,9 @@ import (
 )
 
 type _Lambda struct {
-	param   []string
+	param   []Symbol
 	code    Node
-	name    string
+	name    Symbol
 	lexical *World
 }
 
@@ -19,12 +19,12 @@ func cmdLambda(ctx context.Context, w *World, node Node) (Node, error) {
 	return newLambda(w, node, "")
 }
 
-func getParameterList(node Node) ([]string, Node, error) {
+func getParameterList(node Node) ([]Symbol, Node, error) {
 	list, rest, err := shift(node)
 	if err != nil {
 		return nil, nil, err
 	}
-	params := []string{}
+	params := []Symbol{}
 	for HasValue(list) {
 		var nameNode Node
 
@@ -36,12 +36,12 @@ func getParameterList(node Node) ([]string, Node, error) {
 		if !ok {
 			return nil, nil, ErrExpectedSymbol
 		}
-		params = append(params, string(nameSymbol))
+		params = append(params, nameSymbol)
 	}
 	return params, rest, nil
 }
 
-func newLambda(w *World, node Node, blockName string) (Node, error) {
+func newLambda(w *World, node Node, blockName Symbol) (Node, error) {
 	// (lambda (param) code)
 	params, code, err := getParameterList(node)
 	if err != nil {
@@ -60,7 +60,7 @@ func (L *_Lambda) PrintTo(w io.Writer, m PrintMode) {
 	dem := ""
 	for _, name := range L.param {
 		io.WriteString(w, dem)
-		io.WriteString(w, name)
+		name.PrintTo(w, PRINC)
 		dem = " "
 	}
 	io.WriteString(w, ") ")
@@ -72,13 +72,13 @@ func (L *_Lambda) PrintTo(w io.Writer, m PrintMode) {
 	io.WriteString(w, ")")
 }
 
-var trace = map[string]int{}
+var trace = map[Symbol]int{}
 
 func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
 	if err := checkContext(ctx); err != nil {
 		return nil, err
 	}
-	globals := map[string]Node{}
+	globals := map[Symbol]Node{}
 	foundSlash := false
 	traceCount, traceDo := trace[L.name]
 	if traceDo {
@@ -149,13 +149,11 @@ func cmdDefun(ctx context.Context, w *World, list Node) (Node, error) {
 	if !ok {
 		return nil, ErrExpectedSymbol
 	}
-	name := string(symbol)
-
-	lambda, err := newLambda(w, list, name)
+	lambda, err := newLambda(w, list, symbol)
 	if err != nil {
 		return nil, err
 	}
-	w.SetOrDefineParameter(name, lambda)
+	w.SetOrDefineParameter(symbol, lambda)
 	return symbol, nil
 }
 
@@ -207,7 +205,7 @@ func cmdFunction(ctx context.Context, w *World, argv []Node) (Node, error) {
 
 func cmdTrace(ctx context.Context, w *World, list Node) (Node, error) {
 	if len(trace) > 0 {
-		trace = map[string]int{}
+		trace = map[Symbol]int{}
 	}
 	for HasValue(list) {
 		var symbolNode Node
@@ -221,7 +219,7 @@ func cmdTrace(ctx context.Context, w *World, list Node) (Node, error) {
 		if !ok {
 			return nil, ErrExpectedSymbol
 		}
-		trace[string(symbol)] = 0
+		trace[symbol] = 0
 	}
 	return Null, nil
 }

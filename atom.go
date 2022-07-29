@@ -96,7 +96,7 @@ func (s Symbol) PrintTo(w io.Writer, m PrintMode) {
 }
 
 func (s Symbol) Eval(_ context.Context, w *World) (Node, error) {
-	return w.Get(string(s))
+	return w.Get(s)
 }
 
 func (s Symbol) Equals(n Node, m EqlMode) bool {
