@@ -142,12 +142,11 @@ func cmdCons(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return &Cons{Car: argv[0], Cdr: argv[1]}, nil
 }
 
-func cmdMapCar(ctx context.Context, w *World, params Node) (Node, error) {
-	first, params, err := w.shiftAndEvalCar(ctx, params)
-	if err != nil {
-		return nil, err
+func funMapCar(ctx context.Context, w *World, argv []Node) (Node, error) {
+	if len(argv) < 1 {
+		return nil, ErrTooFewArguments
 	}
-	f, err := first.Eval(ctx, w)
+	f, err := argv[0].Eval(ctx, w)
 	if err != nil {
 		return nil, err
 	}
@@ -155,17 +154,7 @@ func cmdMapCar(ctx context.Context, w *World, params Node) (Node, error) {
 	if !ok {
 		return nil, ErrExpectedFunction
 	}
-
-	listSet := []Node{}
-	for HasValue(params) {
-		var value Node
-
-		value, params, err = w.shiftAndEvalCar(ctx, params)
-		if err != nil {
-			return nil, err
-		}
-		listSet = append(listSet, value)
-	}
+	listSet := argv[1:]
 
 	resultSet := []Node{}
 	for {

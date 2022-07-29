@@ -151,7 +151,7 @@ func New() *World {
 			"listp":               &Function{C: 1, F: cmdListp},
 			"load":                &Function{C: 1, F: cmdLoad},
 			"macroexpand":         Special(cmdMacroExpand),
-			"mapcar":              Special(cmdMapCar),
+			"mapcar":              FunctionN(funMapCar),
 			"member":              &Function{C: 2, F: cmdMember},
 			"nil":                 Null,
 			"not":                 &Function{C: 1, F: cmdNot},
