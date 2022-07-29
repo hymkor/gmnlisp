@@ -116,6 +116,8 @@ func cmdDefvar(ctx context.Context, w *World, list Node) (Node, error) {
 	for w.parent != nil {
 		w = w.parent
 	}
-	w.globals[string(symbol)] = value
-	return value, nil
+	if _, ok := w.globals[string(symbol)]; !ok {
+		w.globals[string(symbol)] = value
+	}
+	return symbol, nil
 }
