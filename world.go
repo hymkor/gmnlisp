@@ -117,7 +117,7 @@ func New() *World {
 			">=":                  Special(cmdGreaterOrEqual),
 			"T":                   True,
 			"and":                 Special(cmdAnd),
-			"append":              Special(cmdAppend),
+			"append":              FunctionN(funAppend),
 			"assoc":               &Function{C: 2, F: cmdAssoc},
 			"atom":                &Function{C: 1, F: cmdAtom},
 			"block":               Special(cmdBlock),

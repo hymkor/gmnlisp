@@ -106,23 +106,20 @@ func lastOfList(node Node) (*Cons, error) {
 	}
 }
 
-func cmdAppend(ctx context.Context, w *World, list Node) (Node, error) {
-	first := &Cons{}
-	for HasValue(list) {
-		var next Node
-		var err error
-
-		next, list, err = w.shiftAndEvalCar(ctx, list)
+func funAppend(ctx context.Context, w *World, list []Node) (Node, error) {
+	var last Node = Null
+	for i := len(list) - 1; i >= 0; i-- {
+		if IsNull(list[i]) {
+			continue
+		}
+		tail, err := lastOfList(list[i])
 		if err != nil {
 			return nil, err
 		}
-		last, err := lastOfList(first)
-		if err != nil {
-			return nil, err
-		}
-		last.Cdr = next
+		tail.Cdr = last
+		last = list[i]
 	}
-	return first.Cdr, nil
+	return last, nil
 }
 
 func cmdMember(ctx context.Context, w *World, argv []Node) (Node, error) {
