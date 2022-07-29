@@ -13,3 +13,8 @@ func TestDefvar(t *testing.T) {
 	assertEqual(t, `(defvar a "ahaha")`, Symbol("a"))
 	assertEqual(t, `(defvar a "ahaha")(defvar a "ihihi") a`, String("ahaha"))
 }
+
+func TestDefparameter(t *testing.T) {
+	assertEqual(t, `(defparameter a "ahaha")`, Symbol("a"))
+	assertEqual(t, `(defparameter a "ahaha")(defparameter a "ihihi") a`, String("ihihi"))
+}
