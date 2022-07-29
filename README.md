@@ -72,6 +72,7 @@ Support functions
 - `cond`
 - `cons`
 - `defmacro`
+- `defparameter`
 - `defun`
 - `defvar`
 - `detab`
