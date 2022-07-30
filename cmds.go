@@ -134,3 +134,10 @@ func funMinusp(ctx context.Context, w *World, args []Node) (Node, error) {
 		func(value Integer) bool { return value < 0 },
 		func(value Float) bool { return value < 0 })
 }
+
+func funNullp(ctx context.Context, w *World, args []Node) (Node, error) {
+	if IsNull(args[0]) {
+		return True, nil
+	}
+	return Null, nil
+}

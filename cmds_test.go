@@ -47,3 +47,9 @@ func TestMinusp(t *testing.T) {
 	assertEqual(t, `(minusp -1.0)`, True)
 	assertEqual(t, `(minusp "")`, Null)
 }
+
+func TestNull(t *testing.T) {
+	assertEqual(t, `(null 1)`, Null)
+	assertEqual(t, `(null "")`, Null)
+	assertEqual(t, `(null nil)`, True)
+}

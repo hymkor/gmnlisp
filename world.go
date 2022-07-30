@@ -162,6 +162,7 @@ func New() *World {
 			"not":                 &Function{C: 1, F: funNot},
 			"nth":                 &Function{C: 2, F: funNth},
 			"nthcdr":              &Function{C: 2, F: funNthcdr},
+			"null":                &Function{C: 1, F: funNullp},
 			"numberp":             &Function{C: 1, F: funNumberp},
 			"open":                Special(cmdOpen),
 			"or":                  Special(cmdOr),
