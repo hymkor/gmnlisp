@@ -196,6 +196,7 @@ func New() *World {
 			"terpri":              Special(cmdTerpri),
 			"trace":               Special(cmdTrace),
 			"truncate":            &Function{C: 1, F: funTruncate},
+			"typep":               &Function{C: 2, F: funTypep},
 			"while":               Special(cmdWhile),
 			"write":               Special(cmdWrite),
 			"write-line":          Special(cmdWriteLine),

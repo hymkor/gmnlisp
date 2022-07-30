@@ -76,3 +76,12 @@ func TestAnyTypes(t *testing.T) {
 	assertEqual(t, `(consp '(1) )`, True)
 	assertEqual(t, `(consp 1)`, Null)
 }
+
+func TestTypep(t *testing.T) {
+	assertEqual(t, `(typep 1 'number)`, True)
+	assertEqual(t, `(typep 1 'integer)`, True)
+	assertEqual(t, `(typep 1.0 'float)`, True)
+	assertEqual(t, `(typep 1 'float)`, Null)
+	assertEqual(t, `(typep "ABC" 'string)`, True)
+	assertEqual(t, `(typep 1 'string)`, Null)
+}

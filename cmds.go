@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 	"sort"
+	"strings"
 )
 
 func cmdQuote(_ context.Context, _ *World, n Node) (Node, error) {
@@ -158,6 +159,40 @@ func funNullp(ctx context.Context, w *World, args []Node) (Node, error) {
 
 func funAnyTypep[T Node](ctx context.Context, w *World, args []Node) (Node, error) {
 	if _, ok := args[0].(T); ok {
+		return True, nil
+	}
+	return Null, nil
+}
+
+func funTypep(ctx context.Context, w *World, args []Node) (Node, error) {
+	symbol, ok := args[1].(Symbol)
+	if !ok {
+		return nil, ErrExpectedSymbol
+	}
+	ok = false
+	switch strings.ToLower(string(symbol)) {
+	case "number":
+		_, ok = args[0].(Integer)
+		if !ok {
+			_, ok = args[0].(Float)
+		}
+	case "integer":
+		_, ok = args[0].(Integer)
+	case "float":
+		_, ok = args[0].(Float)
+	case "string":
+		_, ok = args[0].(String)
+	case "symbol":
+		_, ok = args[0].(Symbol)
+	case "cons":
+		_, ok = args[0].(*Cons)
+	case "list":
+		ok = IsNull(args[0])
+		if !ok {
+			_, ok = args[0].(*Cons)
+		}
+	}
+	if ok {
 		return True, nil
 	}
 	return Null, nil
