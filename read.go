@@ -84,7 +84,19 @@ func readNode(tokenGetter func() (string, error)) (Node, error) {
 		return Integer(val), nil
 	}
 	if strings.HasPrefix(token, "#\\") {
-		val, _ := utf8.DecodeRuneInString(token[2:])
+		var val rune
+		switch token[2:] {
+		case "tab":
+			val = '\t'
+		case "linefeed", "newline":
+			val = '\n'
+		case "return":
+			val = '\r'
+		case "space":
+			val = ' '
+		default:
+			val, _ = utf8.DecodeRuneInString(token[2:])
+		}
 		return Rune(val), nil
 	}
 	if len(token) > 0 && token[0] == '"' {
