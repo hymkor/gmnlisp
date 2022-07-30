@@ -22,12 +22,12 @@ func main() {
     lisp := gmnlisp.New()
     lisp.DefineParameter("a", gmnlisp.Integer(1))
     lisp.DefineParameter("b", gmnlisp.Integer(2))
-    value, err := lisp.Interpret(context.TODO(),"(+ a b)")
+    value, err := lisp.Interpret(context.TODO(), "(+ a b)")
     if err != nil {
         fmt.Fprintln(os.Stderr, err.Error())
         return
     }
-    value.PrintTo(os.Stdout,gmnlisp.PRINT)
+    value.PrintTo(os.Stdout, gmnlisp.PRINT)
     fmt.Println()
 }
 ```
@@ -57,6 +57,7 @@ Support functions
 - `T`
 - `and`
 - `append`
+- `apply`
 - `assoc`
 - `atom`
 - `block`
