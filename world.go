@@ -188,6 +188,7 @@ func New() *World {
 			"while":               Special(cmdWhile),
 			"write":               Special(cmdWrite),
 			"write-line":          Special(cmdWriteLine),
+			"zerop":               &Function{C: 1, F: funZerop},
 			standardOutput:        &Writer{Writer: os.Stdout},
 		},
 	}

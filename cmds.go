@@ -97,3 +97,16 @@ func funRead(ctx context.Context, w *World, args []Node) (Node, error) {
 	}
 	return nodes[0], nil
 }
+
+func funZerop(ctx context.Context, w *World, args []Node) (Node, error) {
+	if value, ok := args[0].(Integer); ok {
+		if value == 0 {
+			return True, nil
+		}
+	} else if value, ok := args[0].(Float); ok {
+		if value == 0 {
+			return True, nil
+		}
+	}
+	return Null, nil
+}

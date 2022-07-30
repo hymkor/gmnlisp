@@ -14,4 +14,10 @@ func TestCmdGo(t *testing.T) {
 	assertEqual(t, `(not (= 1 1))`, Null)
 	assertEqual(t, `(/= 1 2)`, True)
 	assertEqual(t, `(/= 1 1)`, Null)
+
+	assertEqual(t, `(zerop 0)`, True)
+	assertEqual(t, `(zerop 0.0)`, True)
+	assertEqual(t, `(zerop 1)`, Null)
+	assertEqual(t, `(zerop 0.1)`, Null)
+	assertEqual(t, `(zerop "")`, Null)
 }
