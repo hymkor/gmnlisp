@@ -187,3 +187,45 @@ func cmdWhile(ctx context.Context, w *World, n Node) (Node, error) {
 func cmdQuit(context.Context, *World, Node) (Node, error) {
 	return Null, ErrQuit
 }
+
+func cmdDoTimes(ctx context.Context, w *World, list Node) (Node, error) {
+	// CommonLisp
+	var varAndValueNode Node
+	var err error
+
+	varAndValueNode, list, err = shift(list)
+	if err != nil {
+		return nil, err
+	}
+	var varAndValueArray [2]Node
+	if err := listToArray(varAndValueNode, varAndValueArray[:]); err != nil {
+		return nil, err
+	}
+	symbol, ok := varAndValueArray[0].(Symbol)
+	if !ok {
+		return nil, ErrExpectedSymbol
+	}
+	endNode, err := varAndValueArray[1].Eval(ctx, w)
+	if err != nil {
+		return nil, err
+	}
+	end, ok := endNode.(Integer)
+	if !ok {
+		return nil, ErrExpectedNumber
+	}
+
+	var last Node = Null
+	for i := Integer(0); i < end; i++ {
+		if err := checkContext(ctx); err != nil {
+			return nil, err
+		}
+		if err := w.Set(symbol, i); err != nil {
+			return nil, err
+		}
+		last, err = progn(ctx, w, list)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return last, nil
+}

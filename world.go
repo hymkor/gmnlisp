@@ -136,6 +136,7 @@ func New() *World {
 			"defparameter":        Special(cmdDefparameter),
 			"defun":               Special(cmdDefun),
 			"defvar":              Special(cmdDefvar),
+			"dotimes":             Special(cmdDoTimes),
 			"equal":               Special(cmdEqual),
 			"equalp":              Special(cmdEqualOp),
 			"exit":                Special(cmdQuit),

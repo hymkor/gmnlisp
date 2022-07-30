@@ -37,3 +37,9 @@ func TestIf(t *testing.T) {
 						x
 					)`, Integer(15))
 }
+
+func TestDoTimes(t *testing.T) {
+	assertEqual(t, `(let (n (sum 0))
+		(dotimes (n 4) (setq sum (+ sum n)))
+		sum)`, Integer(0+1+2+3))
+}
