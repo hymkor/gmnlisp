@@ -229,3 +229,46 @@ func cmdDoTimes(ctx context.Context, w *World, list Node) (Node, error) {
 	}
 	return last, nil
 }
+
+func cmdDoList(ctx context.Context, w *World, list Node) (Node, error) {
+	// CommonLisp
+	var varAndValueNode Node
+	var err error
+
+	varAndValueNode, list, err = shift(list)
+	if err != nil {
+		return nil, err
+	}
+	var varAndValues [2]Node
+	if err := listToArray(varAndValueNode, varAndValues[:]); err != nil {
+		return nil, err
+	}
+	symbol, ok := varAndValues[0].(Symbol)
+	if !ok {
+		return nil, ErrExpectedSymbol
+	}
+	var last Node = Null
+	values, err := varAndValues[1].Eval(ctx, w)
+	if err != nil {
+		return nil, err
+	}
+	for HasValue(values) {
+		if err := checkContext(ctx); err != nil {
+			return nil, err
+		}
+		var value1 Node
+
+		value1, values, err = shift(values)
+		if err != nil {
+			return nil, err
+		}
+		if err := w.Set(symbol, value1); err != nil {
+			return nil, err
+		}
+		last, err = progn(ctx, w, list)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return last, nil
+}
