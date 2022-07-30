@@ -21,3 +21,9 @@ func TestCmdGo(t *testing.T) {
 	assertEqual(t, `(zerop 0.1)`, Null)
 	assertEqual(t, `(zerop "")`, Null)
 }
+
+func TestNumberp(t *testing.T){
+	assertEqual(t, `(numberp 1)`, True)
+	assertEqual(t, `(numberp 1.0)`, True)
+	assertEqual(t, `(numberp "")`, Null)
+}

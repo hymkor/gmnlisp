@@ -110,3 +110,12 @@ func funZerop(ctx context.Context, w *World, args []Node) (Node, error) {
 	}
 	return Null, nil
 }
+
+func funNumberp(ctx context.Context, w *World, args []Node) (Node, error) {
+	if _, ok := args[0].(Integer); ok {
+		return True, nil
+	} else if _, ok := args[0].(Float); ok {
+		return True, nil
+	}
+	return Null, nil
+}
