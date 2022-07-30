@@ -76,6 +76,7 @@ Support functions
 - `defun`
 - `defvar`
 - `detab`
+- `dolist`
 - `dotimes`
 - `equal`
 - `equalp`
