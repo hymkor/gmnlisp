@@ -58,6 +58,7 @@ Support functions
 - `and`
 - `append`
 - `apply`
+- `aref`
 - `assoc`
 - `atom`
 - `block`
@@ -99,6 +100,7 @@ Support functions
 - `listp`
 - `load`
 - `macroexpand`
+- `map`
 - `mapcar`
 - `member`
 - `minusp`
