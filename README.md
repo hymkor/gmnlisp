@@ -87,6 +87,7 @@ Support functions
 - `function`
 - `if`
 - `lambda`
+- `last`
 - `length`
 - `let`
 - `let*`
