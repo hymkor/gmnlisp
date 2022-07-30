@@ -106,6 +106,17 @@ func lastOfList(node Node) (*Cons, error) {
 	}
 }
 
+func funLast(ctx context.Context, w *World, list []Node) (Node, error) {
+	if IsNull(list[0]) {
+		return Null, nil
+	}
+	tail, err := lastOfList(list[0])
+	if err != nil {
+		return nil, err
+	}
+	return tail.Car, nil
+}
+
 func funAppend(ctx context.Context, w *World, list []Node) (Node, error) {
 	var last Node = Null
 	for i := len(list) - 1; i >= 0; i-- {

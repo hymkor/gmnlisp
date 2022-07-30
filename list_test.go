@@ -66,3 +66,8 @@ func TestList(t *testing.T) {
 			&Cons{Car: String("Y"), Cdr: Integer(2)},
 			&Cons{Car: String("Z"), Cdr: Integer(4)}))
 }
+
+func TestLast(t *testing.T) {
+	assertEqual(t, `(last '(1 2 3 4))`, Integer(4))
+	assertEqual(t, `(last '())`, Null)
+}

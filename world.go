@@ -147,6 +147,7 @@ func New() *World {
 			"function":            &Function{C: 1, F: funFunction},
 			"if":                  Special(cmdIf),
 			"lambda":              Special(cmdLambda),
+			"last":                &Function{C: 1, F: funLast},
 			"length":              &Function{C: 1, F: funLength},
 			"let":                 Special(cmdLet),
 			"let*":                Special(cmdLetX),
