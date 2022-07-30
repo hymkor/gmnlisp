@@ -3,6 +3,7 @@ package gmnlisp
 import (
 	"context"
 	"fmt"
+	"strings"
 )
 
 func funCar(ctx context.Context, w *World, argv []Node) (Node, error) {
@@ -153,11 +154,42 @@ func funCons(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return &Cons{Car: argv[0], Cdr: argv[1]}, nil
 }
 
-func funMapCar(ctx context.Context, w *World, argv []Node) (Node, error) {
-	if len(argv) < 1 {
+func coerceToList(list []Node) (Node, error) {
+	return List(list...), nil
+}
+
+func coerceToString(list []Node) (Node, error) {
+	var buffer strings.Builder
+	for _, c := range list {
+		r, ok := c.(Rune)
+		if !ok {
+			return nil, ErrExpectedCharacter
+		}
+		buffer.WriteRune(rune(r))
+	}
+	return String(buffer.String()), nil
+}
+
+var coerceTable = map[Symbol]func(list []Node) (Node, error){
+	symbolForList:   coerceToList,
+	symbolForString: coerceToString,
+}
+
+func funMap(ctx context.Context, w *World, argv []Node) (result Node, err error) {
+	if len(argv) < 2 {
 		return nil, ErrTooFewArguments
 	}
-	f, err := argv[0].Eval(ctx, w)
+	symbol, ok := argv[0].(Symbol)
+	if !ok {
+		return nil, ErrExpectedSymbol
+	}
+
+	collector, ok := coerceTable[symbol]
+	if !ok {
+		return nil, ErrNotSupportType
+	}
+
+	f, err := argv[1].Eval(ctx, w)
 	if err != nil {
 		return nil, err
 	}
@@ -165,19 +197,20 @@ func funMapCar(ctx context.Context, w *World, argv []Node) (Node, error) {
 	if !ok {
 		return nil, ErrExpectedFunction
 	}
-	listSet := argv[1:]
+	listSet := argv[2:]
 
-	resultSet := []Node{}
+	var resultSet []Node
 	for {
 		paramSet := make([]Node, len(listSet))
 		for i := 0; i < len(listSet); i++ {
 			if IsNull(listSet[i]) {
-				return List(resultSet...), nil
+				return collector(resultSet)
 			}
-			paramSet[i], listSet[i], err = shift(listSet[i])
-			if err != nil {
-				return nil, err
+			seq, ok := listSet[i].(Sequence)
+			if !ok {
+				return nil, ErrNotSupportType
 			}
+			paramSet[i], listSet[i] = seq.FirstAndRest()
 		}
 		result, err := _f.Call(ctx, w, List(paramSet...))
 		if err != nil {
@@ -185,6 +218,10 @@ func funMapCar(ctx context.Context, w *World, argv []Node) (Node, error) {
 		}
 		resultSet = append(resultSet, result)
 	}
+}
+
+func funMapCar(ctx context.Context, w *World, argv []Node) (Node, error) {
+	return funMap(ctx, w, append([]Node{symbolForList}, argv...))
 }
 
 func funListp(ctx context.Context, w *World, argv []Node) (Node, error) {

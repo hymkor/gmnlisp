@@ -81,7 +81,10 @@ func (s String) FirstAndRest() (Node, Node) {
 		return Null, Null
 	}
 	car, siz := utf8.DecodeRuneInString(string(s))
-	return Rune(car), s[siz:]
+	if len(s) <= siz {
+		return Rune(car), Null
+	}
+	return Rune(car), String(s[siz:])
 }
 
 func (s String) Add(n Node) (Node, error) {

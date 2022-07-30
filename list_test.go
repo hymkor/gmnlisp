@@ -30,16 +30,6 @@ func TestList(t *testing.T) {
 
 	assertEqual(t, "(cons 1 2)", &Cons{Car: Integer(1), Cdr: Integer(2)})
 
-	assertEqual(t, `(mapcar (function +) '(1 2 3) '(4 5 6))`,
-		List(Integer(5), Integer(7), Integer(9)))
-	assertEqual(t, `(mapcar #'+ '(1 2 3) '(4 5 6))`,
-		List(Integer(5), Integer(7), Integer(9)))
-	assertEqual(t, `(mapcar '+ '(1 2 3) '(4 5 6))`,
-		List(Integer(5), Integer(7), Integer(9)))
-	assertEqual(t, `(mapcar (lambda (a b) (+ a b)) '(1 2 3) '(4 5 6))`,
-		List(Integer(5), Integer(7), Integer(9)))
-	assertEqual(t, `(mapcar #'(lambda (a b) (+ a b)) '(1 2 3) '(4 5 6))`,
-		List(Integer(5), Integer(7), Integer(9)))
 	assertEqual(t, `(listp ())`, True)
 	assertEqual(t, `(listp 1)`, Null)
 	assertEqual(t, `(listp '(1 2 3))`, True)
@@ -65,6 +55,24 @@ func TestList(t *testing.T) {
 			&Cons{Car: String("X"), Cdr: Integer(7)},
 			&Cons{Car: String("Y"), Cdr: Integer(2)},
 			&Cons{Car: String("Z"), Cdr: Integer(4)}))
+}
+
+func TestMapCar(t *testing.T) {
+	assertEqual(t, `(mapcar (function +) '(1 2 3) '(4 5 6))`,
+		List(Integer(5), Integer(7), Integer(9)))
+	assertEqual(t, `(mapcar #'+ '(1 2 3) '(4 5 6))`,
+		List(Integer(5), Integer(7), Integer(9)))
+	assertEqual(t, `(mapcar '+ '(1 2 3) '(4 5 6))`,
+		List(Integer(5), Integer(7), Integer(9)))
+	assertEqual(t, `(mapcar (lambda (a b) (+ a b)) '(1 2 3) '(4 5 6))`,
+		List(Integer(5), Integer(7), Integer(9)))
+	assertEqual(t, `(mapcar #'(lambda (a b) (+ a b)) '(1 2 3) '(4 5 6))`,
+		List(Integer(5), Integer(7), Integer(9)))
+}
+
+func TestMap(t *testing.T) {
+	assertEqual(t, `(map 'string #'(lambda (c) c) "123")`, String("123"))
+	assertEqual(t, `(map 'list '1+ '(1 2 3))`, List(Integer(2), Integer(3), Integer(4)))
 }
 
 func TestLast(t *testing.T) {

@@ -164,29 +164,39 @@ func funAnyTypep[T Node](ctx context.Context, w *World, args []Node) (Node, erro
 	return Null, nil
 }
 
+const (
+	symbolForNumber  = Symbol("number")
+	symbolForInteger = Symbol("integer")
+	symbolForFloat   = Symbol("float")
+	symbolForString  = Symbol("string")
+	symbolForSymbol  = Symbol("symbol")
+	symbolForCons    = Symbol("cons")
+	symbolForList    = Symbol("list")
+)
+
 func funTypep(ctx context.Context, w *World, args []Node) (Node, error) {
 	symbol, ok := args[1].(Symbol)
 	if !ok {
 		return nil, ErrExpectedSymbol
 	}
 	ok = false
-	switch strings.ToLower(string(symbol)) {
-	case "number":
+	switch Symbol(strings.ToLower(string(symbol))) {
+	case symbolForNumber:
 		_, ok = args[0].(Integer)
 		if !ok {
 			_, ok = args[0].(Float)
 		}
-	case "integer":
+	case symbolForInteger:
 		_, ok = args[0].(Integer)
-	case "float":
+	case symbolForFloat:
 		_, ok = args[0].(Float)
-	case "string":
+	case symbolForString:
 		_, ok = args[0].(String)
-	case "symbol":
+	case symbolForSymbol:
 		_, ok = args[0].(Symbol)
-	case "cons":
+	case symbolForCons:
 		_, ok = args[0].(*Cons)
-	case "list":
+	case symbolForList:
 		ok = IsNull(args[0])
 		if !ok {
 			_, ok = args[0].(*Cons)
