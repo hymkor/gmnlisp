@@ -58,6 +58,7 @@ func letValuesToVars(ctx context.Context, w *World, list Node, globals map[Symbo
 }
 
 func cmdLet(ctx context.Context, w *World, params Node) (Node, error) {
+	// from CommonLisp
 	list, params, err := shift(params)
 	if err != nil {
 		return nil, err
@@ -76,6 +77,7 @@ func cmdLet(ctx context.Context, w *World, params Node) (Node, error) {
 }
 
 func cmdLetX(ctx context.Context, w *World, params Node) (Node, error) {
+	// from CommonLisp
 	list, params, err := shift(params)
 	if err != nil {
 		return nil, err
@@ -95,6 +97,7 @@ func cmdLetX(ctx context.Context, w *World, params Node) (Node, error) {
 }
 
 func cmdDefvar(ctx context.Context, w *World, list Node) (Node, error) {
+	// from CommonLisp
 	var symbolNode Node
 	var err error
 
@@ -118,6 +121,7 @@ func cmdDefvar(ctx context.Context, w *World, list Node) (Node, error) {
 }
 
 func cmdDefparameter(ctx context.Context, w *World, list Node) (Node, error) {
+	// from CommonLisp
 	var symbolNode Node
 	var value Node
 	var err error

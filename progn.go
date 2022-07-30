@@ -19,10 +19,12 @@ func (e *ErrEarlyReturns) Error() string {
 }
 
 func funReturn(ctx context.Context, w *World, argv []Node) (Node, error) {
+	// from CommonLisp
 	return nil, &ErrEarlyReturns{Value: argv[0], Name: ""}
 }
 
 func cmdReturnFrom(ctx context.Context, w *World, n Node) (Node, error) {
+	// from CommonLisp
 	var argv [2]Node
 	if err := listToArray(n, argv[:]); err != nil {
 		return nil, err
@@ -54,6 +56,7 @@ func cmdProgn(ctx context.Context, w *World, c Node) (Node, error) {
 }
 
 func cmdBlock(ctx context.Context, w *World, node Node) (Node, error) {
+	// from CommonLisp
 	nameNode, statements, err := shift(node)
 	if err != nil {
 		return nil, err
@@ -121,6 +124,7 @@ func cmdIf(ctx context.Context, w *World, params Node) (Node, error) {
 }
 
 func cmdForeach(ctx context.Context, w *World, args Node) (Node, error) {
+	// from autolisp
 	var _symbol Node
 	var err error
 
@@ -161,6 +165,7 @@ func cmdForeach(ctx context.Context, w *World, args Node) (Node, error) {
 }
 
 func cmdWhile(ctx context.Context, w *World, n Node) (Node, error) {
+	// from autolisp
 	cond, statements, err := shift(n)
 	if err != nil {
 		return nil, err
@@ -189,7 +194,7 @@ func cmdQuit(context.Context, *World, Node) (Node, error) {
 }
 
 func cmdDoTimes(ctx context.Context, w *World, list Node) (Node, error) {
-	// CommonLisp
+	// from CommonLisp
 	var varAndValueNode Node
 	var err error
 
@@ -231,7 +236,7 @@ func cmdDoTimes(ctx context.Context, w *World, list Node) (Node, error) {
 }
 
 func cmdDoList(ctx context.Context, w *World, list Node) (Node, error) {
-	// CommonLisp
+	// from CommonLisp
 	var varAndValueNode Node
 	var err error
 

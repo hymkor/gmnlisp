@@ -8,6 +8,7 @@ import (
 )
 
 func funStrCat(ctx context.Context, w *World, list []Node) (Node, error) {
+	// from autolisp
 	var buffer strings.Builder
 	for _, n := range list {
 		str, ok := n.(String)
@@ -20,6 +21,7 @@ func funStrCat(ctx context.Context, w *World, list []Node) (Node, error) {
 }
 
 func funStrLen(ctx context.Context, w *World, argv []Node) (Node, error) {
+	// from autolisp
 	str, ok := argv[0].(String)
 	if !ok {
 		return nil, ErrExpectedString
@@ -28,6 +30,7 @@ func funStrLen(ctx context.Context, w *World, argv []Node) (Node, error) {
 }
 
 func funStrCase(ctx context.Context, w *World, argv []Node) (Node, error) {
+	// from autolisp
 	str, ok := argv[0].(String)
 	if !ok {
 		return nil, ErrExpectedString
@@ -36,6 +39,7 @@ func funStrCase(ctx context.Context, w *World, argv []Node) (Node, error) {
 }
 
 func cmdSubStr(ctx context.Context, w *World, n Node) (Node, error) {
+	// from autolisp
 	str, n, err := w.shiftAndEvalCar(ctx, n)
 	if err != nil {
 		return nil, err
@@ -88,6 +92,7 @@ func cmdSubStr(ctx context.Context, w *World, n Node) (Node, error) {
 }
 
 func funParseInt(ctx context.Context, w *World, argv []Node) (Node, error) {
+	// from CommonLisp
 	s, ok := argv[0].(String)
 	if !ok {
 		return nil, ErrExpectedString

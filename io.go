@@ -128,6 +128,7 @@ func funClose(ctx context.Context, w *World, argv []Node) (Node, error) {
 }
 
 func funCommand(ctx context.Context, w *World, list []Node) (Node, error) {
+	// from autolisp
 	if len(list) < 1 {
 		return nil, ErrTooFewArguments
 	}

@@ -204,6 +204,7 @@ func funFunction(ctx context.Context, w *World, argv []Node) (Node, error) {
 }
 
 func cmdTrace(ctx context.Context, w *World, list Node) (Node, error) {
+	// from CommonLisp
 	if len(trace) > 0 {
 		trace = map[Symbol]int{}
 	}
