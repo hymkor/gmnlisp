@@ -21,6 +21,7 @@ var (
 	ErrTooManyArguments = errors.New("Too many arguments")
 	ErrTooShortTokens   = errors.New("too short tokens")
 	ErrVariableUnbound  = errors.New("Unbound variable")
+	ErrExpectedSequence = errors.New("Expected Sequence")
 )
 
 type EqlMode int

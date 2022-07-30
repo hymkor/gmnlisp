@@ -119,6 +119,7 @@ func New() *World {
 			"and":                 Special(cmdAnd),
 			"append":              FunctionN(funAppend),
 			"apply":               FunctionN(funApply),
+			"aref":                &Function{C: 2, F: funAref},
 			"assoc":               &Function{C: 2, F: funAssoc},
 			"atom":                &Function{C: 1, F: funAtom},
 			"block":               Special(cmdBlock),

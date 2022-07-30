@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"strings"
+	"unicode/utf8"
 )
 
 type _TrueType struct{}
@@ -73,6 +74,14 @@ func (s String) Equals(n Node, m EqlMode) bool {
 	} else {
 		return ok && s == ns
 	}
+}
+
+func (s String) FirstAndRest() (Node, Node) {
+	if len(s) <= 0 {
+		return Null, Null
+	}
+	car, siz := utf8.DecodeRuneInString(string(s))
+	return Rune(car), s[siz:]
 }
 
 func (s String) Add(n Node) (Node, error) {

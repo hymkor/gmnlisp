@@ -85,3 +85,8 @@ func TestTypep(t *testing.T) {
 	assertEqual(t, `(typep "ABC" 'string)`, True)
 	assertEqual(t, `(typep 1 'string)`, Null)
 }
+
+func TestAref(t *testing.T) {
+	assertEqual(t, `(aref "1234" 2)`, Rune('3'))
+	assertEqual(t, `(aref '(1 2 3 4) 3)`, Integer(4))
+}

@@ -197,3 +197,25 @@ func funTypep(ctx context.Context, w *World, args []Node) (Node, error) {
 	}
 	return Null, nil
 }
+
+type Sequence interface {
+	FirstAndRest() (Node, Node)
+}
+
+func funAref(ctx context.Context, w *World, args []Node) (Node, error) {
+	index, ok := args[1].(Integer)
+	if !ok {
+		return nil, ErrExpectedNumber
+	}
+	list := args[0]
+	var value Node = Null
+	for index >= 0 {
+		seq, ok := list.(Sequence)
+		if !ok {
+			return Null, nil
+		}
+		value, list = seq.FirstAndRest()
+		index--
+	}
+	return value, nil
+}
