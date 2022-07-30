@@ -53,3 +53,8 @@ func TestNull(t *testing.T) {
 	assertEqual(t, `(null "")`, Null)
 	assertEqual(t, `(null nil)`, True)
 }
+
+func TestAnyTypes(t *testing.T) {
+	assertEqual(t, `(integerp 1)`, True)
+	assertEqual(t, `(integerp "")`, Null)
+}

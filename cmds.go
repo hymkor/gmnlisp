@@ -141,3 +141,10 @@ func funNullp(ctx context.Context, w *World, args []Node) (Node, error) {
 	}
 	return Null, nil
 }
+
+func funAnyTypep[T Node](ctx context.Context, w *World, args []Node) (Node, error) {
+	if _, ok := args[0].(T); ok {
+		return True, nil
+	}
+	return Null, nil
+}
