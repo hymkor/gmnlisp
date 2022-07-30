@@ -98,24 +98,39 @@ func funRead(ctx context.Context, w *World, args []Node) (Node, error) {
 	return nodes[0], nil
 }
 
-func funZerop(ctx context.Context, w *World, args []Node) (Node, error) {
+func xxxxP(args []Node, f1 func(Integer) bool, f2 func(Float) bool) (Node, error) {
 	if value, ok := args[0].(Integer); ok {
-		if value == 0 {
+		if f1(value) {
 			return True, nil
 		}
 	} else if value, ok := args[0].(Float); ok {
-		if value == 0 {
+		if f2(value) {
 			return True, nil
 		}
 	}
 	return Null, nil
 }
 
+func funZerop(ctx context.Context, w *World, args []Node) (Node, error) {
+	return xxxxP(args,
+		func(value Integer) bool { return value == 0 },
+		func(value Float) bool { return value == 0 })
+}
+
 func funNumberp(ctx context.Context, w *World, args []Node) (Node, error) {
-	if _, ok := args[0].(Integer); ok {
-		return True, nil
-	} else if _, ok := args[0].(Float); ok {
-		return True, nil
-	}
-	return Null, nil
+	return xxxxP(args,
+		func(Integer) bool { return true },
+		func(Float) bool { return true })
+}
+
+func funPlusp(ctx context.Context, w *World, args []Node) (Node, error) {
+	return xxxxP(args,
+		func(value Integer) bool { return value > 0 },
+		func(value Float) bool { return value > 0 })
+}
+
+func funMinusp(ctx context.Context, w *World, args []Node) (Node, error) {
+	return xxxxP(args,
+		func(value Integer) bool { return value < 0 },
+		func(value Float) bool { return value < 0 })
 }

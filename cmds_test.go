@@ -31,3 +31,19 @@ func TestNumberp(t *testing.T) {
 	assertEqual(t, `(numberp 1.0)`, True)
 	assertEqual(t, `(numberp "")`, Null)
 }
+
+func TestPlusp(t *testing.T) {
+	assertEqual(t, `(plusp 1)`, True)
+	assertEqual(t, `(plusp 1.0)`, True)
+	assertEqual(t, `(plusp -1)`, Null)
+	assertEqual(t, `(plusp -1.0)`, Null)
+	assertEqual(t, `(plusp "")`, Null)
+}
+
+func TestMinusp(t *testing.T) {
+	assertEqual(t, `(minusp 1)`, Null)
+	assertEqual(t, `(minusp 1.0)`, Null)
+	assertEqual(t, `(minusp -1)`, True)
+	assertEqual(t, `(minusp -1.0)`, True)
+	assertEqual(t, `(minusp "")`, Null)
+}
