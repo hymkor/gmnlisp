@@ -54,6 +54,16 @@ func TestNull(t *testing.T) {
 	assertEqual(t, `(null nil)`, True)
 }
 
+func TestOddp(t *testing.T) {
+	assertEqual(t, `(oddp 1)`, True)
+	assertEqual(t, `(oddp 0)`, Null)
+}
+
+func TestEvenp(t *testing.T) {
+	assertEqual(t, `(evenp 0)`, True)
+	assertEqual(t, `(evenp 1)`, Null)
+}
+
 func TestAnyTypes(t *testing.T) {
 	assertEqual(t, `(integerp 1)`, True)
 	assertEqual(t, `(integerp "")`, Null)

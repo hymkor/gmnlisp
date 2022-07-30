@@ -135,6 +135,20 @@ func funMinusp(ctx context.Context, w *World, args []Node) (Node, error) {
 		func(value Float) bool { return value < 0 })
 }
 
+func funOddp(ctx context.Context, w *World, args []Node) (Node, error) {
+	if value, ok := args[0].(Integer); ok && value%2 == 1 {
+		return True, nil
+	}
+	return Null, nil
+}
+
+func funEvenp(ctx context.Context, w *World, args []Node) (Node, error) {
+	if value, ok := args[0].(Integer); ok && value%2 == 0 {
+		return True, nil
+	}
+	return Null, nil
+}
+
 func funNullp(ctx context.Context, w *World, args []Node) (Node, error) {
 	if IsNull(args[0]) {
 		return True, nil
