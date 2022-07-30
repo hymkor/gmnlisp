@@ -94,3 +94,8 @@ func TestFunCall(t *testing.T) {
 		(let ((f (lambda (a b) (+ a b))))
 			(funcall f 1 2))`, Integer(3))
 }
+
+func TestApply(t *testing.T) {
+	assertEqual(t, `(apply #'+ '(1 2 3))`, Integer(6))
+	assertEqual(t, `(apply #'+ 4 5 6 '(1 2 3))`, Integer(21))
+}
