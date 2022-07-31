@@ -43,6 +43,13 @@ $ go run examples/example1.go
 (% (command "go" "run" "examples/example1.go") %)
 ```
 
+gmnlpp - Text preprocessor by gmnlisp
+-------------------------------------
+
+This page is produced by gmnlisp text proprocessor.
+The text before preprocessing is [here](https://raw.githubusercontent.com/hymkor/gmnlisp/master/_README.md)
+
+
 Support functions
 -----------------
 
