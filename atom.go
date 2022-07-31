@@ -76,15 +76,17 @@ func (s String) Equals(n Node, m EqlMode) bool {
 	}
 }
 
-func (s String) firstAndRest() (Node, Node) {
+// firstAndRest returns first character, rest string and true.
+// When string is empty, boolean is false.
+func (s String) firstAndRest() (Node, Node, bool) {
 	if len(s) <= 0 {
-		return Null, Null
+		return Null, Null, false
 	}
 	car, siz := utf8.DecodeRuneInString(string(s))
 	if len(s) <= siz {
-		return Rune(car), Null
+		return Rune(car), Null, true
 	}
-	return Rune(car), String(s[siz:])
+	return Rune(car), String(s[siz:]), true
 }
 
 func (s String) Add(n Node) (Node, error) {

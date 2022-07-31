@@ -131,6 +131,7 @@ func New() *World {
 			"cddr":                &Function{C: 1, F: funCddr},
 			"cdr":                 &Function{C: 1, F: funCdr},
 			"close":               &Function{C: 1, F: funClose},
+			"coerce":              &Function{C: 2, F: funCoerce},
 			"command":             FunctionN(funCommand),
 			"cond":                Special(cmdCond),
 			"cons":                &Function{C: 2, F: funCons},

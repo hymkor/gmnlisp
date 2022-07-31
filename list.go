@@ -167,11 +167,13 @@ func coerceToString(list Node) (Node, error) {
 		if !ok {
 			return nil, ErrExpectedSequence
 		}
-		value, list = seq.firstAndRest()
-
+		value, list, ok = seq.firstAndRest()
+		if !ok {
+			break
+		}
 		r, ok := value.(Rune)
 		if !ok {
-			return nil, ErrExpectedCharacter
+			return nil, fmt.Errorf("%w: `%s`", ErrExpectedCharacter, toString(value))
 		}
 		buffer.WriteRune(rune(r))
 	}
@@ -204,7 +206,10 @@ func mapCar(ctx context.Context, w *World, funcNode Node, listSet []Node) (resul
 			if !ok {
 				return nil, ErrNotSupportType
 			}
-			paramSet[i], listSet[i] = seq.firstAndRest()
+			paramSet[i], listSet[i], ok = seq.firstAndRest()
+			if !ok {
+				return resultFirst.Cdr, nil
+			}
 		}
 		result, err := _f.Call(ctx, w, List(paramSet...))
 		if err != nil {
@@ -240,6 +245,18 @@ func funMap(ctx context.Context, w *World, argv []Node) (Node, error) {
 		return nil, err
 	}
 	return collector(result)
+}
+
+func funCoerce(ctx context.Context, w *World, argv []Node) (Node, error) {
+	symbol, ok := argv[1].(Symbol)
+	if !ok {
+		return nil, ErrExpectedSymbol
+	}
+	collector, ok := coerceTable[symbol]
+	if !ok {
+		return nil, ErrNotSupportType
+	}
+	return collector(argv[0])
 }
 
 func funListp(ctx context.Context, w *World, argv []Node) (Node, error) {
