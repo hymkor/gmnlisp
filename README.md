@@ -1,7 +1,7 @@
 [![GoDoc](https://godoc.org/github.com/hymkor/gmnlisp?status.svg)](https://godoc.org/github.com/hymkor/gmnlisp)
 
-Gommon Lisp
-===========
+gmnlisp
+=======
 
 Now under constructing. Experimental implementing
 
