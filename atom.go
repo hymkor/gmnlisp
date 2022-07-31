@@ -76,7 +76,7 @@ func (s String) Equals(n Node, m EqlMode) bool {
 	}
 }
 
-func (s String) FirstAndRest() (Node, Node) {
+func (s String) firstAndRest() (Node, Node) {
 	if len(s) <= 0 {
 		return Null, Null
 	}

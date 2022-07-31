@@ -154,14 +154,22 @@ func funCons(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return &Cons{Car: argv[0], Cdr: argv[1]}, nil
 }
 
-func coerceToList(list []Node) (Node, error) {
-	return List(list...), nil
+func coerceToList(list Node) (Node, error) {
+	return list, nil
 }
 
-func coerceToString(list []Node) (Node, error) {
+func coerceToString(list Node) (Node, error) {
 	var buffer strings.Builder
-	for _, c := range list {
-		r, ok := c.(Rune)
+	for HasValue(list) {
+		var value Node
+
+		seq, ok := list.(_Sequence)
+		if !ok {
+			return nil, ErrExpectedSequence
+		}
+		value, list = seq.firstAndRest()
+
+		r, ok := value.(Rune)
 		if !ok {
 			return nil, ErrExpectedCharacter
 		}
@@ -170,26 +178,13 @@ func coerceToString(list []Node) (Node, error) {
 	return String(buffer.String()), nil
 }
 
-var coerceTable = map[Symbol]func(list []Node) (Node, error){
+var coerceTable = map[Symbol]func(list Node) (Node, error){
 	symbolForList:   coerceToList,
 	symbolForString: coerceToString,
 }
 
-func funMap(ctx context.Context, w *World, argv []Node) (result Node, err error) {
-	if len(argv) < 2 {
-		return nil, ErrTooFewArguments
-	}
-	symbol, ok := argv[0].(Symbol)
-	if !ok {
-		return nil, ErrExpectedSymbol
-	}
-
-	collector, ok := coerceTable[symbol]
-	if !ok {
-		return nil, ErrNotSupportType
-	}
-
-	f, err := argv[1].Eval(ctx, w)
+func mapCar(ctx context.Context, w *World, funcNode Node, listSet []Node) (result Node, err error) {
+	f, err := funcNode.Eval(ctx, w)
 	if err != nil {
 		return nil, err
 	}
@@ -197,31 +192,54 @@ func funMap(ctx context.Context, w *World, argv []Node) (result Node, err error)
 	if !ok {
 		return nil, ErrExpectedFunction
 	}
-	listSet := argv[2:]
-
-	var resultSet []Node
+	resultFirst := &Cons{}
+	resultLast := resultFirst
 	for {
 		paramSet := make([]Node, len(listSet))
 		for i := 0; i < len(listSet); i++ {
 			if IsNull(listSet[i]) {
-				return collector(resultSet)
+				return resultFirst.Cdr, nil
 			}
-			seq, ok := listSet[i].(Sequence)
+			seq, ok := listSet[i].(_Sequence)
 			if !ok {
 				return nil, ErrNotSupportType
 			}
-			paramSet[i], listSet[i] = seq.FirstAndRest()
+			paramSet[i], listSet[i] = seq.firstAndRest()
 		}
 		result, err := _f.Call(ctx, w, List(paramSet...))
 		if err != nil {
 			return nil, err
 		}
-		resultSet = append(resultSet, result)
+		tmp := &Cons{Car: result, Cdr: Null}
+		resultLast.Cdr = tmp
+		resultLast = tmp
 	}
 }
 
 func funMapCar(ctx context.Context, w *World, argv []Node) (Node, error) {
-	return funMap(ctx, w, append([]Node{symbolForList}, argv...))
+	if len(argv) < 1 {
+		return nil, ErrTooFewArguments
+	}
+	return mapCar(ctx, w, argv[0], argv[1:])
+}
+
+func funMap(ctx context.Context, w *World, argv []Node) (Node, error) {
+	if len(argv) < 2 {
+		return nil, ErrTooFewArguments
+	}
+	symbol, ok := argv[0].(Symbol)
+	if !ok {
+		return nil, ErrExpectedSymbol
+	}
+	collector, ok := coerceTable[symbol]
+	if !ok {
+		return nil, ErrNotSupportType
+	}
+	result, err := mapCar(ctx, w, argv[1], argv[2:])
+	if err != nil {
+		return nil, err
+	}
+	return collector(result)
 }
 
 func funListp(ctx context.Context, w *World, argv []Node) (Node, error) {
