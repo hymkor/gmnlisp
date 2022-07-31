@@ -17,11 +17,11 @@ all:
 preprocessor:
 	go fmt
 	go build
-	go fmt cmd/preprocessor/main.go
-	go build -o preprocessor$(EXE) cmd/preprocessor/main.go
+	go fmt cmd/gmnlpp/main.go
+	go build -o gmnlpp$(EXE) cmd/gmnlpp/main.go
 
 test:
 	go test -v
 
 readme: preprocessor
-	.$(D)preprocessor$(EXE) _README.md > README.md
+	.$(D)gmnlpp$(EXE) _README.md > README.md
