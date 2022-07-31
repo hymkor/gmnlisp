@@ -15,7 +15,7 @@ func cmdQuote(_ context.Context, _ *World, n Node) (Node, error) {
 	return argv[0], nil
 }
 
-func funAtom(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funAtom(_ context.Context, _ *World, argv []Node) (Node, error) {
 	if _, ok := argv[0].(*Cons); ok {
 		return Null, nil
 	}
@@ -41,7 +41,7 @@ func cmdEqual(ctx context.Context, w *World, param Node) (Node, error) {
 	return True, nil
 }
 
-func cmdGetAllSymbols(ctx context.Context, w *World, n Node) (Node, error) {
+func cmdGetAllSymbols(_ context.Context, w *World, n Node) (Node, error) {
 	names := []string{}
 	var cons Node = Null
 	w.each(func(name Symbol, _ Node) bool {
@@ -58,7 +58,7 @@ func cmdGetAllSymbols(ctx context.Context, w *World, n Node) (Node, error) {
 	return cons, nil
 }
 
-func funNot(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funNot(_ context.Context, w *World, argv []Node) (Node, error) {
 	if IsNull(argv[0]) {
 		return True, nil
 	}
@@ -77,14 +77,14 @@ func funLoad(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return w.InterpretBytes(ctx, script)
 }
 
-func funNotEqual(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funNotEqual(_ context.Context, _ *World, argv []Node) (Node, error) {
 	if argv[0].Equals(argv[1], EQUALP) {
 		return Null, nil
 	}
 	return True, nil
 }
 
-func funRead(ctx context.Context, w *World, args []Node) (Node, error) {
+func funRead(_ context.Context, _ *World, args []Node) (Node, error) {
 	script, ok := args[0].(String)
 	if !ok {
 		return nil, ErrExpectedString
@@ -112,52 +112,52 @@ func xxxxP(args []Node, f1 func(Integer) bool, f2 func(Float) bool) (Node, error
 	return Null, nil
 }
 
-func funZerop(ctx context.Context, w *World, args []Node) (Node, error) {
+func funZerop(_ context.Context, _ *World, args []Node) (Node, error) {
 	return xxxxP(args,
 		func(value Integer) bool { return value == 0 },
 		func(value Float) bool { return value == 0 })
 }
 
-func funNumberp(ctx context.Context, w *World, args []Node) (Node, error) {
+func funNumberp(_ context.Context, _ *World, args []Node) (Node, error) {
 	return xxxxP(args,
 		func(Integer) bool { return true },
 		func(Float) bool { return true })
 }
 
-func funPlusp(ctx context.Context, w *World, args []Node) (Node, error) {
+func funPlusp(_ context.Context, _ *World, args []Node) (Node, error) {
 	return xxxxP(args,
 		func(value Integer) bool { return value > 0 },
 		func(value Float) bool { return value > 0 })
 }
 
-func funMinusp(ctx context.Context, w *World, args []Node) (Node, error) {
+func funMinusp(_ context.Context, _ *World, args []Node) (Node, error) {
 	return xxxxP(args,
 		func(value Integer) bool { return value < 0 },
 		func(value Float) bool { return value < 0 })
 }
 
-func funOddp(ctx context.Context, w *World, args []Node) (Node, error) {
+func funOddp(_ context.Context, _ *World, args []Node) (Node, error) {
 	if value, ok := args[0].(Integer); ok && value%2 == 1 {
 		return True, nil
 	}
 	return Null, nil
 }
 
-func funEvenp(ctx context.Context, w *World, args []Node) (Node, error) {
+func funEvenp(_ context.Context, _ *World, args []Node) (Node, error) {
 	if value, ok := args[0].(Integer); ok && value%2 == 0 {
 		return True, nil
 	}
 	return Null, nil
 }
 
-func funNullp(ctx context.Context, w *World, args []Node) (Node, error) {
+func funNullp(_ context.Context, _ *World, args []Node) (Node, error) {
 	if IsNull(args[0]) {
 		return True, nil
 	}
 	return Null, nil
 }
 
-func funAnyTypep[T Node](ctx context.Context, w *World, args []Node) (Node, error) {
+func funAnyTypep[T Node](_ context.Context, _ *World, args []Node) (Node, error) {
 	if _, ok := args[0].(T); ok {
 		return True, nil
 	}
@@ -174,7 +174,7 @@ const (
 	symbolForList    = Symbol("list")
 )
 
-func funTypep(ctx context.Context, w *World, args []Node) (Node, error) {
+func funTypep(_ context.Context, _ *World, args []Node) (Node, error) {
 	symbol, ok := args[1].(Symbol)
 	if !ok {
 		return nil, ErrExpectedSymbol
@@ -212,7 +212,7 @@ type _Sequence interface {
 	firstAndRest() (Node, Node, bool)
 }
 
-func funAref(ctx context.Context, w *World, args []Node) (Node, error) {
+func funAref(_ context.Context, _ *World, args []Node) (Node, error) {
 	index, ok := args[1].(Integer)
 	if !ok {
 		return nil, ErrExpectedNumber

@@ -15,7 +15,7 @@ type _Lambda struct {
 	lexical *World
 }
 
-func cmdLambda(ctx context.Context, w *World, node Node) (Node, error) {
+func cmdLambda(_ context.Context, w *World, node Node) (Node, error) {
 	return newLambda(w, node, "")
 }
 
@@ -140,7 +140,7 @@ func (*_Lambda) Equals(Node, EqlMode) bool {
 	return false
 }
 
-func cmdDefun(ctx context.Context, w *World, list Node) (Node, error) {
+func cmdDefun(_ context.Context, w *World, list Node) (Node, error) {
 	_symbol, list, err := shift(list)
 	if err != nil {
 		return nil, err
@@ -210,7 +210,7 @@ func (f Special) Call(ctx context.Context, w *World, n Node) (Node, error) {
 	return f(ctx, w, n)
 }
 
-func funFunction(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funFunction(_ context.Context, _ *World, argv []Node) (Node, error) {
 	f, ok := argv[0].(_Callable)
 	if !ok {
 		return nil, ErrExpectedFunction
@@ -218,7 +218,7 @@ func funFunction(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return f, nil
 }
 
-func cmdTrace(ctx context.Context, w *World, list Node) (Node, error) {
+func cmdTrace(_ context.Context, _ *World, list Node) (Node, error) {
 	// from CommonLisp
 	if len(trace) > 0 {
 		trace = map[Symbol]int{}

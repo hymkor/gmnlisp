@@ -104,7 +104,7 @@ func chomp(s string) string {
 	return s
 }
 
-func funReadLine(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funReadLine(_ context.Context, _ *World, argv []Node) (Node, error) {
 	type ReadStringer interface {
 		ReadString(byte) (string, error)
 	}
@@ -119,7 +119,7 @@ func funReadLine(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return String(chomp(s)), err
 }
 
-func funClose(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funClose(_ context.Context, _ *World, argv []Node) (Node, error) {
 	c, ok := argv[0].(io.Closer)
 	if !ok {
 		return nil, fmt.Errorf("Expected Closer `%s`", toString(argv[0]))
@@ -140,7 +140,7 @@ func funCommand(ctx context.Context, w *World, list []Node) (Node, error) {
 	}
 
 	var err error
-	cmd := exec.Command(argv[0], argv[1:]...)
+	cmd := exec.CommandContext(ctx, argv[0], argv[1:]...)
 	cmd.Stdout, err = w.Stdout()
 	if err != nil {
 		return nil, err

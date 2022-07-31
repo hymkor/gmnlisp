@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func funCar(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funCar(_ context.Context, _ *World, argv []Node) (Node, error) {
 	cons, ok := argv[0].(*Cons)
 	if !ok {
 		return nil, fmt.Errorf("%w: %s", ErrExpectedCons, toString(argv[0]))
@@ -14,7 +14,7 @@ func funCar(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return cons.Car, nil
 }
 
-func funCdr(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funCdr(_ context.Context, _ *World, argv []Node) (Node, error) {
 	cons, ok := argv[0].(*Cons)
 	if !ok {
 		return nil, ErrExpectedCons
@@ -63,27 +63,27 @@ func funNth(_ context.Context, _ *World, argv []Node) (Node, error) {
 	return nth(int(n), argv[1])
 }
 
-func funCadr(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funCadr(_ context.Context, _ *World, argv []Node) (Node, error) {
 	return nth(1, argv[0])
 }
 
-func funCaddr(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funCaddr(_ context.Context, _ *World, argv []Node) (Node, error) {
 	return nth(2, argv[0])
 }
 
-func funCadddr(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funCadddr(_ context.Context, _ *World, argv []Node) (Node, error) {
 	return nth(3, argv[0])
 }
 
-func funCddr(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funCddr(_ context.Context, _ *World, argv []Node) (Node, error) {
 	return nthcdr(2, argv[0])
 }
 
-func funCdddr(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funCdddr(_ context.Context, _ *World, argv []Node) (Node, error) {
 	return nthcdr(3, argv[0])
 }
 
-func funList(ctx context.Context, w *World, list []Node) (Node, error) {
+func funList(_ context.Context, _ *World, list []Node) (Node, error) {
 	var cons Node = Null
 	for i := len(list) - 1; i >= 0; i-- {
 		cons = &Cons{
@@ -107,7 +107,7 @@ func lastOfList(node Node) (*Cons, error) {
 	}
 }
 
-func funLast(ctx context.Context, w *World, list []Node) (Node, error) {
+func funLast(_ context.Context, _ *World, list []Node) (Node, error) {
 	if IsNull(list[0]) {
 		return Null, nil
 	}
@@ -118,7 +118,7 @@ func funLast(ctx context.Context, w *World, list []Node) (Node, error) {
 	return tail.Car, nil
 }
 
-func funAppend(ctx context.Context, w *World, list []Node) (Node, error) {
+func funAppend(_ context.Context, _ *World, list []Node) (Node, error) {
 	var last Node = Null
 	for i := len(list) - 1; i >= 0; i-- {
 		if IsNull(list[i]) {
@@ -134,7 +134,7 @@ func funAppend(ctx context.Context, w *World, list []Node) (Node, error) {
 	return last, nil
 }
 
-func funMember(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funMember(_ context.Context, _ *World, argv []Node) (Node, error) {
 	expr := argv[0]
 	list := argv[1]
 	for HasValue(list) {
@@ -150,7 +150,7 @@ func funMember(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return Null, nil
 }
 
-func funCons(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funCons(_ context.Context, _ *World, argv []Node) (Node, error) {
 	return &Cons{Car: argv[0], Cdr: argv[1]}, nil
 }
 
@@ -247,7 +247,7 @@ func funMap(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return collector(result)
 }
 
-func funCoerce(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funCoerce(_ context.Context, _ *World, argv []Node) (Node, error) {
 	symbol, ok := argv[1].(Symbol)
 	if !ok {
 		return nil, ErrExpectedSymbol
@@ -259,7 +259,7 @@ func funCoerce(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return collector(argv[0])
 }
 
-func funListp(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funListp(_ context.Context, _ *World, argv []Node) (Node, error) {
 	if IsNull(argv[0]) {
 		return True, nil
 	}
@@ -269,7 +269,7 @@ func funListp(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return Null, nil
 }
 
-func funLength(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funLength(_ context.Context, _ *World, argv []Node) (Node, error) {
 	length := 0
 	list := argv[0]
 	for HasValue(list) {
@@ -283,7 +283,7 @@ func funLength(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return Integer(length), nil
 }
 
-func funReverse(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funReverse(_ context.Context, _ *World, argv []Node) (Node, error) {
 	source := argv[0]
 	var result Node
 
@@ -303,7 +303,7 @@ func funReverse(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return result, nil
 }
 
-func funAssoc(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funAssoc(_ context.Context, _ *World, argv []Node) (Node, error) {
 	key := argv[0]
 	list := argv[1]
 
@@ -340,6 +340,6 @@ func subst(newItem, oldItem, list Node) Node {
 	return list
 }
 
-func funSubst(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funSubst(_ context.Context, _ *World, argv []Node) (Node, error) {
 	return subst(argv[0], argv[1], argv[2]), nil
 }
