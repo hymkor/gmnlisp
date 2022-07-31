@@ -70,6 +70,7 @@ Support functions
 - `cddr`
 - `cdr`
 - `close`
+- `coerce`
 - `command`
 - `cond`
 - `cons`

@@ -10,18 +10,16 @@ Now under constructing. Experimental implementing
 ```go
 (%
     (defun detab (src)
-        (let ((result "") c)
-            (foreach c (split-string src "")
-                (setq result
-                    (strcat result
-                        (if (= "\t" c)
-                            "    "
-                            c
-                        )
+        (apply #'strcat
+            (map 'list
+                #'(lambda (c)
+                    (if (= #\tab c)
+                        "    "
+                        (coerce (list c) 'string)
                     )
                 )
+                src
             )
-            result
         )
     )
     (let (fd count line)
@@ -31,7 +29,7 @@ Now under constructing. Experimental implementing
                 (while (setq line (read-line fd))
                     (if (>= count 3)
                         (write-line (detab line)))
-                    (setq count (+ count 1))
+                    (setq count (1+ count))
                 )
                 (close fd)
             )
