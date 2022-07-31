@@ -71,7 +71,7 @@ func TestMapCar(t *testing.T) {
 }
 
 func TestMap(t *testing.T) {
-	assertEqual(t, `(map 'string #'(lambda (c) c) "123")`, String("123"))
+	assertEqual(t, `(map 'string '1+ "123")`, String("234"))
 	assertEqual(t, `(map 'list '1+ '(1 2 3))`, List(Integer(2), Integer(3), Integer(4)))
 }
 

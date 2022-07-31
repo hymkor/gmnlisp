@@ -146,3 +146,23 @@ func (r Rune) Equals(n Node, m EqlMode) bool {
 	}
 	return false
 }
+
+func (r Rune) Add(n Node) (Node, error) {
+	if value, ok := n.(Integer); ok {
+		return r + Rune(value), nil
+	}
+	if value, ok := n.(Rune); ok {
+		return r + value, nil
+	}
+	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n))
+}
+
+func (r Rune) Sub(n Node) (Node, error) {
+	if value, ok := n.(Integer); ok {
+		return r - Rune(value), nil
+	}
+	if value, ok := n.(Rune); ok {
+		return r - value, nil
+	}
+	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n))
+}

@@ -196,6 +196,9 @@ func funTruncate(ctx context.Context, w *World, argv []Node) (Node, error) {
 }
 
 func funOnePlus(ctx context.Context, w *World, argv []Node) (Node, error) {
+	if value, ok := argv[0].(Rune); ok {
+		return value + 1, nil
+	}
 	if value, ok := argv[0].(Integer); ok {
 		return value + 1, nil
 	}
@@ -206,6 +209,9 @@ func funOnePlus(ctx context.Context, w *World, argv []Node) (Node, error) {
 }
 
 func funOneMinus(ctx context.Context, w *World, argv []Node) (Node, error) {
+	if value, ok := argv[0].(Rune); ok {
+		return value - 1, nil
+	}
 	if value, ok := argv[0].(Integer); ok {
 		return value - 1, nil
 	}
