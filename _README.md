@@ -9,7 +9,7 @@ Gmnlisp is a small Lisp implementation in Go.
 ![Example image](factorial.png)
 
 ```go
-(%
+<%
     (defun detab (src)
         (apply #'strcat
             (map 'list
@@ -36,12 +36,12 @@ Gmnlisp is a small Lisp implementation in Go.
             )
         )
     )
-%)
+%>
 ```
 
 ```
 $ go run examples/example1.go
-(% (command "go" "run" "examples/example1.go") %)
+<% (command "go" "run" "examples/example1.go") %>
 ```
 
 gmnlpp - Text preprocessor by gmnlisp
@@ -67,8 +67,8 @@ Support Types
 Support functions
 -----------------
 
-(%
+<%
     (let (name)
         (foreach name (--get-all-symbols--)
             (write-line (strcat "- `" name "`"))))
-%)
+%>
