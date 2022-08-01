@@ -25,8 +25,8 @@ func replaceFile(lisp *gmnlisp.World, fname string) error {
 }
 
 var (
-	rxBeginning = regexp.MustCompile(`\A(?s).*?<%`)
-	rxMiddle    = regexp.MustCompile(`(?s)%>.*?<%`)
+	rxBeginning = regexp.MustCompile(`\A(?s).*?<%=?`)
+	rxMiddle    = regexp.MustCompile(`(?s)%>.*?<%=?`)
 	rxEnding    = regexp.MustCompile(`(?s)%>.*?\z`)
 )
 
@@ -38,7 +38,16 @@ var unescapeSequenceReplacer = strings.NewReplacer(
 	"\"", "\\\"",
 )
 
+var equalMark = false
+
 func replaceFunc(source []byte) []byte {
+	var buffer bytes.Buffer
+
+	if equalMark {
+		buffer.WriteString(")")
+		equalMark = false
+	}
+
 	if bytes.HasPrefix(source, []byte{'%', '>'}) {
 		source = source[2:]
 	}
@@ -48,10 +57,13 @@ func replaceFunc(source []byte) []byte {
 	if len(source) > 0 && source[0] == '\n' {
 		source = source[1:]
 	}
+	if len(source) > 0 && source[len(source)-1] == '=' {
+		source = source[:len(source)-1]
+		equalMark = true
+	}
 	if bytes.HasSuffix(source, []byte{'<', '%'}) {
 		source = source[:len(source)-2]
 	}
-	var buffer bytes.Buffer
 	for {
 		before, after, found := bytes.Cut(source, []byte{'\n'})
 		if !found {
@@ -59,6 +71,9 @@ func replaceFunc(source []byte) []byte {
 				fmt.Fprint(&buffer, `(write "`)
 				unescapeSequenceReplacer.WriteString(&buffer, string(source))
 				fmt.Fprintln(&buffer, `")`)
+			}
+			if equalMark {
+				buffer.WriteString("(princ ")
 			}
 			return buffer.Bytes()
 		}
