@@ -2,11 +2,13 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"context"
 	"flag"
 	"fmt"
 	"io"
 	"os"
+	"regexp"
 	"strings"
 
 	"github.com/hymkor/gmnlisp"
@@ -22,9 +24,61 @@ func replaceFile(lisp *gmnlisp.World, fname string) error {
 	return replaceReader(lisp, fd, os.Stdout)
 }
 
+var rxBeginning = regexp.MustCompile(`\A(?s).*?\(%`)
+var rxMiddle = regexp.MustCompile(`(?s)%\).*?\(%`)
+var rxEnding = regexp.MustCompile(`(?s)%\).*?\z`)
+var unescapeSequenceReplacer = strings.NewReplacer(
+	"\n", "\\n",
+	"\r", "\\r",
+	"\t", "\\t",
+	"\b", "\\b",
+	"\"", "\\\"",
+)
+
+func replaceFunc(source []byte) []byte {
+	if bytes.HasPrefix(source, []byte{'%', ')'}) {
+		source = source[2:]
+	}
+	if len(source) > 0 && source[0] == '\r' {
+		source = source[1:]
+	}
+	if len(source) > 0 && source[0] == '\n' {
+		source = source[1:]
+	}
+	if bytes.HasSuffix(source, []byte{'(', '%'}) {
+		source = source[:len(source)-2]
+	}
+	var buffer bytes.Buffer
+	for {
+		before, after, found := bytes.Cut(source, []byte{'\n'})
+		if !found {
+			if len(source) > 0 {
+				fmt.Fprint(&buffer, `(write "`)
+				unescapeSequenceReplacer.WriteString(&buffer, string(source))
+				fmt.Fprintln(&buffer, `")`)
+			}
+			return buffer.Bytes()
+		}
+		fmt.Fprint(&buffer, `(write-line "`)
+		unescapeSequenceReplacer.WriteString(&buffer, string(before))
+		fmt.Fprintln(&buffer, `")`)
+		source = []byte(after)
+	}
+}
+
 func replaceReader(lisp *gmnlisp.World, r io.Reader, w io.Writer) (err error) {
-	br := bufio.NewReader(r)
+	source, err := io.ReadAll(r)
+	if err != nil {
+		return err
+	}
 	bw := bufio.NewWriter(w)
+
+	source = rxBeginning.ReplaceAllFunc(source, replaceFunc)
+	source = rxMiddle.ReplaceAllFunc(source, replaceFunc)
+	source = rxEnding.ReplaceAllFunc(source, replaceFunc)
+
+	println(string(source))
+
 	orgStdout, err := lisp.Stdout()
 	if err != nil {
 		return err
@@ -39,78 +93,8 @@ func replaceReader(lisp *gmnlisp.World, r io.Reader, w io.Writer) (err error) {
 		lisp.SetStdout(orgStdout)
 	}()
 
-	for {
-		var ch rune
-		ch, _, err = br.ReadRune()
-		if err != nil {
-			return
-		}
-		if ch == '(' {
-			ch, _, err = br.ReadRune()
-			if err != nil {
-				return
-			}
-			if ch != '%' {
-				bw.WriteRune('(')
-				bw.WriteRune(ch)
-				continue
-			}
-			ch, _, err = br.ReadRune()
-			if err != nil {
-				return
-			}
-			evalStyle := false
-			if ch == '=' {
-				evalStyle = true
-			} else {
-				br.UnreadRune()
-			}
-
-			var buffer strings.Builder
-			for {
-				ch, _, err = br.ReadRune()
-				if err != nil {
-					return
-				}
-				if ch == '%' {
-					ch, _, err = br.ReadRune()
-					if err != nil {
-						return
-					}
-					if ch == ')' {
-						var value gmnlisp.Node
-
-						bw.Flush()
-						value, err = lisp.Interpret(context.TODO(), buffer.String())
-						if err != nil {
-							return
-						}
-						if evalStyle {
-							value.PrintTo(bw, gmnlisp.PRINC)
-						}
-						ch, _, err = br.ReadRune()
-						if err != nil {
-							return
-						}
-						if ch == '\r' {
-							ch, _, err = br.ReadRune()
-							if err != nil {
-								return
-							}
-						}
-						if ch != '\n' {
-							br.UnreadRune()
-						}
-						break
-					}
-					buffer.WriteRune('%')
-				}
-				buffer.WriteRune(ch)
-			}
-			continue
-		}
-		bw.WriteRune(ch)
-	}
+	_, err = lisp.InterpretBytes(context.TODO(), source)
+	return err
 }
 
 var flagAnsi = flag.Bool("ansi", false, "macro value is not UTF8 (ANSI)")
