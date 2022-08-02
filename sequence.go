@@ -60,29 +60,39 @@ func coerceToList(list Node) (Node, error) {
 
 func coerceToString(list Node) (Node, error) {
 	var buffer strings.Builder
-	for HasValue(list) {
-		var value Node
-
-		seq, ok := list.(_Sequence)
-		if !ok {
-			return nil, ErrExpectedSequence
-		}
-		value, list, ok = seq.firstAndRest()
-		if !ok {
-			break
-		}
+	err := seqEach(list, func(value Node) error {
 		r, ok := value.(Rune)
 		if !ok {
-			return nil, fmt.Errorf("%w: `%s`", ErrExpectedCharacter, toString(value))
+			return fmt.Errorf("%w: `%s`", ErrExpectedCharacter, toString(value))
 		}
 		buffer.WriteRune(rune(r))
-	}
-	return String(buffer.String()), nil
+		return nil
+	})
+	return String(buffer.String()), err
 }
 
 var coerceTable = map[Symbol]func(list Node) (Node, error){
 	symbolForList:   coerceToList,
 	symbolForString: coerceToString,
+}
+
+func seqEach(list Node, f func(Node) error) error {
+	for HasValue(list) {
+		seq, ok := list.(_Sequence)
+		if !ok {
+			return ErrExpectedSequence
+		}
+		var value Node
+
+		value, list, ok = seq.firstAndRest()
+		if !ok {
+			break
+		}
+		if err := f(value); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func funAref(_ context.Context, _ *World, args []Node) (Node, error) {
@@ -117,23 +127,17 @@ func funConcatenate(ctx context.Context, w *World, list []Node) (Node, error) {
 	last := first
 
 	for _, element := range list[1:] {
-		for HasValue(element) {
-			seq, ok := element.(_Sequence)
-			if !ok {
-				return nil, ErrExpectedSequence
-			}
-			var value Node
-
-			value, element, ok = seq.firstAndRest()
-			if !ok {
-				break
-			}
+		err := seqEach(element, func(value Node) error {
 			tmp := &Cons{
 				Car: value,
 				Cdr: Null,
 			}
 			last.Cdr = tmp
 			last = tmp
+			return nil
+		})
+		if err != nil {
+			return nil, err
 		}
 	}
 	collector, ok := coerceTable[symbol]
@@ -145,19 +149,11 @@ func funConcatenate(ctx context.Context, w *World, list []Node) (Node, error) {
 
 func funLength(_ context.Context, _ *World, argv []Node) (Node, error) {
 	length := 0
-	target := argv[0]
-	for HasValue(target) {
-		seq, ok := target.(_Sequence)
-		if !ok {
-			return nil, ErrExpectedSequence
-		}
-		_, target, ok = seq.firstAndRest()
-		if !ok {
-			break
-		}
+	err := seqEach(argv[0], func(_ Node) error {
 		length++
-	}
-	return Integer(length), nil
+		return nil
+	})
+	return Integer(length), err
 }
 
 func mapCar(ctx context.Context, w *World, funcNode Node, listSet []Node) (result Node, err error) {
