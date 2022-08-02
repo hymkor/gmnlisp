@@ -67,5 +67,5 @@ Support functions
 <%
 (let (name)
     (foreach name (--get-all-symbols--)
-        (write-line (strcat "- `" name "`"))))
+        (write-line (concatenate 'string "- `" name "`"))))
 %>

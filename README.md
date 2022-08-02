@@ -91,6 +91,7 @@ Support functions
 - `close`
 - `coerce`
 - `command`
+- `concatenate`
 - `cond`
 - `cons`
 - `consp`
