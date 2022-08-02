@@ -11,7 +11,7 @@ Gmnlisp is a small Lisp implementation in Go.
 ```go
 <%
 (defun detab (src)
-    (apply #'strcat
+    (apply #'concatenate 'string
         (map 'list
             #'(lambda (c)
                 (if (= #\tab c)
