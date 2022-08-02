@@ -279,21 +279,21 @@ func (f *Function) Call(ctx context.Context, w *World, list Node) (Node, error) 
 	return f.F(ctx, w, argv[:f.C])
 }
 
-type FunctionN func(context.Context, *World, []Node) (Node, error)
+type VarArgsF func(context.Context, *World, []Node) (Node, error)
 
-func (f FunctionN) PrintTo(w io.Writer, m PrintMode) {
+func (f VarArgsF) PrintTo(w io.Writer, m PrintMode) {
 	io.WriteString(w, "built-in function(N)")
 }
 
-func (f FunctionN) Eval(context.Context, *World) (Node, error) {
+func (f VarArgsF) Eval(context.Context, *World) (Node, error) {
 	return f, nil
 }
 
-func (f FunctionN) Equals(n Node, m EqlMode) bool {
+func (f VarArgsF) Equals(n Node, m EqlMode) bool {
 	return false
 }
 
-func (f FunctionN) Call(ctx context.Context, w *World, list Node) (Node, error) {
+func (f VarArgsF) Call(ctx context.Context, w *World, list Node) (Node, error) {
 	if err := checkContext(ctx); err != nil {
 		return nil, err
 	}
