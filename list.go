@@ -3,7 +3,6 @@ package gmnlisp
 import (
 	"context"
 	"fmt"
-	"strings"
 )
 
 func funCar(_ context.Context, _ *World, argv []Node) (Node, error) {
@@ -154,111 +153,6 @@ func funCons(_ context.Context, _ *World, argv []Node) (Node, error) {
 	return &Cons{Car: argv[0], Cdr: argv[1]}, nil
 }
 
-func coerceToList(list Node) (Node, error) {
-	return list, nil
-}
-
-func coerceToString(list Node) (Node, error) {
-	var buffer strings.Builder
-	for HasValue(list) {
-		var value Node
-
-		seq, ok := list.(_Sequence)
-		if !ok {
-			return nil, ErrExpectedSequence
-		}
-		value, list, ok = seq.firstAndRest()
-		if !ok {
-			break
-		}
-		r, ok := value.(Rune)
-		if !ok {
-			return nil, fmt.Errorf("%w: `%s`", ErrExpectedCharacter, toString(value))
-		}
-		buffer.WriteRune(rune(r))
-	}
-	return String(buffer.String()), nil
-}
-
-var coerceTable = map[Symbol]func(list Node) (Node, error){
-	symbolForList:   coerceToList,
-	symbolForString: coerceToString,
-}
-
-func mapCar(ctx context.Context, w *World, funcNode Node, listSet []Node) (result Node, err error) {
-	f, err := funcNode.Eval(ctx, w)
-	if err != nil {
-		return nil, err
-	}
-	_f, ok := f.(_Callable)
-	if !ok {
-		return nil, ErrExpectedFunction
-	}
-	resultFirst := &Cons{}
-	resultLast := resultFirst
-	for {
-		paramSet := make([]Node, len(listSet))
-		for i := 0; i < len(listSet); i++ {
-			if IsNull(listSet[i]) {
-				return resultFirst.Cdr, nil
-			}
-			seq, ok := listSet[i].(_Sequence)
-			if !ok {
-				return nil, ErrNotSupportType
-			}
-			paramSet[i], listSet[i], ok = seq.firstAndRest()
-			if !ok {
-				return resultFirst.Cdr, nil
-			}
-		}
-		result, err := _f.Call(ctx, w, List(paramSet...))
-		if err != nil {
-			return nil, err
-		}
-		tmp := &Cons{Car: result, Cdr: Null}
-		resultLast.Cdr = tmp
-		resultLast = tmp
-	}
-}
-
-func funMapCar(ctx context.Context, w *World, argv []Node) (Node, error) {
-	if len(argv) < 1 {
-		return nil, ErrTooFewArguments
-	}
-	return mapCar(ctx, w, argv[0], argv[1:])
-}
-
-func funMap(ctx context.Context, w *World, argv []Node) (Node, error) {
-	if len(argv) < 2 {
-		return nil, ErrTooFewArguments
-	}
-	symbol, ok := argv[0].(Symbol)
-	if !ok {
-		return nil, ErrExpectedSymbol
-	}
-	collector, ok := coerceTable[symbol]
-	if !ok {
-		return nil, ErrNotSupportType
-	}
-	result, err := mapCar(ctx, w, argv[1], argv[2:])
-	if err != nil {
-		return nil, err
-	}
-	return collector(result)
-}
-
-func funCoerce(_ context.Context, _ *World, argv []Node) (Node, error) {
-	symbol, ok := argv[1].(Symbol)
-	if !ok {
-		return nil, ErrExpectedSymbol
-	}
-	collector, ok := coerceTable[symbol]
-	if !ok {
-		return nil, ErrNotSupportType
-	}
-	return collector(argv[0])
-}
-
 func funListp(_ context.Context, _ *World, argv []Node) (Node, error) {
 	if IsNull(argv[0]) {
 		return True, nil
@@ -267,23 +161,6 @@ func funListp(_ context.Context, _ *World, argv []Node) (Node, error) {
 		return True, nil
 	}
 	return Null, nil
-}
-
-func funLength(_ context.Context, _ *World, argv []Node) (Node, error) {
-	length := 0
-	target := argv[0]
-	for HasValue(target) {
-		seq, ok := target.(_Sequence)
-		if !ok {
-			return nil, ErrExpectedSequence
-		}
-		_, target, ok = seq.firstAndRest()
-		if !ok {
-			break
-		}
-		length++
-	}
-	return Integer(length), nil
 }
 
 func funReverse(_ context.Context, _ *World, argv []Node) (Node, error) {

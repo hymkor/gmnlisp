@@ -4,7 +4,6 @@ import (
 	"context"
 	"os"
 	"sort"
-	"strings"
 )
 
 func cmdQuote(_ context.Context, _ *World, n Node) (Node, error) {
@@ -166,70 +165,4 @@ func funAnyTypep[T Node](_ context.Context, _ *World, args []Node) (Node, error)
 		return True, nil
 	}
 	return Null, nil
-}
-
-const (
-	symbolForNumber  = Symbol("number")
-	symbolForInteger = Symbol("integer")
-	symbolForFloat   = Symbol("float")
-	symbolForString  = Symbol("string")
-	symbolForSymbol  = Symbol("symbol")
-	symbolForCons    = Symbol("cons")
-	symbolForList    = Symbol("list")
-)
-
-func funTypep(_ context.Context, _ *World, args []Node) (Node, error) {
-	symbol, ok := args[1].(Symbol)
-	if !ok {
-		return nil, ErrExpectedSymbol
-	}
-	ok = false
-	switch Symbol(strings.ToLower(string(symbol))) {
-	case symbolForNumber:
-		_, ok = args[0].(Integer)
-		if !ok {
-			_, ok = args[0].(Float)
-		}
-	case symbolForInteger:
-		_, ok = args[0].(Integer)
-	case symbolForFloat:
-		_, ok = args[0].(Float)
-	case symbolForString:
-		_, ok = args[0].(String)
-	case symbolForSymbol:
-		_, ok = args[0].(Symbol)
-	case symbolForCons:
-		_, ok = args[0].(*Cons)
-	case symbolForList:
-		ok = IsNull(args[0])
-		if !ok {
-			_, ok = args[0].(*Cons)
-		}
-	}
-	if ok {
-		return True, nil
-	}
-	return Null, nil
-}
-
-type _Sequence interface {
-	firstAndRest() (Node, Node, bool)
-}
-
-func funAref(_ context.Context, _ *World, args []Node) (Node, error) {
-	index, ok := args[1].(Integer)
-	if !ok {
-		return nil, ErrExpectedNumber
-	}
-	list := args[0]
-	var value Node = Null
-	for index >= 0 {
-		seq, ok := list.(_Sequence)
-		if !ok {
-			return Null, nil
-		}
-		value, list, _ = seq.firstAndRest()
-		index--
-	}
-	return value, nil
 }
