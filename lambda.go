@@ -186,19 +186,37 @@ func cmdFunCall(ctx context.Context, w *World, node Node) (Node, error) {
 	return _f.Call(ctx, w, node)
 }
 
-func funApply(ctx context.Context, w *World, list []Node) (Node, error) {
-	f, ok := list[0].(_Callable)
+func cmdApply(ctx context.Context, w *World, list Node) (Node, error) {
+	funcNode, list, err := w.shiftAndEvalCar(ctx, list)
+	if err != nil {
+		return nil, err
+	}
+	f, ok := funcNode.(_Callable)
 	if !ok {
 		return nil, ErrExpectedFunction
 	}
-	cons := list[len(list)-1]
-	for i := len(list) - 2; i > 0; i-- {
-		cons = &Cons{
-			Car: list[i],
-			Cdr: cons,
+	var newargs _ListBuilder
+	for {
+		var value Node
+
+		value, list, err = shift(list)
+		if err != nil {
+			return nil, err
 		}
+		if IsNull(list) {
+			// value is the last argument = array
+			value, err = value.Eval(ctx, w)
+			if err != nil {
+				return nil, err
+			}
+			seqEach(value, func(n Node) error {
+				newargs.Add(n)
+				return nil
+			})
+			return f.Call(ctx, w, newargs.List())
+		}
+		newargs.Add(value)
 	}
-	return f.Call(ctx, w, cons)
 }
 
 type _Callable interface {

@@ -107,7 +107,7 @@ func New() *World {
 			"T":                   True,
 			"and":                 SpecialF(cmdAnd),
 			"append":              VarArgsF(funAppend),
-			"apply":               VarArgsF(funApply),
+			"apply":               SpecialF(cmdApply),
 			"aref":                &FixArgsF{C: 2, F: funAref},
 			"assoc":               &FixArgsF{C: 2, F: funAssoc},
 			"atom":                &FixArgsF{C: 1, F: funAtom},

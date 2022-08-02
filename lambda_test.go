@@ -98,6 +98,7 @@ func TestFunCall(t *testing.T) {
 func TestApply(t *testing.T) {
 	assertEqual(t, `(apply #'+ '(1 2 3))`, Integer(6))
 	assertEqual(t, `(apply #'+ 4 5 6 '(1 2 3))`, Integer(21))
+	assertEqual(t, `(apply #'concatenate 'string '("1" "2" "3"))`, String("123"))
 }
 
 func TestRest(t *testing.T) {
