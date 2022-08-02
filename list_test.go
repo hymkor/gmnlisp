@@ -34,9 +34,6 @@ func TestList(t *testing.T) {
 	assertEqual(t, `(listp 1)`, Null)
 	assertEqual(t, `(listp '(1 2 3))`, True)
 
-	assertEqual(t, `(length (list 1 2 3 4))`, Integer(4))
-	assertEqual(t, `(length '(list 1 2 3))`, Integer(4))
-
 	assertEqual(t, `(reverse '(1 2 3 4))`,
 		List(Integer(4), Integer(3), Integer(2), Integer(1)))
 
@@ -55,6 +52,13 @@ func TestList(t *testing.T) {
 			&Cons{Car: String("X"), Cdr: Integer(7)},
 			&Cons{Car: String("Y"), Cdr: Integer(2)},
 			&Cons{Car: String("Z"), Cdr: Integer(4)}))
+}
+
+func TestLength(t *testing.T) {
+	assertEqual(t, `(length (list 1 2 3 4))`, Integer(4))
+	assertEqual(t, `(length '(list 1 2 3))`, Integer(4))
+
+	assertEqual(t, `(length "12345")`, Integer(5))
 }
 
 func TestMapCar(t *testing.T) {

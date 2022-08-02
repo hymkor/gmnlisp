@@ -271,14 +271,17 @@ func funListp(_ context.Context, _ *World, argv []Node) (Node, error) {
 
 func funLength(_ context.Context, _ *World, argv []Node) (Node, error) {
 	length := 0
-	list := argv[0]
-	for HasValue(list) {
-		cons, ok := list.(*Cons)
+	target := argv[0]
+	for HasValue(target) {
+		seq, ok := target.(_Sequence)
 		if !ok {
-			return nil, ErrExpectedCons
+			return nil, ErrExpectedSequence
+		}
+		_, target, ok = seq.firstAndRest()
+		if !ok {
+			break
 		}
 		length++
-		list = cons.Cdr
 	}
 	return Integer(length), nil
 }
