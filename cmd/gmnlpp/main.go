@@ -21,7 +21,7 @@ func replaceFile(lisp *gmnlisp.World, fname string) error {
 		return err
 	}
 	defer fd.Close()
-	return replaceReader(lisp, fd, os.Stdout)
+	return replaceReader(lisp, fd, os.Stdout, os.Stderr)
 }
 
 var (
@@ -87,7 +87,7 @@ func replaceFunc(source []byte) []byte {
 	}
 }
 
-func replaceReader(lisp *gmnlisp.World, r io.Reader, w io.Writer) (err error) {
+func replaceReader(lisp *gmnlisp.World, r io.Reader, w, sourceOut io.Writer) (err error) {
 	source, err := io.ReadAll(r)
 	if err != nil {
 		return err
@@ -98,7 +98,7 @@ func replaceReader(lisp *gmnlisp.World, r io.Reader, w io.Writer) (err error) {
 	source = rxMiddle.ReplaceAllFunc(source, replaceFunc)
 	source = rxEnding.ReplaceAllFunc(source, replaceFunc)
 
-	println(string(source))
+	sourceOut.Write(source)
 
 	orgStdout, err := lisp.Stdout()
 	if err != nil {
@@ -146,7 +146,7 @@ func mains(args []string) error {
 		}
 	}
 	if fileCount <= 0 {
-		if err := replaceReader(lisp, os.Stdin, os.Stdout); err != nil {
+		if err := replaceReader(lisp, os.Stdin, os.Stdout, os.Stderr); err != nil {
 			return err
 		}
 	}
