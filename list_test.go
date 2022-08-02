@@ -34,9 +34,6 @@ func TestList(t *testing.T) {
 	assertEqual(t, `(listp 1)`, Null)
 	assertEqual(t, `(listp '(1 2 3))`, True)
 
-	assertEqual(t, `(reverse '(1 2 3 4))`,
-		List(Integer(4), Integer(3), Integer(2), Integer(1)))
-
 	assertEqual(t, `(let ((collection '((a . 1) (b . 2) (c . 3))))
 			(assoc 'a collection))`,
 		&Cons{Car: Symbol("a"), Cdr: Integer(1)})

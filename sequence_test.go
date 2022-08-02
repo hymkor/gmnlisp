@@ -40,3 +40,9 @@ func TestConcatenate(t *testing.T) {
 	assertEqual(t, `(concatenate 'list '(1 2 3) '(4 5 6))`,
 		List(Integer(1), Integer(2), Integer(3), Integer(4), Integer(5), Integer(6)))
 }
+
+func TestReverse(t *testing.T) {
+	assertEqual(t, `(reverse '(1 2 3 4))`,
+		List(Integer(4), Integer(3), Integer(2), Integer(1)))
+	assertEqual(t, `(reverse "12345")`, String("54321"))
+}

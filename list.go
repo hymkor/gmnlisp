@@ -163,26 +163,6 @@ func funListp(_ context.Context, _ *World, argv []Node) (Node, error) {
 	return Null, nil
 }
 
-func funReverse(_ context.Context, _ *World, argv []Node) (Node, error) {
-	source := argv[0]
-	var result Node
-
-	for HasValue(source) {
-		var value Node
-		var err error
-
-		value, source, err = shift(source)
-		if err != nil {
-			return nil, err
-		}
-		result = &Cons{
-			Car: value,
-			Cdr: result,
-		}
-	}
-	return result, nil
-}
-
 func funAssoc(_ context.Context, _ *World, argv []Node) (Node, error) {
 	key := argv[0]
 	list := argv[1]

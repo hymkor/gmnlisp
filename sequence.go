@@ -242,3 +242,21 @@ func funCoerce(_ context.Context, _ *World, argv []Node) (Node, error) {
 	}
 	return collector(argv[0])
 }
+
+func funReverse(_ context.Context, _ *World, argv []Node) (Node, error) {
+	var result Node
+	err := seqEach(argv[0], func(value Node) error {
+		result = &Cons{
+			Car: value,
+			Cdr: result,
+		}
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	if _, ok := argv[0].(String); ok {
+		return coerceToString(result)
+	}
+	return result, nil
+}
