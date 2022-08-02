@@ -113,6 +113,28 @@ func funAref(_ context.Context, _ *World, args []Node) (Node, error) {
 	return value, nil
 }
 
+type _ListBuilder struct {
+	first Cons
+	last  *Cons
+}
+
+func (L *_ListBuilder) Add(n Node) {
+	tmp := &Cons{
+		Car: n,
+		Cdr: Null,
+	}
+	if L.last == nil {
+		L.first.Cdr = tmp
+	} else {
+		L.last.Cdr = tmp
+	}
+	L.last = tmp
+}
+
+func (L *_ListBuilder) List() Node {
+	return L.first.Cdr
+}
+
 func funConcatenate(ctx context.Context, w *World, list []Node) (Node, error) {
 	if len(list) < 1 {
 		return Null, nil
@@ -123,17 +145,11 @@ func funConcatenate(ctx context.Context, w *World, list []Node) (Node, error) {
 		return nil, ErrExpectedSymbol
 	}
 
-	first := &Cons{}
-	last := first
+	var buffer _ListBuilder
 
 	for _, element := range list[1:] {
 		err := seqEach(element, func(value Node) error {
-			tmp := &Cons{
-				Car: value,
-				Cdr: Null,
-			}
-			last.Cdr = tmp
-			last = tmp
+			buffer.Add(value)
 			return nil
 		})
 		if err != nil {
@@ -144,7 +160,7 @@ func funConcatenate(ctx context.Context, w *World, list []Node) (Node, error) {
 	if !ok {
 		return nil, ErrNotSupportType
 	}
-	return collector(first.Cdr)
+	return collector(buffer.List())
 }
 
 func funLength(_ context.Context, _ *World, argv []Node) (Node, error) {
@@ -165,13 +181,12 @@ func mapCar(ctx context.Context, w *World, funcNode Node, listSet []Node) (resul
 	if !ok {
 		return nil, ErrExpectedFunction
 	}
-	resultFirst := &Cons{}
-	resultLast := resultFirst
+	var resultSet _ListBuilder
 	for {
 		paramSet := make([]Node, len(listSet))
 		for i := 0; i < len(listSet); i++ {
 			if IsNull(listSet[i]) {
-				return resultFirst.Cdr, nil
+				return resultSet.List(), nil
 			}
 			seq, ok := listSet[i].(_Sequence)
 			if !ok {
@@ -179,16 +194,14 @@ func mapCar(ctx context.Context, w *World, funcNode Node, listSet []Node) (resul
 			}
 			paramSet[i], listSet[i], ok = seq.firstAndRest()
 			if !ok {
-				return resultFirst.Cdr, nil
+				return resultSet.List(), nil
 			}
 		}
 		result, err := _f.Call(ctx, w, List(paramSet...))
 		if err != nil {
 			return nil, err
 		}
-		tmp := &Cons{Car: result, Cdr: Null}
-		resultLast.Cdr = tmp
-		resultLast = tmp
+		resultSet.Add(result)
 	}
 }
 
