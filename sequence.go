@@ -63,7 +63,7 @@ func coerceToString(list Node) (Node, error) {
 	err := seqEach(list, func(value Node) error {
 		r, ok := value.(Rune)
 		if !ok {
-			return fmt.Errorf("%w: `%s`", ErrExpectedCharacter, toString(value))
+			return fmt.Errorf("%w: `%s`", ErrExpectedCharacter, toString(value, PRINT))
 		}
 		buffer.WriteRune(rune(r))
 		return nil

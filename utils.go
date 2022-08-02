@@ -45,12 +45,12 @@ type Node interface {
 	PrintTo(io.Writer, PrintMode)
 }
 
-func toString(node Node) string {
+func toString(node Node, m PrintMode) string {
 	if node == nil {
 		return "()"
 	}
 	var buffer strings.Builder
-	node.PrintTo(&buffer, PRINT)
+	node.PrintTo(&buffer, m)
 	return buffer.String()
 }
 

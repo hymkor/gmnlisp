@@ -105,7 +105,7 @@ func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
 		}
 		globals[name] = value
 		if traceDo {
-			fmt.Fprintf(os.Stderr, " %s", toString(value))
+			fmt.Fprintf(os.Stderr, " %s", toString(value, PRINT))
 		}
 	}
 	if traceDo {
@@ -127,7 +127,7 @@ func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
 		fmt.Fprintf(os.Stderr, "[%d: %s returned %s]\n",
 			traceCount,
 			L.name,
-			toString(result))
+			toString(result, PRINT))
 	}
 	return result, err
 }

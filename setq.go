@@ -18,7 +18,7 @@ func cmdSetq(ctx context.Context, w *World, params Node) (Node, error) {
 		}
 		nameSymbol, ok := nameNode.(Symbol)
 		if !ok {
-			return nil, fmt.Errorf("%w: `%s`", ErrExpectedSymbol, toString(nameSymbol))
+			return nil, fmt.Errorf("%w: `%s`", ErrExpectedSymbol, toString(nameSymbol, PRINT))
 		}
 		value, params, err = w.shiftAndEvalCar(ctx, params)
 		if err != nil {
@@ -46,7 +46,7 @@ func letValuesToVars(ctx context.Context, w *World, list Node, globals map[Symbo
 		}
 		symbol, ok := argv[0].(Symbol)
 		if !ok {
-			return fmt.Errorf("%w `%s`", ErrExpectedSymbol, toString(argv[0]))
+			return fmt.Errorf("%w `%s`", ErrExpectedSymbol, toString(argv[0], PRINT))
 		}
 		value, err := argv[1].Eval(ctx, w)
 		if err != nil {

@@ -8,7 +8,7 @@ import (
 func funCar(_ context.Context, _ *World, argv []Node) (Node, error) {
 	cons, ok := argv[0].(*Cons)
 	if !ok {
-		return nil, fmt.Errorf("%w: %s", ErrExpectedCons, toString(argv[0]))
+		return nil, fmt.Errorf("%w: %s", ErrExpectedCons, toString(argv[0], PRINT))
 	}
 	return cons.Car, nil
 }

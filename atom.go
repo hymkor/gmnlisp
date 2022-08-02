@@ -93,14 +93,14 @@ func (s String) Add(n Node) (Node, error) {
 	if value, ok := n.(String); ok {
 		return s + value, nil
 	}
-	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n))
+	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n, PRINT))
 }
 
 func (s String) LessThan(n Node) (bool, error) {
 	if ns, ok := n.(String); ok {
 		return s < ns, nil
 	}
-	return false, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n))
+	return false, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n, PRINT))
 }
 
 type Symbol string
@@ -156,7 +156,7 @@ func (r Rune) Add(n Node) (Node, error) {
 	if value, ok := n.(Rune); ok {
 		return r + value, nil
 	}
-	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n))
+	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n, PRINT))
 }
 
 func (r Rune) Sub(n Node) (Node, error) {
@@ -166,5 +166,5 @@ func (r Rune) Sub(n Node) (Node, error) {
 	if value, ok := n.(Rune); ok {
 		return r - value, nil
 	}
-	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n))
+	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n, PRINT))
 }

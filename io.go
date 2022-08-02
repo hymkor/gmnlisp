@@ -62,7 +62,7 @@ func cmdOpen(ctx context.Context, w *World, n Node) (Node, error) {
 	}
 	_fname, ok := fname.(String)
 	if !ok {
-		return nil, fmt.Errorf("%w `%s`", ErrExpectedString, toString(_fname))
+		return nil, fmt.Errorf("%w `%s`", ErrExpectedString, toString(_fname, PRINT))
 	}
 	if IsNull(n) {
 		return openAsRead(string(_fname))
@@ -74,7 +74,7 @@ func cmdOpen(ctx context.Context, w *World, n Node) (Node, error) {
 	}
 	_mode, ok := mode.(String)
 	if !ok {
-		return nil, fmt.Errorf("%w `%s`", ErrExpectedString, toString(_mode))
+		return nil, fmt.Errorf("%w `%s`", ErrExpectedString, toString(_mode, PRINT))
 	}
 
 	var result Node
@@ -110,7 +110,7 @@ func funReadLine(_ context.Context, _ *World, argv []Node) (Node, error) {
 	}
 	r, ok := argv[0].(ReadStringer)
 	if !ok {
-		return nil, fmt.Errorf("Expected Reader `%s`", toString(argv[0]))
+		return nil, fmt.Errorf("Expected Reader `%s`", toString(argv[0], PRINT))
 	}
 	s, err := r.ReadString('\n')
 	if err == io.EOF {
@@ -122,7 +122,7 @@ func funReadLine(_ context.Context, _ *World, argv []Node) (Node, error) {
 func funClose(_ context.Context, _ *World, argv []Node) (Node, error) {
 	c, ok := argv[0].(io.Closer)
 	if !ok {
-		return nil, fmt.Errorf("Expected Closer `%s`", toString(argv[0]))
+		return nil, fmt.Errorf("Expected Closer `%s`", toString(argv[0], PRINT))
 	}
 	return Null, c.Close()
 }
