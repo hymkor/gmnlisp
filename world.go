@@ -122,6 +122,7 @@ func New() *World {
 			"close":               &FixArgsF{C: 1, F: funClose},
 			"coerce":              &FixArgsF{C: 2, F: funCoerce},
 			"command":             VarArgsF(funCommand),
+			"concatenate":         VarArgsF(funConcatenate),
 			"cond":                SpecialF(cmdCond),
 			"cons":                &FixArgsF{C: 2, F: funCons},
 			"consp":               &FixArgsF{C: 1, F: funAnyTypep[*Cons]},

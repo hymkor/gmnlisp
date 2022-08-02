@@ -7,6 +7,46 @@ import (
 	"strings"
 )
 
+func funConcatenate(ctx context.Context, w *World, list []Node) (Node, error) {
+	if len(list) < 1 {
+		return Null, nil
+	}
+
+	symbol, ok := list[0].(Symbol)
+	if !ok {
+		return nil, ErrExpectedSymbol
+	}
+
+	first := &Cons{}
+	last := first
+
+	for _, element := range list[1:] {
+		for HasValue(element) {
+			seq, ok := element.(_Sequence)
+			if !ok {
+				return nil, ErrExpectedSequence
+			}
+			var value Node
+
+			value, element, ok = seq.firstAndRest()
+			if !ok {
+				break
+			}
+			tmp := &Cons{
+				Car: value,
+				Cdr: Null,
+			}
+			last.Cdr = tmp
+			last = tmp
+		}
+	}
+	collector, ok := coerceTable[symbol]
+	if !ok {
+		return nil, ErrNotSupportType
+	}
+	return collector(first.Cdr)
+}
+
 func funStrCat(ctx context.Context, w *World, list []Node) (Node, error) {
 	// from autolisp
 	var buffer strings.Builder
