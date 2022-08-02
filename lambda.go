@@ -12,6 +12,7 @@ type _Lambda struct {
 	param   []Symbol
 	code    Node
 	name    Symbol
+	rest    Symbol
 	lexical *World
 }
 
@@ -19,31 +20,43 @@ func cmdLambda(_ context.Context, w *World, node Node) (Node, error) {
 	return newLambda(w, node, "")
 }
 
-func getParameterList(node Node) ([]Symbol, Node, error) {
-	list, rest, err := shift(node)
+func getParameterList(node Node) ([]Symbol, Node, Symbol, error) {
+	list, code, err := shift(node)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, "", err
 	}
 	params := []Symbol{}
+	var rest Symbol
 	for HasValue(list) {
 		var nameNode Node
 
 		nameNode, list, err = shift(list)
 		if err != nil {
-			return nil, nil, err
+			return nil, nil, "", err
 		}
 		nameSymbol, ok := nameNode.(Symbol)
 		if !ok {
-			return nil, nil, ErrExpectedSymbol
+			return nil, nil, "", ErrExpectedSymbol
+		}
+		if nameSymbol == "&rest" {
+			nameNode, list, err = shift(list)
+			if err != nil {
+				return nil, nil, "", err
+			}
+			rest, ok = nameNode.(Symbol)
+			if !ok {
+				return nil, nil, "", ErrExpectedSymbol
+			}
+			continue
 		}
 		params = append(params, nameSymbol)
 	}
-	return params, rest, nil
+	return params, code, rest, nil
 }
 
 func newLambda(w *World, node Node, blockName Symbol) (Node, error) {
 	// (lambda (param) code)
-	params, code, err := getParameterList(node)
+	params, code, rest, err := getParameterList(node)
 	if err != nil {
 		return nil, err
 	}
@@ -51,6 +64,7 @@ func newLambda(w *World, node Node, blockName Symbol) (Node, error) {
 		param:   params,
 		code:    code,
 		name:    blockName,
+		rest:    rest,
 		lexical: w,
 	}, nil
 }
@@ -112,8 +126,11 @@ func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
 		fmt.Fprintln(os.Stderr, ")]")
 	}
 
-	if HasValue(n) {
+	if HasValue(n) && L.rest == "" {
 		return nil, ErrTooManyArguments
+	}
+	if L.rest != "" {
+		globals[L.rest] = n
 	}
 	newWorld := &World{globals: globals, parent: L.lexical}
 

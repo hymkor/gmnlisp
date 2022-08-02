@@ -99,3 +99,11 @@ func TestApply(t *testing.T) {
 	assertEqual(t, `(apply #'+ '(1 2 3))`, Integer(6))
 	assertEqual(t, `(apply #'+ 4 5 6 '(1 2 3))`, Integer(21))
 }
+
+func TestRest(t *testing.T) {
+	assertEqual(t, `
+		(defun cat (left &rest args)
+		  (apply #'strcat  left args)
+		)
+		(cat "1" "2" "3" "4" "5")`, String("12345"))
+}

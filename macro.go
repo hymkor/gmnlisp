@@ -134,7 +134,7 @@ func cmdDefMacro(ctx context.Context, w *World, n Node) (Node, error) {
 	if !ok {
 		return nil, ErrExpectedSymbol
 	}
-	param, code, err := getParameterList(cons.Cdr)
+	param, code, _, err := getParameterList(cons.Cdr)
 	if err != nil {
 		return nil, err
 	}
