@@ -12,6 +12,12 @@ func TestLet(t *testing.T) {
 func TestDefvar(t *testing.T) {
 	assertEqual(t, `(defvar a "ahaha")`, Symbol("a"))
 	assertEqual(t, `(defvar a "ahaha")(defvar a "ihihi") a`, String("ahaha"))
+
+	assertEqual(t, `
+		(defvar counter 0)
+		(defvar a (setq counter (1+ counter)))
+		(defvar a (setq counter (1+ counter)))
+		counter`, Integer(1))
 }
 
 func TestDefparameter(t *testing.T) {

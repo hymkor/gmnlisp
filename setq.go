@@ -109,15 +109,14 @@ func cmdDefvar(ctx context.Context, w *World, list Node) (Node, error) {
 	if !ok {
 		return nil, ErrExpectedSymbol
 	}
-	var value Node = Null
-	if HasValue(list) {
-		value, list, err = w.shiftAndEvalCar(ctx, list)
-		if err != nil {
-			return nil, err
+	w.DefineVariable(symbol, func() Node {
+		var value Node = Null
+		if HasValue(list) {
+			value, _, err = w.shiftAndEvalCar(ctx, list)
 		}
-	}
-	w.DefineVariable(symbol, value)
-	return symbol, nil
+		return value
+	})
+	return symbol, err
 }
 
 func cmdDefparameter(ctx context.Context, w *World, list Node) (Node, error) {

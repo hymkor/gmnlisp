@@ -44,12 +44,12 @@ func (w *World) DefineParameter(name Symbol, value Node) {
 	w.globals[name] = value
 }
 
-func (w *World) DefineVariable(name Symbol, value Node) {
+func (w *World) DefineVariable(name Symbol, getter func() Node) {
 	for w.parent != nil {
 		w = w.parent
 	}
 	if _, ok := w.globals[name]; !ok {
-		w.globals[name] = value
+		w.globals[name] = getter()
 	}
 }
 
