@@ -240,26 +240,26 @@ func cmdTrace(_ context.Context, _ *World, list Node) (Node, error) {
 	return Null, nil
 }
 
-type Function struct {
+type FixArgsF struct {
 	C int
 	F func(context.Context, *World, []Node) (Node, error)
 }
 
-func (*Function) PrintTo(w io.Writer, m PrintMode) {
+func (*FixArgsF) PrintTo(w io.Writer, m PrintMode) {
 	io.WriteString(w, "buildin function")
 }
 
-func (f *Function) Eval(context.Context, *World) (Node, error) {
+func (f *FixArgsF) Eval(context.Context, *World) (Node, error) {
 	return f, nil
 }
 
-func (f *Function) Equals(n Node, m EqlMode) bool {
+func (f *FixArgsF) Equals(n Node, m EqlMode) bool {
 	return false
 }
 
 const maxParameterOfEasyFunc = 8
 
-func (f *Function) Call(ctx context.Context, w *World, list Node) (Node, error) {
+func (f *FixArgsF) Call(ctx context.Context, w *World, list Node) (Node, error) {
 	var argv [maxParameterOfEasyFunc]Node
 	var err error
 
