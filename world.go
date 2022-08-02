@@ -17,17 +17,6 @@ type Writer struct {
 	io.Writer
 }
 
-func (w *World) each(f func(Symbol, Node) bool) {
-	for w != nil {
-		for name, value := range w.globals {
-			if !f(name, value) {
-				return
-			}
-		}
-		w = w.parent
-	}
-}
-
 func (w *World) Get(name Symbol) (Node, error) {
 	for w != nil {
 		if value, ok := w.globals[name]; ok {

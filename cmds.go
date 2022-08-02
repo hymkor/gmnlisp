@@ -42,13 +42,17 @@ func cmdEqual(ctx context.Context, w *World, param Node) (Node, error) {
 }
 
 func cmdGetAllSymbols(_ context.Context, w *World, n Node) (Node, error) {
+	for w.parent != nil {
+		w = w.parent
+	}
+
 	names := []string{}
-	var cons Node = Null
-	w.each(func(name Symbol, _ Node) bool {
+	for name := range w.globals {
 		names = append(names, string(name))
-		return true
-	})
+	}
 	sort.Strings(names)
+
+	var cons Node = Null
 	for i := len(names) - 1; i >= 0; i-- {
 		cons = &Cons{
 			Car: String(names[i]),

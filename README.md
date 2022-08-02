@@ -126,7 +126,6 @@ Support functions
 - `mapcar`
 - `member`
 - `minusp`
-- `name`
 - `nil`
 - `not`
 - `nth`
