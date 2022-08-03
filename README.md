@@ -154,6 +154,7 @@ Support functions
 - `strcat`
 - `stringp`
 - `strlen`
+- `subseq`
 - `subst`
 - `substr`
 - `symbolp`
