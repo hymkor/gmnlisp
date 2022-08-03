@@ -46,3 +46,9 @@ func TestReverse(t *testing.T) {
 		List(Integer(4), Integer(3), Integer(2), Integer(1)))
 	assertEqual(t, `(reverse "12345")`, String("54321"))
 }
+
+func TestMember(t *testing.T) {
+	assertEqual(t, `(member 'c '(a b c d e))`,
+		List(Symbol("c"), Symbol("d"), Symbol("e")))
+	assertEqual(t, `(member #\c "abcd")`, String("cd"))
+}

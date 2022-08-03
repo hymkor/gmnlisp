@@ -133,22 +133,6 @@ func funAppend(_ context.Context, _ *World, list []Node) (Node, error) {
 	return last, nil
 }
 
-func funMember(_ context.Context, _ *World, argv []Node) (Node, error) {
-	expr := argv[0]
-	list := argv[1]
-	for HasValue(list) {
-		cons, ok := list.(*Cons)
-		if !ok {
-			return nil, ErrExpectedCons
-		}
-		if expr.Equals(cons.Car, EQUAL) {
-			return list, nil
-		}
-		list = cons.Cdr
-	}
-	return Null, nil
-}
-
 func funCons(_ context.Context, _ *World, argv []Node) (Node, error) {
 	return &Cons{Car: argv[0], Cdr: argv[1]}, nil
 }

@@ -260,3 +260,24 @@ func funReverse(_ context.Context, _ *World, argv []Node) (Node, error) {
 	}
 	return result, nil
 }
+
+func funMember(_ context.Context, _ *World, argv []Node) (Node, error) {
+	expr := argv[0]
+	list := argv[1]
+
+	for HasValue(list) {
+		seq, ok := list.(_Sequence)
+		if !ok {
+			return nil, ErrExpectedSequence
+		}
+		value, rest, ok := seq.firstAndRest()
+		if !ok {
+			break
+		}
+		if expr.Equals(value, EQUAL) {
+			return list, nil
+		}
+		list = rest
+	}
+	return Null, nil
+}
