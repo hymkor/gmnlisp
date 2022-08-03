@@ -136,6 +136,7 @@ Support functions
 - `or`
 - `parse-integer`
 - `plusp`
+- `position`
 - `prin1`
 - `princ`
 - `print`
