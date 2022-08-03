@@ -184,6 +184,7 @@ func New() *World {
 			"strcat":              VarArgsF(funStrCat),
 			"stringp":             &FixArgsF{C: 1, F: funAnyTypep[String]},
 			"strlen":              &FixArgsF{C: 1, F: funStrLen},
+			"subseq":              VarArgsF(funSubSeq),
 			"subst":               &FixArgsF{C: 3, F: funSubst},
 			"substr":              SpecialF(cmdSubStr),
 			"symbolp":             &FixArgsF{C: 1, F: funAnyTypep[Symbol]},

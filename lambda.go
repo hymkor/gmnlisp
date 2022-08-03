@@ -213,7 +213,7 @@ func cmdApply(ctx context.Context, w *World, list Node) (Node, error) {
 				newargs.Add(n)
 				return nil
 			})
-			return f.Call(ctx, w, newargs.List())
+			return f.Call(ctx, w, newargs.Sequence())
 		}
 		newargs.Add(value)
 	}

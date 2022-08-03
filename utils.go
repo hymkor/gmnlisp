@@ -112,3 +112,10 @@ func checkContext(ctx context.Context) error {
 		return nil
 	}
 }
+
+func ignoreEOF(err error) error {
+	if err == io.EOF {
+		return nil
+	}
+	return err
+}

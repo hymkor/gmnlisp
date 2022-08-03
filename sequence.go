@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"math"
 	"strings"
 )
 
@@ -114,12 +115,34 @@ func funAref(_ context.Context, _ *World, args []Node) (Node, error) {
 	return value, nil
 }
 
+type _SequenceBuilder interface {
+	Add(Node) error
+	Sequence() Node
+}
+
+type _StringBuilder struct {
+	buffer strings.Builder
+}
+
+func (S *_StringBuilder) Add(n Node) error {
+	r, ok := n.(Rune)
+	if !ok {
+		return ErrExpectedCharacter
+	}
+	S.buffer.WriteRune(rune(r))
+	return nil
+}
+
+func (S *_StringBuilder) Sequence() Node {
+	return String(S.buffer.String())
+}
+
 type _ListBuilder struct {
 	first Cons
 	last  *Cons
 }
 
-func (L *_ListBuilder) Add(n Node) {
+func (L *_ListBuilder) Add(n Node) error {
 	tmp := &Cons{
 		Car: n,
 		Cdr: Null,
@@ -130,9 +153,10 @@ func (L *_ListBuilder) Add(n Node) {
 		L.last.Cdr = tmp
 	}
 	L.last = tmp
+	return nil
 }
 
-func (L *_ListBuilder) List() Node {
+func (L *_ListBuilder) Sequence() Node {
 	return L.first.Cdr
 }
 
@@ -161,7 +185,7 @@ func funConcatenate(ctx context.Context, w *World, list []Node) (Node, error) {
 	if !ok {
 		return nil, ErrNotSupportType
 	}
-	return collector(buffer.List())
+	return collector(buffer.Sequence())
 }
 
 func funLength(_ context.Context, _ *World, argv []Node) (Node, error) {
@@ -187,7 +211,7 @@ func mapCar(ctx context.Context, w *World, funcNode Node, listSet []Node) (resul
 		paramSet := make([]Node, len(listSet))
 		for i := 0; i < len(listSet); i++ {
 			if IsNull(listSet[i]) {
-				return resultSet.List(), nil
+				return resultSet.Sequence(), nil
 			}
 			seq, ok := listSet[i].(_Sequence)
 			if !ok {
@@ -195,7 +219,7 @@ func mapCar(ctx context.Context, w *World, funcNode Node, listSet []Node) (resul
 			}
 			paramSet[i], listSet[i], ok = seq.firstAndRest()
 			if !ok {
-				return resultSet.List(), nil
+				return resultSet.Sequence(), nil
 			}
 		}
 		result, err := _f.Call(ctx, w, List(paramSet...))
@@ -299,4 +323,42 @@ func funPosition(_ context.Context, _ *World, argv []Node) (Node, error) {
 		return Integer(count), nil
 	}
 	return Null, nil
+}
+
+func funSubSeq(ctx context.Context, w *World, args []Node) (Node, error) {
+	if len(args) < 2 {
+		return nil, ErrTooFewArguments
+	}
+	if len(args) > 3 {
+		return nil, ErrTooManyArguments
+	}
+	start, ok := args[1].(Integer)
+	if !ok {
+		return nil, ErrExpectedNumber
+	}
+	end := Integer(math.MaxInt)
+	if len(args) >= 3 {
+		end, ok = args[2].(Integer)
+		if !ok {
+			return nil, ErrExpectedNumber
+		}
+	}
+	var buffer _SequenceBuilder
+	if _, ok := args[0].(String); ok {
+		buffer = &_StringBuilder{}
+	} else {
+		buffer = &_ListBuilder{}
+	}
+	count := Integer(0)
+	err := seqEach(args[0], func(value Node) (e error) {
+		if count >= end {
+			return io.EOF
+		}
+		if start <= count {
+			e = buffer.Add(value)
+		}
+		count++
+		return
+	})
+	return buffer.Sequence(), ignoreEOF(err)
 }
