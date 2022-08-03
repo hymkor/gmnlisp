@@ -166,6 +166,7 @@ func New() *World {
 			"or":                  SpecialF(cmdOr),
 			"parse-integer":       &FixArgsF{C: 1, F: funParseInt},
 			"plusp":               &FixArgsF{C: 1, F: funPlusp},
+			"position":            &FixArgsF{C: 2, F: funPosition},
 			"prin1":               &FixArgsF{C: 1, F: funPrin1},
 			"princ":               &FixArgsF{C: 1, F: funPrinc},
 			"print":               &FixArgsF{C: 1, F: funPrint},

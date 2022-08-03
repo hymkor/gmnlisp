@@ -3,6 +3,7 @@ package gmnlisp
 import (
 	"context"
 	"fmt"
+	"io"
 	"strings"
 )
 
@@ -278,6 +279,24 @@ func funMember(_ context.Context, _ *World, argv []Node) (Node, error) {
 			return list, nil
 		}
 		list = rest
+	}
+	return Null, nil
+}
+
+func funPosition(_ context.Context, _ *World, argv []Node) (Node, error) {
+	expr := argv[0]
+	list := argv[1]
+	count := 0
+
+	err := seqEach(list, func(value Node) error {
+		if expr.Equals(value, EQUAL) {
+			return io.EOF
+		}
+		count++
+		return nil
+	})
+	if err == io.EOF {
+		return Integer(count), nil
 	}
 	return Null, nil
 }
