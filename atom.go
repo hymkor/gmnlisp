@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"strings"
+	"unicode"
 	"unicode/utf8"
 )
 
@@ -126,7 +127,22 @@ type Rune rune
 
 func (r Rune) PrintTo(w io.Writer, m PrintMode) {
 	if m == PRINT {
-		fmt.Fprintf(w, "#\\%c", rune(r))
+		switch r {
+		case '\t':
+			io.WriteString(w, `#\tab`)
+		case '\n':
+			io.WriteString(w, `#\linefeed`)
+		case '\r':
+			io.WriteString(w, `#\return`)
+		case ' ':
+			io.WriteString(w, `#\space`)
+		default:
+			if unicode.IsLetter(rune(r)) {
+				fmt.Fprintf(w, `#\%c`, rune(r))
+			} else {
+				fmt.Fprintf(w, `#\U%04X`, rune(r))
+			}
+		}
 	} else {
 		fmt.Fprintf(w, "%c", rune(r))
 	}
