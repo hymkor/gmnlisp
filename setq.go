@@ -76,6 +76,32 @@ func (f *SetGetF) Call(ctx context.Context, w *World, list Node) (Node, error) {
 	return *ptr, nil
 }
 
+func (f *SetGetF) Set(ctx context.Context, w *World, list Node, value Node) error {
+	args := []Node{}
+	for HasValue(list) {
+		var tmp Node
+		var err error
+
+		tmp, list, err = w.shiftAndEvalCar(ctx, list)
+		if err != nil {
+			return err
+		}
+		args = append(args, tmp)
+	}
+	if len(args) < f.C {
+		return ErrTooFewArguments
+	}
+	if len(args) > f.C {
+		return ErrTooManyArguments
+	}
+	ptr, err := f.F(ctx, w, args)
+	if err != nil {
+		return err
+	}
+	*ptr = value
+	return nil
+}
+
 func cmdSetf(ctx context.Context, w *World, params Node) (Node, error) {
 	var value Node = Null
 
@@ -114,28 +140,7 @@ func cmdSetf(ctx context.Context, w *World, params Node) (Node, error) {
 			if !ok {
 				return nil, ErrVariableUnbound
 			}
-			args := []Node{}
-			for HasValue(list) {
-				var tmp Node
-
-				tmp, list, err = w.shiftAndEvalCar(ctx, list)
-				if err != nil {
-					return nil, err
-				}
-				args = append(args, tmp)
-			}
-			if len(args) < f.C {
-				return nil, ErrTooFewArguments
-			}
-			if len(args) > f.C {
-				return nil, ErrTooManyArguments
-			}
-			ptr, err := f.F(ctx, w, args)
-			if err != nil {
-				return nil, err
-			}
-			*ptr = rightValue
-			return value, nil
+			return rightValue, f.Set(ctx, w, list, rightValue)
 		} else {
 			return nil, fmt.Errorf("%w: `%s`", ErrExpectedSymbol, toString(nameSymbol, PRINT))
 		}
