@@ -178,6 +178,7 @@ func New() *World {
 			"return":              &FixArgsF{C: 1, F: funReturn},
 			"return-from":         SpecialF(cmdReturnFrom),
 			"reverse":             &FixArgsF{C: 1, F: funReverse},
+			"setf":                SpecialF(cmdSetf),
 			"setq":                SpecialF(cmdSetq),
 			"split-string":        &FixArgsF{C: 2, F: funSplitString},
 			"strcase":             &FixArgsF{C: 1, F: funStrCase},

@@ -31,6 +31,92 @@ func cmdSetq(ctx context.Context, w *World, params Node) (Node, error) {
 	return value, nil
 }
 
+func setfCar(ctx context.Context, w *World, left []Node, right Node) error {
+	cons, ok := left[0].(*Cons)
+	if !ok {
+		return ErrExpectedCons
+	}
+	cons.Car = right
+	return nil
+}
+
+func setfCdr(ctx context.Context, w *World, left []Node, right Node) error {
+	cons, ok := left[0].(*Cons)
+	if !ok {
+		return ErrExpectedCons
+	}
+	cons.Cdr = right
+	return nil
+}
+
+type _Setfunc struct {
+	C int
+	F func(context.Context, *World, []Node, Node) error
+}
+
+var setfTable = map[Symbol]*_Setfunc{
+	"car": &_Setfunc{C: 1, F: setfCar},
+	"cdr": &_Setfunc{C: 1, F: setfCdr},
+}
+
+func cmdSetf(ctx context.Context, w *World, params Node) (Node, error) {
+	var value Node = Null
+
+	for HasValue(params) {
+		var leftValue Node
+		var rightValue Node
+		var err error
+
+		leftValue, params, err = shift(params)
+		if err != nil {
+			return nil, err
+		}
+		rightValue, params, err = w.shiftAndEvalCar(ctx, params)
+		if err != nil {
+			return nil, err
+		}
+
+		if nameSymbol, ok := leftValue.(Symbol); ok {
+			if err := w.Set(nameSymbol, rightValue); err != nil {
+				return value, err
+			}
+		} else if list, ok := leftValue.(*Cons); ok {
+			commandName, list, err := shift(list)
+			if err != nil {
+				return nil, err
+			}
+			commandSymbol, ok := commandName.(Symbol)
+			if !ok {
+				return nil, ErrExpectedSymbol
+			}
+			f, ok := setfTable[commandSymbol]
+			if !ok {
+				return nil, ErrVariableUnbound
+			}
+			args := []Node{}
+			for HasValue(list) {
+				var tmp Node
+
+				tmp, list, err = w.shiftAndEvalCar(ctx, list)
+				if err != nil {
+					return nil, err
+				}
+				args = append(args, tmp)
+			}
+			if len(args) < f.C {
+				return nil, ErrTooFewArguments
+			}
+			if len(args) > f.C {
+				return nil, ErrTooManyArguments
+			}
+			return value, f.F(ctx, w, args, rightValue)
+		} else {
+			return nil, fmt.Errorf("%w: `%s`", ErrExpectedSymbol, toString(nameSymbol, PRINT))
+		}
+	}
+	return value, nil
+}
+
 func letValuesToVars(ctx context.Context, w *World, list Node, globals map[Symbol]Node) error {
 	for HasValue(list) {
 		var item Node
