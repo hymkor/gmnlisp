@@ -32,4 +32,30 @@ func TestSetf(t *testing.T) {
 	assertEqual(t, `(defparameter x (cons 1 2))
 					(setf (cdr x) 3)
 					x`, &Cons{Integer(1), Integer(3)})
+	assertEqual(t, `(defparameter x (list 1 2 3 4))
+					(setf (nth 2 x) 0)
+					x`, List(Integer(1), Integer(2), Integer(0), Integer(4)))
+	assertEqual(t, `(defparameter x (list 1 2 3 4))
+					(setf (nthcdr 2 x) (list 7))
+					x`, List(Integer(1), Integer(2), Integer(7)))
+
+	assertEqual(t, `(defparameter x (list 1 2 3 4))
+					(setf (cadr x) 0)
+					x`, List(Integer(1), Integer(0), Integer(3), Integer(4)))
+
+	assertEqual(t, `(defparameter x (list 1 2 3 4))
+					(setf (caddr x) 0)
+					x`, List(Integer(1), Integer(2), Integer(0), Integer(4)))
+
+	assertEqual(t, `(defparameter x (list 1 2 3 4))
+					(setf (cadddr x) 0)
+					x`, List(Integer(1), Integer(2), Integer(3), Integer(0)))
+
+	assertEqual(t, `(defparameter x (list 1 2 3 4))
+					(setf (cddr x) (list 0))
+					x`, List(Integer(1), Integer(2), Integer(0)))
+
+	assertEqual(t, `(defparameter x (list 1 2 3 4))
+					(setf (cdddr x) (list 0))
+					x`, List(Integer(1), Integer(2), Integer(3), Integer(0)))
 }
