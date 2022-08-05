@@ -67,7 +67,13 @@ func (f *SetGetF) Call(ctx context.Context, w *World, list Node) (Node, error) {
 		return nil, ErrTooManyArguments
 	}
 	ptr, err := f.F(ctx, w, argv[:f.C])
-	return *ptr, err
+	if err != nil {
+		return nil, err
+	}
+	if ptr == nil || *ptr == nil {
+		return Null, nil
+	}
+	return *ptr, nil
 }
 
 func cmdSetf(ctx context.Context, w *World, params Node) (Node, error) {
