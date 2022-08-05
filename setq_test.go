@@ -58,4 +58,23 @@ func TestSetf(t *testing.T) {
 	assertEqual(t, `(defparameter x (list 1 2 3 4))
 					(setf (cdddr x) (list 0))
 					x`, List(Integer(1), Integer(2), Integer(3), Integer(0)))
+
+	assertEqual(t, `
+		(defvar m (list (cons 1 "A") (cons 2 "B") (cons 3 "C")))
+		(setf (cdr (assoc 1 m)) "X")
+		m`, List(
+		&Cons{Integer(1), String("X")},
+		&Cons{Integer(2), String("B")},
+		&Cons{Integer(3), String("C")}))
+
+	(assertEqual(t, `
+		(let ((m '((1 . "A") (2 . "B") (3 . "C"))) pair )
+		  (if (setq pair (assoc 1 m))
+			  (setf (cdr pair) "X")
+		  )
+		  m
+		)`, List(
+		&Cons{Integer(1), String("X")},
+		&Cons{Integer(2), String("B")},
+		&Cons{Integer(3), String("C")})))
 }
