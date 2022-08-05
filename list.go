@@ -5,20 +5,20 @@ import (
 	"fmt"
 )
 
-func funCar(_ context.Context, _ *World, argv []Node) (Node, error) {
+func setGetCar(_ context.Context, _ *World, argv []Node) (*Node, error) {
 	cons, ok := argv[0].(*Cons)
 	if !ok {
 		return nil, fmt.Errorf("%w: %s", ErrExpectedCons, toString(argv[0], PRINT))
 	}
-	return cons.Car, nil
+	return &cons.Car, nil
 }
 
-func funCdr(_ context.Context, _ *World, argv []Node) (Node, error) {
+func setGetCdr(_ context.Context, _ *World, argv []Node) (*Node, error) {
 	cons, ok := argv[0].(*Cons)
 	if !ok {
 		return nil, ErrExpectedCons
 	}
-	return cons.Cdr, nil
+	return &cons.Cdr, nil
 }
 
 func nthcdr(n int, list Node) (Node, error) {

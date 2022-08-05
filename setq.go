@@ -3,6 +3,7 @@ package gmnlisp
 import (
 	"context"
 	"fmt"
+	"io"
 )
 
 func cmdSetq(ctx context.Context, w *World, params Node) (Node, error) {
@@ -31,32 +32,42 @@ func cmdSetq(ctx context.Context, w *World, params Node) (Node, error) {
 	return value, nil
 }
 
-func setfCar(ctx context.Context, w *World, left []Node, right Node) error {
-	cons, ok := left[0].(*Cons)
-	if !ok {
-		return ErrExpectedCons
-	}
-	cons.Car = right
-	return nil
-}
-
-func setfCdr(ctx context.Context, w *World, left []Node, right Node) error {
-	cons, ok := left[0].(*Cons)
-	if !ok {
-		return ErrExpectedCons
-	}
-	cons.Cdr = right
-	return nil
-}
-
-type _Setfunc struct {
+type SetGetF struct {
 	C int
-	F func(context.Context, *World, []Node, Node) error
+	F func(context.Context, *World, []Node) (*Node, error)
 }
 
-var setfTable = map[Symbol]*_Setfunc{
-	"car": &_Setfunc{C: 1, F: setfCar},
-	"cdr": &_Setfunc{C: 1, F: setfCdr},
+func (*SetGetF) PrintTo(w io.Writer, m PrintMode) {
+	io.WriteString(w, "buildin function(Set/Get)")
+}
+
+func (f *SetGetF) Eval(context.Context, *World) (Node, error) {
+	return f, nil
+}
+
+func (f *SetGetF) Equals(n Node, m EqlMode) bool {
+	return false
+}
+
+func (f *SetGetF) Call(ctx context.Context, w *World, list Node) (Node, error) {
+	var argv [maxParameterOfEasyFunc]Node
+	var err error
+
+	if err := checkContext(ctx); err != nil {
+		return nil, err
+	}
+
+	for i := 0; i < f.C; i++ {
+		argv[i], list, err = w.shiftAndEvalCar(ctx, list)
+		if err != nil {
+			return nil, err
+		}
+	}
+	if HasValue(list) {
+		return nil, ErrTooManyArguments
+	}
+	ptr, err := f.F(ctx, w, argv[:f.C])
+	return *ptr, err
 }
 
 func cmdSetf(ctx context.Context, w *World, params Node) (Node, error) {
@@ -89,7 +100,11 @@ func cmdSetf(ctx context.Context, w *World, params Node) (Node, error) {
 			if !ok {
 				return nil, ErrExpectedSymbol
 			}
-			f, ok := setfTable[commandSymbol]
+			_f, err := w.Get(commandSymbol)
+			if err != nil {
+				return nil, ErrVariableUnbound
+			}
+			f, ok := _f.(*SetGetF)
 			if !ok {
 				return nil, ErrVariableUnbound
 			}
@@ -109,7 +124,12 @@ func cmdSetf(ctx context.Context, w *World, params Node) (Node, error) {
 			if len(args) > f.C {
 				return nil, ErrTooManyArguments
 			}
-			return value, f.F(ctx, w, args, rightValue)
+			ptr, err := f.F(ctx, w, args)
+			if err != nil {
+				return nil, err
+			}
+			*ptr = rightValue
+			return value, nil
 		} else {
 			return nil, fmt.Errorf("%w: `%s`", ErrExpectedSymbol, toString(nameSymbol, PRINT))
 		}
