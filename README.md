@@ -148,6 +148,7 @@ Support functions
 - `return`
 - `return-from`
 - `reverse`
+- `setf` which supports car,cdr,cadr,caddr,cadddr,cddr,cdddr,nth and nthcdr
 - `setq`
 - `split-string`
 - `strcase`

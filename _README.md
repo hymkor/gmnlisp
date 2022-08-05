@@ -68,5 +68,9 @@ Support functions
 <%
 (let (name)
     (foreach name (--get-all-symbols--)
-        (write-line (concatenate 'string "- `" name "`"))))
+        (write-line (concatenate 'string "- `" name "`"
+            (cond
+                ((= name "setf")
+                    " which supports car,cdr,cadr,caddr,cadddr,cddr,cdddr,nth and nthcdr")
+                (T ""))))))
 %>
