@@ -32,24 +32,25 @@ func cmdSetq(ctx context.Context, w *World, params Node) (Node, error) {
 	return value, nil
 }
 
-type SetGetF struct {
+// LeftValueF is similar as FixArgsF, but it returns pointer to use `setf`
+type LeftValueF struct {
 	C int
 	F func(context.Context, *World, []Node) (*Node, error)
 }
 
-func (*SetGetF) PrintTo(w io.Writer, m PrintMode) {
+func (*LeftValueF) PrintTo(w io.Writer, m PrintMode) {
 	io.WriteString(w, "buildin function(Set/Get)")
 }
 
-func (f *SetGetF) Eval(context.Context, *World) (Node, error) {
+func (f *LeftValueF) Eval(context.Context, *World) (Node, error) {
 	return f, nil
 }
 
-func (f *SetGetF) Equals(n Node, m EqlMode) bool {
+func (f *LeftValueF) Equals(n Node, m EqlMode) bool {
 	return false
 }
 
-func (f *SetGetF) Call(ctx context.Context, w *World, list Node) (Node, error) {
+func (f *LeftValueF) Call(ctx context.Context, w *World, list Node) (Node, error) {
 	var argv [maxParameterOfEasyFunc]Node
 	var err error
 
@@ -76,7 +77,7 @@ func (f *SetGetF) Call(ctx context.Context, w *World, list Node) (Node, error) {
 	return *ptr, nil
 }
 
-func (f *SetGetF) Set(ctx context.Context, w *World, list Node, value Node) error {
+func (f *LeftValueF) Set(ctx context.Context, w *World, list Node, value Node) error {
 	args := []Node{}
 	for HasValue(list) {
 		var tmp Node
@@ -136,7 +137,7 @@ func cmdSetf(ctx context.Context, w *World, params Node) (Node, error) {
 			if err != nil {
 				return nil, ErrVariableUnbound
 			}
-			f, ok := _f.(*SetGetF)
+			f, ok := _f.(*LeftValueF)
 			if !ok {
 				return nil, ErrVariableUnbound
 			}
