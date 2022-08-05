@@ -24,3 +24,12 @@ func TestDefparameter(t *testing.T) {
 	assertEqual(t, `(defparameter a "ahaha")`, Symbol("a"))
 	assertEqual(t, `(defparameter a "ahaha")(defparameter a "ihihi") a`, String("ihihi"))
 }
+
+func TestSetf(t *testing.T) {
+	assertEqual(t, `(defvar x)
+					(setf (car (setq x (cons 1 2))) 3)
+					x`, &Cons{Integer(3), Integer(2)})
+	assertEqual(t, `(defparameter x (cons 1 2))
+					(setf (cdr x) 3)
+					x`, &Cons{Integer(1), Integer(3)})
+}
