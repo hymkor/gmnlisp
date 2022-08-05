@@ -53,24 +53,20 @@ The text before proprocessed is [here](https://github.com/hymkor/gmnlisp/blob/ma
 Support Types
 -------------
 
-- integer
-- float
-- string
-- symbol
-- cons
-- list
-- character
-- T/nil
+integer , float , string , symbol , cons , list , character , T/nil
 
 Support functions
 -----------------
 
 <%
-(let (name)
+(let (name (dem "" ))
     (foreach name (--get-all-symbols--)
-        (write-line (concatenate 'string "- `" name "`"
+        (write (concatenate 'string dem "`" name "`"
             (cond
-                ((= name "setf")
-                    " which supports car,cdr,cadr,caddr,cadddr,cddr,cdddr,nth and nthcdr")
-                (T ""))))))
+                ((= name "setf") "\*")
+                (T ""))))
+        (setq dem ", ")))
 %>
+
+
+\* (setf) can not be used for functions other than (car), (cdr), (cadr), (caddr), (cadddr), (cddr), (cdddr), (nth) and (nthcdr).

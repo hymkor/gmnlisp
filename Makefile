@@ -14,14 +14,15 @@ all:
 	go fmt cmd/gmnlisp/main.go
 	go build -o gmnlisp$(EXE) cmd/gmnlisp/main.go
 
-preprocessor:
+test:
+	go test -v
+
+readme.md: _readme.md gmnlpp$(EXE)
+	.$(D)gmnlpp$(EXE) _README.md > README.md
+
+gmnlpp$(EXE): gmnlisp$(EXE)
 	go fmt
 	go build
 	go fmt cmd/gmnlpp/main.go
 	go build -o gmnlpp$(EXE) cmd/gmnlpp/main.go
 
-test:
-	go test -v
-
-readme: preprocessor
-	.$(D)gmnlpp$(EXE) _README.md > README.md
