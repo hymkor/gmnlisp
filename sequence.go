@@ -59,7 +59,7 @@ func (L *_ListBuilder) Sequence() Node {
 }
 
 type _StringBuilder struct {
-	buffer strings.Builder
+	buffer []Rune
 }
 
 func (S *_StringBuilder) Add(n Node) error {
@@ -67,12 +67,12 @@ func (S *_StringBuilder) Add(n Node) error {
 	if !ok {
 		return ErrExpectedCharacter
 	}
-	S.buffer.WriteRune(rune(r))
+	S.buffer = append(S.buffer, r)
 	return nil
 }
 
 func (S *_StringBuilder) Sequence() Node {
-	return String(S.buffer.String())
+	return String(S.buffer)
 }
 
 var sequenceBuilderTable = map[Symbol](func() _SeqBuilder){
