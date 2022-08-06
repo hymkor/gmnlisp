@@ -304,53 +304,39 @@ func (f *FixArgsF) Equals(n Node, m EqlMode) bool {
 const maxParameterOfEasyFunc = 8
 
 func (f *FixArgsF) Call(ctx context.Context, w *World, list Node) (Node, error) {
-	var argv [maxParameterOfEasyFunc]Node
-	var err error
-
 	if err := checkContext(ctx); err != nil {
 		return nil, err
 	}
+	if f.C >= 0 {
+		var argv [maxParameterOfEasyFunc]Node
+		for i := 0; i < f.C; i++ {
+			var err error
 
-	for i := 0; i < f.C; i++ {
-		argv[i], list, err = w.shiftAndEvalCar(ctx, list)
-		if err != nil {
-			return nil, err
+			argv[i], list, err = w.shiftAndEvalCar(ctx, list)
+			if err != nil {
+				return nil, err
+			}
 		}
-	}
-	if HasValue(list) {
-		return nil, ErrTooManyArguments
-	}
-	return f.F(ctx, w, argv[:f.C])
-}
-
-type VarArgsF func(context.Context, *World, []Node) (Node, error)
-
-func (f VarArgsF) PrintTo(w io.Writer, m PrintMode) {
-	io.WriteString(w, "built-in function(N)")
-}
-
-func (f VarArgsF) Eval(context.Context, *World) (Node, error) {
-	return f, nil
-}
-
-func (f VarArgsF) Equals(n Node, m EqlMode) bool {
-	return false
-}
-
-func (f VarArgsF) Call(ctx context.Context, w *World, list Node) (Node, error) {
-	if err := checkContext(ctx); err != nil {
-		return nil, err
-	}
-	argv := []Node{}
-	for HasValue(list) {
-		var tmp Node
-		var err error
-
-		tmp, list, err = w.shiftAndEvalCar(ctx, list)
-		if err != nil {
-			return nil, err
+		if HasValue(list) {
+			return nil, ErrTooManyArguments
 		}
-		argv = append(argv, tmp)
+		return f.F(ctx, w, argv[:f.C])
+	} else {
+		argv := []Node{}
+		for HasValue(list) {
+			var tmp Node
+			var err error
+
+			tmp, list, err = w.shiftAndEvalCar(ctx, list)
+			if err != nil {
+				return nil, err
+			}
+			argv = append(argv, tmp)
+		}
+		return f.F(ctx, w, argv)
 	}
-	return f(ctx, w, argv)
+}
+
+func VarArgsF(f func(context.Context, *World, []Node) (Node, error)) *FixArgsF {
+	return &FixArgsF{C: -1, F: f}
 }
