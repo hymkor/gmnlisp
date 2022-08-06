@@ -21,64 +21,67 @@ func funGetCdr(_ context.Context, _ *World, argv []Node) (Node, func(Node) error
 	return cons.Cdr, func(value Node) error { cons.Cdr = value; return nil }, nil
 }
 
-func nthcdr(n int, list *Node) (*Node, error) {
+func nthcdr(n int, list Node) (Node, func(Node) error, error) {
+	var setter = func(value Node) error { return nil }
 	for i := 0; i < n; i++ {
-		cons, ok := (*list).(*Cons)
+		cons, ok := list.(*Cons)
 		if !ok {
-			return nil, ErrExpectedCons
+			return nil, nil, ErrExpectedCons
 		}
-		list = &cons.Cdr
+		list = cons.Cdr
+		setter = func(value Node) error { cons.Cdr = value; return nil }
 	}
-	return list, nil
+	return list, setter, nil
 }
 
-func funNthcdr(_ context.Context, _ *World, argv []Node) (*Node, error) {
+func funNthcdr(_ context.Context, _ *World, argv []Node) (Node, func(Node) error, error) {
 	n, ok := argv[0].(Integer)
 	if !ok {
-		return nil, ErrExpectedNumber
+		return nil, nil, ErrExpectedNumber
 	}
-	return nthcdr(int(n), &argv[1])
+	return nthcdr(int(n), argv[1])
 }
 
-func nth(n int, list *Node) (*Node, error) {
+func nth(n int, list Node) (Node, func(Node) error, error) {
 	var err error
-	list, err = nthcdr(n, list)
+
+	list, _, err = nthcdr(n, list)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	cons, ok := (*list).(*Cons)
+	cons, ok := list.(*Cons)
 	if !ok {
-		return nil, ErrExpectedCons
+		return nil, nil, ErrExpectedCons
 	}
-	return &cons.Car, nil
+	return cons.Car, func(value Node) error { cons.Car = value; return nil }, nil
 }
 
-func funNth(_ context.Context, _ *World, argv []Node) (*Node, error) {
+func funNth(_ context.Context, _ *World, argv []Node) (Node, func(Node) error, error) {
 	n, ok := argv[0].(Integer)
 	if !ok {
-		return nil, ErrExpectedNumber
+		return nil, nil, ErrExpectedNumber
 	}
-	return nth(int(n), &argv[1])
+	return nth(int(n), argv[1])
 }
 
-func funCadr(_ context.Context, _ *World, argv []Node) (*Node, error) {
-	return nth(1, &argv[0])
+func funCadr(_ context.Context, _ *World, argv []Node) (Node, func(Node) error, error) {
+	return nth(1, argv[0])
 }
 
-func funCaddr(_ context.Context, _ *World, argv []Node) (*Node, error) {
-	return nth(2, &argv[0])
+func funCaddr(_ context.Context, _ *World, argv []Node) (Node, func(Node) error, error) {
+	return nth(2, argv[0])
 }
 
-func funCadddr(_ context.Context, _ *World, argv []Node) (*Node, error) {
-	return nth(3, &argv[0])
+func funCadddr(_ context.Context, _ *World, argv []Node) (Node, func(Node) error, error) {
+	return nth(3, argv[0])
 }
 
-func funCddr(_ context.Context, _ *World, argv []Node) (*Node, error) {
-	return nthcdr(2, &argv[0])
+func funCddr(_ context.Context, _ *World, argv []Node) (Node, func(Node) error, error) {
+	return nthcdr(2, argv[0])
 }
 
-func funCdddr(_ context.Context, _ *World, argv []Node) (*Node, error) {
-	return nthcdr(3, &argv[0])
+func funCdddr(_ context.Context, _ *World, argv []Node) (Node, func(Node) error, error) {
+	return nthcdr(3, argv[0])
 }
 
 func funList(_ context.Context, _ *World, list []Node) (Node, error) {
