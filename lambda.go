@@ -284,26 +284,26 @@ func cmdTrace(_ context.Context, _ *World, list Node) (Node, error) {
 	return Null, nil
 }
 
-type FixArgsF struct {
+type Function struct {
 	C int
 	F func(context.Context, *World, []Node) (Node, error)
 }
 
-func (*FixArgsF) PrintTo(w io.Writer, m PrintMode) {
+func (*Function) PrintTo(w io.Writer, m PrintMode) {
 	io.WriteString(w, "buildin function")
 }
 
-func (f *FixArgsF) Eval(context.Context, *World) (Node, error) {
+func (f *Function) Eval(context.Context, *World) (Node, error) {
 	return f, nil
 }
 
-func (f *FixArgsF) Equals(n Node, m EqlMode) bool {
+func (f *Function) Equals(n Node, m EqlMode) bool {
 	return false
 }
 
 const maxParameterOfEasyFunc = 8
 
-func (f *FixArgsF) Call(ctx context.Context, w *World, list Node) (Node, error) {
+func (f *Function) Call(ctx context.Context, w *World, list Node) (Node, error) {
 	if err := checkContext(ctx); err != nil {
 		return nil, err
 	}
@@ -337,6 +337,6 @@ func (f *FixArgsF) Call(ctx context.Context, w *World, list Node) (Node, error) 
 	}
 }
 
-func VarArgsF(f func(context.Context, *World, []Node) (Node, error)) *FixArgsF {
-	return &FixArgsF{C: -1, F: f}
+func VarArgsF(f func(context.Context, *World, []Node) (Node, error)) *Function {
+	return &Function{C: -1, F: f}
 }
