@@ -1,13 +1,11 @@
 package gmnlisp
 
 import (
-	"bytes"
 	"context"
 	"fmt"
 	"io"
 	"strings"
 	"unicode"
-	"unicode/utf8"
 )
 
 type _TrueType struct{}
@@ -47,7 +45,7 @@ func (nt _NullType) Equals(n Node, m EqlMode) bool {
 
 var Null Node = _NullType{}
 
-type String []byte
+type String []Rune
 
 var unescapeSequenceReplacer = strings.NewReplacer(
 	"\n", "\\n",
@@ -59,7 +57,7 @@ var unescapeSequenceReplacer = strings.NewReplacer(
 
 func (s String) PrintTo(w io.Writer, m PrintMode) {
 	if m == PRINC {
-		w.Write([]byte(s))
+		io.WriteString(w, string(s))
 	} else {
 		fmt.Fprintf(w, `"%s"`, unescapeSequenceReplacer.Replace(string(s)))
 	}
@@ -71,10 +69,23 @@ func (s String) Eval(context.Context, *World) (Node, error) {
 
 func (s String) Equals(n Node, m EqlMode) bool {
 	ns, ok := n.(String)
+	if !ok || len(s) != len(ns) {
+		return false
+	}
 	if m == EQUALP {
-		return ok && bytes.EqualFold([]byte(s), []byte(ns))
+		for i, c := range s {
+			if c != ns[i] && unicode.ToLower(rune(c)) != unicode.ToLower(rune(ns[i])) {
+				return false
+			}
+		}
+		return true
 	} else {
-		return ok && bytes.Equal(s, ns)
+		for i, c := range s {
+			if c != ns[i] {
+				return false
+			}
+		}
+		return true
 	}
 }
 
@@ -84,11 +95,7 @@ func (s String) firstAndRest() (Node, Node, bool) {
 	if len(s) <= 0 {
 		return Null, Null, false
 	}
-	car, siz := utf8.DecodeRune([]byte(s))
-	if len(s) <= siz {
-		return Rune(car), Null, true
-	}
-	return Rune(car), String(s[siz:]), true
+	return Rune(s[0]), String(s[1:]), true
 }
 
 func (s String) Add(n Node) (Node, error) {
@@ -100,7 +107,24 @@ func (s String) Add(n Node) (Node, error) {
 
 func (s String) LessThan(n Node) (bool, error) {
 	if ns, ok := n.(String); ok {
-		return bytes.Compare(s, ns) < 0, nil
+		equal := true
+		for i, left := range s {
+			if i >= len(ns) {
+				return true, nil
+			}
+			right := ns[i]
+			if left > right {
+				return false, nil
+			}
+			if left < right {
+				equal = false
+			}
+			if equal {
+				return len(s) >= len(ns), nil
+			}
+			return true, nil
+		}
+		return true, nil
 	}
 	return false, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n, PRINT))
 }
