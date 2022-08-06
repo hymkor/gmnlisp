@@ -61,12 +61,6 @@ Support functions
 <%
 (let (name (dem "" ))
     (foreach name (--get-all-symbols--)
-        (write (concatenate 'string dem "`" name "`"
-            (cond
-                ((= name "setf") "\*")
-                (T ""))))
+        (write (concatenate 'string dem "`" name "`"))
         (setq dem ", ")))
 %>
-
-
-\* (setf) can not be used for functions other than (car), (cdr), (cadr), (caddr), (cadddr), (cddr), (cdddr), (nth) and (nthcdr).
