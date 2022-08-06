@@ -57,17 +57,31 @@ func (f *LeftValueF) Call(ctx context.Context, w *World, list Node) (Node, error
 		return nil, err
 	}
 
-	for i := 0; i < f.C; i++ {
-		argv[i], list, err = w.shiftAndEvalCar(ctx, list)
-		if err != nil {
-			return nil, err
+	if f.C >= 0 {
+		for i := 0; i < f.C; i++ {
+			argv[i], list, err = w.shiftAndEvalCar(ctx, list)
+			if err != nil {
+				return nil, err
+			}
 		}
+		if HasValue(list) {
+			return nil, ErrTooManyArguments
+		}
+		value, _, err := f.F(ctx, w, argv[:f.C])
+		return value, err
+	} else {
+		args := []Node{}
+		for HasValue(list) {
+			var arg1 Node
+			arg1, list, err = w.shiftAndEvalCar(ctx, list)
+			if err != nil {
+				return nil, err
+			}
+			args = append(args, arg1)
+		}
+		value, _, err := f.F(ctx, w, args)
+		return value, err
 	}
-	if HasValue(list) {
-		return nil, ErrTooManyArguments
-	}
-	value, _, err := f.F(ctx, w, argv[:f.C])
-	return value, err
 }
 
 func (f *LeftValueF) Set(ctx context.Context, w *World, list Node, value Node) error {
@@ -82,11 +96,13 @@ func (f *LeftValueF) Set(ctx context.Context, w *World, list Node, value Node) e
 		}
 		args = append(args, tmp)
 	}
-	if len(args) < f.C {
-		return ErrTooFewArguments
-	}
-	if len(args) > f.C {
-		return ErrTooManyArguments
+	if f.C >= 0 {
+		if len(args) < f.C {
+			return ErrTooFewArguments
+		}
+		if len(args) > f.C {
+			return ErrTooManyArguments
+		}
 	}
 	_, setter, err := f.F(ctx, w, args)
 	if err != nil {
