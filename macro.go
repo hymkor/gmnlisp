@@ -134,10 +134,12 @@ func cmdDefMacro(ctx context.Context, w *World, n Node) (Node, error) {
 	if !ok {
 		return nil, ErrExpectedSymbol
 	}
-	param, code, _, err := getParameterList(cons.Cdr)
+	p, err := getParameterList(cons.Cdr)
 	if err != nil {
 		return nil, err
 	}
+	param := p.param
+	code := p.code
 
 	globals := map[Symbol]Node{}
 	for _, name := range param {
