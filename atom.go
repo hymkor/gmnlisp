@@ -91,11 +91,18 @@ func (s String) Equals(n Node, m EqlMode) bool {
 
 // firstAndRest returns first character, rest string and true.
 // When string is empty, boolean is false.
-func (s String) firstAndRest() (Node, Node, bool) {
+func (s String) firstAndRest() (Node, Node, bool, func(Node) error) {
 	if len(s) <= 0 {
-		return Null, Null, false
+		return nil, Null, false, nil
 	}
-	return Rune(s[0]), String(s[1:]), true
+	return Rune(s[0]), String(s[1:]), true, func(value Node) error {
+		r, ok := value.(Rune)
+		if !ok {
+			return ErrExpectedCharacter
+		}
+		s[0] = r
+		return nil
+	}
 }
 
 func (s String) Add(n Node) (Node, error) {

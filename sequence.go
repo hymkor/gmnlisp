@@ -8,7 +8,7 @@ import (
 )
 
 type _Sequence interface {
-	firstAndRest() (Node, Node, bool)
+	firstAndRest() (Node, Node, bool, func(Node) error)
 }
 
 func seqEach(list Node, f func(Node) error) error {
@@ -19,7 +19,7 @@ func seqEach(list Node, f func(Node) error) error {
 		}
 		var value Node
 
-		value, list, ok = seq.firstAndRest()
+		value, list, ok, _ = seq.firstAndRest()
 		if !ok {
 			break
 		}
@@ -148,7 +148,7 @@ func funAref(_ context.Context, _ *World, args []Node) (Node, error) {
 		if !ok {
 			return Null, nil
 		}
-		value, list, _ = seq.firstAndRest()
+		value, list, _, _ = seq.firstAndRest()
 		index--
 	}
 	return value, nil
@@ -202,7 +202,7 @@ func mapCar(ctx context.Context, w *World, funcNode Node, listSet []Node, result
 			if !ok {
 				return ErrNotSupportType
 			}
-			paramSet[i], listSet[i], ok = seq.firstAndRest()
+			paramSet[i], listSet[i], ok, _ = seq.firstAndRest()
 			if !ok {
 				return nil
 			}
@@ -280,7 +280,7 @@ func funMember(_ context.Context, _ *World, argv []Node) (Node, error) {
 		if !ok {
 			return nil, ErrExpectedSequence
 		}
-		value, rest, ok := seq.firstAndRest()
+		value, rest, ok, _ := seq.firstAndRest()
 		if !ok {
 			break
 		}
