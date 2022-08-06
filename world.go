@@ -175,6 +175,8 @@ func New() *World {
 			"quote":               SpecialF(cmdQuote),
 			"read":                &FixArgsF{C: 1, F: funRead},
 			"read-line":           &FixArgsF{C: 1, F: funReadLine},
+			"replaca":             &FixArgsF{C: 2, F: funReplaca},
+			"replacd":             &FixArgsF{C: 2, F: funReplacd},
 			"return":              &FixArgsF{C: 1, F: funReturn},
 			"return-from":         SpecialF(cmdReturnFrom),
 			"reverse":             &FixArgsF{C: 1, F: funReverse},

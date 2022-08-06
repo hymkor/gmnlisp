@@ -190,3 +190,23 @@ func subst(newItem, oldItem, list Node) Node {
 func funSubst(_ context.Context, _ *World, argv []Node) (Node, error) {
 	return subst(argv[0], argv[1], argv[2]), nil
 }
+
+// funReplaca implements (replaca X Y) == (setf (car X) Y)
+func funReplaca(_ context.Context, _ *World, argv []Node) (Node, error) {
+	cons, ok := argv[0].(*Cons)
+	if !ok {
+		return nil, ErrExpectedCons
+	}
+	cons.Car = argv[1]
+	return cons, nil
+}
+
+// funReplacd implements (replacd X Y) == (setf (cdr X) Y)
+func funReplacd(_ context.Context, _ *World, argv []Node) (Node, error) {
+	cons, ok := argv[0].(*Cons)
+	if !ok {
+		return nil, ErrExpectedCons
+	}
+	cons.Cdr = argv[1]
+	return cons, nil
+}

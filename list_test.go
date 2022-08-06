@@ -73,3 +73,11 @@ func TestLast(t *testing.T) {
 	assertEqual(t, `(last '(1 2 3 4))`, Integer(4))
 	assertEqual(t, `(last '())`, Null)
 }
+
+func TestDestoroy(t *testing.T) {
+	assertEqual(t, `(let ((c '("A" . "D"))) (replaca c "X") c)`,
+		&Cons{Car: String("X"), Cdr: String("D")})
+
+	assertEqual(t, `(let ((c '("A" . "D"))) (replacd c "X") c)`,
+		&Cons{Car: String("A"), Cdr: String("X")})
+}
