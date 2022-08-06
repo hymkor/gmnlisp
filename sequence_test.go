@@ -65,3 +65,15 @@ func TestSubSeq(t *testing.T) {
 	assertEqual(t, `(subseq '(1 2 3 4 5) 2 4)`, List(Integer(3), Integer(4)))
 	assertEqual(t, `(subseq '(1 2 3 4 5) 2)`, List(Integer(3), Integer(4), Integer(5)))
 }
+
+func TestSetfSubSeq(t *testing.T) {
+	assertEqual(t, `
+		(let ((m "12345"))
+			(setf (subseq m 2 4) "xx")
+			m)`, String("12xx5"))
+
+	assertEqual(t, `
+		(let ((m (list 1 2 3 4 5)))
+			(setf (subseq m 2 4) (list 0 0))
+			m)`, List(Integer(1), Integer(2), Integer(0), Integer(0), Integer(5)))
+}
