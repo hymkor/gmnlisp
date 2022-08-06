@@ -1,6 +1,7 @@
 package gmnlisp
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"io"
@@ -46,7 +47,7 @@ func (nt _NullType) Equals(n Node, m EqlMode) bool {
 
 var Null Node = _NullType{}
 
-type String string
+type String []byte
 
 var unescapeSequenceReplacer = strings.NewReplacer(
 	"\n", "\\n",
@@ -58,7 +59,7 @@ var unescapeSequenceReplacer = strings.NewReplacer(
 
 func (s String) PrintTo(w io.Writer, m PrintMode) {
 	if m == PRINC {
-		io.WriteString(w, string(s))
+		w.Write([]byte(s))
 	} else {
 		fmt.Fprintf(w, `"%s"`, unescapeSequenceReplacer.Replace(string(s)))
 	}
@@ -71,9 +72,9 @@ func (s String) Eval(context.Context, *World) (Node, error) {
 func (s String) Equals(n Node, m EqlMode) bool {
 	ns, ok := n.(String)
 	if m == EQUALP {
-		return ok && strings.EqualFold(string(s), string(ns))
+		return ok && bytes.EqualFold([]byte(s), []byte(ns))
 	} else {
-		return ok && s == ns
+		return ok && bytes.Equal(s, ns)
 	}
 }
 
@@ -92,14 +93,14 @@ func (s String) firstAndRest() (Node, Node, bool) {
 
 func (s String) Add(n Node) (Node, error) {
 	if value, ok := n.(String); ok {
-		return s + value, nil
+		return String(append(s, value...)), nil
 	}
 	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n, PRINT))
 }
 
 func (s String) LessThan(n Node) (bool, error) {
 	if ns, ok := n.(String); ok {
-		return s < ns, nil
+		return bytes.Compare(s, ns) < 0, nil
 	}
 	return false, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n, PRINT))
 }
