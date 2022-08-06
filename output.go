@@ -9,29 +9,29 @@ import (
 func getWriterAndString(ctx context.Context, w *World, n Node) (io.Writer, String, error) {
 	_s, n, err := w.shiftAndEvalCar(ctx, n)
 	if err != nil {
-		return nil, "", err
+		return nil, emptyString, err
 	}
 	s, ok := _s.(String)
 	if !ok {
-		return nil, "", fmt.Errorf("%w `%s`", ErrExpectedString, toString(_s, PRINT))
+		return nil, emptyString, fmt.Errorf("%w `%s`", ErrExpectedString, toString(_s, PRINT))
 	}
 	var writer io.Writer
 	if HasValue(n) {
 		_writer, n, err := w.shiftAndEvalCar(ctx, n)
 		if err != nil {
-			return nil, "", err
+			return nil, emptyString, err
 		}
 		writer, ok = _writer.(io.Writer)
 		if !ok {
-			return nil, "", fmt.Errorf("Expected Writer `%s`", toString(_writer, PRINT))
+			return nil, emptyString, fmt.Errorf("Expected Writer `%s`", toString(_writer, PRINT))
 		}
 		if HasValue(n) {
-			return nil, "", ErrTooManyArguments
+			return nil, emptyString, ErrTooManyArguments
 		}
 	} else {
 		writer, err = w.Stdout()
 		if err != nil {
-			return nil, "", err
+			return nil, emptyString, err
 		}
 	}
 	return writer, s, nil

@@ -104,6 +104,8 @@ func (s String) LessThan(n Node) (bool, error) {
 	return false, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n, PRINT))
 }
 
+var emptyString String
+
 type Symbol string
 
 func (s Symbol) PrintTo(w io.Writer, m PrintMode) {
