@@ -136,22 +136,23 @@ func funTypep(_ context.Context, _ *World, args []Node) (Node, error) {
 	return Null, nil
 }
 
-func funAref(_ context.Context, _ *World, args []Node) (Node, error) {
+func funAref(_ context.Context, _ *World, args []Node) (Node, func(Node) error, error) {
 	index, ok := args[1].(Integer)
 	if !ok {
-		return nil, ErrExpectedNumber
+		return nil, nil, ErrExpectedNumber
 	}
 	list := args[0]
 	var value Node = Null
+	var setter func(Node) error
 	for index >= 0 {
 		seq, ok := list.(_Sequence)
 		if !ok {
-			return Null, nil
+			return Null, nil, nil
 		}
-		value, list, _, _ = seq.firstAndRest()
+		value, list, _, setter = seq.firstAndRest()
 		index--
 	}
-	return value, nil
+	return value, setter, nil
 }
 
 func funConcatenate(ctx context.Context, w *World, list []Node) (Node, error) {
