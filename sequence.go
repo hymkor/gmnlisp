@@ -311,22 +311,22 @@ func funPosition(_ context.Context, _ *World, argv []Node) (Node, error) {
 	return Null, nil
 }
 
-func funSubSeq(ctx context.Context, w *World, args []Node) (Node, error) {
+func funSubSeq(ctx context.Context, w *World, args []Node) (Node, func(Node) error, error) {
 	if len(args) < 2 {
-		return nil, ErrTooFewArguments
+		return nil, nil, ErrTooFewArguments
 	}
 	if len(args) > 3 {
-		return nil, ErrTooManyArguments
+		return nil, nil, ErrTooManyArguments
 	}
 	start, ok := args[1].(Integer)
 	if !ok {
-		return nil, ErrExpectedNumber
+		return nil, nil, ErrExpectedNumber
 	}
 	end := Integer(math.MaxInt)
 	if len(args) >= 3 {
 		end, ok = args[2].(Integer)
 		if !ok {
-			return nil, ErrExpectedNumber
+			return nil, nil, ErrExpectedNumber
 		}
 	}
 	var buffer _SeqBuilder
@@ -346,5 +346,44 @@ func funSubSeq(ctx context.Context, w *World, args []Node) (Node, error) {
 		count++
 		return
 	})
-	return buffer.Sequence(), ignoreEOF(err)
+	return buffer.Sequence(), func(newvalue Node) error {
+		if s1, ok := args[0].(String); ok {
+			s2, ok := newvalue.(String)
+			if !ok {
+				return ErrExpectedString
+			}
+			copy(s1[start:end], s2[:])
+			return nil
+		}
+		count := Integer(0)
+		list := args[0]
+		for {
+			var ok bool
+			var setter func(Node) error
+
+			wSeq, ok := list.(_Sequence)
+			if !ok {
+				return nil
+			}
+			_, list, ok, setter = wSeq.firstAndRest()
+			if !ok {
+				return nil
+			}
+			if count >= start && count < end {
+				var newvalue1 Node
+				rSeq, ok := newvalue.(_Sequence)
+				if !ok {
+					return ErrExpectedSequence
+				}
+				newvalue1, newvalue, ok, _ = rSeq.firstAndRest()
+				if !ok {
+					return nil
+				}
+				if err := setter(newvalue1); err != nil {
+					return err
+				}
+			}
+			count++
+		}
+	}, ignoreEOF(err)
 }
