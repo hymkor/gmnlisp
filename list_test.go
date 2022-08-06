@@ -12,11 +12,6 @@ func TestList(t *testing.T) {
 
 	assertEqual(t, `(list 1 2 3 4)`,
 		List(Integer(1), Integer(2), Integer(3), Integer(4)))
-	assertEqual(t, `(append '(1 2) '(3 4))`, List(Integer(1), Integer(2), Integer(3), Integer(4)))
-	assertEqual(t, `(append '(1 2) '(3 4) '(5 6))`,
-		List(Integer(1), Integer(2), Integer(3), Integer(4), Integer(5), Integer(6)))
-	assertEqual(t, `(append '() '(1 2) '(3 4))`,
-		List(Integer(1), Integer(2), Integer(3), Integer(4)))
 
 	assertEqual(t, `(cadr '(1 2 3))`, Integer(2))
 	assertEqual(t, `(caddr '(1 2 3 4 5 ))`, Integer(3))
@@ -47,6 +42,19 @@ func TestList(t *testing.T) {
 			&Cons{Car: String("X"), Cdr: Integer(7)},
 			&Cons{Car: String("Y"), Cdr: Integer(2)},
 			&Cons{Car: String("Z"), Cdr: Integer(4)}))
+}
+
+func TestAppend(t *testing.T) {
+	assertEqual(t, `(append '(1 2) '(3 4))`, List(Integer(1), Integer(2), Integer(3), Integer(4)))
+	assertEqual(t, `(append '(1 2) '(3 4) '(5 6))`,
+		List(Integer(1), Integer(2), Integer(3), Integer(4), Integer(5), Integer(6)))
+	assertEqual(t, `(append '() '(1 2) '(3 4))`,
+		List(Integer(1), Integer(2), Integer(3), Integer(4)))
+
+	// append do not destruct original list.
+	assertEqual(t, `(let ((x '(1 2 3)))
+		(append x '(4 5 6))
+		x)`, List(Integer(1), Integer(2), Integer(3)))
 }
 
 func TestLast(t *testing.T) {

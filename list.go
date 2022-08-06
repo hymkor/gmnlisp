@@ -120,19 +120,20 @@ func funLast(_ context.Context, _ *World, list []Node) (Node, error) {
 }
 
 func funAppend(_ context.Context, _ *World, list []Node) (Node, error) {
-	var last Node = Null
-	for i := len(list) - 1; i >= 0; i-- {
-		if IsNull(list[i]) {
-			continue
+	var value Node
+	var err error
+	var buffer _ListBuilder
+
+	for _, list1 := range list {
+		for HasValue(list1) {
+			value, list1, err = shift(list1)
+			if err != nil {
+				return nil, err
+			}
+			buffer.Add(value)
 		}
-		tail, err := lastOfList(list[i])
-		if err != nil {
-			return nil, err
-		}
-		tail.Cdr = last
-		last = list[i]
 	}
-	return last, nil
+	return buffer.Sequence(), nil
 }
 
 func funCons(_ context.Context, _ *World, argv []Node) (Node, error) {
