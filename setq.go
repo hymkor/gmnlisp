@@ -139,11 +139,11 @@ func cmdSetf(ctx context.Context, w *World, params Node) (Node, error) {
 			}
 			f, ok := _f.(*LeftValueF)
 			if !ok {
-				return nil, ErrVariableUnbound
+				return nil, fmt.Errorf("%w: %s", ErrNotSupportBySetf, commandName)
 			}
 			return rightValue, f.Set(ctx, w, list, rightValue)
 		} else {
-			return nil, fmt.Errorf("%w: `%s`", ErrExpectedSymbol, toString(nameSymbol, PRINT))
+			return nil, fmt.Errorf("%w: %s", ErrExpectedSymbolOrList, toString(leftValue, PRINT))
 		}
 	}
 	return value, nil
