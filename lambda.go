@@ -336,7 +336,3 @@ func (f *Function) Call(ctx context.Context, w *World, list Node) (Node, error) 
 		return f.F(ctx, w, argv)
 	}
 }
-
-func VarArgsF(f func(context.Context, *World, []Node) (Node, error)) *Function {
-	return &Function{C: -1, F: f}
-}
