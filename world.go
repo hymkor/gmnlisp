@@ -153,7 +153,7 @@ func New() *World {
 			"macroexpand":         SpecialF(cmdMacroExpand),
 			"map":                 &Function{C: -1, F: funMap},
 			"mapcar":              &Function{C: -1, F: funMapCar},
-			"member":              &Function{C: 2, F: funMember},
+			"member":              &KWFunction{C: 2, F: funMember},
 			"minusp":              &Function{C: 1, F: funMinusp},
 			"nil":                 Null,
 			"not":                 &Function{C: 1, F: funNot},

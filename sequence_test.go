@@ -51,6 +51,7 @@ func TestMember(t *testing.T) {
 	assertEqual(t, `(member 'c '(a b c d e))`,
 		List(Symbol("c"), Symbol("d"), Symbol("e")))
 	assertEqual(t, `(member #\c "abcd")`, String("cd"))
+	assertEqual(t, `(member #\C "abcd" :test #'(lambda (a b) (equalp a b)))`, String("cd"))
 }
 
 func TestPosition(t *testing.T) {

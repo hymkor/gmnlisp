@@ -272,10 +272,25 @@ func funReverse(_ context.Context, _ *World, argv []Node) (Node, error) {
 	return result, nil
 }
 
-func funMember(_ context.Context, _ *World, argv []Node) (Node, error) {
+func funMember(c context.Context, w *World, argv []Node, kwargs map[Keyword]Node) (Node, error) {
 	expr := argv[0]
 	list := argv[1]
 
+	var test func(Node, Node) (bool, error)
+	if testerNode, ok := kwargs[":test"]; ok {
+		caller, ok := testerNode.(_Callable)
+		if !ok {
+			return nil, ErrExpectedFunction
+		}
+		test = func(left, right Node) (bool, error) {
+			result, err := caller.Call(c, w, List(left, right))
+			return HasValue(result), err
+		}
+	} else {
+		test = func(left, right Node) (bool, error) {
+			return left.Equals(right, EQUAL), nil
+		}
+	}
 	for HasValue(list) {
 		seq, ok := list.(_Sequence)
 		if !ok {
@@ -285,7 +300,11 @@ func funMember(_ context.Context, _ *World, argv []Node) (Node, error) {
 		if !ok {
 			break
 		}
-		if expr.Equals(value, EQUAL) {
+		eq, err := test(expr, value)
+		if err != nil {
+			return nil, err
+		}
+		if eq {
 			return list, nil
 		}
 		list = rest
