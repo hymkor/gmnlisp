@@ -336,3 +336,47 @@ func (f *Function) Call(ctx context.Context, w *World, list Node) (Node, error) 
 		return f.F(ctx, w, argv)
 	}
 }
+
+type KWFunction struct {
+	C int
+	F func(context.Context, *World, []Node, map[Keyword]Node) (Node, error)
+}
+
+func (*KWFunction) PrintTo(w io.Writer, m PrintMode) {
+	io.WriteString(w, "buildin function")
+}
+
+func (f *KWFunction) Eval(context.Context, *World) (Node, error) {
+	return f, nil
+}
+
+func (f *KWFunction) Equals(n Node, m EqlMode) bool {
+	return false
+}
+
+func (f *KWFunction) Call(ctx context.Context, w *World, list Node) (Node, error) {
+	if err := checkContext(ctx); err != nil {
+		return nil, err
+	}
+	args := []Node{}
+	kwargs := map[Keyword]Node{}
+	for HasValue(list) {
+		var tmp Node
+		var err error
+
+		tmp, list, err = w.shiftAndEvalCar(ctx, list)
+		if err != nil {
+			return nil, err
+		}
+		if keyword, ok := tmp.(Keyword); ok {
+			tmp, list, err = w.shiftAndEvalCar(ctx, list)
+			if err != nil {
+				return nil, err
+			}
+			kwargs[keyword] = tmp
+		} else {
+			args = append(args, tmp)
+		}
+	}
+	return f.F(ctx, w, args, kwargs)
+}
