@@ -378,5 +378,13 @@ func (f *KWFunction) Call(ctx context.Context, w *World, list Node) (Node, error
 			args = append(args, tmp)
 		}
 	}
+	if f.C >= 0 {
+		if len(args) < f.C {
+			return nil, ErrTooFewArguments
+		}
+		if len(args) > f.C {
+			return nil, ErrTooManyArguments
+		}
+	}
 	return f.F(ctx, w, args, kwargs)
 }
