@@ -188,7 +188,13 @@ func (r Rune) Eval(_ context.Context, w *World) (Node, error) {
 
 func (r Rune) Equals(n Node, m EqlMode) bool {
 	if value, ok := n.(Rune); ok {
-		return r == value
+		if r == value {
+			return true
+		}
+		if m == EQUALP {
+			return unicode.ToLower(rune(r)) == unicode.ToLower(rune(value))
+		}
+		return false
 	}
 	if m == EQUAL {
 		return false
