@@ -272,25 +272,31 @@ func funReverse(_ context.Context, _ *World, argv []Node) (Node, error) {
 	return result, nil
 }
 
-func funMember(c context.Context, w *World, argv []Node, kwargs map[Keyword]Node) (Node, error) {
-	expr := argv[0]
-	list := argv[1]
-
-	var test func(Node, Node) (bool, error)
-	if testerNode, ok := kwargs[":test"]; ok {
-		caller, ok := testerNode.(_Callable)
+func getTestParameter(kwargs map[Keyword]Node) (func(context.Context, *World, Node, Node) (bool, error), error) {
+	if test, ok := kwargs[":test"]; ok {
+		caller, ok := test.(_Callable)
 		if !ok {
 			return nil, ErrExpectedFunction
 		}
-		test = func(left, right Node) (bool, error) {
+		return func(c context.Context, w *World, left, right Node) (bool, error) {
 			result, err := caller.Call(c, w, List(left, right))
 			return HasValue(result), err
-		}
+		}, nil
 	} else {
-		test = func(left, right Node) (bool, error) {
+		return func(_ context.Context, _ *World, left, right Node) (bool, error) {
 			return left.Equals(right, EQUAL), nil
-		}
+		}, nil
 	}
+}
+
+func funMember(c context.Context, w *World, argv []Node, kwargs map[Keyword]Node) (Node, error) {
+	expr := argv[0]
+	list := argv[1]
+	test, err := getTestParameter(kwargs)
+	if err != nil {
+		return nil, err
+	}
+
 	for HasValue(list) {
 		seq, ok := list.(_Sequence)
 		if !ok {
@@ -300,7 +306,7 @@ func funMember(c context.Context, w *World, argv []Node, kwargs map[Keyword]Node
 		if !ok {
 			break
 		}
-		eq, err := test(expr, value)
+		eq, err := test(c, w, expr, value)
 		if err != nil {
 			return nil, err
 		}
@@ -312,13 +318,21 @@ func funMember(c context.Context, w *World, argv []Node, kwargs map[Keyword]Node
 	return Null, nil
 }
 
-func funPosition(_ context.Context, _ *World, argv []Node) (Node, error) {
+func funPosition(c context.Context, w *World, argv []Node, kwargs map[Keyword]Node) (Node, error) {
 	expr := argv[0]
 	list := argv[1]
+	test, err := getTestParameter(kwargs)
+	if err != nil {
+		return nil, err
+	}
 	count := 0
 
-	err := seqEach(list, func(value Node) error {
-		if expr.Equals(value, EQUAL) {
+	err = seqEach(list, func(value Node) error {
+		eq, err := test(c, w, expr, value)
+		if err != nil {
+			return err
+		}
+		if eq {
 			return io.EOF
 		}
 		count++

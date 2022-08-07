@@ -57,7 +57,8 @@ func TestMember(t *testing.T) {
 func TestPosition(t *testing.T) {
 	assertEqual(t, `(position 'c '(a b c d e))`, Integer(2))
 	assertEqual(t, `(position #\c "abcd")`, Integer(2))
-	assertEqual(t, `(position #\x "abcd")`, Null)
+	assertEqual(t, `(position #\C "abcd")`, Null)
+	assertEqual(t, `(position #\C "abcd" :test #'(lambda (a b) (equalp a b)))`, Integer(2))
 }
 
 func TestSubSeq(t *testing.T) {
