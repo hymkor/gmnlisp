@@ -218,3 +218,20 @@ func (r Rune) Sub(n Node) (Node, error) {
 	}
 	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n, PRINT))
 }
+
+type Keyword string
+
+func (k Keyword) PrintTo(w io.Writer, m PrintMode) {
+	io.WriteString(w, string(k))
+}
+
+func (k Keyword) Eval(context.Context, *World) (Node, error) {
+	return k, nil
+}
+
+func (k Keyword) Equals(n Node, m EqlMode) bool {
+	if other, ok := n.(Keyword); ok {
+		return strings.EqualFold(string(k), string(other))
+	}
+	return false
+}

@@ -69,6 +69,9 @@ func readNode(tokenGetter func() (string, error)) (Node, error) {
 			nodes = append(nodes, node1)
 		}
 	}
+	if len(token) > 0 && token[0] == ':' {
+		return Keyword(token), nil
+	}
 	if rxFloat.MatchString(token) {
 		val, err := strconv.ParseFloat(token, 64)
 		if err != nil {
