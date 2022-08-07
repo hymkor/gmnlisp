@@ -59,8 +59,14 @@ Support functions
 -----------------
 
 <%
-(let (name (dem "" ))
+(let (name dem)
+    (defun dem ())
     (foreach name (--get-all-symbols--)
-        (write (concatenate 'string dem "`" name "`"))
-        (setq dem ", ")))
+        (dem)
+        (write (concatenate 'string "`" name "`"))
+        (defun dem ()
+            (write ", <!--")(terpri)(write "--> ")
+        )
+    )
+)
 %>
