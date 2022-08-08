@@ -143,6 +143,7 @@ func New() *World {
 			"funcall":             SpecialF(cmdFunCall),
 			"function":            &Function{C: 1, F: funFunction},
 			"if":                  SpecialF(cmdIf),
+			"incf":                SpecialF(cmdIncf),
 			"integerp":            &Function{C: 1, F: funAnyTypep[Integer]},
 			"lambda":              SpecialF(cmdLambda),
 			"last":                &Function{C: 1, F: funLast},

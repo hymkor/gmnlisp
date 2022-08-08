@@ -57,3 +57,10 @@ func TestOperators(t *testing.T) {
 	assertEqual(t, `(1+ 10)`, Integer(11))
 	assertEqual(t, `(1- 10)`, Integer(9))
 }
+
+func TestIncf(t *testing.T) {
+	assertEqual(t, `(let ((x 1)) (incf x) x)`, Integer(2))
+	assertEqual(t, `(let ((x 1.0)) (incf x) x)`, Float(2.0))
+	assertEqual(t, `(let ((x 1)) (incf x 2) x)`, Integer(3))
+	assertEqual(t, `(let ((x 1.0)) (incf x 2) x)`, Float(3.0))
+}
