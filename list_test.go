@@ -95,3 +95,10 @@ func TestDestoroy(t *testing.T) {
 	assertEqual(t, `(let ((c '("A" . "D"))) (replacd c "X") c)`,
 		&Cons{Car: String("A"), Cdr: String("X")})
 }
+
+func TestFirst(t *testing.T) {
+	assertEqual(t, `(first '(1 2 3 4))`, Integer(1))
+	assertEqual(t, `(second '(1 2 3 4))`, Integer(2))
+	assertEqual(t, `(third '(1 2 3 4))`, Integer(3))
+	assertEqual(t, `(rest '(1 2 3 4))`, List(Integer(2), Integer(3), Integer(4)))
+}
