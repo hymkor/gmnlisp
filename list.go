@@ -136,7 +136,13 @@ func funAppend(_ context.Context, _ *World, list []Node) (Node, error) {
 	var err error
 	var buffer _ListBuilder
 
-	for _, list1 := range list {
+	if len(list) <= 0 {
+		return Null, nil
+	}
+	if len(list) == 1 {
+		return list[0], nil
+	}
+	for _, list1 := range list[:len(list)-1] {
 		for HasValue(list1) {
 			value, list1, err = shift(list1)
 			if err != nil {
@@ -145,7 +151,13 @@ func funAppend(_ context.Context, _ *World, list []Node) (Node, error) {
 			buffer.Add(value)
 		}
 	}
-	return buffer.Sequence(), nil
+	head := buffer.Sequence()
+	tail, err := lastOfList(head)
+	if err != nil {
+		return nil, err
+	}
+	tail.Cdr = list[len(list)-1]
+	return head, nil
 }
 
 // funCons implements (cons CAR CDR)

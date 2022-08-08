@@ -63,10 +63,24 @@ func TestAppend(t *testing.T) {
 	assertEqual(t, `(append '() '(1 2) '(3 4))`,
 		List(Integer(1), Integer(2), Integer(3), Integer(4)))
 
-	// append do not destruct original list.
+	// append do not destruct original not last list.
 	assertEqual(t, `(let ((x '(1 2 3)))
 		(append x '(4 5 6))
 		x)`, List(Integer(1), Integer(2), Integer(3)))
+
+	// apend destruct the last list only
+	assertEqual(t, `
+			(let* ((part1 (list 1 2 3))
+				(part2 (list 4 5 6))
+				(part3 (list 7 8 9))
+				(all (append part1 part2 part3)))
+					(setf (nth 1 all) "aaa")
+					(setf (nth 4 all) "bbb")
+					(setf (nth 7 all) "ccc")
+					(and
+						(equal part1 '(1 2 3))
+						(equal part2 '(4 5 6))
+						(equal part3 '(7 "ccc" 9))))`, True)
 }
 
 func TestLast(t *testing.T) {
