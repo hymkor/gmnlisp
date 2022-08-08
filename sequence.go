@@ -289,6 +289,32 @@ func getTestParameter(kwargs map[Keyword]Node) (func(context.Context, *World, No
 	}
 }
 
+func funFind(c context.Context, w *World, argv []Node, kwargs map[Keyword]Node) (Node, error) {
+	expr := argv[0]
+	list := argv[1]
+	test, err := getTestParameter(kwargs)
+	if err != nil {
+		return nil, err
+	}
+	var found Node
+
+	err = seqEach(list, func(value Node) error {
+		eq, err := test(c, w, expr, value)
+		if err != nil {
+			return err
+		}
+		if eq {
+			found = value
+			return io.EOF
+		}
+		return nil
+	})
+	if err == io.EOF {
+		return found, nil
+	}
+	return Null, nil
+}
+
 func funMember(c context.Context, w *World, argv []Node, kwargs map[Keyword]Node) (Node, error) {
 	expr := argv[0]
 	list := argv[1]

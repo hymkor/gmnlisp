@@ -47,6 +47,13 @@ func TestReverse(t *testing.T) {
 	assertEqual(t, `(reverse "12345")`, String("54321"))
 }
 
+func TestFind(t *testing.T) {
+	assertEqual(t, `(find 2 '(1 2 3))`, Integer(2))
+	assertEqual(t, `(find 2.0 '(1 2 3))`, Null)
+	assertEqual(t, `(find 2.0 '(1 2 3) :test #'(lambda (a b) (equalp a b)))`, Integer(2))
+	assertEqual(t, `(find 2.0 '(1 2 3) :test #'(lambda (a b) (equal a b)))`, Null)
+}
+
 func TestMember(t *testing.T) {
 	assertEqual(t, `(member 'c '(a b c d e))`,
 		List(Symbol("c"), Symbol("d"), Symbol("e")))

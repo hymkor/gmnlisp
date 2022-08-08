@@ -136,6 +136,7 @@ func New() *World {
 			"equalp":              SpecialF(cmdEqualOp),
 			"evenp":               &Function{C: 1, F: funEvenp},
 			"exit":                SpecialF(cmdQuit),
+			"find":                &KWFunction{C: 2, F: funFind},
 			"first":               &LeftValueF{C: 1, F: funGetCar},
 			"floatp":              &Function{C: 1, F: funAnyTypep[Float]},
 			"foreach":             SpecialF(cmdForeach),
