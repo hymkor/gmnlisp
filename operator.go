@@ -30,13 +30,14 @@ func cmdAdd(ctx context.Context, w *World, param Node) (Node, error) {
 	})
 }
 
+type canMinus interface {
+	Node
+	Sub(Node) (Node, error)
+}
+
 func cmdSub(ctx context.Context, w *World, param Node) (Node, error) {
-	type CanMinus interface {
-		Node
-		Sub(Node) (Node, error)
-	}
 	return w.inject(ctx, param, func(left, right Node) (Node, error) {
-		if _left, ok := left.(CanMinus); ok {
+		if _left, ok := left.(canMinus); ok {
 			return _left.Sub(right)
 		}
 		return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(left, PRINT))
@@ -222,7 +223,7 @@ func funOneMinus(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return nil, ErrExpectedNumber
 }
 
-func cmdIncf(ctx context.Context, w *World, list Node) (Node, error) {
+func incfDecf(ctx context.Context, w *World, list Node, f func(Symbol, Node, Node) (Node, error)) (Node, error) {
 	var name Node
 	var err error
 
@@ -245,13 +246,33 @@ func cmdIncf(ctx context.Context, w *World, list Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	_left, ok := left.(canPlus)
-	if !ok {
-		return nil, ErrNotSupportType
-	}
-	result, err := _left.Add(right)
-	if err != nil {
-		return nil, err
-	}
-	return result, w.Set(symbol, result)
+	return f(symbol, left, right)
+}
+
+func cmdIncf(ctx context.Context, w *World, list Node) (Node, error) {
+	return incfDecf(ctx, w, list, func(symbol Symbol, left, right Node) (Node, error) {
+		_left, ok := left.(canPlus)
+		if !ok {
+			return nil, ErrNotSupportType
+		}
+		result, err := _left.Add(right)
+		if err != nil {
+			return nil, err
+		}
+		return result, w.Set(symbol, result)
+	})
+}
+
+func cmdDecf(ctx context.Context, w *World, list Node) (Node, error) {
+	return incfDecf(ctx, w, list, func(symbol Symbol, left, right Node) (Node, error) {
+		_left, ok := left.(canMinus)
+		if !ok {
+			return nil, ErrNotSupportType
+		}
+		result, err := _left.Sub(right)
+		if err != nil {
+			return nil, err
+		}
+		return result, w.Set(symbol, result)
+	})
 }

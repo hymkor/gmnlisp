@@ -126,6 +126,7 @@ func New() *World {
 			"cond":                SpecialF(cmdCond),
 			"cons":                &Function{C: 2, F: funCons},
 			"consp":               &Function{C: 1, F: funAnyTypep[*Cons]},
+			"decf":                SpecialF(cmdDecf),
 			"defmacro":            SpecialF(cmdDefMacro),
 			"defparameter":        SpecialF(cmdDefparameter),
 			"defun":               SpecialF(cmdDefun),
