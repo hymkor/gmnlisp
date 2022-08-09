@@ -123,6 +123,28 @@ func cmdIf(ctx context.Context, w *World, params Node) (Node, error) {
 	}
 }
 
+func cmdWhen(ctx context.Context, w *World, args Node) (Node, error) {
+	cond, args, err := w.shiftAndEvalCar(ctx, args)
+	if err != nil {
+		return nil, err
+	}
+	if IsNull(cond) {
+		return Null, nil
+	}
+	return progn(ctx, w, args)
+}
+
+func cmdUnless(ctx context.Context, w *World, args Node) (Node, error) {
+	cond, args, err := w.shiftAndEvalCar(ctx, args)
+	if err != nil {
+		return nil, err
+	}
+	if HasValue(cond) {
+		return Null, nil
+	}
+	return progn(ctx, w, args)
+}
+
 func cmdForeach(ctx context.Context, w *World, args Node) (Node, error) {
 	// from autolisp
 	var _symbol Node

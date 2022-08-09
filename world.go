@@ -206,6 +206,8 @@ func New() *World {
 			"trace":                SpecialF(cmdTrace),
 			"truncate":             &Function{C: 1, F: funTruncate},
 			"typep":                &Function{C: 2, F: funTypep},
+			"unless":               SpecialF(cmdUnless),
+			"when":                 SpecialF(cmdWhen),
 			"while":                SpecialF(cmdWhile),
 			"write":                SpecialF(cmdWrite),
 			"write-line":           SpecialF(cmdWriteLine),
