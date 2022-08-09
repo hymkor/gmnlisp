@@ -95,6 +95,51 @@ func cmdCond(ctx context.Context, w *World, list Node) (Node, error) {
 	return Null, nil
 }
 
+func cmdCase(ctx context.Context, w *World, list Node) (Node, error) {
+	var swValue Node
+	var err error
+
+	swValue, list, err = w.shiftAndEvalCar(ctx, list)
+	if err != nil {
+		return nil, err
+	}
+	for HasValue(list) {
+		var caseAndAct Node
+		var err error
+
+		caseAndAct, list, err = shift(list)
+		if err != nil {
+			return nil, err
+		}
+		caseValue, act, err := shift(caseAndAct)
+		if err != nil {
+			return nil, err
+		}
+		if cons, ok := caseValue.(*Cons); ok {
+			var list Node = cons
+			for HasValue(list) {
+				var _caseValue Node
+				_caseValue, list, err = w.shiftAndEvalCar(ctx, list)
+				if err != nil {
+					return nil, err
+				}
+				if swValue.Equals(_caseValue, EQUALP) {
+					return progn(ctx, w, act)
+				}
+			}
+		} else {
+			_caseValue, err := caseValue.Eval(ctx, w)
+			if err != nil {
+				return nil, err
+			}
+			if swValue.Equals(_caseValue, EQUALP) {
+				return progn(ctx, w, act)
+			}
+		}
+	}
+	return Null, nil
+}
+
 func cmdIf(ctx context.Context, w *World, params Node) (Node, error) {
 	cond, params, err := w.shiftAndEvalCar(ctx, params)
 	if err != nil {

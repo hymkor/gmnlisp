@@ -117,6 +117,7 @@ func New() *World {
 			"caddr":                &LeftValueF{C: 1, F: funCaddr},
 			"cadr":                 &LeftValueF{C: 1, F: funCadr},
 			"car":                  &LeftValueF{C: 1, F: funGetCar},
+			"case":                 SpecialF(cmdCase),
 			"cdddr":                &LeftValueF{C: 1, F: funCdddr},
 			"cddr":                 &LeftValueF{C: 1, F: funCddr},
 			"cdr":                  &LeftValueF{C: 1, F: funGetCdr},

@@ -60,3 +60,19 @@ func TestUnless(t *testing.T) {
 	assertEqual(t, `(let ((a 0)) (unless (> 5 3) (setq a 1)) a)`, Integer(0))
 	assertEqual(t, `(let ((a 0)) (unless (< 5 3) (setq a 1)) a)`, Integer(1))
 }
+
+func TestCase(t *testing.T) {
+	assertEqual(t, `
+		(case 2
+			(1 "a")
+			(2 "b")
+			(3 "c")
+		)`, String("b"))
+
+	assertEqual(t, `
+		(case 4
+			((1 2) "A")
+			((3 4) "B")
+			((5 6) "C")
+		)`, String("B"))
+}
