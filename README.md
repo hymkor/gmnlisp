@@ -168,6 +168,8 @@ Support functions
 --> `trace`, <!--
 --> `truncate`, <!--
 --> `typep`, <!--
+--> `unless`, <!--
+--> `when`, <!--
 --> `while`, <!--
 --> `write`, <!--
 --> `write-line`, <!--
