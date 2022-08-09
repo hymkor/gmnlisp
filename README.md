@@ -88,6 +88,7 @@ Support functions
 --> `cond`, <!--
 --> `cons`, <!--
 --> `consp`, <!--
+--> `decf`, <!--
 --> `defmacro`, <!--
 --> `defparameter`, <!--
 --> `defun`, <!--
@@ -99,11 +100,14 @@ Support functions
 --> `equalp`, <!--
 --> `evenp`, <!--
 --> `exit`, <!--
+--> `find`, <!--
+--> `first`, <!--
 --> `floatp`, <!--
 --> `foreach`, <!--
 --> `funcall`, <!--
 --> `function`, <!--
 --> `if`, <!--
+--> `incf`, <!--
 --> `integerp`, <!--
 --> `lambda`, <!--
 --> `last`, <!--
@@ -118,6 +122,8 @@ Support functions
 --> `mapcar`, <!--
 --> `member`, <!--
 --> `minusp`, <!--
+--> `most-negative-fixnum`, <!--
+--> `most-positive-fixnum`, <!--
 --> `nil`, <!--
 --> `not`, <!--
 --> `nth`, <!--
@@ -128,6 +134,7 @@ Support functions
 --> `open`, <!--
 --> `or`, <!--
 --> `parse-integer`, <!--
+--> `pi`, <!--
 --> `plusp`, <!--
 --> `position`, <!--
 --> `prin1`, <!--
@@ -140,9 +147,11 @@ Support functions
 --> `read-line`, <!--
 --> `replaca`, <!--
 --> `replacd`, <!--
+--> `rest`, <!--
 --> `return`, <!--
 --> `return-from`, <!--
 --> `reverse`, <!--
+--> `second`, <!--
 --> `setf`, <!--
 --> `setq`, <!--
 --> `split-string`, <!--
@@ -155,6 +164,7 @@ Support functions
 --> `substr`, <!--
 --> `symbolp`, <!--
 --> `terpri`, <!--
+--> `third`, <!--
 --> `trace`, <!--
 --> `truncate`, <!--
 --> `typep`, <!--
