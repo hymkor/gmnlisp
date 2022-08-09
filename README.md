@@ -78,6 +78,7 @@ Support functions
 --> `caddr`, <!--
 --> `cadr`, <!--
 --> `car`, <!--
+--> `case`, <!--
 --> `cdddr`, <!--
 --> `cddr`, <!--
 --> `cdr`, <!--
