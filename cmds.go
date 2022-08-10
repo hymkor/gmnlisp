@@ -52,7 +52,7 @@ func cmdEqual(ctx context.Context, w *World, param Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		if !first.Equals(next, EQUAL) {
+		if !first.Equals(next, STRICT) {
 			return Null, nil
 		}
 	}

@@ -284,7 +284,7 @@ func getTestParameter(kwargs map[Keyword]Node) (func(context.Context, *World, No
 		}, nil
 	} else {
 		return func(_ context.Context, _ *World, left, right Node) (bool, error) {
-			return left.Equals(right, EQUAL), nil
+			return left.Equals(right, STRICT), nil
 		}, nil
 	}
 }

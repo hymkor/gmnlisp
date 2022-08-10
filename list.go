@@ -193,7 +193,7 @@ func funAssoc(_ context.Context, _ *World, argv []Node) (Node, error) {
 		if !ok {
 			return nil, ErrExpectedCons
 		}
-		if key.Equals(cons.Car, EQUAL) {
+		if key.Equals(cons.Car, STRICT) {
 			return cons, nil
 		}
 	}
@@ -201,7 +201,7 @@ func funAssoc(_ context.Context, _ *World, argv []Node) (Node, error) {
 }
 
 func subst(newItem, oldItem, list Node) Node {
-	if list.Equals(oldItem, EQUAL) {
+	if list.Equals(oldItem, STRICT) {
 		return newItem
 	}
 	cons, ok := list.(*Cons)

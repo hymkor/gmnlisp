@@ -196,7 +196,7 @@ func (r Rune) Equals(n Node, m EqlMode) bool {
 		}
 		return false
 	}
-	if m == EQUAL {
+	if m == STRICT {
 		return false
 	}
 	if value, ok := n.(String); ok {

@@ -30,7 +30,7 @@ var (
 type EqlMode int
 
 const (
-	EQUAL EqlMode = iota
+	STRICT EqlMode = iota
 	EQUALP
 )
 
