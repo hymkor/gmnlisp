@@ -15,7 +15,7 @@ all:
 	go build -o gmnlisp$(EXE) cmd/gmnlisp/main.go
 
 test:
-	go test -v
+	go test
 
 readme.md: _readme.md gmnlpp$(EXE)
 	.$(D)gmnlpp$(EXE) _README.md > README.md
