@@ -11,6 +11,13 @@ func TestCmdGo(t *testing.T) {
 	assertEqual(t, `(equal (list 1 (+ 1 1) (+ 1 2)) '(1 2 3))`, True)
 }
 
+func TestEq(t *testing.T) {
+	assertEqual(t, `(eq 1 1)`, True)
+	assertEqual(t, `(eq 1 2)`, Null)
+	assertEqual(t, `(eq (cons 1 2) (cons 1 2))`, Null)
+	assertEqual(t, `(let ((a (cons 1 2))) (eq a a))`, True)
+}
+
 func TestNotEqual(t *testing.T) {
 	assertEqual(t, `(not (/= 1 1))`, True)
 	assertEqual(t, `(not (= 1 1))`, Null)

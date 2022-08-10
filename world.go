@@ -135,6 +135,7 @@ func New() *World {
 			"defvar":               SpecialF(cmdDefvar),
 			"dolist":               SpecialF(cmdDoList),
 			"dotimes":              SpecialF(cmdDoTimes),
+			"eq":                   SpecialF(cmdEq),
 			"equal":                SpecialF(cmdEqual),
 			"equalp":               SpecialF(cmdEqualOp),
 			"evenp":                &Function{C: 1, F: funEvenp},
