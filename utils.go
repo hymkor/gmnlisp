@@ -31,6 +31,7 @@ type EqlMode int
 
 const (
 	STRICT EqlMode = iota
+	EQUAL
 	EQUALP
 )
 

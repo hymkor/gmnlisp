@@ -16,6 +16,18 @@ func TestEq(t *testing.T) {
 	assertEqual(t, `(eq 1 2)`, Null)
 	assertEqual(t, `(eq (cons 1 2) (cons 1 2))`, Null)
 	assertEqual(t, `(let ((a (cons 1 2))) (eq a a))`, True)
+
+	assertEqual(t, `(eql 1 1)`, True)
+	assertEqual(t, `(eql 1 2)`, Null)
+	assertEqual(t, `(eql (cons 1 2) (cons 1 2))`, True)
+	assertEqual(t, `(let ((a (cons 1 2))) (eql a a))`, True)
+
+	assertEqual(t, `(eql 1 1)`, True)
+	assertEqual(t, `(eql 1 1.0)`, Null)
+	assertEqual(t, `(equal 1 1.0)`, True)
+	assertEqual(t, `(equal "A" "A")`, True)
+	assertEqual(t, `(equal "a" "A")`, Null)
+	assertEqual(t, `(equalp "a" "A")`, True)
 }
 
 func TestNotEqual(t *testing.T) {

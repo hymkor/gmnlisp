@@ -17,7 +17,7 @@ func (i Integer) Eval(context.Context, *World) (Node, error) {
 }
 
 func (i Integer) Equals(n Node, m EqlMode) bool {
-	if m == EQUALP {
+	if m == EQUAL || m == EQUALP {
 		if _n, ok := n.(Integer); ok && i == _n {
 			return true
 		}
@@ -96,7 +96,7 @@ func (f Float) Eval(context.Context, *World) (Node, error) {
 }
 
 func (f Float) Equals(n Node, m EqlMode) bool {
-	if m == EQUALP {
+	if m == EQUAL || m == EQUALP {
 		if _n, ok := n.(Float); ok && f == _n {
 			return true
 		}

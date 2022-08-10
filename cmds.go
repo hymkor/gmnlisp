@@ -21,7 +21,7 @@ func funAtom(_ context.Context, _ *World, argv []Node) (Node, error) {
 	return True, nil
 }
 
-func cmdEq(ctx context.Context, w *World, list Node) (Node, error) {
+func equalSub(ctx context.Context, w *World, list Node, eq func(Node, Node) bool) (Node, error) {
 	first, rest, err := w.shiftAndEvalCar(ctx, list)
 	if err != nil {
 		return nil, err
@@ -33,30 +33,30 @@ func cmdEq(ctx context.Context, w *World, list Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		if first != next {
+		if !eq(first, next) {
 			return Null, nil
 		}
 	}
 	return True, nil
+
 }
 
-func cmdEqual(ctx context.Context, w *World, param Node) (Node, error) {
-	first, rest, err := w.shiftAndEvalCar(ctx, param)
-	if err != nil {
-		return nil, err
-	}
-	for HasValue(rest) {
-		var next Node
+func cmdEq(ctx context.Context, w *World, list Node) (Node, error) {
+	return equalSub(ctx, w, list, func(left, right Node) bool {
+		return left == right
+	})
+}
 
-		next, rest, err = w.shiftAndEvalCar(ctx, rest)
-		if err != nil {
-			return nil, err
-		}
-		if !first.Equals(next, STRICT) {
-			return Null, nil
-		}
-	}
-	return True, nil
+func cmdEql(ctx context.Context, w *World, list Node) (Node, error) {
+	return equalSub(ctx, w, list, func(left, right Node) bool {
+		return left.Equals(right, STRICT)
+	})
+}
+
+func cmdEqual(ctx context.Context, w *World, list Node) (Node, error) {
+	return equalSub(ctx, w, list, func(left, right Node) bool {
+		return left.Equals(right, EQUAL)
+	})
 }
 
 func cmdGetAllSymbols(_ context.Context, w *World, n Node) (Node, error) {
