@@ -56,6 +56,16 @@ func readNode(tokenGetter func() (string, error)) (Node, error) {
 		}
 		return &Cons{Car: Symbol("quote"), Cdr: &Cons{Car: quoted, Cdr: Null}}, nil
 	}
+	if token == "#'" {
+		function, err := readNode(tokenGetter)
+		if err != nil {
+			if err == io.EOF {
+				return nil, ErrTooShortTokens
+			}
+			return nil, err
+		}
+		return &Cons{Car: Symbol("function"), Cdr: &Cons{Car: function, Cdr: Null}}, nil
+	}
 	if token == "(" {
 		nodes := []Node{}
 		for {
