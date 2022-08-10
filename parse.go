@@ -147,10 +147,6 @@ func Read(r io.RuneReader) ([]Node, error) {
 			}
 			return nil, err
 		}
-		token, err = macroQuote(token)
-		if err != nil {
-			return nil, err
-		}
 		result = append(result, token)
 	}
 	return result, nil
