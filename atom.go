@@ -11,7 +11,7 @@ import (
 type _TrueType struct{}
 
 func (_TrueType) PrintTo(w io.Writer, m PrintMode) {
-	io.WriteString(w, "T")
+	io.WriteString(w, "t")
 }
 
 func (t _TrueType) Eval(context.Context, *World) (Node, error) {

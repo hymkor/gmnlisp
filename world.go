@@ -202,6 +202,7 @@ func New() *World {
 			"subst":                &Function{C: 3, F: funSubst},
 			"substr":               SpecialF(cmdSubStr),
 			"symbolp":              &Function{C: 1, F: funAnyTypep[Symbol]},
+			"t":                    True,
 			"terpri":               SpecialF(cmdTerpri),
 			"third":                &LeftValueF{C: 1, F: funCaddr},
 			"trace":                SpecialF(cmdTrace),
