@@ -97,6 +97,8 @@ Support functions
 --> `detab`, <!--
 --> `dolist`, <!--
 --> `dotimes`, <!--
+--> `eq`, <!--
+--> `eql`, <!--
 --> `equal`, <!--
 --> `equalp`, <!--
 --> `evenp`, <!--
@@ -164,6 +166,7 @@ Support functions
 --> `subst`, <!--
 --> `substr`, <!--
 --> `symbolp`, <!--
+--> `t`, <!--
 --> `terpri`, <!--
 --> `third`, <!--
 --> `trace`, <!--
