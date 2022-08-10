@@ -39,16 +39,16 @@ func macroQuote(node Node) (Node, error) {
 	}
 	// normal pair
 
-	if car := cons.GetCar(); car.Equals(Symbol("'"), EQUAL) {
-		return _macroQuote("quote", cons.Cdr)
-	} else if car.Equals(Symbol("#'"), EQUAL) {
-		return _macroQuote("function", cons.Cdr)
-	}
-	car, err := macroQuote(cons.Car)
+	cdr, err := macroQuote(cons.Cdr)
 	if err != nil {
 		return nil, err
 	}
-	cdr, err := macroQuote(cons.Cdr)
+	if car := cons.GetCar(); car.Equals(Symbol("'"), EQUAL) {
+		return _macroQuote("quote", cdr)
+	} else if car.Equals(Symbol("#'"), EQUAL) {
+		return _macroQuote("function", cdr)
+	}
+	car, err := macroQuote(cons.Car)
 	if err != nil {
 		return nil, err
 	}
