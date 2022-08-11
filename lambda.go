@@ -354,10 +354,7 @@ func (f *KWFunction) Equals(n Node, m EqlMode) bool {
 	return false
 }
 
-func (f *KWFunction) Call(ctx context.Context, w *World, list Node) (Node, error) {
-	if err := checkContext(ctx); err != nil {
-		return nil, err
-	}
+func listToKwargs(ctx context.Context, w *World, list Node) ([]Node, map[Keyword]Node, error) {
 	args := []Node{}
 	kwargs := map[Keyword]Node{}
 	for HasValue(list) {
@@ -366,17 +363,28 @@ func (f *KWFunction) Call(ctx context.Context, w *World, list Node) (Node, error
 
 		tmp, list, err = w.shiftAndEvalCar(ctx, list)
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 		if keyword, ok := tmp.(Keyword); ok {
 			tmp, list, err = w.shiftAndEvalCar(ctx, list)
 			if err != nil {
-				return nil, err
+				return nil, nil, err
 			}
 			kwargs[keyword] = tmp
 		} else {
 			args = append(args, tmp)
 		}
+	}
+	return args, kwargs, nil
+}
+
+func (f *KWFunction) Call(ctx context.Context, w *World, list Node) (Node, error) {
+	if err := checkContext(ctx); err != nil {
+		return nil, err
+	}
+	args, kwargs, err := listToKwargs(ctx, w, list)
+	if err != nil {
+		return nil, err
 	}
 	if f.C >= 0 {
 		if len(args) < f.C {
