@@ -85,3 +85,21 @@ func TestLoop(t *testing.T) {
 				(if (> i 5)
 					(return (* i 10)))))`, Integer(60))
 }
+
+func TestHandlerCase(t *testing.T) {
+	assertEqual(t, `
+		(handler-case (with-open-file "not-exists")
+			(error ()
+				"ERROR FOUND")
+			(:no-error
+				"SUCCESS")
+		)`, String("ERROR FOUND"))
+
+	assertEqual(t, `
+		(handler-case (+ 1 2)
+			(error ()
+				"ERROR FOUND")
+			(:no-error (c)
+				c)
+		)`, Integer(3))
+}

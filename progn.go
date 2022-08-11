@@ -360,3 +360,65 @@ func cmdDoList(ctx context.Context, w *World, list Node) (Node, error) {
 	}
 	return last, nil
 }
+
+func handlerCaseSub(ctx context.Context, w *World, caseBlock Node, c Node) (Node, error) {
+	paramList, caseBlock, err := shift(caseBlock)
+	if err != nil {
+		return nil, err
+	}
+	if IsNull(paramList) { // (error () ... )
+		return progn(ctx, w, caseBlock)
+	}
+	// (error (c) ... )
+	conditionVarName, paramList, err := shift(paramList)
+	if err != nil {
+		return nil, err
+	}
+	if HasValue(paramList) {
+		return nil, ErrTooManyArguments
+	}
+	symbol, ok := conditionVarName.(Symbol)
+	if !ok {
+		return nil, ErrExpectedSymbol
+	}
+	newWorld := &World{
+		globals: map[Symbol]Node{symbol: c},
+		parent:  w,
+	}
+	return progn(ctx, newWorld, caseBlock)
+}
+
+func cmdHandlerCase(ctx context.Context, w *World, list Node) (Node, error) {
+	tryCommand, list, err := shift(list)
+	if err != nil {
+		return nil, err
+	}
+	value, errCase := tryCommand.Eval(ctx, w)
+	for HasValue(list) {
+		var caseBlock Node
+		var err error
+
+		caseBlock, list, err = shift(list)
+		if err != nil {
+			return nil, err
+		}
+		caseTop, caseBlock, err := shift(caseBlock)
+		if err != nil {
+			return nil, err
+		}
+		if errCase != nil && caseTop == Symbol("error") {
+			value, err := handlerCaseSub(ctx, w, caseBlock, String(errCase.Error()))
+			if err != nil {
+				return nil, fmt.Errorf("error: %w", err)
+			}
+			return value, nil
+		} else if errCase == nil && caseTop == Keyword(":no-error") {
+			value, err := handlerCaseSub(ctx, w, caseBlock, value)
+			if err != nil {
+				return nil, fmt.Errorf(":no-error: %w", err)
+			}
+			return value, nil
+		}
+	}
+	return Null, nil
+}
