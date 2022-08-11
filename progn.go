@@ -75,6 +75,22 @@ func cmdBlock(ctx context.Context, w *World, node Node) (Node, error) {
 	return rv, err
 }
 
+func cmdLoop(ctx context.Context, w *World, list Node) (Node, error) {
+	for {
+		if err := checkContext(ctx); err != nil {
+			return nil, err
+		}
+		var errEarlyReturns *ErrEarlyReturns
+		_, err := progn(ctx, w, list)
+		if errors.As(err, &errEarlyReturns) && errEarlyReturns.Name == "" {
+			return errEarlyReturns.Value, nil
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+}
+
 func cmdCond(ctx context.Context, w *World, list Node) (Node, error) {
 	for HasValue(list) {
 		var condAndAct Node
