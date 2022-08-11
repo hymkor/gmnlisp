@@ -149,3 +149,58 @@ func funCommand(ctx context.Context, w *World, list []Node) (Node, error) {
 	cmd.Stdin = os.Stdin
 	return Null, cmd.Run()
 }
+
+func cmdWithOpenFile(ctx context.Context, w *World, list Node) (Node, error) {
+	var param Node
+	var err error
+
+	param, list, err = shift(list)
+	if err != nil {
+		return nil, err
+	}
+
+	var symbolNode Node
+	symbolNode, param, err = shift(param)
+	if err != nil {
+		return nil, err
+	}
+	symbol, ok := symbolNode.(Symbol)
+	if !ok {
+		return nil, ErrExpectedSymbol
+	}
+	//var kwargs map[Keyword]Node
+	var args []Node
+	args, _, err = listToKwargs(ctx, w, param)
+	if err != nil {
+		return nil, err
+	}
+	if len(args) < 1 {
+		return nil, ErrTooFewArguments
+	}
+	if len(args) > 1 {
+		return nil, ErrTooManyArguments
+	}
+
+	fname, ok := args[0].(String)
+	if !ok {
+		return nil, ErrExpectedString
+	}
+	fd, err := os.Open(string(fname))
+	if err != nil {
+		return nil, err
+	}
+	defer fd.Close()
+
+	type Reader struct {
+		_Dummy
+		*bufio.Reader
+	}
+
+	newWorld := &World{
+		globals: map[Symbol]Node{
+			symbol: &Reader{Reader: bufio.NewReader(fd)},
+		},
+		parent: w,
+	}
+	return progn(ctx, newWorld, list)
+}
