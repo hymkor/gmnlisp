@@ -50,7 +50,7 @@ The text before proprocessed is [here](https://github.com/hymkor/gmnlisp/blob/ma
 Support Types
 -------------
 
-integer , float , string , symbol , cons , list , character , T/nil
+integer , float , string , symbol , cons , list , character , t/nil
 
 Support functions
 -----------------
