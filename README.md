@@ -175,6 +175,7 @@ Support functions
 --> `unless`, <!--
 --> `when`, <!--
 --> `while`, <!--
+--> `with-open-file`, <!--
 --> `write`, <!--
 --> `write-line`, <!--
 --> `zerop`
