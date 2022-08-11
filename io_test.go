@@ -41,5 +41,13 @@ func TestWithOpenFile(t *testing.T) {
 			)
 			output)`, String("hogehoge"))
 
+	assertEqual(t,`
+		(with-open-file (r "hogehogehoge" :if-does-not-exist "ERROR")
+			(if (eql r "ERROR")
+				"FAILURE"
+				"SUCCESS"
+			)
+		)`,String("FAILURE"))
+
 	os.Remove("datafile")
 }

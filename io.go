@@ -191,14 +191,18 @@ func cmdWithOpenFile(ctx context.Context, w *World, list Node) (Node, error) {
 	if !ok || direction == Keyword(":input") {
 		fd, err := os.Open(string(fname))
 		if err != nil {
-			return nil, err
+			fdNode, ok = kwargs[":if-does-not-exist"]
+			if !ok {
+				return nil, err
+			}
+		} else {
+			type Reader struct {
+				_Dummy
+				*bufio.Reader
+			}
+			fdNode = &Reader{Reader: bufio.NewReader(fd)}
+			defer fd.Close()
 		}
-		type Reader struct {
-			_Dummy
-			*bufio.Reader
-		}
-		fdNode = &Reader{Reader: bufio.NewReader(fd)}
-		defer fd.Close()
 	} else if direction == Keyword(":output") {
 		fd, err := os.Create(string(fname))
 		if err != nil {
