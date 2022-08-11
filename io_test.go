@@ -29,3 +29,17 @@ func TestIo(t *testing.T) {
 	// not exist file test
 	assertEqual(t, `(open "temp.txt" "r")`, Null)
 }
+
+func TestWithOpenFile(t *testing.T) {
+	assertEqual(t, `
+		(let (output)
+			(with-open-file (w "datafile" :direction :output)
+				(write-line "hogehoge" w)
+			)
+			(with-open-file (r "datafile")
+				(setq output (read-line r))
+			)
+			output)`, String("hogehoge"))
+
+	os.Remove("datafile")
+}

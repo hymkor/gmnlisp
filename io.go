@@ -170,7 +170,8 @@ func cmdWithOpenFile(ctx context.Context, w *World, list Node) (Node, error) {
 	}
 	//var kwargs map[Keyword]Node
 	var args []Node
-	args, _, err = listToKwargs(ctx, w, param)
+	var kwargs map[Keyword]Node
+	args, kwargs, err = listToKwargs(ctx, w, param)
 	if err != nil {
 		return nil, err
 	}
@@ -185,22 +186,36 @@ func cmdWithOpenFile(ctx context.Context, w *World, list Node) (Node, error) {
 	if !ok {
 		return nil, ErrExpectedString
 	}
-	fd, err := os.Open(string(fname))
-	if err != nil {
-		return nil, err
+	var fdNode Node
+	direction, ok := kwargs[":direction"]
+	if !ok || direction == Keyword(":input") {
+		fd, err := os.Open(string(fname))
+		if err != nil {
+			return nil, err
+		}
+		type Reader struct {
+			_Dummy
+			*bufio.Reader
+		}
+		fdNode = &Reader{Reader: bufio.NewReader(fd)}
+		defer fd.Close()
+	} else if direction == Keyword(":output") {
+		fd, err := os.Create(string(fname))
+		if err != nil {
+			return nil, err
+		}
+		type Writer struct {
+			_Dummy
+			io.Writer
+		}
+		fdNode = &Writer{Writer: fd}
+		defer fd.Close()
+	} else {
+		return nil, fmt.Errorf("invalid :direction %s", toString(direction, PRINT))
 	}
-	defer fd.Close()
-
-	type Reader struct {
-		_Dummy
-		*bufio.Reader
-	}
-
 	newWorld := &World{
-		globals: map[Symbol]Node{
-			symbol: &Reader{Reader: bufio.NewReader(fd)},
-		},
-		parent: w,
+		globals: map[Symbol]Node{symbol: fdNode},
+		parent:  w,
 	}
 	return progn(ctx, newWorld, list)
 }
