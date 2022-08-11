@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 )
 
 type ErrEarlyReturns struct {
@@ -388,6 +389,26 @@ func handlerCaseSub(ctx context.Context, w *World, caseBlock Node, c Node) (Node
 	return progn(ctx, newWorld, caseBlock)
 }
 
+type ErrorNode struct {
+	Value error
+}
+
+func (e *ErrorNode) PrintTo(w io.Writer, m PrintMode) {
+	io.WriteString(w, e.Value.Error())
+}
+
+func (e *ErrorNode) Eval(context.Context, *World) (Node, error) {
+	return e, nil
+}
+
+func (e *ErrorNode) Equals(n Node, m EqlMode) bool {
+	f, ok := n.(*ErrorNode)
+	if !ok {
+		return false
+	}
+	return errors.Is(e.Value, f.Value) || errors.Is(f.Value, e.Value)
+}
+
 func cmdHandlerCase(ctx context.Context, w *World, list Node) (Node, error) {
 	tryCommand, list, err := shift(list)
 	if err != nil {
@@ -407,7 +428,7 @@ func cmdHandlerCase(ctx context.Context, w *World, list Node) (Node, error) {
 			return nil, err
 		}
 		if errCase != nil && caseTop == Symbol("error") {
-			value, err := handlerCaseSub(ctx, w, caseBlock, String(errCase.Error()))
+			value, err := handlerCaseSub(ctx, w, caseBlock, &ErrorNode{Value: errCase})
 			if err != nil {
 				return nil, fmt.Errorf("error: %w", err)
 			}

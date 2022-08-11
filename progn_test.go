@@ -89,11 +89,11 @@ func TestLoop(t *testing.T) {
 func TestHandlerCase(t *testing.T) {
 	assertEqual(t, `
 		(handler-case (with-open-file "not-exists")
-			(error ()
-				"ERROR FOUND")
+			(error (c)
+				c)
 			(:no-error
 				"SUCCESS")
-		)`, String("ERROR FOUND"))
+			)`, &ErrorNode{Value: ErrTooFewArguments})
 
 	assertEqual(t, `
 		(handler-case (+ 1 2)
