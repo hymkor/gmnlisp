@@ -136,6 +136,20 @@ func (s String) LessThan(n Node) (bool, error) {
 	return false, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n, PRINT))
 }
 
+func (s String) Aref(n int) (Node, func(Node) error, error) {
+	if n < 0 || n >= len(s) {
+		return nil, nil, ErrIndexOutOfRange
+	}
+	return Rune(s[n]), func(value Node) error {
+		theRune, ok := value.(Rune)
+		if !ok {
+			return ErrNotSupportType
+		}
+		s[n] = theRune
+		return nil
+	}, nil
+}
+
 var emptyString String
 
 type Symbol string

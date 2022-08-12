@@ -25,6 +25,7 @@ var (
 	ErrExpectedSequence     = errors.New("Expected Sequence")
 	ErrNotSupportBySetf     = errors.New("Not supported by setf")
 	ErrExpectedSymbolOrList = errors.New("Expected symbol or list")
+	ErrIndexOutOfRange      = errors.New("Index out of range")
 )
 
 type EqlMode int

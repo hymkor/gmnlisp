@@ -137,6 +137,10 @@ func funTypep(_ context.Context, _ *World, args []Node) (Node, error) {
 }
 
 func funAref(_ context.Context, _ *World, args []Node) (Node, func(Node) error, error) {
+	type _Aref interface {
+		Aref(int) (Node, func(Node) error, error)
+	}
+
 	index, ok := args[1].(Integer)
 	if !ok {
 		return nil, nil, ErrExpectedNumber
@@ -144,6 +148,11 @@ func funAref(_ context.Context, _ *World, args []Node) (Node, func(Node) error, 
 	list := args[0]
 	var value Node = Null
 	var setter func(Node) error
+
+	if aref, ok := list.(_Aref); ok {
+		return aref.Aref(int(index))
+	}
+
 	for index >= 0 {
 		seq, ok := list.(_Sequence)
 		if !ok {
