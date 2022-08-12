@@ -276,3 +276,52 @@ func cmdDecf(ctx context.Context, w *World, list Node) (Node, error) {
 		return result, w.Set(symbol, result)
 	})
 }
+
+func funMod(ctx context.Context, w *World, list []Node) (Node, error) {
+	var left float64
+	var right float64
+	bits := 0
+
+	if _left, ok := list[0].(Float); ok {
+		left = float64(_left)
+	} else {
+		_left, ok := list[0].(Integer)
+		if !ok {
+			return nil, ErrNotSupportType
+		}
+		left = float64(int(_left))
+		bits = 1
+	}
+	if _right, ok := list[1].(Float); ok {
+		right = float64(_right)
+	} else {
+		_right, ok := list[1].(Integer)
+		if !ok {
+			return nil, ErrNotSupportType
+		}
+		right = float64(int(_right))
+		bits |= 2
+	}
+	value := math.Remainder(float64(left), float64(right))
+	if bits == 3 {
+		return Integer(int(value)), nil
+	}
+	return Float(value), nil
+}
+
+func funRem(ctx context.Context, w *World, list []Node) (Node, error) {
+	if left, ok := list[0].(Integer); ok {
+		if right, ok := list[1].(Integer); ok {
+			return Integer(left % right), nil
+		}
+	}
+	if left, ok := list[0].(Float); ok {
+		if right, ok := list[1].(Float); ok {
+			return Float(math.Mod(float64(left), float64(right))), nil
+		}
+		if right, ok := list[1].(Integer); ok {
+			return Float(math.Mod(float64(left), float64(int(right)))), nil
+		}
+	}
+	return nil, ErrNotSupportType
+}

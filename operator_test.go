@@ -71,3 +71,10 @@ func TestDecf(t *testing.T) {
 	assertEqual(t, `(let ((x 1)) (decf x 2) x)`, Integer(-1))
 	assertEqual(t, `(let ((x 1.0)) (decf x 2) x)`, Float(-1))
 }
+
+func TestMod(t *testing.T) {
+	assertEqual(t, `(mod -5 3)`, Integer(1))
+	assertEqual(t, `(mod 5 -3)`, Integer(-1))
+	assertEqual(t, `(rem -5 3)`, Integer(-2))
+	assertEqual(t, `(rem 5 -3)`, Integer(2))
+}
