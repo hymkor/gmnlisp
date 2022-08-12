@@ -115,16 +115,14 @@ func interactive(lisp *gmnlisp.World) error {
 }
 
 func mains(args []string) error {
-	var last = gmnlisp.Null
 	var err error
 
-	ctx := context.TODO()
-
+	ctx := context.Background()
 	lisp := gmnlisp.New()
 
 	if *flagExecute != "" {
 		setArgv(lisp, args)
-		last, err = lisp.Interpret(ctx, *flagExecute)
+		_, err = lisp.Interpret(ctx, *flagExecute)
 	} else if len(args) > 0 {
 		setArgv(lisp, args[1:])
 
@@ -133,17 +131,11 @@ func mains(args []string) error {
 		if err != nil {
 			return err
 		}
-		last, err = lisp.InterpretBytes(ctx, script)
+		_, err = lisp.InterpretBytes(ctx, script)
 	} else {
 		return interactive(lisp)
 	}
-	if err != nil {
-		return err
-	}
-	lisp.Interpret(ctx, "(terpri)")
-	last.PrintTo(os.Stdout, gmnlisp.PRINT)
-	lisp.Interpret(ctx, "(terpri)")
-	return nil
+	return err
 }
 
 func main() {
