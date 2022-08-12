@@ -47,12 +47,16 @@ The text before proprocessed is [here](https://github.com/hymkor/gmnlisp/blob/ma
 Support Types
 -------------
 
-integer , float , string , symbol , cons , list , character , T/nil
+integer , float , string , symbol , cons , list , character , t/nil
 
 Support functions
 -----------------
 
 `*`, <!--
+--> `*err-exist*`, <!--
+--> `*err-not-exist*`, <!--
+--> `*err-quit*`, <!--
+--> `*err-too-short-tokens`, <!--
 --> `*standard-output*`, <!--
 --> `+`, <!--
 --> `-`, <!--
@@ -109,6 +113,7 @@ Support functions
 --> `foreach`, <!--
 --> `funcall`, <!--
 --> `function`, <!--
+--> `handler-case`, <!--
 --> `if`, <!--
 --> `incf`, <!--
 --> `integerp`, <!--
@@ -126,6 +131,7 @@ Support functions
 --> `mapcar`, <!--
 --> `member`, <!--
 --> `minusp`, <!--
+--> `mod`, <!--
 --> `most-negative-fixnum`, <!--
 --> `most-positive-fixnum`, <!--
 --> `nil`, <!--
@@ -149,6 +155,7 @@ Support functions
 --> `quote`, <!--
 --> `read`, <!--
 --> `read-line`, <!--
+--> `rem`, <!--
 --> `replaca`, <!--
 --> `replacd`, <!--
 --> `rest`, <!--
