@@ -21,7 +21,7 @@ func assertEqual(t *testing.T, equation string, expect Node) {
 }
 
 func TestCmdCond(t *testing.T) {
-	assertEqual(t, `(cond (nil 1) (T 2))`, Integer(2))
+	assertEqual(t, `(cond (nil 1) (t 2))`, Integer(2))
 	assertEqual(t, `(cond ((equal 1 1) "a") ((equal 1 2) "b"))`, String("a"))
 }
 
@@ -90,7 +90,7 @@ func TestContextWhile(t *testing.T) {
 		context.Background(),
 		100*time.Millisecond)
 	w := New()
-	_, err := w.Interpret(ctx, `(while T (princ " \b"))`)
+	_, err := w.Interpret(ctx, `(while t (princ " \b"))`)
 	cancel()
 	if !errors.Is(err, context.DeadlineExceeded) {
 		if err == nil {

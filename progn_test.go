@@ -7,14 +7,14 @@ import (
 )
 
 func TestIf(t *testing.T) {
-	assertEqual(t, "(if T 1 2)", Integer(1))
+	assertEqual(t, "(if t 1 2)", Integer(1))
 	assertEqual(t, "(if nil 1 2)", Integer(2))
-	assertEqual(t, "(if T 3)", Integer(3))
+	assertEqual(t, "(if t 3)", Integer(3))
 	assertEqual(t, "(if nil 3)", Null)
 
 	w := New()
 	ctx := context.TODO()
-	_, err := w.Interpret(ctx, "(if T 1 2 3)")
+	_, err := w.Interpret(ctx, "(if t 1 2 3)")
 	if !errors.Is(err, ErrTooManyArguments) {
 		t.Fatal("ErrTooManyArguments have to be occured")
 	}

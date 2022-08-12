@@ -60,7 +60,7 @@ func TestLambdaGo(t *testing.T) {
 		(list (f 4) c)`,
 		List(Integer(5), String("a")))
 
-	assertEqual(t, `(let ((a 0)) (if T (setq a 1) (setq a 2)) a)`, Integer(1))
+	assertEqual(t, `(let ((a 0)) (if t (setq a 1) (setq a 2)) a)`, Integer(1))
 	assertEqual(t, `(let ((x "1")) (if nil (setq x "2") (setq x "3")) x)`, String("3"))
 
 	w := New()

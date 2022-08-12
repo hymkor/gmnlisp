@@ -109,7 +109,6 @@ func New() *World {
 			"=":                     SpecialF(cmdEqualOp),
 			">":                     SpecialF(cmdGreaterThan),
 			">=":                    SpecialF(cmdGreaterOrEqual),
-			"T":                     True,
 			"and":                   SpecialF(cmdAnd),
 			"append":                &Function{C: -1, F: funAppend},
 			"apply":                 SpecialF(cmdApply),
