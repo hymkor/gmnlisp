@@ -62,7 +62,7 @@ Support functions
         (dem)
         (write (concatenate 'string "`" name "`"))
         (defun dem ()
-            (write ", <!--")(terpri)(write "--> ")
+            (write ", ")(terpri)
         )
     )
 )
