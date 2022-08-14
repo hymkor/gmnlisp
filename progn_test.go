@@ -86,15 +86,27 @@ func TestLoop(t *testing.T) {
 					(return (* i 10)))))`, Integer(60))
 }
 
-func TestHandlerCase(t *testing.T) {
+func TestHandlerCaseError(t *testing.T) {
 	assertEqual(t, `
 		(handler-case (with-open-file "not-exists")
 			(error (c)
 				c)
-			(:no-error
+			(:no-error (c)
 				"SUCCESS")
 			)`, &ErrorNode{Value: ErrTooFewArguments})
+}
 
+func TestHandlerCaseSpecifyError(t *testing.T) {
+	assertEqual(t, `
+		(handler-case (with-open-file "not-exists")
+			(*err-too-few-arguments* (c)
+				1)
+			(:no-error (c)
+				0)
+			)`, Integer(1))
+}
+
+func TestHandlerCaseNoError(t *testing.T) {
 	assertEqual(t, `
 		(handler-case (+ 1 2)
 			(error ()

@@ -409,12 +409,30 @@ func (e *ErrorNode) Equals(n Node, m EqlMode) bool {
 	return errors.Is(e.Value, f.Value) || errors.Is(f.Value, e.Value)
 }
 
+func matchError(ctx context.Context, w *World, casedSymbol Node, happenError error) (bool, error) {
+	if happenError == nil {
+		return false, nil
+	}
+	if casedSymbol == Symbol("error") {
+		return true, nil
+	}
+	casedNode, err := casedSymbol.Eval(ctx, w)
+	if err != nil {
+		return false, err
+	}
+	errNode, ok := casedNode.(*ErrorNode)
+	if !ok {
+		return false, fmt.Errorf("not an error object in hander-case: %s", toString(casedSymbol, PRINT))
+	}
+	return errors.Is(happenError, errNode.Value), nil
+}
+
 func cmdHandlerCase(ctx context.Context, w *World, list Node) (Node, error) {
 	tryCommand, list, err := shift(list)
 	if err != nil {
 		return nil, err
 	}
-	value, errCase := tryCommand.Eval(ctx, w)
+	value, happenError := tryCommand.Eval(ctx, w)
 	for HasValue(list) {
 		var caseBlock Node
 		var err error
@@ -423,17 +441,21 @@ func cmdHandlerCase(ctx context.Context, w *World, list Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		caseTop, caseBlock, err := shift(caseBlock)
+		casedError, caseBlock, err := shift(caseBlock)
 		if err != nil {
 			return nil, err
 		}
-		if errCase != nil && caseTop == Symbol("error") {
-			value, err := handlerCaseSub(ctx, w, caseBlock, &ErrorNode{Value: errCase})
+		ok, err := matchError(ctx, w, casedError, happenError)
+		if err != nil {
+			return nil, err
+		}
+		if ok {
+			value, err := handlerCaseSub(ctx, w, caseBlock, &ErrorNode{Value: happenError})
 			if err != nil {
 				return nil, fmt.Errorf("error: %w", err)
 			}
 			return value, nil
-		} else if errCase == nil && caseTop == Keyword(":no-error") {
+		} else if happenError == nil && casedError == Keyword(":no-error") {
 			value, err := handlerCaseSub(ctx, w, caseBlock, value)
 			if err != nil {
 				return nil, fmt.Errorf(":no-error: %w", err)
