@@ -62,8 +62,8 @@ func (m *_Macro) Call(ctx context.Context, w *World, n Node) (Node, error) {
 
 type _PlaceHolder string
 
-func (mp _PlaceHolder) PrintTo(w io.Writer, m PrintMode) {
-	fmt.Fprintf(w, "$(%s)", string(mp))
+func (mp _PlaceHolder) PrintTo(w io.Writer, m PrintMode) (int, error) {
+	return fmt.Fprintf(w, "$(%s)", string(mp))
 }
 
 func (mp _PlaceHolder) Equals(n Node, m EqlMode) bool {

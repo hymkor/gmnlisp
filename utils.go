@@ -46,7 +46,7 @@ const (
 type Node interface {
 	Eval(context.Context, *World) (Node, error)
 	Equals(Node, EqlMode) bool
-	PrintTo(io.Writer, PrintMode)
+	PrintTo(io.Writer, PrintMode) (int, error)
 }
 
 func toString(node Node, m PrintMode) string {

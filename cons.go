@@ -50,11 +50,14 @@ func (cons *Cons) isTailNull() bool {
 	}
 }
 
-func (cons *Cons) writeToWithoutKakko(w io.Writer, m PrintMode) {
+func (cons *Cons) writeToWithoutKakko(w io.Writer, m PrintMode) (int, error) {
+	siz := 0
 	if IsNull(cons.Car) {
-		io.WriteString(w, "()")
+		_siz, _ := io.WriteString(w, "()")
+		siz += _siz
 	} else {
-		cons.Car.PrintTo(w, m)
+		_siz, _ := cons.Car.PrintTo(w, m)
+		siz += _siz
 	}
 
 	if HasValue(cons.Cdr) {
@@ -62,22 +65,30 @@ func (cons *Cons) writeToWithoutKakko(w io.Writer, m PrintMode) {
 			// output as ( X Y Z ...)
 
 			for p, ok := cons.Cdr.(*Cons); ok && HasValue(p); p, ok = p.Cdr.(*Cons) {
-				io.WriteString(w, " ")
-				p.Car.PrintTo(w, m)
+				_siz, _ := io.WriteString(w, " ")
+				siz += _siz
+				_siz, _ = p.Car.PrintTo(w, m)
+				siz += _siz
 			}
 		} else {
 			// output as ( X . Y )
 
-			io.WriteString(w, " . ")
-			cons.GetCdr().PrintTo(w, m)
+			_siz, _ := io.WriteString(w, " . ")
+			siz += _siz
+			_siz, _ = cons.GetCdr().PrintTo(w, m)
+			siz += _siz
 		}
 	}
+	return siz, nil
 }
 
-func (cons *Cons) PrintTo(w io.Writer, m PrintMode) {
-	io.WriteString(w, "(")
-	cons.writeToWithoutKakko(w, m)
-	io.WriteString(w, ")")
+func (cons *Cons) PrintTo(w io.Writer, m PrintMode) (int, error) {
+	siz, _ := io.WriteString(w, "(")
+	_siz, _ := cons.writeToWithoutKakko(w, m)
+	siz += _siz
+	_siz, _ = io.WriteString(w, ")")
+	siz += _siz
+	return siz, nil
 }
 
 func (cons *Cons) Equals(n Node, m EqlMode) bool {

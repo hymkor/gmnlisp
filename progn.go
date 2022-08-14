@@ -393,8 +393,8 @@ type ErrorNode struct {
 	Value error
 }
 
-func (e *ErrorNode) PrintTo(w io.Writer, m PrintMode) {
-	io.WriteString(w, e.Value.Error())
+func (e *ErrorNode) PrintTo(w io.Writer, m PrintMode) (int, error) {
+	return io.WriteString(w, e.Value.Error())
 }
 
 func (e *ErrorNode) Eval(context.Context, *World) (Node, error) {

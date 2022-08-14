@@ -37,8 +37,8 @@ type LeftValueF struct {
 	F func(context.Context, *World, []Node) (Node, func(Node) error, error)
 }
 
-func (*LeftValueF) PrintTo(w io.Writer, m PrintMode) {
-	io.WriteString(w, "buildin function(Set/Get)")
+func (*LeftValueF) PrintTo(w io.Writer, m PrintMode) (int, error) {
+	return io.WriteString(w, "buildin function(Set/Get)")
 }
 
 func (f *LeftValueF) Eval(context.Context, *World) (Node, error) {

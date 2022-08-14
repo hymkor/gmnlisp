@@ -78,21 +78,27 @@ func newLambda(w *World, node Node, blockName Symbol) (Node, error) {
 	}, nil
 }
 
-func (L *_Lambda) PrintTo(w io.Writer, m PrintMode) {
+func (L *_Lambda) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	io.WriteString(w, "(lambda (")
 	dem := ""
+	siz := 0
 	for _, name := range L.param {
 		io.WriteString(w, dem)
-		name.PrintTo(w, PRINC)
+		_siz, _ := name.PrintTo(w, PRINC)
+		siz += _siz
 		dem = " "
 	}
 	io.WriteString(w, ") ")
 	if cons, ok := L.code.(*Cons); ok {
-		cons.writeToWithoutKakko(w, m)
+		_siz, _ := cons.writeToWithoutKakko(w, m)
+		siz += _siz
 	} else {
-		L.code.PrintTo(w, m)
+		_siz, _ := L.code.PrintTo(w, m)
+		siz += _siz
 	}
-	io.WriteString(w, ")")
+	_siz, _ := io.WriteString(w, ")")
+	siz += _siz
+	return siz, nil
 }
 
 var trace = map[Symbol]int{}
@@ -235,8 +241,8 @@ type _Callable interface {
 
 type SpecialF func(context.Context, *World, Node) (Node, error)
 
-func (SpecialF) PrintTo(w io.Writer, m PrintMode) {
-	io.WriteString(w, "buildin function")
+func (SpecialF) PrintTo(w io.Writer, m PrintMode) (int, error) {
+	return io.WriteString(w, "buildin function")
 }
 
 func (f SpecialF) Eval(context.Context, *World) (Node, error) {
@@ -289,8 +295,8 @@ type Function struct {
 	F func(context.Context, *World, []Node) (Node, error)
 }
 
-func (*Function) PrintTo(w io.Writer, m PrintMode) {
-	io.WriteString(w, "buildin function")
+func (*Function) PrintTo(w io.Writer, m PrintMode) (int, error) {
+	return io.WriteString(w, "buildin function")
 }
 
 func (f *Function) Eval(context.Context, *World) (Node, error) {
@@ -342,8 +348,8 @@ type KWFunction struct {
 	F func(context.Context, *World, []Node, map[Keyword]Node) (Node, error)
 }
 
-func (*KWFunction) PrintTo(w io.Writer, m PrintMode) {
-	io.WriteString(w, "buildin function")
+func (*KWFunction) PrintTo(w io.Writer, m PrintMode) (int, error) {
+	return io.WriteString(w, "buildin function")
 }
 
 func (f *KWFunction) Eval(context.Context, *World) (Node, error) {

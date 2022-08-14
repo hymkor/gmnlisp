@@ -10,8 +10,8 @@ import (
 
 type _TrueType struct{}
 
-func (_TrueType) PrintTo(w io.Writer, m PrintMode) {
-	io.WriteString(w, "t")
+func (_TrueType) PrintTo(w io.Writer, m PrintMode) (int, error) {
+	return io.WriteString(w, "t")
 }
 
 func (t _TrueType) Eval(context.Context, *World) (Node, error) {
@@ -27,8 +27,8 @@ func (_TrueType) Equals(n Node, m EqlMode) bool {
 
 type _NullType struct{}
 
-func (_NullType) PrintTo(w io.Writer, m PrintMode) {
-	io.WriteString(w, "nil")
+func (_NullType) PrintTo(w io.Writer, m PrintMode) (int, error) {
+	return io.WriteString(w, "nil")
 }
 
 func (nt _NullType) Eval(context.Context, *World) (Node, error) {
@@ -55,11 +55,11 @@ var unescapeSequenceReplacer = strings.NewReplacer(
 	"\"", "\\\"",
 )
 
-func (s String) PrintTo(w io.Writer, m PrintMode) {
+func (s String) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	if m == PRINC {
-		io.WriteString(w, string(s))
+		return io.WriteString(w, string(s))
 	} else {
-		fmt.Fprintf(w, `"%s"`, unescapeSequenceReplacer.Replace(string(s)))
+		return fmt.Fprintf(w, `"%s"`, unescapeSequenceReplacer.Replace(string(s)))
 	}
 }
 
@@ -154,8 +154,8 @@ var emptyString String
 
 type Symbol string
 
-func (s Symbol) PrintTo(w io.Writer, m PrintMode) {
-	io.WriteString(w, string(s))
+func (s Symbol) PrintTo(w io.Writer, m PrintMode) (int, error) {
+	return io.WriteString(w, string(s))
 }
 
 func (s Symbol) Eval(_ context.Context, w *World) (Node, error) {
@@ -173,26 +173,26 @@ func (s Symbol) Equals(n Node, m EqlMode) bool {
 
 type Rune rune
 
-func (r Rune) PrintTo(w io.Writer, m PrintMode) {
+func (r Rune) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	if m == PRINT {
 		switch r {
 		case '\t':
-			io.WriteString(w, `#\tab`)
+			return io.WriteString(w, `#\tab`)
 		case '\n':
-			io.WriteString(w, `#\linefeed`)
+			return io.WriteString(w, `#\linefeed`)
 		case '\r':
-			io.WriteString(w, `#\return`)
+			return io.WriteString(w, `#\return`)
 		case ' ':
-			io.WriteString(w, `#\space`)
+			return io.WriteString(w, `#\space`)
 		default:
 			if unicode.IsLetter(rune(r)) {
-				fmt.Fprintf(w, `#\%c`, rune(r))
+				return fmt.Fprintf(w, `#\%c`, rune(r))
 			} else {
-				fmt.Fprintf(w, `#\U%04X`, rune(r))
+				return fmt.Fprintf(w, `#\U%04X`, rune(r))
 			}
 		}
 	} else {
-		fmt.Fprintf(w, "%c", rune(r))
+		return fmt.Fprintf(w, "%c", rune(r))
 	}
 }
 
@@ -241,8 +241,8 @@ func (r Rune) Sub(n Node) (Node, error) {
 
 type Keyword string
 
-func (k Keyword) PrintTo(w io.Writer, m PrintMode) {
-	io.WriteString(w, string(k))
+func (k Keyword) PrintTo(w io.Writer, m PrintMode) (int, error) {
+	return io.WriteString(w, string(k))
 }
 
 func (k Keyword) Eval(context.Context, *World) (Node, error) {
