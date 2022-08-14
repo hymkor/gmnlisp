@@ -179,6 +179,9 @@ func formatSub(w runeWriter, format String, argv []Node) (Node, error) {
 		case 'o':
 			gofmt.WriteByte('o')
 			err = formatInt(w, gofmt.String(), value)
+		case 'b':
+			gofmt.WriteByte('b')
+			err = formatInt(w, gofmt.String(), value)
 		case 'f':
 			gofmt.WriteByte('f')
 			err = formatFloat(w, gofmt.String(), value)
