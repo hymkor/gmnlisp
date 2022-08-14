@@ -144,27 +144,62 @@ func formatSub(w runeWriter, format String, argv []Node) (Node, error) {
 			w.Write([]byte{'\n'})
 			continue
 		}
+
+		var gofmt strings.Builder
+		gofmt.WriteByte('%')
+		width := strings.IndexByte("0123456789", byte(c))
+		if width >= 0 {
+			gofmt.WriteByte(byte(c))
+			for {
+				if len(format) <= 0 {
+					return Null, nil
+				}
+				c = format[0]
+				format = format[1:]
+				w := strings.IndexByte("0123456789", byte(c))
+				if w < 0 {
+					break
+				}
+				width = width*10 + w
+				gofmt.WriteByte(byte(c))
+			}
+		}
+
 		value := argv[0]
 		argv = argv[1:]
 
 		var err error
 		switch c {
 		case 'd':
-			err = formatInt(w, "%d", value)
+			gofmt.WriteByte('d')
+			err = formatInt(w, gofmt.String(), value)
 		case 'x':
-			err = formatInt(w, "%X", value)
+			gofmt.WriteByte('X')
+			err = formatInt(w, gofmt.String(), value)
 		case 'o':
-			err = formatInt(w, "%o", value)
+			gofmt.WriteByte('o')
+			err = formatInt(w, gofmt.String(), value)
 		case 'f':
-			err = formatFloat(w, "%-f", value)
+			gofmt.WriteByte('f')
+			err = formatFloat(w, gofmt.String(), value)
 		case 'e':
-			err = formatFloat(w, "%e", value)
+			gofmt.WriteByte('e')
+			err = formatFloat(w, gofmt.String(), value)
 		case 'g':
-			err = formatFloat(w, "%g", value)
+			gofmt.WriteByte('g')
+			err = formatFloat(w, gofmt.String(), value)
 		case 'a':
-			value.PrintTo(w, PRINC)
+			n, _ := value.PrintTo(w, PRINC)
+			for n < width {
+				w.WriteRune(' ')
+				n++
+			}
 		case 's':
-			value.PrintTo(w, PRINT)
+			n, _ := value.PrintTo(w, PRINT)
+			for n < width {
+				w.WriteRune(' ')
+				n++
+			}
 		default:
 			err = fmt.Errorf("Not support code '%c'", c)
 		}

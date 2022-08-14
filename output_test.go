@@ -14,4 +14,7 @@ func TestFormat(t *testing.T) {
 	// (format nil "~g" 12.3)	;=> 12.3 ... ~f または ~e
 	assertEqual(t, `(format nil "~a" "ABC")`, String("ABC"))
 	assertEqual(t, `(format nil "~s" "ABC")`, String(`"ABC"`))
+
+	assertEqual(t, `(format nil "[~5d]" 123)`, String(`[  123]`))
+	assertEqual(t, `(format nil "[~5a]" "ABC")`, String(`[ABC  ]`))
 }
