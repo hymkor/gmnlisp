@@ -1,6 +1,7 @@
 package gmnlisp
 
 import (
+	"bufio"
 	"context"
 	"fmt"
 	"io"
@@ -16,6 +17,11 @@ type World struct {
 type Writer struct {
 	_Dummy
 	io.Writer
+}
+
+type _Reader struct {
+	_Dummy
+	*bufio.Reader
 }
 
 func (w *World) Get(name Symbol) (Node, error) {
@@ -71,6 +77,8 @@ func (w *World) Set(name Symbol, value Node) error {
 	return ErrVariableUnbound
 }
 
+const errorOutput = "*error-output*"
+const standardInput = "*standard-input*"
 const standardOutput = "*standard-output*"
 
 func (w *World) Stdout() (io.Writer, error) {
@@ -227,6 +235,8 @@ func New() *World {
 			"write":                    SpecialF(cmdWrite),
 			"write-line":               SpecialF(cmdWriteLine),
 			"zerop":                    &Function{C: 1, F: funZerop},
+			errorOutput:                &Writer{Writer: os.Stderr},
+			standardInput:              &_Reader{Reader: bufio.NewReader(os.Stdin)},
 			standardOutput:             &Writer{Writer: os.Stdout},
 		},
 	}
