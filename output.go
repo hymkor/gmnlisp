@@ -41,13 +41,15 @@ func getWriterAndString(ctx context.Context, w *World, n Node) (io.Writer, Strin
 	return writer, s, nil
 }
 
-func cmdWrite(ctx context.Context, w *World, n Node) (Node, error) {
-	writer, s, err := getWriterAndString(ctx, w, n)
-	if err != nil {
-		return nil, err
+func funWrite(ctx context.Context, w *World, args []Node, kwargs map[Keyword]Node) (Node, error) {
+	var writer io.Writer = os.Stdout
+	if writerNode, ok := kwargs[":stream"]; ok {
+		if _writer, ok := writerNode.(io.Writer); ok {
+			writer = _writer
+		}
 	}
-	io.WriteString(writer, string(s))
-	return s, nil
+	args[0].PrintTo(writer, PRINT)
+	return args[0], nil
 }
 
 func cmdWriteLine(ctx context.Context, w *World, n Node) (Node, error) {

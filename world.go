@@ -232,7 +232,7 @@ func New() *World {
 			"when":                     SpecialF(cmdWhen),
 			"while":                    SpecialF(cmdWhile),
 			"with-open-file":           SpecialF(cmdWithOpenFile),
-			"write":                    SpecialF(cmdWrite),
+			"write":                    &KWFunction{C: 1, F: funWrite},
 			"write-line":               SpecialF(cmdWriteLine),
 			"zerop":                    &Function{C: 1, F: funZerop},
 			errorOutput:                &Writer{Writer: os.Stderr},
