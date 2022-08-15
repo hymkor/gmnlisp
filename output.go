@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -101,26 +102,53 @@ type runeWriter interface {
 	io.Writer
 }
 
-func formatInt(w io.Writer, format string, value Node) error {
+func printInt(w io.Writer, base, width, padding int, value Node) error {
+	var body string
 	if d, ok := value.(Integer); ok {
-		fmt.Fprintf(w, format, int(d))
-		return nil
+		body = strconv.FormatInt(int64(d), base)
 	} else if f, ok := value.(Float); ok {
-		fmt.Fprintf(w, format, int(f))
-		return nil
+		body = strconv.FormatInt(int64(f), base)
+	} else {
+		return ErrNotSupportType
 	}
-	return ErrNotSupportType
+	if len(body) < width {
+		if padding <= 0 {
+			padding = ' '
+		}
+		for i := len(body); i < width; i++ {
+			w.Write([]byte{byte(padding)})
+		}
+	}
+	io.WriteString(w, strings.ToUpper(body))
+	return nil
 }
 
-func formatFloat(w io.Writer, format string, value Node) error {
-	if d, ok := value.(Integer); ok {
-		fmt.Fprintf(w, format, float64(d))
-		return nil
-	} else if f, ok := value.(Float); ok {
-		fmt.Fprintf(w, format, float64(f))
-		return nil
+func printFloat(w io.Writer, mark, width, prec int, value Node) error {
+	if prec <= 0 {
+		prec = -1
 	}
-	return ErrNotSupportType
+	var body string
+	if d, ok := value.(Integer); ok {
+		body = strconv.FormatFloat(float64(d), byte(mark), prec, 64)
+	} else if f, ok := value.(Float); ok {
+		body = strconv.FormatFloat(float64(f), byte(mark), prec, 64)
+	} else {
+		return ErrNotSupportType
+	}
+	if len(body) < width {
+		for i := len(body); i < width; i++ {
+			w.Write([]byte{' '})
+		}
+	}
+	io.WriteString(w, body)
+	return nil
+}
+
+func printSpaces(n int, w io.Writer) {
+	for n > 0 {
+		w.Write([]byte{' '})
+		n--
+	}
 }
 
 func formatSub(w runeWriter, format String, argv []Node) (Node, error) {
@@ -144,24 +172,59 @@ func formatSub(w runeWriter, format String, argv []Node) (Node, error) {
 			w.Write([]byte{'\n'})
 			continue
 		}
+		parameter := []int{}
+		for {
+			if decimal := strings.IndexByte("0123456789", byte(c)); decimal >= 0 {
+				for {
+					if len(format) <= 0 {
+						return Null, ErrInvalidFormat
+					}
+					c = format[0]
+					format = format[1:]
+					d := strings.IndexByte("0123456789", byte(c))
+					if d < 0 {
+						parameter = append(parameter, decimal)
+						break
+					}
+					decimal = decimal*10 + d
+				}
+			} else if c == '\'' {
+				if len(format) < 2 {
+					return Null, ErrInvalidFormat
+				}
+				parameter = append(parameter, int(format[0]))
+				c = format[1]
+				format = format[2:]
+			} else if c == 'v' || c == 'V' {
+				if len(argv) < 1 {
+					return nil, ErrTooFewArguments
+				}
+				decimal, ok := argv[0].(Integer)
+				if !ok {
+					return nil, ErrExpectedNumber
+				}
+				parameter = append(parameter, int(decimal))
+			} else if c == '#' {
+				parameter = append(parameter, int(len(argv)))
+			} else {
+				break
+			}
+			if c != ',' {
+				break
+			}
+			if len(format) <= 0 {
+				return nil, ErrInvalidFormat
+			}
+			c = format[0]
+			format = format[1:]
+		}
 
-		var gofmt strings.Builder
-		gofmt.WriteByte('%')
-		width := strings.IndexByte("0123456789", byte(c))
-		if width >= 0 {
-			gofmt.WriteByte(byte(c))
-			for {
-				if len(format) <= 0 {
-					return Null, nil
-				}
-				c = format[0]
-				format = format[1:]
-				w := strings.IndexByte("0123456789", byte(c))
-				if w < 0 {
-					break
-				}
-				width = width*10 + w
-				gofmt.WriteByte(byte(c))
+		padding := -1
+		width := -1
+		if len(parameter) >= 1 {
+			width = parameter[0]
+			if len(parameter) >= 2 && parameter[1] == '0' {
+				padding = '0'
 			}
 		}
 
@@ -171,38 +234,25 @@ func formatSub(w runeWriter, format String, argv []Node) (Node, error) {
 		var err error
 		switch c {
 		case 'd':
-			gofmt.WriteByte('d')
-			err = formatInt(w, gofmt.String(), value)
+			err = printInt(w, 10, width, padding, value)
 		case 'x':
-			gofmt.WriteByte('X')
-			err = formatInt(w, gofmt.String(), value)
+			err = printInt(w, 16, width, padding, value)
 		case 'o':
-			gofmt.WriteByte('o')
-			err = formatInt(w, gofmt.String(), value)
+			err = printInt(w, 8, width, padding, value)
 		case 'b':
-			gofmt.WriteByte('b')
-			err = formatInt(w, gofmt.String(), value)
+			err = printInt(w, 2, width, padding, value)
 		case 'f':
-			gofmt.WriteByte('f')
-			err = formatFloat(w, gofmt.String(), value)
+			err = printFloat(w, 'f', width, padding, value)
 		case 'e':
-			gofmt.WriteByte('e')
-			err = formatFloat(w, gofmt.String(), value)
+			err = printFloat(w, 'e', width, padding, value)
 		case 'g':
-			gofmt.WriteByte('g')
-			err = formatFloat(w, gofmt.String(), value)
+			err = printFloat(w, 'g', width, padding, value)
 		case 'a':
 			n, _ := value.PrintTo(w, PRINC)
-			for n < width {
-				w.WriteRune(' ')
-				n++
-			}
+			printSpaces(width-n, w)
 		case 's':
 			n, _ := value.PrintTo(w, PRINT)
-			for n < width {
-				w.WriteRune(' ')
-				n++
-			}
+			printSpaces(width-n, w)
 		default:
 			err = fmt.Errorf("Not support code '%c'", c)
 		}
