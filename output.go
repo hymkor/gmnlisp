@@ -68,10 +68,23 @@ func cmdWriteLine(ctx context.Context, w *World, n Node) (Node, error) {
 	return s, nil
 }
 
-func cmdTerpri(ctx context.Context, w *World, _ Node) (Node, error) {
-	out, err := w.Stdout()
-	if err != nil {
-		return nil, err
+func funTerpri(ctx context.Context, w *World, argv []Node) (Node, error) {
+	var out io.Writer
+	if len(argv) > 1 {
+		return nil, ErrTooManyArguments
+	}
+	if len(argv) <= 0 {
+		var err error
+		out, err = w.Stdout()
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		var ok bool
+		out, ok = argv[0].(io.Writer)
+		if !ok {
+			return nil, ErrExpectedWriter
+		}
 	}
 	fmt.Fprintln(out)
 	return Null, nil
