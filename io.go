@@ -108,13 +108,35 @@ func funReadLine(_ context.Context, _ *World, argv []Node) (Node, error) {
 	type ReadStringer interface {
 		ReadString(byte) (string, error)
 	}
-	r, ok := argv[0].(ReadStringer)
-	if !ok {
-		return nil, fmt.Errorf("Expected Reader `%s`", toString(argv[0], PRINT))
+	if len(argv) > 3 {
+		return nil, ErrTooManyArguments
 	}
-	s, err := r.ReadString('\n')
+	var reader ReadStringer = stdin
+	var eofFlag bool = true
+	var eofValue Node = Null
+
+	switch len(argv) {
+	default:
+		return nil, ErrTooManyArguments
+	case 3:
+		eofValue = argv[2]
+		fallthrough
+	case 2:
+		eofFlag = HasValue(argv[1])
+		fallthrough
+	case 1:
+		var ok bool
+		reader, ok = argv[0].(ReadStringer)
+		if !ok {
+			return nil, fmt.Errorf("Expected Reader `%s`", toString(argv[0], PRINT))
+		}
+	}
+	s, err := reader.ReadString('\n')
 	if err == io.EOF {
-		return Null, nil
+		if eofFlag {
+			return Null, io.EOF
+		}
+		return eofValue, nil
 	}
 	return String(chomp(s)), err
 }

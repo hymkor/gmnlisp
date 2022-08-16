@@ -97,6 +97,8 @@ func (w *World) SetStdout(writer io.Writer) {
 	w.DefineParameter(standardOutput, Writer{Writer: writer})
 }
 
+var stdin = &_Reader{Reader: bufio.NewReader(os.Stdin)}
+
 func New() *World {
 	return &World{
 		globals: map[Symbol]Node{
@@ -202,7 +204,7 @@ func New() *World {
 			"quit":                     SpecialF(cmdQuit),
 			"quote":                    SpecialF(cmdQuote),
 			"read":                     &Function{C: 1, F: funRead},
-			"read-line":                &Function{C: 1, F: funReadLine},
+			"read-line":                &Function{C: -1, F: funReadLine},
 			"rem":                      &Function{C: 2, F: funRem},
 			"replaca":                  &Function{C: 2, F: funReplaca},
 			"replacd":                  &Function{C: 2, F: funReplacd},
@@ -236,7 +238,7 @@ func New() *World {
 			"write-line":               SpecialF(cmdWriteLine),
 			"zerop":                    &Function{C: 1, F: funZerop},
 			errorOutput:                &Writer{Writer: os.Stderr},
-			standardInput:              &_Reader{Reader: bufio.NewReader(os.Stdin)},
+			standardInput:              stdin,
 			standardOutput:             &Writer{Writer: os.Stdout},
 		},
 	}
