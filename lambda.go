@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"math"
 	"os"
 )
 
@@ -291,8 +292,11 @@ func cmdTrace(_ context.Context, _ *World, list Node) (Node, error) {
 }
 
 type Function struct {
-	C int
-	F func(context.Context, *World, []Node) (Node, error)
+	C   int
+	F   func(context.Context, *World, []Node) (Node, error)
+	Min int
+	Max int
+	Kw  []string
 }
 
 func (*Function) PrintTo(w io.Writer, m PrintMode) (int, error) {
@@ -313,34 +317,39 @@ func (f *Function) Call(ctx context.Context, w *World, list Node) (Node, error) 
 	if err := checkContext(ctx); err != nil {
 		return nil, err
 	}
-	if f.C >= 0 {
-		var argv [maxParameterOfEasyFunc]Node
-		for i := 0; i < f.C; i++ {
-			var err error
-
-			argv[i], list, err = w.shiftAndEvalCar(ctx, list)
-			if err != nil {
-				return nil, err
-			}
-		}
-		if HasValue(list) {
-			return nil, ErrTooManyArguments
-		}
-		return f.F(ctx, w, argv[:f.C])
-	} else {
-		argv := []Node{}
-		for HasValue(list) {
-			var tmp Node
-			var err error
-
-			tmp, list, err = w.shiftAndEvalCar(ctx, list)
-			if err != nil {
-				return nil, err
-			}
-			argv = append(argv, tmp)
-		}
-		return f.F(ctx, w, argv)
+	max := math.MaxInt
+	if f.Max > 0 {
+		max = f.Max
+	} else if f.C > 0 {
+		max = f.C
 	}
+
+	min := 0
+	if f.C > 0 {
+		min = f.C
+	} else if f.Min > 0 {
+		min = f.Min
+	}
+
+	args := []Node{}
+	for HasValue(list) {
+		var tmp Node
+		var err error
+
+		tmp, list, err = w.shiftAndEvalCar(ctx, list)
+		if err != nil {
+			return nil, err
+		}
+		args = append(args, tmp)
+	}
+
+	if len(args) > max {
+		return nil, ErrTooManyArguments
+	}
+	if len(args) < min {
+		return nil, ErrTooFewArguments
+	}
+	return f.F(ctx, w, args)
 }
 
 type KWFunction struct {
