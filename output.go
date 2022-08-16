@@ -285,10 +285,9 @@ func formatSub(w runeWriter, format String, argv []Node) (Node, error) {
 	return Null, nil
 }
 
+var defFormat = &Function{Min: 2, F: funFormat}
+
 func funFormat(ctx context.Context, w *World, argv []Node) (Node, error) {
-	if len(argv) < 2 {
-		return nil, ErrTooFewArguments
-	}
 	format, ok := argv[1].(String)
 	if !ok {
 		return nil, ErrExpectedString

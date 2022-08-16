@@ -178,7 +178,7 @@ func New() *World {
 			"first":                    &LeftValueF{C: 1, F: funGetCar},
 			"floatp":                   &Function{C: 1, F: funAnyTypep[Float]},
 			"foreach":                  SpecialF(cmdForeach),
-			"format":                   &Function{C: -1, F: funFormat},
+			"format":                   defFormat,
 			"funcall":                  SpecialF(cmdFunCall),
 			"function":                 &Function{C: 1, F: funFunction},
 			"handler-case":             SpecialF(cmdHandlerCase),
