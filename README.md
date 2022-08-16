@@ -59,6 +59,8 @@ Support functions
 `*err-too-few-arguments*`,
 `*err-too-many-arguments*`,
 `*err-too-short-tokens*`,
+`*error-output*`,
+`*standard-input*`,
 `*standard-output*`,
 `+`,
 `-`,
