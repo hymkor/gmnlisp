@@ -156,7 +156,7 @@ func New() *World {
 			"cdr":                      &LeftValueF{C: 1, F: funGetCdr},
 			"close":                    &Function{C: 1, F: funClose},
 			"coerce":                   &Function{C: 2, F: funCoerce},
-			"command":                  &Function{C: -1, F: funCommand},
+			"command":                  defCommand,
 			"concatenate":              &Function{C: -1, F: funConcatenate},
 			"cond":                     SpecialF(cmdCond),
 			"cons":                     &Function{C: 2, F: funCons},

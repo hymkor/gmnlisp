@@ -155,11 +155,10 @@ func funClose(_ context.Context, _ *World, argv []Node) (Node, error) {
 	return Null, c.Close()
 }
 
+var defCommand = &Function{Min: 1, F: funCommand}
+
 func funCommand(ctx context.Context, w *World, list []Node) (Node, error) {
 	// from autolisp
-	if len(list) < 1 {
-		return nil, ErrTooFewArguments
-	}
 	argv := make([]string, len(list))
 	for i, value := range list {
 		var buffer strings.Builder
