@@ -222,7 +222,7 @@ func New() *World {
 			"quit":                     SpecialF(cmdQuit),
 			"quote":                    SpecialF(cmdQuote),
 			"read":                     &Function{C: 1, F: funRead},
-			"read-line":                &Function{C: -1, F: funReadLine},
+			"read-line":                defReadLine,
 			"rem":                      &Function{C: 2, F: funRem},
 			"replaca":                  &Function{C: 2, F: funReplaca},
 			"replacd":                  &Function{C: 2, F: funReplacd},

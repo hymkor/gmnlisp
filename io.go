@@ -104,12 +104,11 @@ func chomp(s string) string {
 	return s
 }
 
+var defReadLine = &Function{Max: 3, F: funReadLine}
+
 func funReadLine(_ context.Context, w *World, argv []Node) (Node, error) {
 	type ReadStringer interface {
 		ReadString(byte) (string, error)
-	}
-	if len(argv) > 3 {
-		return nil, ErrTooManyArguments
 	}
 	var reader ReadStringer
 	var eofFlag bool = true
