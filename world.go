@@ -77,9 +77,17 @@ func (w *World) Set(name Symbol, value Node) error {
 	return ErrVariableUnbound
 }
 
-const errorOutput = "*error-output*"
-const standardInput = "*standard-input*"
-const standardOutput = "*standard-output*"
+const (
+	errorOutput    = "*error-output*"
+	standardInput  = "*standard-input*"
+	standardOutput = "*standard-output*"
+)
+
+var (
+	stderr = &Writer{Writer: os.Stderr}
+	stdin  = &_Reader{Reader: bufio.NewReader(os.Stdin)}
+	stdout = &Writer{Writer: os.Stdout}
+)
 
 func (w *World) Stdout() (io.Writer, error) {
 	stdout, err := w.Get(standardOutput)
@@ -97,7 +105,17 @@ func (w *World) SetStdout(writer io.Writer) {
 	w.DefineParameter(standardOutput, Writer{Writer: writer})
 }
 
-var stdin = &_Reader{Reader: bufio.NewReader(os.Stdin)}
+func (w *World) Stdin() (*_Reader, error) {
+	stdin, err := w.Get(standardInput)
+	if err != nil {
+		return nil, err
+	}
+	_stdin, ok := stdin.(*_Reader)
+	if !ok {
+		return nil, ErrExpectedReader
+	}
+	return _stdin, nil
+}
 
 func New() *World {
 	return &World{
@@ -237,9 +255,9 @@ func New() *World {
 			"write":                    &KWFunction{C: 1, F: funWrite},
 			"write-line":               SpecialF(cmdWriteLine),
 			"zerop":                    &Function{C: 1, F: funZerop},
-			errorOutput:                &Writer{Writer: os.Stderr},
+			errorOutput:                stderr,
 			standardInput:              stdin,
-			standardOutput:             &Writer{Writer: os.Stdout},
+			standardOutput:             stdout,
 		},
 	}
 }

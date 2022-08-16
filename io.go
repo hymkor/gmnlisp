@@ -104,14 +104,14 @@ func chomp(s string) string {
 	return s
 }
 
-func funReadLine(_ context.Context, _ *World, argv []Node) (Node, error) {
+func funReadLine(_ context.Context, w *World, argv []Node) (Node, error) {
 	type ReadStringer interface {
 		ReadString(byte) (string, error)
 	}
 	if len(argv) > 3 {
 		return nil, ErrTooManyArguments
 	}
-	var reader ReadStringer = stdin
+	var reader ReadStringer
 	var eofFlag bool = true
 	var eofValue Node = Null
 
@@ -129,6 +129,12 @@ func funReadLine(_ context.Context, _ *World, argv []Node) (Node, error) {
 		reader, ok = argv[0].(ReadStringer)
 		if !ok {
 			return nil, fmt.Errorf("Expected Reader `%s`", toString(argv[0], PRINT))
+		}
+	case 0:
+		var err error
+		reader, err = w.Stdin()
+		if err != nil {
+			return nil, err
 		}
 	}
 	s, err := reader.ReadString('\n')
