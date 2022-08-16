@@ -164,6 +164,8 @@ func funAref(_ context.Context, _ *World, args []Node) (Node, func(Node) error, 
 	return value, setter, nil
 }
 
+var defConcatenate = &Function{Min: 1, F: funConcatenate}
+
 func funConcatenate(ctx context.Context, w *World, list []Node) (Node, error) {
 	if len(list) < 1 {
 		return Null, nil

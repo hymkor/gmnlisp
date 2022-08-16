@@ -157,7 +157,7 @@ func New() *World {
 			"close":                    &Function{C: 1, F: funClose},
 			"coerce":                   &Function{C: 2, F: funCoerce},
 			"command":                  defCommand,
-			"concatenate":              &Function{C: -1, F: funConcatenate},
+			"concatenate":              defConcatenate,
 			"cond":                     SpecialF(cmdCond),
 			"cons":                     &Function{C: 2, F: funCons},
 			"consp":                    &Function{C: 1, F: funAnyTypep[*Cons]},
