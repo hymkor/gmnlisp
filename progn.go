@@ -346,6 +346,96 @@ func cmdDoList(ctx context.Context, w *World, list Node) (Node, error) {
 	return last, nil
 }
 
+func cmdDoAndFor(ctx context.Context, w *World, list Node) (Node, error) {
+	// CommonLisp's DO and ISLisp's FOR
+	var vars Node
+	var err error
+
+	vars, list, err = shift(list)
+	if err != nil {
+		return nil, err
+	}
+	stepsCalc := make([]func() (Node, error), 0, 8)
+	stepsAssign := make([]func(Node) error, 0, 8)
+	for HasValue(vars) {
+		var varInitStep Node
+		var var1 Node
+		var initv Node
+		var step Node
+
+		varInitStep, vars, err = shift(vars)
+		if err != nil {
+			return nil, err
+		}
+		var1, varInitStep, err = shift(varInitStep)
+		if err != nil {
+			return nil, err
+		}
+		symbol, ok := var1.(Symbol)
+		if !ok {
+			return nil, ErrExpectedSymbol
+		}
+		initv, varInitStep, err = w.shiftAndEvalCar(ctx, varInitStep)
+		if err != nil {
+			return nil, err
+		}
+		if err = w.Set(symbol, initv); err != nil {
+			return nil, err
+		}
+		step, varInitStep, err = shift(varInitStep)
+		if err != nil {
+			return nil, err
+		}
+		stepsCalc = append(stepsCalc, func() (Node, error) {
+			return step.Eval(ctx, w)
+		})
+		stepsAssign = append(stepsAssign, func(value Node) error {
+			return w.Set(symbol, value)
+		})
+	}
+	var conds Node
+	var cond Node
+	var result Node
+
+	conds, list, err = shift(list)
+	if err != nil {
+		return nil, err
+	}
+	cond, conds, err = shift(conds)
+	if err != nil {
+		return nil, err
+	}
+	result, conds, err = shift(conds)
+	if err != nil {
+		return nil, err
+	}
+	valuesStep := make([]Node, len(stepsCalc))
+	for {
+		value, err := cond.Eval(ctx, w)
+		if err != nil {
+			return nil, err
+		}
+		if HasValue(value) {
+			return result.Eval(ctx, w)
+		}
+		_, err = progn(ctx, w, list)
+		if err != nil {
+			return nil, err
+		}
+		for i, step1 := range stepsCalc {
+			valuesStep[i], err = step1()
+			if err != nil {
+				return nil, err
+			}
+		}
+		for i, step1 := range stepsAssign {
+			if err = step1(valuesStep[i]); err != nil {
+				return nil, err
+			}
+		}
+	}
+}
+
 func handlerCaseSub(ctx context.Context, w *World, caseBlock Node, c Node) (Node, error) {
 	paramList, caseBlock, err := shift(caseBlock)
 	if err != nil {
