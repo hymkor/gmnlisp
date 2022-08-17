@@ -89,6 +89,13 @@ var (
 	stdout = &Writer{Writer: os.Stdout}
 )
 
+func cmdStandardOutput(ctx context.Context, w *World, list Node) (Node, error) {
+	if HasValue(list) {
+		return nil, ErrTooManyArguments
+	}
+	return w.Get(standardOutput)
+}
+
 func (w *World) Stdout() (io.Writer, error) {
 	stdout, err := w.Get(standardOutput)
 	if err != nil {
@@ -105,6 +112,35 @@ func (w *World) SetStdout(writer io.Writer) {
 	w.DefineParameter(standardOutput, Writer{Writer: writer})
 }
 
+func cmdErrorOutput(ctx context.Context, w *World, list Node) (Node, error) {
+	if HasValue(list) {
+		return nil, ErrTooManyArguments
+	}
+	return w.Get(errorOutput)
+}
+
+func (w *World) Stderr() (io.Writer, error) {
+	stderr, err := w.Get(errorOutput)
+	if err != nil {
+		return nil, err
+	}
+	_stderr, ok := stderr.(io.Writer)
+	if !ok {
+		return nil, ErrExpectedWriter
+	}
+	return _stderr, nil
+}
+
+func (w *World) SetStderr(writer io.Writer) {
+	w.DefineParameter(errorOutput, Writer{Writer: writer})
+}
+
+func cmdStandardInput(ctx context.Context, w *World, list Node) (Node, error) {
+	if HasValue(list) {
+		return nil, ErrTooManyArguments
+	}
+	return w.Get(standardInput)
+}
 func (w *World) Stdin() (*_Reader, error) {
 	stdin, err := w.Get(standardInput)
 	if err != nil {
@@ -174,6 +210,7 @@ func New() *World {
 			"eql":                      SpecialF(cmdEql),
 			"equal":                    SpecialF(cmdEqual),
 			"equalp":                   SpecialF(cmdEqualOp),
+			"error-output":             SpecialF(cmdErrorOutput),
 			"evenp":                    &Function{C: 1, F: funEvenp},
 			"exit":                     SpecialF(cmdQuit),
 			"find":                     &KWFunction{C: 2, F: funFind},
@@ -236,6 +273,8 @@ func New() *World {
 			"setf":                     SpecialF(cmdSetf),
 			"setq":                     SpecialF(cmdSetq),
 			"split-string":             &Function{C: 2, F: funSplitString},
+			"standard-error":           SpecialF(cmdErrorOutput),
+			"standard-output":          SpecialF(cmdStandardOutput),
 			"strcase":                  &Function{C: 1, F: funStrCase},
 			"strcat":                   &Function{C: -1, F: funStrCat},
 			"stringp":                  &Function{C: 1, F: funAnyTypep[String]},
