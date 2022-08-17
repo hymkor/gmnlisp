@@ -253,6 +253,7 @@ func New() *World {
 			"unless":                   SpecialF(cmdUnless),
 			"when":                     SpecialF(cmdWhen),
 			"while":                    SpecialF(cmdWhile),
+			"with-handler":             SpecialF(cmdWithHandler),
 			"with-open-file":           SpecialF(cmdWithOpenFile),
 			"write":                    &KWFunction{C: 1, F: funWrite},
 			"write-line":               SpecialF(cmdWriteLine),

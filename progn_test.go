@@ -128,3 +128,27 @@ func TestDoAndFor(t *testing.T) {
 		)
 		(fibo2 10)`, Integer(55))
 }
+
+func TestWithHandler(t *testing.T) {
+	assertEqual(t, `
+		(block hoge
+			(with-handler
+				(lambda (c)
+				  (if (eql c *err-variable-unbound*)
+					(return-from hoge "OK")))
+				(not-exist-func)
+				"NG"
+			)
+		)`, String("OK"))
+
+	assertEqual(t, `
+		(block hoge
+			(with-handler
+				(lambda (c)
+				  (if (eql c *err-variable-unbound*)
+					(return-from hoge "OK")))
+				;(not-exist-func)
+				"NG"
+			)
+		)`, String("NG"))
+}

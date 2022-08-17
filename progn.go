@@ -539,3 +539,24 @@ func cmdHandlerCase(ctx context.Context, w *World, list Node) (Node, error) {
 	}
 	return Null, nil
 }
+
+func cmdWithHandler(ctx context.Context, w *World, list Node) (Node, error) {
+	// ISLisp
+	handlerNode, list, err := w.shiftAndEvalCar(ctx, list)
+	if err != nil {
+		return nil, err
+	}
+	handler, ok := handlerNode.(_Callable)
+	if !ok {
+		return nil, ErrExpectedFunction
+	}
+	value, err := progn(ctx, w, list)
+	if err == nil {
+		return value, nil
+	}
+	_, err2 := handler.Call(ctx, w, &Cons{Car: &ErrorNode{Value: err}, Cdr: Null})
+	if err2 != nil {
+		return nil, err2
+	}
+	return nil, err
+}
