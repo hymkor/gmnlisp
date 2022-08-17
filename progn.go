@@ -233,7 +233,7 @@ func cmdForeach(ctx context.Context, w *World, args Node) (Node, error) {
 }
 
 func cmdWhile(ctx context.Context, w *World, n Node) (Node, error) {
-	// from autolisp
+	// from autolisp, ISLisp
 	cond, statements, err := shift(n)
 	if err != nil {
 		return nil, err
