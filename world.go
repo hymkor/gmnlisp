@@ -127,6 +127,7 @@ func New() *World {
 			"*err-too-few-arguments*":  &ErrorNode{Value: ErrTooFewArguments},
 			"*err-too-many-arguments*": &ErrorNode{Value: ErrTooManyArguments},
 			"*err-too-short-tokens*":   &ErrorNode{Value: ErrTooShortTokens},
+			"*err-variable-unbound*":   &ErrorNode{Value: ErrVariableUnbound},
 			"+":                        SpecialF(cmdAdd),
 			"-":                        SpecialF(cmdSub),
 			"--get-all-symbols--":      SpecialF(cmdGetAllSymbols),
