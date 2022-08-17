@@ -129,7 +129,6 @@ Support functions
 `list`,
 `listp`,
 `load`,
-`loop`,
 `macroexpand`,
 `map`,
 `mapcar`,

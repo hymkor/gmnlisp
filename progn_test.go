@@ -77,15 +77,6 @@ func TestCase(t *testing.T) {
 		)`, String("B"))
 }
 
-func TestLoop(t *testing.T) {
-	assertEqual(t, `
-		(let ((i 0))
-			(loop
-				(incf i)
-				(if (> i 5)
-					(return (* i 10)))))`, Integer(60))
-}
-
 func TestHandlerCaseError(t *testing.T) {
 	assertEqual(t, `
 		(handler-case (with-open-file "not-exists")
