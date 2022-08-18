@@ -76,6 +76,34 @@ func cmdBlock(ctx context.Context, w *World, node Node) (Node, error) {
 	return rv, err
 }
 
+type ErrThrown struct {
+	Value   Node
+	TagForm Node
+}
+
+func (e *ErrThrown) Error() string {
+	return fmt.Sprintf("Thrown tag-form %s was not caught", toString(e.TagForm, PRINT))
+}
+func cmdCatch(ctx context.Context, w *World, node Node) (Node, error) {
+	// from ISLisp
+	tagForm, statements, err := w.shiftAndEvalCar(ctx, node)
+	if err != nil {
+		return nil, err
+	}
+
+	var errThrown *ErrThrown
+	rv, err := progn(ctx, w, statements)
+	if errors.As(err, &errThrown) && errThrown.TagForm.Equals(tagForm, EQUALP) {
+		return errThrown.Value, nil
+	}
+	return rv, err
+}
+
+func funThrow(ctx context.Context, w *World, list []Node) (Node, error) {
+	// from ISLisp
+	return nil, &ErrThrown{Value: list[1], TagForm: list[0]}
+}
+
 func cmdCond(ctx context.Context, w *World, list Node) (Node, error) {
 	for HasValue(list) {
 		var condAndAct Node

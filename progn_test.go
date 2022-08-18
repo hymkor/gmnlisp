@@ -131,22 +131,22 @@ func TestDoAndFor(t *testing.T) {
 
 func TestWithHandler(t *testing.T) {
 	assertEqual(t, `
-		(block hoge
+		(catch 'hoge
 			(with-handler
 				(lambda (c)
 				  (if (eql c *err-variable-unbound*)
-					(return-from hoge "OK")))
+					(throw 'hoge "OK")))
 				(not-exist-func)
 				"NG"
 			)
 		)`, String("OK"))
 
 	assertEqual(t, `
-		(block hoge
+		(catch 'hoge
 			(with-handler
 				(lambda (c)
 				  (if (eql c *err-variable-unbound*)
-					(return-from hoge "OK")))
+					(throw 'hoge "OK")))
 				;(not-exist-func)
 				"NG"
 			)
