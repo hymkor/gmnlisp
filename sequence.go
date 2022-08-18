@@ -137,6 +137,7 @@ func funTypep(_ context.Context, _ *World, args []Node) (Node, error) {
 }
 
 func funAref(_ context.Context, _ *World, args []Node) (Node, func(Node) error, error) {
+	// CommonLisp's (aref) and ISLisp's (elt)
 	type _Aref interface {
 		Aref(int) (Node, func(Node) error, error)
 	}

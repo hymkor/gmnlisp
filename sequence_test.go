@@ -86,3 +86,14 @@ func TestSetfSubSeq(t *testing.T) {
 			(setf (subseq m 2 4) (list 0 0))
 			m)`, List(Integer(1), Integer(2), Integer(0), Integer(0), Integer(5)))
 }
+
+func TestAref(t *testing.T) {
+	assertEqual(t, `(aref "1234" 2)`, Rune('3'))
+	assertEqual(t, `(aref '(1 2 3 4) 3)`, Integer(4))
+}
+
+func TestElt(t *testing.T) {
+	assertEqual(t, `(elt '(a b c) 2)`, Symbol("c"))
+	// assertEqual(t, `(elt (vector 'a 'b 'c) 1)`,Symbol("b"))
+	assertEqual(t, `(elt "abc" 0)`, Rune('a'))
+}

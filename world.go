@@ -207,6 +207,7 @@ func New() *World {
 			"do":                       SpecialF(cmdDoAndFor),
 			"dolist":                   SpecialF(cmdDoList),
 			"dotimes":                  SpecialF(cmdDoTimes),
+			"elt":                      &LeftValueF{C: 2, F: funAref},
 			"eq":                       SpecialF(cmdEq),
 			"eql":                      SpecialF(cmdEql),
 			"equal":                    SpecialF(cmdEqual),
