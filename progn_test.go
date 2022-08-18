@@ -152,3 +152,25 @@ func TestWithHandler(t *testing.T) {
 			)
 		)`, String("NG"))
 }
+
+func TestCatch(t *testing.T) {
+	assertEqual(t, `
+		(defun foo (x)
+			(catch 'block-sum (bar x))
+		)
+		(defun bar (x)
+			(let (sum L)
+				(for ((L x (cdr L))
+					(sum 0 (+ sum (car L))))
+				((null L) sum)
+					(cond
+						((not (numberp (car L))) (throw 'block-sum 0))
+					)
+				)
+			)
+		)
+		(and
+			(equal 10 (foo '(1 2 3 4)))
+			(equal  0 (foo '(1 2 nil 4)))
+		)`, True)
+}
