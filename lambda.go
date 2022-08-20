@@ -148,7 +148,7 @@ func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
 	if L.rest != "" {
 		globals[L.rest] = n
 	}
-	newWorld := &World{globals: globals, parent: L.lexical}
+	newWorld := &World{globals: _Variables(globals), parent: L.lexical}
 
 	var errEarlyReturns *ErrEarlyReturns
 

@@ -202,7 +202,7 @@ func cmdLet(ctx context.Context, w *World, params Node) (Node, error) {
 	}
 
 	newWorld := &World{
-		globals: globals,
+		globals: _Variables(globals),
 		parent:  w,
 	}
 	return progn(ctx, newWorld, params)
@@ -217,7 +217,7 @@ func cmdLetX(ctx context.Context, w *World, params Node) (Node, error) {
 	globals := map[Symbol]Node{}
 
 	newWorld := &World{
-		globals: globals,
+		globals: _Variables(globals),
 		parent:  w,
 	}
 

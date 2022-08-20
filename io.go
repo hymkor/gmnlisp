@@ -244,7 +244,7 @@ func cmdWithOpenFile(ctx context.Context, w *World, list Node) (Node, error) {
 		return nil, fmt.Errorf("invalid :direction %s", toString(direction, PRINT))
 	}
 	newWorld := &World{
-		globals: map[Symbol]Node{symbol: fdNode},
+		globals: _MapScope(map[Symbol]Node{symbol: fdNode}),
 		parent:  w,
 	}
 	return progn(ctx, newWorld, list)

@@ -485,7 +485,7 @@ func handlerCaseSub(ctx context.Context, w *World, caseBlock Node, c Node) (Node
 		return nil, ErrExpectedSymbol
 	}
 	newWorld := &World{
-		globals: map[Symbol]Node{symbol: c},
+		globals: _MapScope(map[Symbol]Node{symbol: c}),
 		parent:  w,
 	}
 	return progn(ctx, newWorld, caseBlock)

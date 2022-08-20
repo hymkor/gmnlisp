@@ -9,9 +9,34 @@ import (
 	"os"
 )
 
+type _Scope interface {
+	Get(Symbol) (Node, bool)
+	Set(Symbol, Node)
+	All(func(Symbol, Node) bool)
+}
+
+type _Variables map[Symbol]Node
+
+func (m _Variables) Get(key Symbol) (Node, bool) {
+	value, ok := m[key]
+	return value, ok
+}
+
+func (m _Variables) Set(key Symbol, value Node) {
+	m[key] = value
+}
+
+func (m _Variables) All(f func(Symbol, Node) bool) {
+	for key, val := range m {
+		if !f(key, val) {
+			return
+		}
+	}
+}
+
 type World struct {
 	parent  *World
-	globals map[Symbol]Node
+	globals _Scope
 }
 
 type Writer struct {
@@ -26,7 +51,7 @@ type _Reader struct {
 
 func (w *World) Get(name Symbol) (Node, error) {
 	for w != nil {
-		if value, ok := w.globals[name]; ok {
+		if value, ok := w.globals.Get(name); ok {
 			return value, nil
 		}
 		w = w.parent
@@ -36,8 +61,8 @@ func (w *World) Get(name Symbol) (Node, error) {
 
 func (w *World) SetOrDefineParameter(name Symbol, value Node) {
 	for w != nil {
-		if _, ok := w.globals[name]; ok || w.parent == nil {
-			w.globals[name] = value
+		if _, ok := w.globals.Get(name); ok || w.parent == nil {
+			w.globals.Set(name, value)
 			return
 		}
 		w = w.parent
@@ -48,15 +73,15 @@ func (w *World) DefineParameter(name Symbol, value Node) {
 	for w.parent != nil {
 		w = w.parent
 	}
-	w.globals[name] = value
+	w.globals.Set(name, value)
 }
 
 func (w *World) DefineVariable(name Symbol, getter func() Node) {
 	for w.parent != nil {
 		w = w.parent
 	}
-	if _, ok := w.globals[name]; !ok {
-		w.globals[name] = getter()
+	if _, ok := w.globals.Get(name); !ok {
+		w.globals.Set(name, getter())
 	}
 }
 
@@ -68,8 +93,8 @@ func (w *World) Set(name Symbol, value Node) error {
 		return nil
 	}
 	for w != nil {
-		if _, ok := w.globals[name]; ok {
-			w.globals[name] = value
+		if _, ok := w.globals.Get(name); ok {
+			w.globals.Set(name, value)
 			return nil
 		}
 		w = w.parent
@@ -155,7 +180,7 @@ func (w *World) Stdin() (*_Reader, error) {
 
 func New() *World {
 	return &World{
-		globals: map[Symbol]Node{
+		globals: _Variables(map[Symbol]Node{
 			"*":                        SpecialF(cmdMulti),
 			"*err-exist*":              &ErrorNode{Value: os.ErrExist},
 			"*err-not-exist*":          &ErrorNode{Value: os.ErrNotExist},
@@ -303,7 +328,7 @@ func New() *World {
 			errorOutput:                stderr,
 			standardInput:              stdin,
 			standardOutput:             stdout,
-		},
+		}),
 	}
 }
 

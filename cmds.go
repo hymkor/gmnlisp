@@ -65,9 +65,10 @@ func cmdGetAllSymbols(_ context.Context, w *World, n Node) (Node, error) {
 	}
 
 	names := []string{}
-	for name := range w.globals {
+	w.globals.All(func(name Symbol, _ Node) bool {
 		names = append(names, string(name))
-	}
+		return true
+	})
 	sort.Strings(names)
 
 	var cons Node = Null
