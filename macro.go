@@ -93,11 +93,11 @@ func cmdDefMacro(ctx context.Context, w *World, n Node) (Node, error) {
 	param := p.param
 	code := p.code
 
-	globals := map[Symbol]Node{}
+	lexical := map[Symbol]Node{}
 	for _, name := range param {
-		globals[name] = _PlaceHolder(name)
+		lexical[name] = _PlaceHolder(name)
 	}
-	nw := &World{globals: _Variables(globals), parent: w}
+	nw := &World{lexical: _Variables(lexical), parent: w}
 
 	code, err = progn(ctx, nw, code)
 	if err != nil {

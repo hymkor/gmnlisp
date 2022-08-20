@@ -108,7 +108,7 @@ func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
 	if err := checkContext(ctx); err != nil {
 		return nil, err
 	}
-	globals := map[Symbol]Node{}
+	lexical := map[Symbol]Node{}
 	foundSlash := false
 	traceCount, traceDo := trace[L.name]
 	if traceDo {
@@ -124,7 +124,7 @@ func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
 			continue
 		}
 		if foundSlash {
-			globals[name] = Null
+			lexical[name] = Null
 			continue
 		}
 		var err error
@@ -133,7 +133,7 @@ func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		globals[name] = value
+		lexical[name] = value
 		if traceDo {
 			fmt.Fprintf(os.Stderr, " %s", toString(value, PRINT))
 		}
@@ -146,9 +146,9 @@ func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
 		return nil, ErrTooManyArguments
 	}
 	if L.rest != "" {
-		globals[L.rest] = n
+		lexical[L.rest] = n
 	}
-	newWorld := &World{globals: _Variables(globals), parent: L.lexical}
+	newWorld := &World{lexical: _Variables(lexical), parent: L.lexical}
 
 	var errEarlyReturns *ErrEarlyReturns
 

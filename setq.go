@@ -161,14 +161,14 @@ func cmdSetf(ctx context.Context, w *World, params Node) (Node, error) {
 	return value, nil
 }
 
-func letValuesToVars(ctx context.Context, w *World, list Node, globals map[Symbol]Node) error {
+func letValuesToVars(ctx context.Context, w *World, list Node, lexical map[Symbol]Node) error {
 	for HasValue(list) {
 		var item Node
 		var err error
 
 		item, list, err = shift(list)
 		if symbol, ok := item.(Symbol); ok {
-			globals[symbol] = Null
+			lexical[symbol] = Null
 			continue
 		}
 		var argv [2]Node
@@ -184,7 +184,7 @@ func letValuesToVars(ctx context.Context, w *World, list Node, globals map[Symbo
 		if err != nil {
 			return err
 		}
-		globals[symbol] = value
+		lexical[symbol] = value
 	}
 	return nil
 }
@@ -195,14 +195,14 @@ func cmdLet(ctx context.Context, w *World, params Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	globals := map[Symbol]Node{}
+	lexical := map[Symbol]Node{}
 
-	if err := letValuesToVars(ctx, w, list, globals); err != nil {
+	if err := letValuesToVars(ctx, w, list, lexical); err != nil {
 		return nil, err
 	}
 
 	newWorld := &World{
-		globals: _Variables(globals),
+		lexical: _Variables(lexical),
 		parent:  w,
 	}
 	return progn(ctx, newWorld, params)
@@ -214,14 +214,14 @@ func cmdLetX(ctx context.Context, w *World, params Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	globals := map[Symbol]Node{}
+	lexical := map[Symbol]Node{}
 
 	newWorld := &World{
-		globals: _Variables(globals),
+		lexical: _Variables(lexical),
 		parent:  w,
 	}
 
-	if err := letValuesToVars(ctx, newWorld, list, globals); err != nil {
+	if err := letValuesToVars(ctx, newWorld, list, lexical); err != nil {
 		return nil, err
 	}
 

@@ -485,7 +485,7 @@ func handlerCaseSub(ctx context.Context, w *World, caseBlock Node, c Node) (Node
 		return nil, ErrExpectedSymbol
 	}
 	newWorld := &World{
-		globals: &_OneVariable{Key: symbol, Value: c},
+		lexical: &_OneVariable{Key: symbol, Value: c},
 		parent:  w,
 	}
 	return progn(ctx, newWorld, caseBlock)

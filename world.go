@@ -59,7 +59,7 @@ func (m *_OneVariable) All(f func(Symbol, Node) bool) {
 
 type World struct {
 	parent  *World
-	globals _Scope
+	lexical _Scope
 }
 
 type Writer struct {
@@ -74,7 +74,7 @@ type _Reader struct {
 
 func (w *World) Get(name Symbol) (Node, error) {
 	for w != nil {
-		if value, ok := w.globals.Get(name); ok {
+		if value, ok := w.lexical.Get(name); ok {
 			return value, nil
 		}
 		w = w.parent
@@ -84,8 +84,8 @@ func (w *World) Get(name Symbol) (Node, error) {
 
 func (w *World) SetOrDefineParameter(name Symbol, value Node) {
 	for w != nil {
-		if _, ok := w.globals.Get(name); ok || w.parent == nil {
-			w.globals.Set(name, value)
+		if _, ok := w.lexical.Get(name); ok || w.parent == nil {
+			w.lexical.Set(name, value)
 			return
 		}
 		w = w.parent
@@ -96,15 +96,15 @@ func (w *World) DefineParameter(name Symbol, value Node) {
 	for w.parent != nil {
 		w = w.parent
 	}
-	w.globals.Set(name, value)
+	w.lexical.Set(name, value)
 }
 
 func (w *World) DefineVariable(name Symbol, getter func() Node) {
 	for w.parent != nil {
 		w = w.parent
 	}
-	if _, ok := w.globals.Get(name); !ok {
-		w.globals.Set(name, getter())
+	if _, ok := w.lexical.Get(name); !ok {
+		w.lexical.Set(name, getter())
 	}
 }
 
@@ -116,8 +116,8 @@ func (w *World) Set(name Symbol, value Node) error {
 		return nil
 	}
 	for w != nil {
-		if _, ok := w.globals.Get(name); ok {
-			w.globals.Set(name, value)
+		if _, ok := w.lexical.Get(name); ok {
+			w.lexical.Set(name, value)
 			return nil
 		}
 		w = w.parent
@@ -203,7 +203,7 @@ func (w *World) Stdin() (*_Reader, error) {
 
 func New() *World {
 	return &World{
-		globals: _Variables(map[Symbol]Node{
+		lexical: _Variables(map[Symbol]Node{
 			"*":                        SpecialF(cmdMulti),
 			"*err-exist*":              &ErrorNode{Value: os.ErrExist},
 			"*err-not-exist*":          &ErrorNode{Value: os.ErrNotExist},

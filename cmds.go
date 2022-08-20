@@ -65,7 +65,7 @@ func cmdGetAllSymbols(_ context.Context, w *World, n Node) (Node, error) {
 	}
 
 	names := []string{}
-	w.globals.All(func(name Symbol, _ Node) bool {
+	w.lexical.All(func(name Symbol, _ Node) bool {
 		names = append(names, string(name))
 		return true
 	})
