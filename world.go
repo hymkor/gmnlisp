@@ -62,6 +62,13 @@ type World struct {
 	lexical _Scope
 }
 
+func (w *World) New(scope _Scope) *World {
+	return &World{
+		parent:  w,
+		lexical: scope,
+	}
+}
+
 type Writer struct {
 	_Dummy
 	io.Writer
