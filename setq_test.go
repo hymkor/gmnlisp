@@ -78,3 +78,10 @@ func TestSetf(t *testing.T) {
 		&Cons{Integer(2), String("B")},
 		&Cons{Integer(3), String("C")})))
 }
+
+func TestDynamic(t *testing.T) {
+	assertEqual(t, `
+		(defdynamic *color* 'red)
+		(defun what-color () (dynamic *color*))
+		(what-color)`, Symbol("red"))
+}

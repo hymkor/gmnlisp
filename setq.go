@@ -269,3 +269,47 @@ func cmdDefparameter(ctx context.Context, w *World, list Node) (Node, error) {
 	w.DefineParameter(symbol, value)
 	return symbol, nil
 }
+
+func cmdDefDynamic(ctx context.Context, w *World, list Node) (Node, error) {
+	var err error
+	var symbolNode Node
+
+	symbolNode, list, err = shift(list)
+	if err != nil {
+		return nil, err
+	}
+	symbol, ok := symbolNode.(Symbol)
+	if !ok {
+		return nil, ErrExpectedSymbol
+	}
+	var value Node
+	value, list, err = w.shiftAndEvalCar(ctx, list)
+	if err != nil {
+		return nil, err
+	}
+	if HasValue(list) {
+		return nil, ErrTooManyArguments
+	}
+
+	w.shared.dynamic.Set(symbol, value)
+	return symbol, nil
+}
+
+func cmdDynamic(ctx context.Context, w *World, list Node) (Node, error) {
+	var err error
+	var symbolNode Node
+
+	symbolNode, list, err = shift(list)
+	if err != nil {
+		return nil, err
+	}
+	symbol, ok := symbolNode.(Symbol)
+	if !ok {
+		return nil, ErrExpectedSymbol
+	}
+	value, ok := w.shared.dynamic.Get(symbol)
+	if !ok {
+		return nil, ErrVariableUnbound
+	}
+	return value, nil
+}
