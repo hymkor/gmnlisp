@@ -107,6 +107,7 @@ Support functions
 `do`,
 `dolist`,
 `dotimes`,
+`elt`,
 `eq`,
 `eql`,
 `equal`,
