@@ -34,6 +34,29 @@ func (m _Variables) All(f func(Symbol, Node) bool) {
 	}
 }
 
+type _OneVariable struct {
+	Key   Symbol
+	Value Node
+}
+
+func (m *_OneVariable) Get(key Symbol) (Node, bool) {
+	if key == m.Key {
+		return m.Value, true
+	}
+	return Null, false
+}
+
+func (m *_OneVariable) Set(key Symbol, value Node) {
+	if key == m.Key {
+		m.Value = value
+	}
+	panic("_OneVariable can be set value")
+}
+
+func (m *_OneVariable) All(f func(Symbol, Node) bool) {
+	f(m.Key, m.Value)
+}
+
 type World struct {
 	parent  *World
 	globals _Scope
