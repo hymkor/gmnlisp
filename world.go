@@ -57,15 +57,21 @@ func (m *_OneVariable) All(f func(Symbol, Node) bool) {
 	f(m.Key, m.Value)
 }
 
+type _Shared struct {
+	dynamic _Variables
+}
+
 type World struct {
 	parent  *World
 	lexical _Scope
+	shared  *_Shared
 }
 
 func (w *World) New(scope _Scope) *World {
 	return &World{
 		parent:  w,
 		lexical: scope,
+		shared:  w.shared,
 	}
 }
 
@@ -210,6 +216,7 @@ func (w *World) Stdin() (*_Reader, error) {
 
 func New() *World {
 	return &World{
+		shared: &_Shared{dynamic: _Variables(map[Symbol]Node{})},
 		lexical: _Variables(map[Symbol]Node{
 			"*":                        SpecialF(cmdMulti),
 			"*err-exist*":              &ErrorNode{Value: os.ErrExist},
