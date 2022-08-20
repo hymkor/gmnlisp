@@ -85,3 +85,10 @@ func TestDynamic(t *testing.T) {
 		(defun what-color () (dynamic *color*))
 		(what-color)`, Symbol("red"))
 }
+
+func TestDynamicLet(t *testing.T) {
+	assertEqual(t, `
+		(defdynamic *color* 'red)
+		(defun what-color () (dynamic *color*))
+		(dynamic-let ((*color* 'green)) (what-color))`, Symbol("green"))
+}

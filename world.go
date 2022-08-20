@@ -271,6 +271,7 @@ func New() *World {
 			"dolist":                   SpecialF(cmdDoList),
 			"dotimes":                  SpecialF(cmdDoTimes),
 			"dynamic":                  SpecialF(cmdDynamic),
+			"dynamic-let":              SpecialF(cmdDynamicLet),
 			"elt":                      &LeftValueF{C: 2, F: funAref},
 			"eq":                       SpecialF(cmdEq),
 			"eql":                      SpecialF(cmdEql),

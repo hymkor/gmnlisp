@@ -313,3 +313,65 @@ func cmdDynamic(ctx context.Context, w *World, list Node) (Node, error) {
 	}
 	return value, nil
 }
+
+func cmdDynamicLet(ctx context.Context, w *World, list Node) (Node, error) {
+	var vars Node
+	var err error
+
+	vars, list, err = shift(list)
+	if err != nil {
+		return nil, err
+	}
+	backups := make(map[Symbol]Node)
+	removes := make(map[Symbol]struct{})
+	defer func() {
+		for key := range removes {
+			delete(w.shared.dynamic, key)
+		}
+		for key, val := range backups {
+			w.shared.dynamic.Set(key, val)
+		}
+	}()
+
+	for HasValue(vars) {
+		var varAndValue Node
+		varAndValue, vars, err = shift(vars)
+		if err != nil {
+			return nil, err
+		}
+		if symbol, ok := varAndValue.(Symbol); ok {
+			if orig, ok := w.shared.dynamic.Get(symbol); ok {
+				backups[symbol] = orig
+			} else {
+				removes[symbol] = struct{}{}
+			}
+			w.shared.dynamic.Set(symbol, Null)
+		} else {
+			var symbolNode Node
+			var value Node
+
+			symbolNode, varAndValue, err = shift(varAndValue)
+			if err != nil {
+				return nil, err
+			}
+			symbol, ok := symbolNode.(Symbol)
+			if !ok {
+				return nil, ErrExpectedSymbol
+			}
+			value, varAndValue, err = w.shiftAndEvalCar(ctx, varAndValue)
+			if err != nil {
+				return nil, err
+			}
+			if HasValue(varAndValue) {
+				return nil, ErrTooManyArguments
+			}
+			if orig, ok := w.shared.dynamic.Get(symbol); ok {
+				backups[symbol] = orig
+			} else {
+				removes[symbol] = struct{}{}
+			}
+			w.shared.dynamic.Set(symbol, value)
+		}
+	}
+	return progn(ctx, w, list)
+}
