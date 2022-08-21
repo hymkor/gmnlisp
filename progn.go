@@ -527,11 +527,7 @@ func matchError(ctx context.Context, w *World, casedSymbol Node, happenError err
 }
 
 func cmdHandlerCase(ctx context.Context, w *World, list Node) (Node, error) {
-	tryCommand, list, err := shift(list)
-	if err != nil {
-		return nil, err
-	}
-	value, happenError := tryCommand.Eval(ctx, w)
+	value, list, happenError := w.shiftAndEvalCar(ctx, list)
 	for HasValue(list) {
 		var caseBlock Node
 		var err error
