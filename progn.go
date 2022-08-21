@@ -585,3 +585,18 @@ func cmdWithHandler(ctx context.Context, w *World, list Node) (Node, error) {
 	}
 	return nil, err
 }
+
+func cmdUnwindProtect(ctx context.Context, w *World, list Node) (Node, error) {
+	var formErr error
+
+	_, list, formErr = w.shiftAndEvalCar(ctx, list)
+
+	value, err := progn(ctx, w, list)
+	if err != nil {
+		return nil, err
+	}
+	if formErr != nil {
+		return nil, formErr
+	}
+	return value, nil
+}

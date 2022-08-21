@@ -358,6 +358,7 @@ func New() *World {
 			"truncate":                 &Function{C: 1, F: funTruncate},
 			"typep":                    &Function{C: 2, F: funTypep},
 			"unless":                   SpecialF(cmdUnless),
+			"unwind-protect":           SpecialF(cmdUnwindProtect),
 			"when":                     SpecialF(cmdWhen),
 			"while":                    SpecialF(cmdWhile),
 			"with-handler":             SpecialF(cmdWithHandler),

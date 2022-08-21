@@ -174,3 +174,25 @@ func TestCatch(t *testing.T) {
 			(equal  0 (foo '(1 2 nil 4)))
 		)`, True)
 }
+
+func TestUnwindProtect(t *testing.T) {
+	assertEqual(t, `
+		(let ((x 0))
+			(and
+				(equalp
+					(catch 'hogehoge
+						(defun foo ()
+							(throw 'hogehoge 10)
+						)
+						(unwind-protect
+							(foo)
+							(setq x 1)
+						)
+					)
+					10
+				)
+				(equalp x 1)
+			)
+		)
+	`, True)
+}
