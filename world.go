@@ -375,11 +375,11 @@ func New() *World {
 func (w *World) shiftAndEvalCar(ctx context.Context, list Node) (Node, Node, error) {
 	first, list, err := shift(list)
 	if err != nil {
-		return nil, nil, err
+		return nil, list, err
 	}
 	value, err := first.Eval(ctx, w)
 	if err != nil {
-		return nil, nil, err
+		return nil, list, err
 	}
 	return value, list, nil
 }
