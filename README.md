@@ -275,8 +275,6 @@ Support functions
 - (incf VAR VALUE)
 - (decf VAR)
 - (decf VAR VALUE)
-- (incf VAR)
-- (incf VAR VALUE)
 
 #### test
 
