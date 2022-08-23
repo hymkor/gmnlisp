@@ -3,7 +3,6 @@ package gmnlisp
 import (
 	"context"
 	"os"
-	"sort"
 )
 
 func cmdQuote(_ context.Context, _ *World, n Node) (Node, error) {
@@ -57,28 +56,6 @@ func cmdEqual(ctx context.Context, w *World, list Node) (Node, error) {
 	return equalSub(ctx, w, list, func(left, right Node) bool {
 		return left.Equals(right, EQUAL)
 	})
-}
-
-func cmdGetAllSymbols(_ context.Context, w *World, n Node) (Node, error) {
-	for w.parent != nil {
-		w = w.parent
-	}
-
-	names := []string{}
-	w.lexical.All(func(name Symbol, _ Node) bool {
-		names = append(names, string(name))
-		return true
-	})
-	sort.Strings(names)
-
-	var cons Node = Null
-	for i := len(names) - 1; i >= 0; i-- {
-		cons = &Cons{
-			Car: String(names[i]),
-			Cdr: cons,
-		}
-	}
-	return cons, nil
 }
 
 func funNot(_ context.Context, w *World, argv []Node) (Node, error) {

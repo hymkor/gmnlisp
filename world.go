@@ -12,7 +12,6 @@ import (
 type _Scope interface {
 	Get(Symbol) (Node, bool)
 	Set(Symbol, Node)
-	All(func(Symbol, Node) bool)
 }
 
 type _Variables map[Symbol]Node
@@ -24,14 +23,6 @@ func (m _Variables) Get(key Symbol) (Node, bool) {
 
 func (m _Variables) Set(key Symbol, value Node) {
 	m[key] = value
-}
-
-func (m _Variables) All(f func(Symbol, Node) bool) {
-	for key, val := range m {
-		if !f(key, val) {
-			return
-		}
-	}
 }
 
 type _OneVariable struct {
@@ -51,10 +42,6 @@ func (m *_OneVariable) Set(key Symbol, value Node) {
 		m.Value = value
 	}
 	panic("_OneVariable can be set value")
-}
-
-func (m *_OneVariable) All(f func(Symbol, Node) bool) {
-	f(m.Key, m.Value)
 }
 
 type _Shared struct {
@@ -197,7 +184,6 @@ func New() *World {
 			"*err-variable-unbound*":   &ErrorNode{Value: ErrVariableUnbound},
 			"+":                        SpecialF(cmdAdd),
 			"-":                        SpecialF(cmdSub),
-			"--get-all-symbols--":      SpecialF(cmdGetAllSymbols),
 			"/":                        SpecialF(cmdDevide),
 			"/=":                       &Function{C: 2, F: funNotEqual},
 			"1+":                       &Function{C: 1, F: funOnePlus},
