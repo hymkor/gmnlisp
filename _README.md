@@ -239,8 +239,6 @@ Support functions
 
 #### Exceptions
 
-- (handler-case FORM (error (c) EXP..) (:no-error (c) EXP..)) like CommonLisp
-
 - (block NAME FORM...)
     - (return-from NAME VALUE)
     - (return VALUE)

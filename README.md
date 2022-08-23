@@ -126,7 +126,6 @@ Support functions
 `format`,
 `funcall`,
 `function`,
-`handler-case`,
 `if`,
 `incf`,
 `integerp`,
@@ -374,8 +373,6 @@ Support functions
 - (read-line [STREAM [EOF-FLAG [EOF-VALUE]]]) like CommonLisp
 
 #### Exceptions
-
-- (handler-case FORM (error (c) EXP..) (:no-error (c) EXP..)) like CommonLisp
 
 - (block NAME FORM...)
     - (return-from NAME VALUE)
