@@ -85,7 +85,8 @@ Support functions
 #### string
 
 - (concatenate 'string {STRING1...})
-- (aref STRING INDEX)
+- (aref SEQUENCE INDEX)
+- (elt SEQUENCE INDEX)
 
 #### List
 
@@ -121,6 +122,10 @@ Support functions
 - (defvar NAME [VALUE])
 - (let (NAME1 NAME2..) STATEMENTS)
 - (let ((NAME1 VALUE1) (NAME2 VALUE2)...) STATEMENTS)
+- (defdyncamic NAME VALUE)
+- (dynamic NAME)
+- (dynamic-let (NAME1 NAME2..) STATEMENTS)
+- (dynamic-let ((NAME1 VALUE1) (NAME2 VALUE2)...) STATEMENTS)
 
 #### Operator
 
