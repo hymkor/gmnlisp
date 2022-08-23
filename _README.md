@@ -55,19 +55,6 @@ integer , float , string , symbol , cons , list , character , t/nil
 Support functions
 -----------------
 
-<%
-(let (name dem)
-    (defun dem ())
-    (foreach name (--get-all-symbols--)
-        (dem)
-        (princ (concatenate 'string "`" name "`"))
-        (defun dem ()
-            (write-line ",")
-        )
-    )
-)
-%>
-
 #### Output functions
 
 - (write STRING [:stream STREAM])
