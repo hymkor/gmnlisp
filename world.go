@@ -59,6 +59,9 @@ func (m *_OneVariable) All(f func(Symbol, Node) bool) {
 
 type _Shared struct {
 	dynamic _Variables
+	stdout  *_Writer
+	errout  *_Writer
+	stdin   *_Reader
 }
 
 type World struct {
@@ -75,7 +78,7 @@ func (w *World) New(scope _Scope) *World {
 	}
 }
 
-type Writer struct {
+type _Writer struct {
 	_Dummy
 	io.Writer
 }
@@ -138,85 +141,51 @@ func (w *World) Set(name Symbol, value Node) error {
 	return ErrVariableUnbound
 }
 
-const (
-	errorOutput    = "*error-output*"
-	standardInput  = "*standard-input*"
-	standardOutput = "*standard-output*"
-)
-
-var (
-	stderr = &Writer{Writer: os.Stderr}
-	stdin  = &_Reader{Reader: bufio.NewReader(os.Stdin)}
-	stdout = &Writer{Writer: os.Stdout}
-)
-
 func cmdStandardOutput(ctx context.Context, w *World, list Node) (Node, error) {
 	if HasValue(list) {
 		return nil, ErrTooManyArguments
 	}
-	return w.Get(standardOutput)
+	return w.shared.stdout, nil
 }
 
 func (w *World) Stdout() (io.Writer, error) {
-	stdout, err := w.Get(standardOutput)
-	if err != nil {
-		return nil, err
-	}
-	_stdout, ok := stdout.(io.Writer)
-	if !ok {
-		return nil, ErrExpectedWriter
-	}
-	return _stdout, nil
+	return w.shared.stdout, nil
 }
 
 func (w *World) SetStdout(writer io.Writer) {
-	w.DefineParameter(standardOutput, Writer{Writer: writer})
+	w.shared.stdout = &_Writer{Writer: writer}
 }
 
 func cmdErrorOutput(ctx context.Context, w *World, list Node) (Node, error) {
 	if HasValue(list) {
 		return nil, ErrTooManyArguments
 	}
-	return w.Get(errorOutput)
+	return w.shared.errout, nil
 }
 
-func (w *World) Stderr() (io.Writer, error) {
-	stderr, err := w.Get(errorOutput)
-	if err != nil {
-		return nil, err
-	}
-	_stderr, ok := stderr.(io.Writer)
-	if !ok {
-		return nil, ErrExpectedWriter
-	}
-	return _stderr, nil
+func (w *World) Errout() (io.Writer, error) {
+	return w.shared.errout, nil
 }
 
-func (w *World) SetStderr(writer io.Writer) {
-	w.DefineParameter(errorOutput, Writer{Writer: writer})
+func (w *World) SetErrout(writer io.Writer) {
+	w.shared.errout = &_Writer{Writer: writer}
 }
 
 func cmdStandardInput(ctx context.Context, w *World, list Node) (Node, error) {
-	if HasValue(list) {
-		return nil, ErrTooManyArguments
-	}
-	return w.Get(standardInput)
+	return w.shared.stdin, nil
 }
 func (w *World) Stdin() (*_Reader, error) {
-	stdin, err := w.Get(standardInput)
-	if err != nil {
-		return nil, err
-	}
-	_stdin, ok := stdin.(*_Reader)
-	if !ok {
-		return nil, ErrExpectedReader
-	}
-	return _stdin, nil
+	return w.shared.stdin, nil
 }
 
 func New() *World {
 	return &World{
-		shared: &_Shared{dynamic: _Variables(map[Symbol]Node{})},
+		shared: &_Shared{
+			dynamic: _Variables(map[Symbol]Node{}),
+			stdin:   &_Reader{Reader: bufio.NewReader(os.Stdin)},
+			stdout:  &_Writer{Writer: os.Stdout},
+			errout:  &_Writer{Writer: os.Stderr},
+		},
 		lexical: _Variables(map[Symbol]Node{
 			"*":                        SpecialF(cmdMulti),
 			"*err-exist*":              &ErrorNode{Value: os.ErrExist},
@@ -339,7 +308,7 @@ func New() *World {
 			"setf":                     SpecialF(cmdSetf),
 			"setq":                     SpecialF(cmdSetq),
 			"split-string":             &Function{C: 2, F: funSplitString},
-			"standard-error":           SpecialF(cmdErrorOutput),
+			"standard-input":           SpecialF(cmdStandardInput),
 			"standard-output":          SpecialF(cmdStandardOutput),
 			"strcase":                  &Function{C: 1, F: funStrCase},
 			"strcat":                   &Function{C: -1, F: funStrCat},
@@ -365,9 +334,6 @@ func New() *World {
 			"write":                    &KWFunction{C: 1, F: funWrite},
 			"write-line":               SpecialF(cmdWriteLine),
 			"zerop":                    &Function{C: 1, F: funZerop},
-			errorOutput:                stderr,
-			standardInput:              stdin,
-			standardOutput:             stdout,
 		}),
 	}
 }
