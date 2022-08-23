@@ -182,7 +182,6 @@ Support functions
 - (dotimes (VAR NUM) EXP1...)
 - (dolist (VAR LIST) EXP1...)
 - (while COND EXP1...)
-- (do ((VAR INIT STEP)...) (COND RESULT) EXP1 EXP2...) like CommonLisp
 - (for ((VAR INIT STEP)...) (COND RESULT) EXP1 EXP2...) like ISLISP
 - (progn EXP1 EXP2...)
 
