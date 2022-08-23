@@ -374,7 +374,7 @@ func cmdDoList(ctx context.Context, w *World, list Node) (Node, error) {
 	return last, nil
 }
 
-func cmdDoAndFor(ctx context.Context, w *World, list Node) (Node, error) {
+func cmdFor(ctx context.Context, w *World, list Node) (Node, error) {
 	// CommonLisp's DO and ISLisp's FOR
 	var vars Node
 	var err error

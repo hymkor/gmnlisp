@@ -77,11 +77,11 @@ func TestCase(t *testing.T) {
 		)`, String("B"))
 }
 
-func TestDoAndFor(t *testing.T) {
+func TestFor(t *testing.T) {
 	assertEqual(t, `
 		(defvar x)
 		(defvar y)
-		(do ((x 0 (1+ x)) (y 0 (+ y 10)))
+		(for ((x 0 (1+ x)) (y 0 (+ y 10)))
 			((= x 5) (+ x y))
 		)`, Integer(55))
 
