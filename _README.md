@@ -96,6 +96,8 @@ Support functions
 - (append LIST...)
 - (find ATOM LIST [:test #'TESTFUNC])
 - (member ATOM LIST [:test #'TESTFUNC])
+- (position EXP LIST [:test #'TESTFUNC]))
+- (assoc OBJ LIST)
 
 #### Cons
 
@@ -108,6 +110,8 @@ Support functions
 - (defvar NAME [VALUE])
 - (let (NAME1 NAME2..) STATEMENTS)
 - (let ((NAME1 VALUE1) (NAME2 VALUE2)...) STATEMENTS)
+- (let\* (NAME1 NAME2..) STATEMENTS)
+- (let\* ((NAME1 VALUE1) (NAME2 VALUE2)...) STATEMENTS)
 - (defdyncamic NAME VALUE)
 - (dynamic NAME)
 - (dynamic-let (NAME1 NAME2..) STATEMENTS)
@@ -135,6 +139,8 @@ Support functions
 - (incf VAR VALUE)
 - (decf VAR)
 - (decf VAR VALUE)
+- (and EXP1 EXP2..)
+- (or EXP1 EXP2..)
 
 #### test
 
@@ -211,6 +217,8 @@ Support functions
     \[:direction :output|:input\]  
     \[:if-does-not-exist\] like CommonLisp
 - (open "filename" "mode") like autolisp
+- (close HANDLE)
+- (command NAME ARG1...)
 
 #### Standard I/O
 
@@ -233,4 +241,5 @@ Support functions
 - (catch TAG FORM)
     - (throw TAG RESULT) like ISLisp
 
+- (exit)
 - (quit)
