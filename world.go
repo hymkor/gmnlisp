@@ -288,7 +288,6 @@ func New() *World {
 			"format":                   defFormat,
 			"funcall":                  SpecialF(cmdFunCall),
 			"function":                 &Function{C: 1, F: funFunction},
-			"handler-case":             SpecialF(cmdHandlerCase),
 			"if":                       SpecialF(cmdIf),
 			"incf":                     SpecialF(cmdIncf),
 			"integerp":                 &Function{C: 1, F: funAnyTypep[Integer]},

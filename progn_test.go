@@ -77,36 +77,6 @@ func TestCase(t *testing.T) {
 		)`, String("B"))
 }
 
-func TestHandlerCaseError(t *testing.T) {
-	assertEqual(t, `
-		(handler-case (with-open-file "not-exists")
-			(error (c)
-				c)
-			(:no-error (c)
-				"SUCCESS")
-			)`, &ErrorNode{Value: ErrTooFewArguments})
-}
-
-func TestHandlerCaseSpecifyError(t *testing.T) {
-	assertEqual(t, `
-		(handler-case (with-open-file "not-exists")
-			(*err-too-few-arguments* (c)
-				1)
-			(:no-error (c)
-				0)
-			)`, Integer(1))
-}
-
-func TestHandlerCaseNoError(t *testing.T) {
-	assertEqual(t, `
-		(handler-case (+ 1 2)
-			(error ()
-				"ERROR FOUND")
-			(:no-error (c)
-				c)
-		)`, Integer(3))
-}
-
 func TestDoAndFor(t *testing.T) {
 	assertEqual(t, `
 		(defvar x)

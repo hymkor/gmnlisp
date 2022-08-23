@@ -526,41 +526,6 @@ func matchError(ctx context.Context, w *World, casedSymbol Node, happenError err
 	return errors.Is(happenError, errNode.Value), nil
 }
 
-func cmdHandlerCase(ctx context.Context, w *World, list Node) (Node, error) {
-	value, list, happenError := w.shiftAndEvalCar(ctx, list)
-	for HasValue(list) {
-		var caseBlock Node
-		var err error
-
-		caseBlock, list, err = shift(list)
-		if err != nil {
-			return nil, err
-		}
-		casedError, caseBlock, err := shift(caseBlock)
-		if err != nil {
-			return nil, err
-		}
-		ok, err := matchError(ctx, w, casedError, happenError)
-		if err != nil {
-			return nil, err
-		}
-		if ok {
-			value, err := handlerCaseSub(ctx, w, caseBlock, &ErrorNode{Value: happenError})
-			if err != nil {
-				return nil, fmt.Errorf("error: %w", err)
-			}
-			return value, nil
-		} else if happenError == nil && casedError == Keyword(":no-error") {
-			value, err := handlerCaseSub(ctx, w, caseBlock, value)
-			if err != nil {
-				return nil, fmt.Errorf(":no-error: %w", err)
-			}
-			return value, nil
-		}
-	}
-	return Null, nil
-}
-
 func cmdWithHandler(ctx context.Context, w *World, list Node) (Node, error) {
 	// ISLisp
 	handlerNode, list, err := w.shiftAndEvalCar(ctx, list)
