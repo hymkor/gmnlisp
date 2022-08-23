@@ -69,7 +69,6 @@ Support functions
 #### string
 
 - (concatenate 'string {STRING1...})
-- (aref SEQUENCE INDEX)
 - (elt SEQUENCE INDEX)
 
 #### List
