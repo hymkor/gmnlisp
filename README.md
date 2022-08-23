@@ -60,9 +60,6 @@ Support functions
 `*err-too-many-arguments*`,
 `*err-too-short-tokens*`,
 `*err-variable-unbound*`,
-`*error-output*`,
-`*standard-input*`,
-`*standard-output*`,
 `+`,
 `-`,
 `--get-all-symbols--`,
@@ -177,7 +174,7 @@ Support functions
 `setf`,
 `setq`,
 `split-string`,
-`standard-error`,
+`standard-input`,
 `standard-output`,
 `strcase`,
 `strcat`,
@@ -361,11 +358,9 @@ Support functions
 
 #### Standard I/O
 
-- \*standard-input\* like CommonLisp
-- \*standard-output\* like CommonLisp
-- (standard-output) like ISLisp
-- \*error-output\* like CommonLisp
-- (error-output) like ISLisp
+- (standard-input)
+- (standard-output)
+- (error-output)
 
 #### Input functions
 

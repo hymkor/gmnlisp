@@ -226,11 +226,9 @@ Support functions
 
 #### Standard I/O
 
-- \*standard-input\* like CommonLisp
-- \*standard-output\* like CommonLisp
-- (standard-output) like ISLisp
-- \*error-output\* like CommonLisp
-- (error-output) like ISLisp
+- (standard-input)
+- (standard-output)
+- (error-output)
 
 #### Input functions
 
