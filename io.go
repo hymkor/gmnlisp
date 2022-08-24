@@ -104,40 +104,57 @@ func chomp(s string) string {
 	return s
 }
 
-var defReadLine = &Function{Max: 3, F: funReadLine}
+type _ReadStringer interface {
+	io.Reader
+	ReadString(byte) (string, error)
+}
 
-func funReadLine(_ context.Context, w *World, argv []Node) (Node, error) {
-	type ReadStringer interface {
-		ReadString(byte) (string, error)
+type _StreamInput struct {
+	reader   _ReadStringer
+	eofFlag  bool
+	eofValue Node
+}
+
+func newStreamInput(w *World, argv []Node) (*_StreamInput, error) {
+	this := &_StreamInput{
+		reader:   nil,
+		eofFlag:  true,
+		eofValue: Null,
 	}
-	var reader ReadStringer
-	var eofFlag bool = true
-	var eofValue Node = Null
-
 	switch len(argv) {
 	default:
 		return nil, ErrTooManyArguments
 	case 3:
-		eofValue = argv[2]
+		this.eofValue = argv[2]
 		fallthrough
 	case 2:
-		eofFlag = HasValue(argv[1])
+		this.eofFlag = HasValue(argv[1])
 		fallthrough
 	case 1:
 		var ok bool
-		reader, ok = argv[0].(ReadStringer)
+		this.reader, ok = argv[0].(_ReadStringer)
 		if !ok {
 			return nil, fmt.Errorf("Expected Reader `%s`", toString(argv[0], PRINT))
 		}
 	case 0:
-		reader = w.Stdin()
+		this.reader = w.Stdin()
 	}
-	s, err := reader.ReadString('\n')
+	return this, nil
+}
+
+var defReadLine = &Function{Max: 3, F: funReadLine}
+
+func funReadLine(_ context.Context, w *World, argv []Node) (Node, error) {
+	stream, err := newStreamInput(w, argv)
+	if err != nil {
+		return nil, err
+	}
+	s, err := stream.reader.ReadString('\n')
 	if err == io.EOF {
-		if eofFlag {
+		if stream.eofFlag {
 			return Null, io.EOF
 		}
-		return eofValue, nil
+		return stream.eofValue, nil
 	}
 	return String(chomp(s)), err
 }
