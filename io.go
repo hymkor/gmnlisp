@@ -246,3 +246,11 @@ func cmdWithOpenFile(ctx context.Context, w *World, list Node) (Node, error) {
 	newWorld := w.New(&_OneVariable{Key: symbol, Value: fdNode})
 	return progn(ctx, newWorld, list)
 }
+
+func funCreateStringInputStream(ctx context.Context, w *World, list []Node) (Node, error) {
+	s, ok := list[0].(String)
+	if !ok {
+		return nil, ErrExpectedString
+	}
+	return _Reader{Reader: bufio.NewReader(strings.NewReader(string(s)))}, nil
+}

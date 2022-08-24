@@ -108,3 +108,11 @@ func TestTypep(t *testing.T) {
 func TestReadFromString(t *testing.T) {
 	assertEqual(t, `(read-from-string "(1 2 3)")`, List(Integer(1), Integer(2), Integer(3)))
 }
+
+func TestCreateStringInputStream(t *testing.T) {
+	assertEqual(t, `
+		(let ((fd (create-string-input-stream "1\n2\n3")))
+			(read-line fd)
+			(read-line fd)
+		)`, String("2"))
+}
