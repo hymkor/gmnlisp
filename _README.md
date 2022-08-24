@@ -68,13 +68,19 @@ Support functions
 #### float
 
 - (truncate REAL)
+- (parse-integer STRING)
 
 #### string
 
+- (split-string STRING SEP)
+- (strcase STRING)
+- (strcat STRING1 STRING2...)
+- (strlen STRING)
+- (substr STRING START LENGTH)
 - (concatenate 'string {STRING1...})
 - (elt SEQUENCE INDEX)
 
-#### List
+#### List and Sequence
 
 - (quote {LIST|ATOM}...)
 - '({LIST|ATOM}...)
@@ -93,11 +99,15 @@ Support functions
 - (nth INDEX LIST)
 - (nthcdr INDX LIST)
 - (length LIST)
+- (last LIST)
+- (reverse LIST)
 - (append LIST...)
 - (find ATOM LIST [:test #'TESTFUNC])
 - (member ATOM LIST [:test #'TESTFUNC])
 - (position EXP LIST [:test #'TESTFUNC]))
 - (assoc OBJ LIST)
+- (subst NEWITEM OLDITEM LIST)
+- (subseq SEQUENCE INDEX)
 
 #### Cons
 
@@ -107,6 +117,9 @@ Support functions
 
 - (defparameter NAME VALUE)
 - (setq NAME VALUE)
+- (setf EXP1 EXP2 ...)
+- (replaca CONS-EXP CAR-NEWVALUE)
+- (replacd CONS-EXP CDR-NEWVALUE)
 - (defvar NAME [VALUE])
 - (let (NAME1 NAME2..) STATEMENTS)
 - (let ((NAME1 VALUE1) (NAME2 VALUE2)...) STATEMENTS)
@@ -133,6 +146,8 @@ Support functions
 - (- EXP1 EXP2...)
 - (\* EXP1 EXP2...)
 - (/ EXP1 EXP2...)
+- (mod EXP1 EXP2)
+- (rem EXP1 EXP2)
 - (1+ EXP)
 - (1- EXP)
 - (incf VAR)
@@ -141,6 +156,7 @@ Support functions
 - (decf VAR VALUE)
 - (and EXP1 EXP2..)
 - (or EXP1 EXP2..)
+- (not EXP)
 
 #### test
 
@@ -179,6 +195,7 @@ Support functions
 - (while COND EXP1...)
 - (for ((VAR INIT STEP)...) (COND RESULT) EXP1 EXP2...) like ISLISP
 - (progn EXP1 EXP2...)
+- (foreach (ITEMS) FORMS...)
 
 #### Functions
 
@@ -213,14 +230,14 @@ Support functions
 
 #### File I/O
 
-- (with-open-file (HANDLER FILENAME  
+- (with-open-file (HANDLE FILENAME  
     \[:direction :output|:input\]  
     \[:if-does-not-exist\] like CommonLisp
 - (open "filename" "mode") like autolisp
 - (close HANDLE)
 - (command NAME ARG1...)
 
-#### Standard I/O
+#### Standard I/O Handle
 
 - (standard-input)
 - (standard-output)
@@ -240,6 +257,8 @@ Support functions
 - (unwind-protect FORM CLEANUP-FORM...)  like ISLisp
 - (catch TAG FORM)
     - (throw TAG RESULT) like ISLisp
+
+#### Quit
 
 - (exit)
 - (quit)
