@@ -233,6 +233,7 @@ Support functions
 - (open "filename" "mode") like autolisp
 - (close HANDLE)
 - (command NAME ARG1...)
+- (create-string-input-stream STRING)
 
 #### Standard I/O Handle
 
