@@ -51,3 +51,12 @@ func TestWithOpenFile(t *testing.T) {
 
 	os.Remove("datafile")
 }
+
+func TestCreateStringOutputStream(t *testing.T) {
+	assertEqual(t, `
+		(let ((str (create-string-output-stream)))
+			(format str "hello")
+			(format str "world")
+			(get-output-stream-string str))`,
+		String("helloworld"))
+}

@@ -254,3 +254,19 @@ func funCreateStringInputStream(ctx context.Context, w *World, list []Node) (Nod
 	}
 	return _Reader{Reader: bufio.NewReader(strings.NewReader(string(s)))}, nil
 }
+
+func cmdCreateStringOutputStream(ctx context.Context, w *World, list Node) (Node, error) {
+	type StringBuilder struct {
+		_Dummy
+		*strings.Builder
+	}
+	return &StringBuilder{Builder: &strings.Builder{}}, nil
+}
+
+func funGetOutputStreamString(ctx context.Context, w *World, list []Node) (Node, error) {
+	stringer, ok := list[0].(fmt.Stringer)
+	if !ok {
+		return nil, ErrNotSupportType
+	}
+	return String(string(stringer.String())), nil
+}
