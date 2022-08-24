@@ -237,6 +237,8 @@ Support functions
 - (close HANDLE)
 - (command NAME ARG1...)
 - (create-string-input-stream STRING)
+- (create-string-output-stream)
+- (get-output-stream-string STRSTREAM)
 
 #### Standard I/O Handle
 
