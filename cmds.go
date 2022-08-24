@@ -84,7 +84,8 @@ func funNotEqual(_ context.Context, _ *World, argv []Node) (Node, error) {
 	return True, nil
 }
 
-func funRead(_ context.Context, _ *World, args []Node) (Node, error) {
+func funReadFromString(_ context.Context, _ *World, args []Node) (Node, error) {
+	// compatible with autolisp's (read)
 	script, ok := args[0].(String)
 	if !ok {
 		return nil, ErrExpectedString
