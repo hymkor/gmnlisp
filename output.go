@@ -33,10 +33,7 @@ func getWriterAndString(ctx context.Context, w *World, n Node) (io.Writer, Strin
 			return nil, emptyString, ErrTooManyArguments
 		}
 	} else {
-		writer, err = w.Stdout()
-		if err != nil {
-			return nil, emptyString, err
-		}
+		writer = w.Stdout()
 	}
 	return writer, s, nil
 }
@@ -48,12 +45,7 @@ func funWrite(ctx context.Context, w *World, args []Node, kwargs map[Keyword]Nod
 			writer = _writer
 		}
 	} else {
-		var err error
-
-		writer, err = w.Stdout()
-		if err != nil {
-			return nil, err
-		}
+		writer = w.Stdout()
 	}
 	args[0].PrintTo(writer, PRINT)
 	return args[0], nil
@@ -74,11 +66,7 @@ func funTerpri(ctx context.Context, w *World, argv []Node) (Node, error) {
 		return nil, ErrTooManyArguments
 	}
 	if len(argv) <= 0 {
-		var err error
-		out, err = w.Stdout()
-		if err != nil {
-			return nil, err
-		}
+		out = w.Stdout()
 	} else {
 		var ok bool
 		out, ok = argv[0].(io.Writer)
@@ -91,11 +79,7 @@ func funTerpri(ctx context.Context, w *World, argv []Node) (Node, error) {
 }
 
 func cmdPrinX(ctx context.Context, w *World, argv []Node, f func(node Node, out io.Writer)) (Node, error) {
-	out, err := w.Stdout()
-	if err != nil {
-		return nil, err
-	}
-	f(argv[0], out)
+	f(argv[0], w.Stdout())
 	return argv[0], nil
 }
 

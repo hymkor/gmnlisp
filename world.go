@@ -135,8 +135,8 @@ func cmdStandardOutput(ctx context.Context, w *World, list Node) (Node, error) {
 	return w.shared.stdout, nil
 }
 
-func (w *World) Stdout() (io.Writer, error) {
-	return w.shared.stdout, nil
+func (w *World) Stdout() io.Writer {
+	return w.shared.stdout
 }
 
 func (w *World) SetStdout(writer io.Writer) {
@@ -150,8 +150,8 @@ func cmdErrorOutput(ctx context.Context, w *World, list Node) (Node, error) {
 	return w.shared.errout, nil
 }
 
-func (w *World) Errout() (io.Writer, error) {
-	return w.shared.errout, nil
+func (w *World) Errout() io.Writer {
+	return w.shared.errout
 }
 
 func (w *World) SetErrout(writer io.Writer) {
@@ -161,8 +161,8 @@ func (w *World) SetErrout(writer io.Writer) {
 func cmdStandardInput(ctx context.Context, w *World, list Node) (Node, error) {
 	return w.shared.stdin, nil
 }
-func (w *World) Stdin() (*_Reader, error) {
-	return w.shared.stdin, nil
+func (w *World) Stdin() *_Reader {
+	return w.shared.stdin
 }
 
 func New() *World {

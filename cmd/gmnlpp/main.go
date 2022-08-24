@@ -100,10 +100,7 @@ func replaceReader(lisp *gmnlisp.World, r io.Reader, w, sourceOut io.Writer) (er
 
 	sourceOut.Write(source)
 
-	orgStdout, err := lisp.Stdout()
-	if err != nil {
-		return err
-	}
+	orgStdout := lisp.Stdout()
 	lisp.SetStdout(bw)
 
 	defer func() {

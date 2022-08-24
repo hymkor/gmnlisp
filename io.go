@@ -130,11 +130,7 @@ func funReadLine(_ context.Context, w *World, argv []Node) (Node, error) {
 			return nil, fmt.Errorf("Expected Reader `%s`", toString(argv[0], PRINT))
 		}
 	case 0:
-		var err error
-		reader, err = w.Stdin()
-		if err != nil {
-			return nil, err
-		}
+		reader = w.Stdin()
 	}
 	s, err := reader.ReadString('\n')
 	if err == io.EOF {
@@ -165,14 +161,10 @@ func funCommand(ctx context.Context, w *World, list []Node) (Node, error) {
 		argv[i] = buffer.String()
 	}
 
-	var err error
 	cmd := exec.CommandContext(ctx, argv[0], argv[1:]...)
-	cmd.Stdout, err = w.Stdout()
-	if err != nil {
-		return nil, err
-	}
-	cmd.Stderr = os.Stderr
-	cmd.Stdin = os.Stdin
+	cmd.Stdout = w.Stdout()
+	cmd.Stderr = w.Errout()
+	cmd.Stdin = w.Stdin()
 	return Null, cmd.Run()
 }
 
