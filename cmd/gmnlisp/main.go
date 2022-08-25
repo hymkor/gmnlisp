@@ -87,7 +87,7 @@ func interactive(lisp *gmnlisp.World) error {
 		history.Add(line)
 		buffer.WriteString(line)
 
-		nodes, err := gmnlisp.ReadString(buffer.String())
+		nodes, err := gmnlisp.ReadAll(strings.NewReader(buffer.String()))
 		if err == gmnlisp.ErrTooShortTokens {
 			editor.Prompt = func() (int, error) {
 				return fmt.Print("> ")

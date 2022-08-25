@@ -3,6 +3,7 @@ package gmnlisp
 import (
 	"context"
 	"os"
+	"strings"
 )
 
 func cmdQuote(_ context.Context, _ *World, n Node) (Node, error) {
@@ -90,7 +91,7 @@ func funReadFromString(_ context.Context, _ *World, args []Node) (Node, error) {
 	if !ok {
 		return nil, ErrExpectedString
 	}
-	nodes, err := ReadString(string(script))
+	nodes, err := ReadAll(strings.NewReader(string(script)))
 	if err != nil {
 		return nil, err
 	}

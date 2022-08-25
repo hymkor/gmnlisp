@@ -1,7 +1,6 @@
 package gmnlisp
 
 import (
-	"bytes"
 	"fmt"
 	"io"
 	"regexp"
@@ -149,12 +148,4 @@ func ReadAll(rs io.RuneScanner) ([]Node, error) {
 		result = append(result, token)
 	}
 	return result, nil
-}
-
-func ReadString(s string) ([]Node, error) {
-	return ReadAll(strings.NewReader(s))
-}
-
-func ReadBytes(bin []byte) ([]Node, error) {
-	return ReadAll(bytes.NewReader(bin))
 }

@@ -2,11 +2,13 @@ package gmnlisp
 
 import (
 	"bufio"
+	"bytes"
 	"context"
 	"fmt"
 	"io"
 	"math"
 	"os"
+	"strings"
 )
 
 type _Scope interface {
@@ -373,7 +375,7 @@ func (w *World) InterpretNodes(ctx context.Context, ns []Node) (Node, error) {
 }
 
 func (w *World) Interpret(ctx context.Context, code string) (Node, error) {
-	compiled, err := ReadString(code)
+	compiled, err := ReadAll(strings.NewReader(code))
 	if err != nil {
 		return nil, err
 	}
@@ -381,7 +383,7 @@ func (w *World) Interpret(ctx context.Context, code string) (Node, error) {
 }
 
 func (w *World) InterpretBytes(ctx context.Context, code []byte) (Node, error) {
-	compiled, err := ReadBytes(code)
+	compiled, err := ReadAll(bytes.NewReader(code))
 	if err != nil {
 		return nil, err
 	}
