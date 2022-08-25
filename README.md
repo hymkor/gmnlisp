@@ -245,8 +245,9 @@ Support functions
 
 #### Input functions
 
+- (read [STREAM [EOF-FLAG [EOF-VALUE]]])
+- (read-line [STREAM [EOF-FLAG [EOF-VALUE]]])
 - (read-from-string [STRING]) == autolisp's read
-- (read-line [STREAM [EOF-FLAG [EOF-VALUE]]]) like CommonLisp
 
 #### Exceptions
 
