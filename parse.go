@@ -41,13 +41,13 @@ var escapeSequenceReplacer = strings.NewReplacer(
 	"\\\"", "\"",
 )
 
-func readNode(tokenGetter func() (string, error)) (Node, error) {
-	token, err := tokenGetter()
+func readNode(rs io.RuneScanner) (Node, error) {
+	token, err := ReadToken(rs)
 	if err != nil {
 		return nil, err
 	}
 	if token == "'" {
-		quoted, err := readNode(tokenGetter)
+		quoted, err := readNode(rs)
 		if err != nil {
 			if err == io.EOF {
 				return nil, ErrTooShortTokens
@@ -57,7 +57,7 @@ func readNode(tokenGetter func() (string, error)) (Node, error) {
 		return &Cons{Car: Symbol("quote"), Cdr: &Cons{Car: quoted, Cdr: Null}}, nil
 	}
 	if token == "#'" {
-		function, err := readNode(tokenGetter)
+		function, err := readNode(rs)
 		if err != nil {
 			if err == io.EOF {
 				return nil, ErrTooShortTokens
@@ -76,7 +76,7 @@ func readNode(tokenGetter func() (string, error)) (Node, error) {
 				return nil, err
 			}
 			var node1 Node
-			node1, err = readNode(tokenGetter)
+			node1, err = readNode(rs)
 			if err != nil {
 				if err == io.EOF {
 					return nil, ErrTooShortTokens
@@ -136,11 +136,10 @@ func readNode(tokenGetter func() (string, error)) (Node, error) {
 	return Symbol(token), nil
 }
 
-func Read(r io.RuneReader) ([]Node, error) {
-	tokenGetter := newTokenizer(r)
+func Read(rs io.RuneScanner) ([]Node, error) {
 	result := []Node{}
 	for {
-		token, err := readNode(tokenGetter)
+		token, err := readNode(rs)
 		if err != nil {
 			if err == io.EOF {
 				return result, nil
