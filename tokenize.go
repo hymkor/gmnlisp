@@ -7,7 +7,7 @@ import (
 	"unicode"
 )
 
-func readtoken(r io.RuneScanner) (string, error) {
+func readtokenWord(r io.RuneScanner) (string, error) {
 	var buffer bytes.Buffer
 
 	lastRune, _, err := r.ReadRune()
@@ -40,7 +40,7 @@ func readtoken(r io.RuneScanner) (string, error) {
 	}
 }
 
-func ReadToken(r io.RuneScanner) (string, error) {
+func readToken(r io.RuneScanner) (string, error) {
 	for {
 		lastRune, _, err := r.ReadRune()
 		if err != nil {
@@ -61,7 +61,7 @@ func ReadToken(r io.RuneScanner) (string, error) {
 		}
 		r.UnreadRune()
 		var token string
-		token, err = readtoken(r)
+		token, err = readtokenWord(r)
 		if token != "" {
 			return token, nil
 		}

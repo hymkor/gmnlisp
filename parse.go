@@ -42,7 +42,7 @@ var escapeSequenceReplacer = strings.NewReplacer(
 )
 
 func readNode(rs io.RuneScanner) (Node, error) {
-	token, err := ReadToken(rs)
+	token, err := readToken(rs)
 	if err != nil {
 		return nil, err
 	}
