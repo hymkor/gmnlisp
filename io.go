@@ -167,7 +167,7 @@ func funRead(_ context.Context, w *World, argv []Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	value, err := readNode(stream.reader)
+	value, err := ReadNode(stream.reader)
 	if err == io.EOF && !stream.eofFlag {
 		return stream.eofValue, nil
 	}
