@@ -196,7 +196,7 @@ func funCommand(ctx context.Context, w *World, list []Node) (Node, error) {
 	cmd := exec.CommandContext(ctx, argv[0], argv[1:]...)
 	cmd.Stdout = w.Stdout()
 	cmd.Stderr = w.Errout()
-	cmd.Stdin = w.Stdin()
+	cmd.Stdin = os.Stdin // w.Stdin()
 	return Null, cmd.Run()
 }
 
