@@ -10,14 +10,14 @@ import (
 func readtokenWord(r io.RuneScanner) (string, error) {
 	var buffer bytes.Buffer
 
-	lastRune, _, err := r.ReadRune()
-	if err != nil {
-		return "", err
-	}
-
 	quote := false
 	lastLastRune := '\u0000'
 	for {
+		lastRune, _, err := r.ReadRune()
+		if err != nil {
+			return buffer.String(), err
+		}
+
 		if !quote {
 			if lastRune == ')' || lastRune == '(' || lastRune == ';' || unicode.IsSpace(lastRune) {
 				r.UnreadRune()
@@ -33,10 +33,6 @@ func readtokenWord(r io.RuneScanner) (string, error) {
 			return buffer.String(), err
 		}
 		lastLastRune = lastRune
-		lastRune, _, err = r.ReadRune()
-		if err != nil {
-			return buffer.String(), err
-		}
 	}
 }
 
