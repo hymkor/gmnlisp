@@ -106,6 +106,7 @@ func chomp(s string) string {
 
 type _ReadStringer interface {
 	io.Reader
+	io.RuneScanner
 	ReadString(byte) (string, error)
 }
 
@@ -157,6 +158,20 @@ func funReadLine(_ context.Context, w *World, argv []Node) (Node, error) {
 		return stream.eofValue, nil
 	}
 	return String(chomp(s)), err
+}
+
+var defRead = &Function{Max: 3, F: funRead}
+
+func funRead(_ context.Context, w *World, argv []Node) (Node, error) {
+	stream, err := newStreamInput(w, argv)
+	if err != nil {
+		return nil, err
+	}
+	value, err := readNode(stream.reader)
+	if err == io.EOF && !stream.eofFlag {
+		return stream.eofValue, nil
+	}
+	return value, err
 }
 
 func funClose(_ context.Context, _ *World, argv []Node) (Node, error) {
