@@ -7,17 +7,21 @@ import (
 	"strings"
 )
 
-func funStrCat(ctx context.Context, w *World, list []Node) (Node, error) {
-	// from autolisp
-	var buffer strings.Builder
+func funStringAppend(ctx context.Context, w *World, list []Node) (Node, error) {
+	length := 0
 	for _, n := range list {
 		str, ok := n.(String)
 		if !ok {
 			return nil, ErrExpectedString
 		}
-		buffer.WriteString(string(str))
+		length += len(str)
 	}
-	return String(buffer.String()), nil
+	buffer := make([]Rune, 0, length)
+	for _, n := range list {
+		str := n.(String)
+		buffer = append(buffer, []Rune(str)...)
+	}
+	return String(buffer), nil
 }
 
 func funStrLen(ctx context.Context, w *World, argv []Node) (Node, error) {

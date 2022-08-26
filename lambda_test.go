@@ -104,7 +104,7 @@ func TestApply(t *testing.T) {
 func TestRest(t *testing.T) {
 	assertEqual(t, `
 		(defun cat (left &rest args)
-		  (apply #'strcat  left args)
+		  (apply #'string-append  left args)
 		)
 		(cat "1" "2" "3" "4" "5")`, String("12345"))
 }
