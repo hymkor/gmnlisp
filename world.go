@@ -303,7 +303,6 @@ func New() *World {
 			"strcase":                     &Function{C: 1, F: funStrCase},
 			"string-append":               &Function{C: -1, F: funStringAppend},
 			"stringp":                     &Function{C: 1, F: funAnyTypep[String]},
-			"strlen":                      &Function{C: 1, F: funStrLen},
 			"subseq":                      &LeftValueF{C: -1, F: funSubSeq},
 			"subst":                       &Function{C: 3, F: funSubst},
 			"substr":                      SpecialF(cmdSubStr),

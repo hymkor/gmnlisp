@@ -24,15 +24,6 @@ func funStringAppend(ctx context.Context, w *World, list []Node) (Node, error) {
 	return String(buffer), nil
 }
 
-func funStrLen(ctx context.Context, w *World, argv []Node) (Node, error) {
-	// from autolisp
-	str, ok := argv[0].(String)
-	if !ok {
-		return nil, ErrExpectedString
-	}
-	return Integer(len(string(str))), nil
-}
-
 func funStrCase(ctx context.Context, w *World, argv []Node) (Node, error) {
 	// from autolisp
 	str, ok := argv[0].(String)
