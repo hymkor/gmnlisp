@@ -11,7 +11,7 @@ func TestLet(t *testing.T) {
 
 func TestDefvar(t *testing.T) {
 	assertEqual(t, `(defvar a "ahaha")`, Symbol("a"))
-	assertEqual(t, `(defvar a "ahaha")(defvar a "ihihi") a`, UTF32String("ahaha"))
+	assertEqual(t, `(defvar a "ahaha")(defvar a "ihihi") a`, String("ahaha"))
 
 	assertEqual(t, `
 		(defvar counter 0)
@@ -22,7 +22,7 @@ func TestDefvar(t *testing.T) {
 
 func TestDefparameter(t *testing.T) {
 	assertEqual(t, `(defparameter a "ahaha")`, Symbol("a"))
-	assertEqual(t, `(defparameter a "ahaha")(defparameter a "ihihi") a`, UTF32String("ihihi"))
+	assertEqual(t, `(defparameter a "ahaha")(defparameter a "ihihi") a`, String("ihihi"))
 }
 
 func TestSetf(t *testing.T) {
@@ -63,9 +63,9 @@ func TestSetf(t *testing.T) {
 		(defvar m (list (cons 1 "A") (cons 2 "B") (cons 3 "C")))
 		(setf (cdr (assoc 1 m)) "X")
 		m`, List(
-		&Cons{Integer(1), UTF32String("X")},
-		&Cons{Integer(2), UTF32String("B")},
-		&Cons{Integer(3), UTF32String("C")}))
+		&Cons{Integer(1), String("X")},
+		&Cons{Integer(2), String("B")},
+		&Cons{Integer(3), String("C")}))
 
 	(assertEqual(t, `
 		(let ((m '((1 . "A") (2 . "B") (3 . "C"))) pair )
@@ -74,9 +74,9 @@ func TestSetf(t *testing.T) {
 		  )
 		  m
 		)`, List(
-		&Cons{Integer(1), UTF32String("X")},
-		&Cons{Integer(2), UTF32String("B")},
-		&Cons{Integer(3), UTF32String("C")})))
+		&Cons{Integer(1), String("X")},
+		&Cons{Integer(2), String("B")},
+		&Cons{Integer(3), String("C")})))
 }
 
 func TestDynamic(t *testing.T) {

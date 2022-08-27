@@ -22,7 +22,7 @@ func assertEqual(t *testing.T, equation string, expect Node) {
 
 func TestCmdCond(t *testing.T) {
 	assertEqual(t, `(cond (nil 1) (t 2))`, Integer(2))
-	assertEqual(t, `(cond ((equal 1 1) "a") ((equal 1 2) "b"))`, UTF32String("a"))
+	assertEqual(t, `(cond ((equal 1 1) "a") ((equal 1 2) "b"))`, String("a"))
 }
 
 func TestProgn(t *testing.T) {
@@ -41,7 +41,7 @@ func TestWorld(t *testing.T) {
 		t.Fatal(err.Error())
 		return
 	}
-	s, ok := value.(UTF32String)
+	s, ok := value.(String)
 	if !ok {
 		t.Fatal("type mismatch")
 		return

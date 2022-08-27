@@ -12,7 +12,7 @@ func TestIo(t *testing.T) {
 				  line (read-line fd))
 			(close fd)
 			line
-		)`, UTF32String("MIT License"))
+		)`, String("MIT License"))
 
 	assertEqual(t, `
 		(let ((fd (open (quote "temp.txt") "w")))
@@ -22,7 +22,7 @@ func TestIo(t *testing.T) {
 			(setq fd (open "temp.txt" "r")
 			      line (read-line fd))
 			(close fd)
-			line)`, UTF32String("hogehoge"))
+			line)`, String("hogehoge"))
 
 	os.Remove("temp.txt")
 
@@ -39,7 +39,7 @@ func TestWithOpenFile(t *testing.T) {
 			(with-open-file (r "datafile")
 				(setq output (read-line r))
 			)
-			output)`, UTF32String("hogehoge"))
+			output)`, String("hogehoge"))
 
 	assertEqual(t, `
 		(with-open-file (r "hogehogehoge" :if-does-not-exist "ERROR")
@@ -47,7 +47,7 @@ func TestWithOpenFile(t *testing.T) {
 				"FAILURE"
 				"SUCCESS"
 			)
-		)`, UTF32String("FAILURE"))
+		)`, String("FAILURE"))
 
 	os.Remove("datafile")
 }
@@ -58,7 +58,7 @@ func TestCreateStringOutputStream(t *testing.T) {
 			(format str "hello")
 			(format str "world")
 			(get-output-stream-string str))`,
-		UTF32String("helloworld"))
+		String("helloworld"))
 }
 
 func TestRead(t *testing.T) {

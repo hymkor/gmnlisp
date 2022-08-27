@@ -127,7 +127,8 @@ func ReadNode(rs io.RuneScanner) (Node, error) {
 			token = token[:L-1]
 		}
 		token = escapeSequenceReplacer.Replace(token)
-		return UTF32String(token), nil
+		// UTF32String or UTF8String
+		return String(token), nil
 	}
 	if token == "nil" {
 		return Null, nil
