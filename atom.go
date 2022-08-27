@@ -49,7 +49,8 @@ var Null Node = _NullType{}
 type UTF32String []Rune
 type UTF8String []byte
 
-type String = UTF32String
+type String = UTF8String
+type _StringBuilder = _UTF8StringBuilder
 
 type StringTypes interface {
 	Node
