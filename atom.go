@@ -106,6 +106,30 @@ func (s UTF8String) Add(n Node) (Node, error) {
 	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n, PRINT))
 }
 
+func (s UTF8String) LessThan(n Node) (bool, error) {
+	if ns, ok := n.(UTF8String); ok {
+		equal := true
+		for i, left := range s {
+			if i >= len(ns) {
+				return true, nil
+			}
+			right := ns[i]
+			if left > right {
+				return false, nil
+			}
+			if left < right {
+				equal = false
+			}
+			if equal {
+				return len(s) >= len(ns), nil
+			}
+			return true, nil
+		}
+		return true, nil
+	}
+	return false, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n, PRINT))
+}
+
 var unescapeSequenceReplacer = strings.NewReplacer(
 	"\n", "\\n",
 	"\r", "\\r",
