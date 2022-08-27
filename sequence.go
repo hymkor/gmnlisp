@@ -59,11 +59,11 @@ func (L *_ListBuilder) Sequence() Node {
 	return L.first.Cdr
 }
 
-type _StringBuilder struct {
+type _UTF32StringBuilder struct {
 	buffer []Rune
 }
 
-func (S *_StringBuilder) Add(n Node) error {
+func (S *_UTF32StringBuilder) Add(n Node) error {
 	r, ok := n.(Rune)
 	if !ok {
 		return ErrExpectedCharacter
@@ -72,13 +72,13 @@ func (S *_StringBuilder) Add(n Node) error {
 	return nil
 }
 
-func (S *_StringBuilder) Sequence() Node {
+func (S *_UTF32StringBuilder) Sequence() Node {
 	return UTF32String(S.buffer)
 }
 
 var sequenceBuilderTable = map[Symbol](func() _SeqBuilder){
 	symbolForList:   func() _SeqBuilder { return &_ListBuilder{} },
-	symbolForString: func() _SeqBuilder { return &_StringBuilder{} },
+	symbolForString: func() _SeqBuilder { return &_UTF32StringBuilder{} },
 }
 
 func newSeqBuilder(symbolNode Node) (_SeqBuilder, error) {
@@ -275,7 +275,7 @@ func funReverse(_ context.Context, _ *World, argv []Node) (Node, error) {
 		return nil, err
 	}
 	if _, ok := argv[0].(UTF32String); ok {
-		var buffer _StringBuilder
+		var buffer _UTF32StringBuilder
 		err = seqEach(result, func(value Node) error {
 			buffer.Add(value)
 			return nil
@@ -403,7 +403,7 @@ func funSubSeq(ctx context.Context, w *World, args []Node) (Node, func(Node) err
 	}
 	var buffer _SeqBuilder
 	if _, ok := args[0].(UTF32String); ok {
-		buffer = &_StringBuilder{}
+		buffer = &_UTF32StringBuilder{}
 	} else {
 		buffer = &_ListBuilder{}
 	}
