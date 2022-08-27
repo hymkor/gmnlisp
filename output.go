@@ -129,6 +129,18 @@ func printInt(w io.Writer, base, width, padding int, value Node) error {
 	return nil
 }
 
+func funFormatInteger(_ context.Context, _ *World, list []Node) (Node, error) {
+	writer, ok := list[0].(io.Writer)
+	if !ok {
+		return nil, ErrExpectedWriter
+	}
+	radix, ok := list[2].(Integer)
+	if !ok {
+		return nil, ErrExpectedNumber
+	}
+	return Null, printInt(writer, int(radix), 0, 0, list[1])
+}
+
 func printFloat(w io.Writer, mark, width, prec int, value Node) error {
 	if prec <= 0 {
 		prec = -1

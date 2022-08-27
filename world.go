@@ -243,6 +243,7 @@ func New() *World {
 			"for":                         SpecialF(cmdFor),
 			"foreach":                     SpecialF(cmdForeach),
 			"format":                      defFormat,
+			"format-integer":              &Function{C: 3, F: funFormatInteger},
 			"funcall":                     SpecialF(cmdFunCall),
 			"function":                    &Function{C: 1, F: funFunction},
 			"get-output-stream-string":    &Function{C: 1, F: funGetOutputStreamString},
