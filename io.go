@@ -157,7 +157,7 @@ func funReadLine(_ context.Context, w *World, argv []Node) (Node, error) {
 		}
 		return stream.eofValue, nil
 	}
-	return UTF32String(chomp(s)), err
+	return String(chomp(s)), err
 }
 
 var defRead = &Function{Max: 3, F: funRead}
@@ -272,11 +272,11 @@ func cmdWithOpenFile(ctx context.Context, w *World, list Node) (Node, error) {
 }
 
 func funCreateStringInputStream(ctx context.Context, w *World, list []Node) (Node, error) {
-	s, ok := list[0].(UTF32String)
+	s, ok := list[0].(fmt.Stringer)
 	if !ok {
 		return nil, ErrExpectedString
 	}
-	return _Reader{Reader: bufio.NewReader(strings.NewReader(string(s)))}, nil
+	return _Reader{Reader: bufio.NewReader(strings.NewReader(s.String()))}, nil
 }
 
 func cmdCreateStringOutputStream(ctx context.Context, w *World, list Node) (Node, error) {
