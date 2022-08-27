@@ -99,6 +99,13 @@ func (s UTF8String) firstRuneAndRestString() (Rune, StringTypes, bool) {
 	return Rune(r), UTF8String(s[siz:]), true
 }
 
+func (s UTF8String) Add(n Node) (Node, error) {
+	if value, ok := n.(UTF8String); ok {
+		return UTF8String(append(s, value...)), nil
+	}
+	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n, PRINT))
+}
+
 var unescapeSequenceReplacer = strings.NewReplacer(
 	"\n", "\\n",
 	"\r", "\\r",
