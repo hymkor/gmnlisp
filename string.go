@@ -42,11 +42,12 @@ func funStringAppend(ctx context.Context, w *World, list []Node) (Node, error) {
 
 func funStrCase(ctx context.Context, w *World, argv []Node) (Node, error) {
 	// from autolisp
-	str, ok := argv[0].(UTF32String)
-	if !ok {
-		return nil, ErrExpectedString
+	if str, ok := argv[0].(UTF32String); ok {
+		return UTF32String(strings.ToUpper(string(str))), nil
+	} else if str, ok := argv[0].(UTF8String); ok {
+		return UTF8String(strings.ToUpper(string(str))), nil
 	}
-	return UTF32String(strings.ToUpper(string(str))), nil
+	return nil, ErrExpectedString
 }
 
 func cmdSubStr(ctx context.Context, w *World, n Node) (Node, error) {
