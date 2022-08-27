@@ -6,6 +6,7 @@ import (
 	"io"
 	"strings"
 	"unicode"
+	"unicode/utf8"
 )
 
 type _TrueType struct{}
@@ -50,6 +51,12 @@ type UTF8String []byte
 
 type String = UTF32String
 
+type StringTypes interface {
+	Node
+	fmt.Stringer
+	firstRuneAndRestString() (Rune, StringTypes, bool)
+}
+
 func (s UTF8String) String() string {
 	return string(s)
 }
@@ -82,6 +89,14 @@ func (s UTF8String) Equals(n Node, m EqlMode) bool {
 		return strings.EqualFold(string(s), string(ns))
 	}
 	return string(s) == string(ns)
+}
+
+func (s UTF8String) firstRuneAndRestString() (Rune, StringTypes, bool) {
+	if len(s) <= 0 {
+		return Rune(utf8.RuneError), nil, false
+	}
+	r, siz := utf8.DecodeRune([]byte(s))
+	return Rune(r), UTF8String(s[siz:]), true
 }
 
 var unescapeSequenceReplacer = strings.NewReplacer(
@@ -128,6 +143,13 @@ func (s UTF32String) Equals(n Node, m EqlMode) bool {
 		}
 		return true
 	}
+}
+
+func (s UTF32String) firstRuneAndRestString() (Rune, StringTypes, bool) {
+	if len(s) <= 0 {
+		return Rune(utf8.RuneError), nil, false
+	}
+	return Rune(s[0]), UTF32String(s[1:]), true
 }
 
 // firstAndRest returns first character, rest string and true.
