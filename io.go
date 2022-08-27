@@ -232,14 +232,14 @@ func cmdWithOpenFile(ctx context.Context, w *World, list Node) (Node, error) {
 		return nil, ErrTooManyArguments
 	}
 
-	fname, ok := args[0].(UTF32String)
+	fname, ok := args[0].(fmt.Stringer)
 	if !ok {
 		return nil, ErrExpectedString
 	}
 	var fdNode Node
 	direction, ok := kwargs[":direction"]
 	if !ok || direction == Keyword(":input") {
-		fd, err := os.Open(string(fname))
+		fd, err := os.Open(fname.String())
 		if err != nil {
 			fdNode, ok = kwargs[":if-does-not-exist"]
 			if !ok {
@@ -254,7 +254,7 @@ func cmdWithOpenFile(ctx context.Context, w *World, list Node) (Node, error) {
 			defer fd.Close()
 		}
 	} else if direction == Keyword(":output") {
-		fd, err := os.Create(string(fname))
+		fd, err := os.Create(fname.String())
 		if err != nil {
 			return nil, err
 		}
