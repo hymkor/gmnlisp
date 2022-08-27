@@ -46,8 +46,39 @@ func (nt _NullType) Equals(n Node, m EqlMode) bool {
 var Null Node = _NullType{}
 
 type UTF32String []Rune
+type UTF8String []byte
 
 type String = UTF32String
+
+func (s UTF8String) PrintTo(w io.Writer, m PrintMode) (int, error) {
+	if m == PRINC {
+		return w.Write([]byte(s))
+	} else {
+		return fmt.Fprintf(w, `"%s"`, unescapeSequenceReplacer.Replace(string(s)))
+	}
+}
+
+func (s UTF8String) Eval(context.Context, *World) (Node, error) {
+	return s, nil
+}
+
+func (s UTF8String) Equals(n Node, m EqlMode) bool {
+	ns, ok := n.(UTF8String)
+	if !ok {
+		_ns, ok := n.(String)
+		if !ok {
+			return false
+		}
+		if m == STRICT {
+			return false
+		}
+		ns = UTF8String(string(_ns))
+	}
+	if m == EQUALP {
+		return strings.EqualFold(string(s), string(ns))
+	}
+	return string(s) == string(ns)
+}
 
 var unescapeSequenceReplacer = strings.NewReplacer(
 	"\n", "\\n",
