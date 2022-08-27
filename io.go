@@ -60,31 +60,31 @@ func cmdOpen(ctx context.Context, w *World, n Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	_fname, ok := fname.(UTF32String)
+	_fname, ok := fname.(fmt.Stringer)
 	if !ok {
-		return nil, fmt.Errorf("%w `%s`", ErrExpectedString, toString(_fname, PRINT))
+		return nil, fmt.Errorf("%w `%s`", ErrExpectedString, toString(fname, PRINT))
 	}
 	if IsNull(n) {
-		return openAsRead(string(_fname))
+		return openAsRead(_fname.String())
 	}
 
 	mode, n, err := w.shiftAndEvalCar(ctx, n)
 	if HasValue(n) {
 		return nil, ErrTooManyArguments
 	}
-	_mode, ok := mode.(UTF32String)
+	_mode, ok := mode.(fmt.Stringer)
 	if !ok {
-		return nil, fmt.Errorf("%w `%s`", ErrExpectedString, toString(_mode, PRINT))
+		return nil, fmt.Errorf("%w `%s`", ErrExpectedString, toString(mode, PRINT))
 	}
 
 	var result Node
-	switch string(_mode) {
+	switch _mode.String() {
 	case "r":
-		result, err = openAsRead(string(_fname))
+		result, err = openAsRead(_fname.String())
 	case "w":
-		result, err = openAsWrite(string(_fname))
+		result, err = openAsWrite(_fname.String())
 	default:
-		return nil, fmt.Errorf("no such a option `%s`", string(_mode))
+		return nil, fmt.Errorf("no such a option `%s`", _mode.String())
 	}
 	if errors.Is(err, os.ErrNotExist) {
 		return Null, nil
