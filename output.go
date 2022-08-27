@@ -169,20 +169,27 @@ func printSpaces(n int, w io.Writer) {
 	}
 }
 
-func formatSub(w runeWriter, format UTF32String, argv []Node) (Node, error) {
-	for len(format) > 0 {
-		c := format[0]
-		format = format[1:]
+func formatSub(w runeWriter, format StringTypes, argv []Node) (Node, error) {
+	var ok bool = true
+	for ok && HasValue(format) {
+		var c Rune
+
+		c, format, ok = format.firstRuneAndRestString()
+		if !ok {
+			break
+		}
 		if c != '~' {
-			w.WriteRune(rune(c))
+			c.PrintTo(w, PRINC)
 			continue
 		}
-		if len(format) == 0 {
+		if IsNull(format) {
 			w.WriteRune('~')
 			break
 		}
-		c = format[0]
-		format = format[1:]
+		c, format, ok = format.firstRuneAndRestString()
+		if !ok {
+			break
+		}
 		if c == '~' {
 			w.Write([]byte{'~'})
 			continue
@@ -194,11 +201,13 @@ func formatSub(w runeWriter, format UTF32String, argv []Node) (Node, error) {
 		for {
 			if decimal := strings.IndexByte("0123456789", byte(c)); decimal >= 0 {
 				for {
-					if len(format) <= 0 {
+					if IsNull(format) {
 						return Null, ErrInvalidFormat
 					}
-					c = format[0]
-					format = format[1:]
+					c, format, ok = format.firstRuneAndRestString()
+					if !ok {
+						return Null, ErrInvalidFormat
+					}
 					d := strings.IndexByte("0123456789", byte(c))
 					if d < 0 {
 						parameter = append(parameter, decimal)
@@ -207,12 +216,18 @@ func formatSub(w runeWriter, format UTF32String, argv []Node) (Node, error) {
 					decimal = decimal*10 + d
 				}
 			} else if c == '\'' {
-				if len(format) < 2 {
+				if IsNull(format) {
 					return Null, ErrInvalidFormat
 				}
-				parameter = append(parameter, int(format[0]))
-				c = format[1]
-				format = format[2:]
+				c, format, ok = format.firstRuneAndRestString()
+				if !ok {
+					return Null, ErrInvalidFormat
+				}
+				parameter = append(parameter, int(c))
+				if IsNull(format) {
+					return Null, ErrInvalidFormat
+				}
+				c, format, ok = format.firstRuneAndRestString()
 			} else if c == 'v' || c == 'V' {
 				if len(argv) < 1 {
 					return nil, ErrTooFewArguments
@@ -230,11 +245,13 @@ func formatSub(w runeWriter, format UTF32String, argv []Node) (Node, error) {
 			if c != ',' {
 				break
 			}
-			if len(format) <= 0 {
+			if IsNull(format) {
 				return nil, ErrInvalidFormat
 			}
-			c = format[0]
-			format = format[1:]
+			c, format, ok = format.firstRuneAndRestString()
+			if !ok {
+				break
+			}
 		}
 
 		padding := -1
@@ -284,7 +301,7 @@ func formatSub(w runeWriter, format UTF32String, argv []Node) (Node, error) {
 var defFormat = &Function{Min: 2, F: funFormat}
 
 func funFormat(ctx context.Context, w *World, argv []Node) (Node, error) {
-	format, ok := argv[1].(UTF32String)
+	format, ok := argv[1].(StringTypes)
 	if !ok {
 		return nil, ErrExpectedString
 	}
