@@ -56,35 +56,37 @@ func openAsWrite(fname string) (Node, error) {
 }
 
 func cmdOpen(ctx context.Context, w *World, n Node) (Node, error) {
-	fname, n, err := w.shiftAndEvalCar(ctx, n)
+	fnameNode, n, err := w.shiftAndEvalCar(ctx, n)
 	if err != nil {
 		return nil, err
 	}
-	_fname, ok := fname.(fmt.Stringer)
+	fnameString, ok := fnameNode.(StringTypes)
 	if !ok {
-		return nil, fmt.Errorf("%w `%s`", ErrExpectedString, toString(fname, PRINT))
+		return nil, fmt.Errorf("%w `%s`", ErrExpectedString, toString(fnameString, PRINT))
 	}
+	fname := fnameString.String()
 	if IsNull(n) {
-		return openAsRead(_fname.String())
+		return openAsRead(fname)
 	}
 
-	mode, n, err := w.shiftAndEvalCar(ctx, n)
+	modeNode, n, err := w.shiftAndEvalCar(ctx, n)
 	if HasValue(n) {
 		return nil, ErrTooManyArguments
 	}
-	_mode, ok := mode.(fmt.Stringer)
+	modeString, ok := modeNode.(StringTypes)
 	if !ok {
-		return nil, fmt.Errorf("%w `%s`", ErrExpectedString, toString(mode, PRINT))
+		return nil, fmt.Errorf("%w `%s`", ErrExpectedString, toString(modeNode, PRINT))
 	}
+	mode := modeString.String()
 
 	var result Node
-	switch _mode.String() {
+	switch mode {
 	case "r":
-		result, err = openAsRead(_fname.String())
+		result, err = openAsRead(fname)
 	case "w":
-		result, err = openAsWrite(_fname.String())
+		result, err = openAsWrite(fname)
 	default:
-		return nil, fmt.Errorf("no such a option `%s`", _mode.String())
+		return nil, fmt.Errorf("no such a option `%s`", mode)
 	}
 	if errors.Is(err, os.ErrNotExist) {
 		return Null, nil
