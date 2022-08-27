@@ -99,6 +99,16 @@ func (s UTF8String) firstRuneAndRestString() (Rune, StringTypes, bool) {
 	return Rune(r), UTF8String(s[siz:]), true
 }
 
+func (s UTF8String) firstAndRest() (Node, Node, bool, func(Node) error) {
+	if len(s) <= 0 {
+		return nil, Null, false, nil
+	}
+	r, siz := utf8.DecodeRune([]byte(s))
+	return Rune(r), UTF8String(s[siz:]), true, func(value Node) error {
+		return ErrNotSupportType
+	}
+}
+
 func (s UTF8String) Add(n Node) (Node, error) {
 	if value, ok := n.(UTF8String); ok {
 		return UTF8String(append(s, value...)), nil
