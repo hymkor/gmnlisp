@@ -298,7 +298,6 @@ func New() *World {
 			"second":                      &LeftValueF{C: 1, F: funCadr},
 			"setf":                        SpecialF(cmdSetf),
 			"setq":                        SpecialF(cmdSetq),
-			"split-string":                &Function{C: 2, F: funSplitString},
 			"standard-input":              SpecialF(cmdStandardInput),
 			"standard-output":             SpecialF(cmdStandardOutput),
 			"strcase":                     &Function{C: 1, F: funStrCase},
