@@ -112,13 +112,15 @@ func newSeqBuilder(symbolNode Node) (_SeqBuilder, error) {
 }
 
 const (
-	symbolForNumber  = Symbol("number")
-	symbolForInteger = Symbol("integer")
-	symbolForFloat   = Symbol("float")
-	symbolForString  = Symbol("string")
-	symbolForSymbol  = Symbol("symbol")
-	symbolForCons    = Symbol("cons")
-	symbolForList    = Symbol("list")
+	symbolForNumber      = Symbol("number")
+	symbolForInteger     = Symbol("integer")
+	symbolForFloat       = Symbol("float")
+	symbolForString      = Symbol("string")
+	symbolForSymbol      = Symbol("symbol")
+	symbolForCons        = Symbol("cons")
+	symbolForList        = Symbol("list")
+	symbolForUTF8String  = Symbol("utf8string")
+	symbolForUTF32String = Symbol("utf32string")
 )
 
 func funTypep(_ context.Context, _ *World, args []Node) (Node, error) {
@@ -139,6 +141,10 @@ func funTypep(_ context.Context, _ *World, args []Node) (Node, error) {
 		_, ok = args[0].(Float)
 	case symbolForString:
 		_, ok = args[0].(fmt.Stringer)
+	case symbolForUTF8String:
+		_, ok = args[0].(UTF8String)
+	case symbolForUTF32String:
+		_, ok = args[0].(UTF32String)
 	case symbolForSymbol:
 		_, ok = args[0].(Symbol)
 	case symbolForCons:
