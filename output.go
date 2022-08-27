@@ -10,12 +10,12 @@ import (
 	"strings"
 )
 
-func getWriterAndString(ctx context.Context, w *World, n Node) (io.Writer, UTF32String, error) {
+func getWriterAndString(ctx context.Context, w *World, n Node) (io.Writer, fmt.Stringer, error) {
 	_s, n, err := w.shiftAndEvalCar(ctx, n)
 	if err != nil {
 		return nil, emptyString, err
 	}
-	s, ok := _s.(UTF32String)
+	s, ok := _s.(fmt.Stringer)
 	if !ok {
 		return nil, emptyString, fmt.Errorf("%w `%s`", ErrExpectedString, toString(_s, PRINT))
 	}
@@ -56,8 +56,8 @@ func cmdWriteLine(ctx context.Context, w *World, n Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Fprintln(writer, string(s))
-	return s, nil
+	fmt.Fprintln(writer, s.String())
+	return Null, nil
 }
 
 func funTerpri(ctx context.Context, w *World, argv []Node) (Node, error) {
