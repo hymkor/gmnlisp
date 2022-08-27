@@ -314,7 +314,7 @@ func funFormat(ctx context.Context, w *World, argv []Node) (Node, error) {
 	if IsNull(argv[0]) {
 		var buffer strings.Builder
 		_, err := formatSub(&buffer, format, argv[2:])
-		return UTF32String(buffer.String()), err
+		return String(buffer.String()), err
 	}
 	if True.Equals(argv[0], STRICT) {
 		w := bufio.NewWriter(os.Stdout)
