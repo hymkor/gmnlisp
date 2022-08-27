@@ -28,7 +28,7 @@ func TestIf(t *testing.T) {
 	(cond
 		((= (setq aa (string-append "a" "a")) "ab") "A")
 		((= aa "aa") "B")
-		(T "fail"))`, String("B"))
+		(T "fail"))`, UTF32String("B"))
 
 	assertEqual(t, `(let ((x 0)(i 0))
 						(foreach i (list 1 (+ 1 1) (* 1 3) 4 5)
@@ -67,14 +67,14 @@ func TestCase(t *testing.T) {
 			(1 "a")
 			(2 "b")
 			(3 "c")
-		)`, String("b"))
+		)`, UTF32String("b"))
 
 	assertEqual(t, `
 		(case 4
 			((1 2) "A")
 			((3 4) "B")
 			((5 6) "C")
-		)`, String("B"))
+		)`, UTF32String("B"))
 }
 
 func TestFor(t *testing.T) {
@@ -109,7 +109,7 @@ func TestWithHandler(t *testing.T) {
 				(not-exist-func)
 				"NG"
 			)
-		)`, String("OK"))
+		)`, UTF32String("OK"))
 
 	assertEqual(t, `
 		(catch 'hoge
@@ -120,7 +120,7 @@ func TestWithHandler(t *testing.T) {
 				;(not-exist-func)
 				"NG"
 			)
-		)`, String("NG"))
+		)`, UTF32String("NG"))
 }
 
 func TestCatch(t *testing.T) {

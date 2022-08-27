@@ -25,18 +25,18 @@ func TestMapCar(t *testing.T) {
 }
 
 func TestMap(t *testing.T) {
-	assertEqual(t, `(map 'string '1+ "123")`, String("234"))
+	assertEqual(t, `(map 'string '1+ "123")`, UTF32String("234"))
 	assertEqual(t, `(map 'list '1+ '(1 2 3))`, List(Integer(2), Integer(3), Integer(4)))
 	assertEqual(t, `(length (map 'list #'null '(nil 2 3)))`, Integer(3))
 }
 
 func TestCoerce(t *testing.T) {
-	assertEqual(t, `(coerce '(#\a #\b) 'string)`, String("ab"))
+	assertEqual(t, `(coerce '(#\a #\b) 'string)`, UTF32String("ab"))
 	assertEqual(t, `(coerce '(#\a #\b) 'list)`, List(Rune('a'), Rune('b')))
 }
 
 func TestConcatenate(t *testing.T) {
-	assertEqual(t, `(concatenate 'string "123" "456")`, String("123456"))
+	assertEqual(t, `(concatenate 'string "123" "456")`, UTF32String("123456"))
 	assertEqual(t, `(concatenate 'list '(1 2 3) '(4 5 6))`,
 		List(Integer(1), Integer(2), Integer(3), Integer(4), Integer(5), Integer(6)))
 }
@@ -44,7 +44,7 @@ func TestConcatenate(t *testing.T) {
 func TestReverse(t *testing.T) {
 	assertEqual(t, `(reverse '(1 2 3 4))`,
 		List(Integer(4), Integer(3), Integer(2), Integer(1)))
-	assertEqual(t, `(reverse "12345")`, String("54321"))
+	assertEqual(t, `(reverse "12345")`, UTF32String("54321"))
 }
 
 func TestFind(t *testing.T) {
@@ -57,8 +57,8 @@ func TestFind(t *testing.T) {
 func TestMember(t *testing.T) {
 	assertEqual(t, `(member 'c '(a b c d e))`,
 		List(Symbol("c"), Symbol("d"), Symbol("e")))
-	assertEqual(t, `(member #\c "abcd")`, String("cd"))
-	assertEqual(t, `(member #\C "abcd" :test #'(lambda (a b) (equalp a b)))`, String("cd"))
+	assertEqual(t, `(member #\c "abcd")`, UTF32String("cd"))
+	assertEqual(t, `(member #\C "abcd" :test #'(lambda (a b) (equalp a b)))`, UTF32String("cd"))
 }
 
 func TestPosition(t *testing.T) {
@@ -69,8 +69,8 @@ func TestPosition(t *testing.T) {
 }
 
 func TestSubSeq(t *testing.T) {
-	assertEqual(t, `(subseq "12345" 2 4)`, String("34"))
-	assertEqual(t, `(subseq "12345" 2)`, String("345"))
+	assertEqual(t, `(subseq "12345" 2 4)`, UTF32String("34"))
+	assertEqual(t, `(subseq "12345" 2)`, UTF32String("345"))
 	assertEqual(t, `(subseq '(1 2 3 4 5) 2 4)`, List(Integer(3), Integer(4)))
 	assertEqual(t, `(subseq '(1 2 3 4 5) 2)`, List(Integer(3), Integer(4), Integer(5)))
 }
@@ -79,7 +79,7 @@ func TestSetfSubSeq(t *testing.T) {
 	assertEqual(t, `
 		(let ((m "12345"))
 			(setf (subseq m 2 4) "xx")
-			m)`, String("12xx5"))
+			m)`, UTF32String("12xx5"))
 
 	assertEqual(t, `
 		(let ((m (list 1 2 3 4 5)))

@@ -72,7 +72,7 @@ func (S *_StringBuilder) Add(n Node) error {
 }
 
 func (S *_StringBuilder) Sequence() Node {
-	return String(S.buffer)
+	return UTF32String(S.buffer)
 }
 
 var sequenceBuilderTable = map[Symbol](func() _SeqBuilder){
@@ -119,7 +119,7 @@ func funTypep(_ context.Context, _ *World, args []Node) (Node, error) {
 	case symbolForFloat:
 		_, ok = args[0].(Float)
 	case symbolForString:
-		_, ok = args[0].(String)
+		_, ok = args[0].(UTF32String)
 	case symbolForSymbol:
 		_, ok = args[0].(Symbol)
 	case symbolForCons:
@@ -273,7 +273,7 @@ func funReverse(_ context.Context, _ *World, argv []Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	if _, ok := argv[0].(String); ok {
+	if _, ok := argv[0].(UTF32String); ok {
 		var buffer _StringBuilder
 		err = seqEach(result, func(value Node) error {
 			buffer.Add(value)
@@ -401,7 +401,7 @@ func funSubSeq(ctx context.Context, w *World, args []Node) (Node, func(Node) err
 		}
 	}
 	var buffer _SeqBuilder
-	if _, ok := args[0].(String); ok {
+	if _, ok := args[0].(UTF32String); ok {
 		buffer = &_StringBuilder{}
 	} else {
 		buffer = &_ListBuilder{}
@@ -418,8 +418,8 @@ func funSubSeq(ctx context.Context, w *World, args []Node) (Node, func(Node) err
 		return
 	})
 	return buffer.Sequence(), func(newvalue Node) error {
-		if s1, ok := args[0].(String); ok {
-			s2, ok := newvalue.(String)
+		if s1, ok := args[0].(UTF32String); ok {
+			s2, ok := newvalue.(UTF32String)
 			if !ok {
 				return ErrExpectedString
 			}

@@ -41,9 +41,9 @@ func TestSubst(t *testing.T) {
 	(let ((m '(("X" . 1) ("Y" . 2) ("Z" . 4))))
 		(subst (cons "X" 7) (assoc "X" m) m))`,
 		List(
-			&Cons{Car: String("X"), Cdr: Integer(7)},
-			&Cons{Car: String("Y"), Cdr: Integer(2)},
-			&Cons{Car: String("Z"), Cdr: Integer(4)}))
+			&Cons{Car: UTF32String("X"), Cdr: Integer(7)},
+			&Cons{Car: UTF32String("Y"), Cdr: Integer(2)},
+			&Cons{Car: UTF32String("Z"), Cdr: Integer(4)}))
 
 	// subst does not destoroy original list
 	assertEqual(t, `
@@ -51,9 +51,9 @@ func TestSubst(t *testing.T) {
 		(subst (cons "X" 7) (assoc "X" m) m)
 		m)`,
 		List(
-			&Cons{Car: String("X"), Cdr: Integer(1)},
-			&Cons{Car: String("Y"), Cdr: Integer(2)},
-			&Cons{Car: String("Z"), Cdr: Integer(4)}))
+			&Cons{Car: UTF32String("X"), Cdr: Integer(1)},
+			&Cons{Car: UTF32String("Y"), Cdr: Integer(2)},
+			&Cons{Car: UTF32String("Z"), Cdr: Integer(4)}))
 }
 
 func TestAppend(t *testing.T) {
@@ -90,10 +90,10 @@ func TestLast(t *testing.T) {
 
 func TestDestoroy(t *testing.T) {
 	assertEqual(t, `(let ((c '("A" . "D"))) (replaca c "X") c)`,
-		&Cons{Car: String("X"), Cdr: String("D")})
+		&Cons{Car: UTF32String("X"), Cdr: UTF32String("D")})
 
 	assertEqual(t, `(let ((c '("A" . "D"))) (replacd c "X") c)`,
-		&Cons{Car: String("A"), Cdr: String("X")})
+		&Cons{Car: UTF32String("A"), Cdr: UTF32String("X")})
 }
 
 func TestFirst(t *testing.T) {

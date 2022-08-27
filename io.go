@@ -60,7 +60,7 @@ func cmdOpen(ctx context.Context, w *World, n Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	_fname, ok := fname.(String)
+	_fname, ok := fname.(UTF32String)
 	if !ok {
 		return nil, fmt.Errorf("%w `%s`", ErrExpectedString, toString(_fname, PRINT))
 	}
@@ -72,7 +72,7 @@ func cmdOpen(ctx context.Context, w *World, n Node) (Node, error) {
 	if HasValue(n) {
 		return nil, ErrTooManyArguments
 	}
-	_mode, ok := mode.(String)
+	_mode, ok := mode.(UTF32String)
 	if !ok {
 		return nil, fmt.Errorf("%w `%s`", ErrExpectedString, toString(_mode, PRINT))
 	}
@@ -157,7 +157,7 @@ func funReadLine(_ context.Context, w *World, argv []Node) (Node, error) {
 		}
 		return stream.eofValue, nil
 	}
-	return String(chomp(s)), err
+	return UTF32String(chomp(s)), err
 }
 
 var defRead = &Function{Max: 3, F: funRead}
@@ -232,7 +232,7 @@ func cmdWithOpenFile(ctx context.Context, w *World, list Node) (Node, error) {
 		return nil, ErrTooManyArguments
 	}
 
-	fname, ok := args[0].(String)
+	fname, ok := args[0].(UTF32String)
 	if !ok {
 		return nil, ErrExpectedString
 	}
@@ -272,7 +272,7 @@ func cmdWithOpenFile(ctx context.Context, w *World, list Node) (Node, error) {
 }
 
 func funCreateStringInputStream(ctx context.Context, w *World, list []Node) (Node, error) {
-	s, ok := list[0].(String)
+	s, ok := list[0].(UTF32String)
 	if !ok {
 		return nil, ErrExpectedString
 	}
@@ -292,5 +292,5 @@ func funGetOutputStreamString(ctx context.Context, w *World, list []Node) (Node,
 	if !ok {
 		return nil, ErrNotSupportType
 	}
-	return String(string(stringer.String())), nil
+	return UTF32String(string(stringer.String())), nil
 }

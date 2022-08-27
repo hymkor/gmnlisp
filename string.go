@@ -10,7 +10,7 @@ import (
 func funStringAppend(ctx context.Context, w *World, list []Node) (Node, error) {
 	length := 0
 	for _, n := range list {
-		str, ok := n.(String)
+		str, ok := n.(UTF32String)
 		if !ok {
 			return nil, ErrExpectedString
 		}
@@ -18,19 +18,19 @@ func funStringAppend(ctx context.Context, w *World, list []Node) (Node, error) {
 	}
 	buffer := make([]Rune, 0, length)
 	for _, n := range list {
-		str := n.(String)
+		str := n.(UTF32String)
 		buffer = append(buffer, []Rune(str)...)
 	}
-	return String(buffer), nil
+	return UTF32String(buffer), nil
 }
 
 func funStrCase(ctx context.Context, w *World, argv []Node) (Node, error) {
 	// from autolisp
-	str, ok := argv[0].(String)
+	str, ok := argv[0].(UTF32String)
 	if !ok {
 		return nil, ErrExpectedString
 	}
-	return String(strings.ToUpper(string(str))), nil
+	return UTF32String(strings.ToUpper(string(str))), nil
 }
 
 func cmdSubStr(ctx context.Context, w *World, n Node) (Node, error) {
@@ -39,7 +39,7 @@ func cmdSubStr(ctx context.Context, w *World, n Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	_str, ok := str.(String)
+	_str, ok := str.(UTF32String)
 	if !ok {
 		return nil, ErrExpectedString
 	}
@@ -83,12 +83,12 @@ func cmdSubStr(ctx context.Context, w *World, n Node) (Node, error) {
 		}
 		_str = _str[:int(_leng)]
 	}
-	return String(_str), nil
+	return UTF32String(_str), nil
 }
 
 func funParseInt(ctx context.Context, w *World, argv []Node) (Node, error) {
 	// from CommonLisp
-	s, ok := argv[0].(String)
+	s, ok := argv[0].(UTF32String)
 	if !ok {
 		return nil, ErrExpectedString
 	}
@@ -101,11 +101,11 @@ func funParseInt(ctx context.Context, w *World, argv []Node) (Node, error) {
 
 func funSplitString(ctx context.Context, w *World, argv []Node) (Node, error) {
 	// from emacs-lisp
-	s, ok := argv[0].(String)
+	s, ok := argv[0].(UTF32String)
 	if !ok {
 		return nil, ErrExpectedString
 	}
-	sep, ok := argv[1].(String)
+	sep, ok := argv[1].(UTF32String)
 	if !ok {
 		return nil, ErrExpectedString
 	}
@@ -113,7 +113,7 @@ func funSplitString(ctx context.Context, w *World, argv []Node) (Node, error) {
 	var list Node = Null
 	for i := len(result) - 1; i >= 0; i-- {
 		list = &Cons{
-			Car: String(result[i]),
+			Car: UTF32String(result[i]),
 			Cdr: list,
 		}
 	}

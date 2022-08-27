@@ -39,7 +39,7 @@ func TestLambdaGo(t *testing.T) {
 			(f))`,
 		&Cons{Car: Integer(1), Cdr: Null})
 
-	assertEqual(t, `(defvar c)(setq c "a") c`, String("a"))
+	assertEqual(t, `(defvar c)(setq c "a") c`, UTF32String("a"))
 
 	assertEqual(t, `
 		(defvar c "a")
@@ -49,7 +49,7 @@ func TestLambdaGo(t *testing.T) {
 			)
 		)
 		(list (f 4) c)`,
-		List(Integer(5), String("a")))
+		List(Integer(5), UTF32String("a")))
 
 	assertEqual(t, `
 		(defvar c "a")
@@ -58,10 +58,10 @@ func TestLambdaGo(t *testing.T) {
 			(+ a 1)
 		)
 		(list (f 4) c)`,
-		List(Integer(5), String("a")))
+		List(Integer(5), UTF32String("a")))
 
 	assertEqual(t, `(let ((a 0)) (if t (setq a 1) (setq a 2)) a)`, Integer(1))
-	assertEqual(t, `(let ((x "1")) (if nil (setq x "2") (setq x "3")) x)`, String("3"))
+	assertEqual(t, `(let ((x "1")) (if nil (setq x "2") (setq x "3")) x)`, UTF32String("3"))
 
 	w := New()
 	ctx := context.TODO()
@@ -98,7 +98,7 @@ func TestFunCall(t *testing.T) {
 func TestApply(t *testing.T) {
 	assertEqual(t, `(apply #'+ '(1 2 3))`, Integer(6))
 	assertEqual(t, `(apply #'+ 4 5 6 '(1 2 3))`, Integer(21))
-	assertEqual(t, `(apply #'concatenate 'string '("1" "2" "3"))`, String("123"))
+	assertEqual(t, `(apply #'concatenate 'string '("1" "2" "3"))`, UTF32String("123"))
 }
 
 func TestRest(t *testing.T) {
@@ -106,5 +106,5 @@ func TestRest(t *testing.T) {
 		(defun cat (left &rest args)
 		  (apply #'string-append  left args)
 		)
-		(cat "1" "2" "3" "4" "5")`, String("12345"))
+		(cat "1" "2" "3" "4" "5")`, UTF32String("12345"))
 }

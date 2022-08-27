@@ -45,7 +45,9 @@ func (nt _NullType) Equals(n Node, m EqlMode) bool {
 
 var Null Node = _NullType{}
 
-type String []Rune
+type UTF32String []Rune
+
+type String = UTF32String
 
 var unescapeSequenceReplacer = strings.NewReplacer(
 	"\n", "\\n",
@@ -55,7 +57,7 @@ var unescapeSequenceReplacer = strings.NewReplacer(
 	"\"", "\\\"",
 )
 
-func (s String) PrintTo(w io.Writer, m PrintMode) (int, error) {
+func (s UTF32String) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	if m == PRINC {
 		return io.WriteString(w, string(s))
 	} else {
@@ -63,12 +65,12 @@ func (s String) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	}
 }
 
-func (s String) Eval(context.Context, *World) (Node, error) {
-	return s, nil // errors.New("String can not be evaluate.")
+func (s UTF32String) Eval(context.Context, *World) (Node, error) {
+	return s, nil // errors.New("UTF32String can not be evaluate.")
 }
 
-func (s String) Equals(n Node, m EqlMode) bool {
-	ns, ok := n.(String)
+func (s UTF32String) Equals(n Node, m EqlMode) bool {
+	ns, ok := n.(UTF32String)
 	if !ok || len(s) != len(ns) {
 		return false
 	}
@@ -91,11 +93,11 @@ func (s String) Equals(n Node, m EqlMode) bool {
 
 // firstAndRest returns first character, rest string and true.
 // When string is empty, boolean is false.
-func (s String) firstAndRest() (Node, Node, bool, func(Node) error) {
+func (s UTF32String) firstAndRest() (Node, Node, bool, func(Node) error) {
 	if len(s) <= 0 {
 		return nil, Null, false, nil
 	}
-	return Rune(s[0]), String(s[1:]), true, func(value Node) error {
+	return Rune(s[0]), UTF32String(s[1:]), true, func(value Node) error {
 		r, ok := value.(Rune)
 		if !ok {
 			return ErrExpectedCharacter
@@ -105,15 +107,15 @@ func (s String) firstAndRest() (Node, Node, bool, func(Node) error) {
 	}
 }
 
-func (s String) Add(n Node) (Node, error) {
-	if value, ok := n.(String); ok {
-		return String(append(s, value...)), nil
+func (s UTF32String) Add(n Node) (Node, error) {
+	if value, ok := n.(UTF32String); ok {
+		return UTF32String(append(s, value...)), nil
 	}
 	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n, PRINT))
 }
 
-func (s String) LessThan(n Node) (bool, error) {
-	if ns, ok := n.(String); ok {
+func (s UTF32String) LessThan(n Node) (bool, error) {
+	if ns, ok := n.(UTF32String); ok {
 		equal := true
 		for i, left := range s {
 			if i >= len(ns) {
@@ -136,7 +138,7 @@ func (s String) LessThan(n Node) (bool, error) {
 	return false, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n, PRINT))
 }
 
-func (s String) Aref(n int) (Node, func(Node) error, error) {
+func (s UTF32String) Aref(n int) (Node, func(Node) error, error) {
 	if n < 0 || n >= len(s) {
 		return nil, nil, ErrIndexOutOfRange
 	}
@@ -150,7 +152,7 @@ func (s String) Aref(n int) (Node, func(Node) error, error) {
 	}, nil
 }
 
-var emptyString String
+var emptyString UTF32String
 
 type Symbol string
 
@@ -213,7 +215,7 @@ func (r Rune) Equals(n Node, m EqlMode) bool {
 	if m == STRICT {
 		return false
 	}
-	if value, ok := n.(String); ok {
+	if value, ok := n.(UTF32String); ok {
 		return len(string(value)) == 1 && string(r) == string(value)
 	}
 	return false

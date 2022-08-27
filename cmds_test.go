@@ -114,5 +114,5 @@ func TestCreateStringInputStream(t *testing.T) {
 		(let ((fd (create-string-input-stream "1\n2\n3")))
 			(read-line fd)
 			(read-line fd)
-		)`, String("2"))
+		)`, UTF32String("2"))
 }

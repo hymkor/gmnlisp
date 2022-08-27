@@ -67,7 +67,7 @@ func funNot(_ context.Context, w *World, argv []Node) (Node, error) {
 }
 
 func funLoad(ctx context.Context, w *World, argv []Node) (Node, error) {
-	fname, ok := argv[0].(String)
+	fname, ok := argv[0].(UTF32String)
 	if !ok {
 		return nil, ErrExpectedString
 	}
@@ -87,7 +87,7 @@ func funNotEqual(_ context.Context, _ *World, argv []Node) (Node, error) {
 
 func funReadFromString(_ context.Context, _ *World, args []Node) (Node, error) {
 	// compatible with autolisp's (read)
-	script, ok := args[0].(String)
+	script, ok := args[0].(UTF32String)
 	if !ok {
 		return nil, ErrExpectedString
 	}

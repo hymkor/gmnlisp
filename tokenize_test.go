@@ -36,7 +36,7 @@ func TestTokenizer1(t *testing.T) {
 		t.Fatal("empty string")
 	}
 
-	assertEqual(t, `"\""`, String(`"`))
+	assertEqual(t, `"\""`, UTF32String(`"`))
 }
 
 /*

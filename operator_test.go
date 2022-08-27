@@ -12,7 +12,7 @@ func TestOperators(t *testing.T) {
 	assertEqual(t, "(* 1 2)", Integer(2))
 	assertEqual(t, "(* 1 2 3)", Integer(6))
 	assertEqual(t, "(/ 6 2)", Integer(3))
-	assertEqual(t, `(+ "1" "2")`, String("12"))
+	assertEqual(t, `(+ "1" "2")`, UTF32String("12"))
 	assertEqual(t, `(> 2 1.0)`, True)
 	assertEqual(t, `(> 2.0 3)`, Null)
 	assertEqual(t, `(< 2.0 3)`, True)

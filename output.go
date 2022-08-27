@@ -10,12 +10,12 @@ import (
 	"strings"
 )
 
-func getWriterAndString(ctx context.Context, w *World, n Node) (io.Writer, String, error) {
+func getWriterAndString(ctx context.Context, w *World, n Node) (io.Writer, UTF32String, error) {
 	_s, n, err := w.shiftAndEvalCar(ctx, n)
 	if err != nil {
 		return nil, emptyString, err
 	}
-	s, ok := _s.(String)
+	s, ok := _s.(UTF32String)
 	if !ok {
 		return nil, emptyString, fmt.Errorf("%w `%s`", ErrExpectedString, toString(_s, PRINT))
 	}
@@ -169,7 +169,7 @@ func printSpaces(n int, w io.Writer) {
 	}
 }
 
-func formatSub(w runeWriter, format String, argv []Node) (Node, error) {
+func formatSub(w runeWriter, format UTF32String, argv []Node) (Node, error) {
 	for len(format) > 0 {
 		c := format[0]
 		format = format[1:]
@@ -284,7 +284,7 @@ func formatSub(w runeWriter, format String, argv []Node) (Node, error) {
 var defFormat = &Function{Min: 2, F: funFormat}
 
 func funFormat(ctx context.Context, w *World, argv []Node) (Node, error) {
-	format, ok := argv[1].(String)
+	format, ok := argv[1].(UTF32String)
 	if !ok {
 		return nil, ErrExpectedString
 	}
@@ -297,7 +297,7 @@ func funFormat(ctx context.Context, w *World, argv []Node) (Node, error) {
 	if IsNull(argv[0]) {
 		var buffer strings.Builder
 		_, err := formatSub(&buffer, format, argv[2:])
-		return String(buffer.String()), err
+		return UTF32String(buffer.String()), err
 	}
 	if True.Equals(argv[0], STRICT) {
 		w := bufio.NewWriter(os.Stdout)
