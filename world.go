@@ -306,7 +306,6 @@ func New() *World {
 			"stringp":                     &Function{C: 1, F: funAnyTypep[String]},
 			"subseq":                      &LeftValueF{C: -1, F: funSubSeq},
 			"subst":                       &Function{C: 3, F: funSubst},
-			"substr":                      SpecialF(cmdSubStr),
 			"symbolp":                     &Function{C: 1, F: funAnyTypep[Symbol]},
 			"t":                           True,
 			"terpri":                      &Function{C: -1, F: funTerpri},

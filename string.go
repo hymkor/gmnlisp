@@ -3,7 +3,6 @@ package gmnlisp
 import (
 	"bytes"
 	"context"
-	"errors"
 	"strconv"
 	"strings"
 )
@@ -48,59 +47,6 @@ func funStrCase(ctx context.Context, w *World, argv []Node) (Node, error) {
 		return UTF8String(strings.ToUpper(string(str))), nil
 	}
 	return nil, ErrExpectedString
-}
-
-func cmdSubStr(ctx context.Context, w *World, n Node) (Node, error) {
-	// from autolisp
-	str, n, err := w.shiftAndEvalCar(ctx, n)
-	if err != nil {
-		return nil, err
-	}
-	_str, ok := str.(UTF32String)
-	if !ok {
-		return nil, ErrExpectedString
-	}
-
-	var pos Node
-	pos, n, err = w.shiftAndEvalCar(ctx, n)
-	if err != nil {
-		return nil, err
-	}
-	_pos, ok := pos.(Integer)
-	if !ok {
-		return nil, ErrExpectedNumber
-	}
-	if _pos < 1 {
-		return nil, errors.New("position has to be more than 0")
-	}
-	if int(_pos) > len(_str) {
-		return nil, errors.New("position is bigger than string length")
-	}
-
-	_str = _str[int(_pos)-1:]
-	if HasValue(n) {
-		var leng Node
-
-		leng, n, err = w.shiftAndEvalCar(ctx, n)
-		if err != nil {
-			return nil, err
-		}
-		if HasValue(n) {
-			return nil, ErrTooManyArguments
-		}
-		_leng, ok := leng.(Integer)
-		if !ok {
-			return nil, ErrExpectedNumber
-		}
-		if _leng < 0 {
-			return nil, errors.New("length has to be 0 or more than 0")
-		}
-		if int(_leng) > len(_str) {
-			return nil, errors.New("length is too large")
-		}
-		_str = _str[:int(_leng)]
-	}
-	return UTF32String(_str), nil
 }
 
 func funParseInt(ctx context.Context, w *World, argv []Node) (Node, error) {
