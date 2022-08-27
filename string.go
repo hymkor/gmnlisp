@@ -61,3 +61,23 @@ func funParseInt(ctx context.Context, w *World, argv []Node) (Node, error) {
 	}
 	return Integer(value), nil
 }
+
+func funToUTF8(ctx context.Context, w *World, argv []Node) (Node, error) {
+	if s, ok := argv[0].(UTF8String); ok {
+		return s, nil
+	}
+	if s, ok := argv[0].(UTF32String); ok {
+		return UTF8String(s.String()), nil
+	}
+	return nil, ErrNotSupportType
+}
+
+func funToUTF32(ctx context.Context, w *World, argv []Node) (Node, error) {
+	if s, ok := argv[0].(UTF8String); ok {
+		return UTF32String(s.String()), nil
+	}
+	if s, ok := argv[0].(UTF32String); ok {
+		return s, nil
+	}
+	return nil, ErrNotSupportType
+}

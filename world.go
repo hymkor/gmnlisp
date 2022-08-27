@@ -310,6 +310,8 @@ func New() *World {
 			"terpri":                      &Function{C: -1, F: funTerpri},
 			"third":                       &LeftValueF{C: 1, F: funCaddr},
 			"throw":                       &Function{C: 2, F: funThrow},
+			"to-utf32":                    &Function{C: 1, F: funToUTF32},
+			"to-utf8":                     &Function{C: 1, F: funToUTF8},
 			"trace":                       SpecialF(cmdTrace),
 			"truncate":                    &Function{C: 1, F: funTruncate},
 			"typep":                       &Function{C: 2, F: funTypep},
