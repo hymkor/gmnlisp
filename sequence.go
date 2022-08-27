@@ -1,6 +1,7 @@
 package gmnlisp
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"io"
@@ -76,9 +77,26 @@ func (S *_UTF32StringBuilder) Sequence() Node {
 	return UTF32String(S.buffer)
 }
 
+type _UTF8StringBuilder struct {
+	buffer bytes.Buffer
+}
+
+func (S *_UTF8StringBuilder) Add(n Node) error {
+	r, ok := n.(Rune)
+	if !ok {
+		return ErrExpectedCharacter
+	}
+	S.buffer.WriteRune(rune(r))
+	return nil
+}
+
+func (S *_UTF8StringBuilder) Sequence() Node {
+	return UTF8String(S.buffer.Bytes())
+}
+
 var sequenceBuilderTable = map[Symbol](func() _SeqBuilder){
 	symbolForList:   func() _SeqBuilder { return &_ListBuilder{} },
-	symbolForString: func() _SeqBuilder { return &_UTF32StringBuilder{} },
+	symbolForString: func() _SeqBuilder { return &_StringBuilder{} },
 }
 
 func newSeqBuilder(symbolNode Node) (_SeqBuilder, error) {
