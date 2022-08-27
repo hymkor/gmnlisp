@@ -1,6 +1,7 @@
 package gmnlisp
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"strconv"
@@ -8,20 +9,35 @@ import (
 )
 
 func funStringAppend(ctx context.Context, w *World, list []Node) (Node, error) {
-	length := 0
-	for _, n := range list {
-		str, ok := n.(UTF32String)
-		if !ok {
-			return nil, ErrExpectedString
+	if len(list) <= 0 {
+		return Null, nil
+	}
+	if _, ok := list[0].(UTF32String); ok {
+		length := 0
+		for _, n := range list {
+			str, ok := n.(UTF32String)
+			if !ok {
+				return nil, ErrExpectedString
+			}
+			length += len(str)
 		}
-		length += len(str)
+		buffer := make([]Rune, 0, length)
+		for _, n := range list {
+			str := n.(UTF32String)
+			buffer = append(buffer, []Rune(str)...)
+		}
+		return UTF32String(buffer), nil
+	} else {
+		var buffer bytes.Buffer
+		for _, s := range list {
+			str, ok := s.(UTF8String)
+			if !ok {
+				return nil, ErrExpectedString
+			}
+			buffer.Write([]byte(str))
+		}
+		return UTF8String(buffer.Bytes()), nil
 	}
-	buffer := make([]Rune, 0, length)
-	for _, n := range list {
-		str := n.(UTF32String)
-		buffer = append(buffer, []Rune(str)...)
-	}
-	return UTF32String(buffer), nil
 }
 
 func funStrCase(ctx context.Context, w *World, argv []Node) (Node, error) {
