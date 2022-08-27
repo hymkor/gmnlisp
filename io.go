@@ -292,5 +292,5 @@ func funGetOutputStreamString(ctx context.Context, w *World, list []Node) (Node,
 	if !ok {
 		return nil, ErrNotSupportType
 	}
-	return UTF32String(string(stringer.String())), nil
+	return String(string(stringer.String())), nil
 }
