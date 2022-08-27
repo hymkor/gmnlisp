@@ -50,6 +50,10 @@ type UTF8String []byte
 
 type String = UTF32String
 
+func (s UTF8String) String() string {
+	return string(s)
+}
+
 func (s UTF8String) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	if m == PRINC {
 		return w.Write([]byte(s))
@@ -87,6 +91,10 @@ var unescapeSequenceReplacer = strings.NewReplacer(
 	"\b", "\\b",
 	"\"", "\\\"",
 )
+
+func (s UTF32String) String() string {
+	return string(s)
+}
 
 func (s UTF32String) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	if m == PRINC {
