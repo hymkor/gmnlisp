@@ -429,6 +429,8 @@ func funSubSeq(ctx context.Context, w *World, args []Node) (Node, func(Node) err
 	var buffer _SeqBuilder
 	if _, ok := args[0].(UTF32String); ok {
 		buffer = &_UTF32StringBuilder{}
+	} else if _, ok := args[0].(UTF8String); ok {
+		buffer = &_UTF8StringBuilder{}
 	} else {
 		buffer = &_ListBuilder{}
 	}
@@ -444,6 +446,9 @@ func funSubSeq(ctx context.Context, w *World, args []Node) (Node, func(Node) err
 		return
 	})
 	return buffer.Sequence(), func(newvalue Node) error {
+		if _, ok := args[0].(UTF8String); ok {
+			return ErrNotSupportType
+		}
 		if s1, ok := args[0].(UTF32String); ok {
 			s2, ok := newvalue.(UTF32String)
 			if !ok {
