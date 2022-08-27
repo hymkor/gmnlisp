@@ -2,6 +2,7 @@ package gmnlisp
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"strings"
 )
@@ -87,11 +88,11 @@ func funNotEqual(_ context.Context, _ *World, argv []Node) (Node, error) {
 
 func funReadFromString(_ context.Context, _ *World, args []Node) (Node, error) {
 	// compatible with autolisp's (read)
-	script, ok := args[0].(UTF32String)
+	script, ok := args[0].(fmt.Stringer)
 	if !ok {
 		return nil, ErrExpectedString
 	}
-	nodes, err := ReadAll(strings.NewReader(string(script)))
+	nodes, err := ReadAll(strings.NewReader(script.String()))
 	if err != nil {
 		return nil, err
 	}
