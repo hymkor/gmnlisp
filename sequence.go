@@ -299,6 +299,13 @@ func funReverse(_ context.Context, _ *World, argv []Node) (Node, error) {
 			return nil
 		})
 		return buffer.Sequence(), err
+	} else if _, ok := argv[0].(UTF8String); ok {
+		var buffer _UTF8StringBuilder
+		err = seqEach(result, func(value Node) error {
+			buffer.Add(value)
+			return nil
+		})
+		return buffer.Sequence(), err
 	}
 	return result, nil
 }
