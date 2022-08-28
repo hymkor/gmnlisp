@@ -3,7 +3,6 @@ package gmnlisp
 import (
 	"bytes"
 	"context"
-	"fmt"
 	"io"
 	"math"
 	"strings"
@@ -140,7 +139,7 @@ func funTypep(_ context.Context, _ *World, args []Node) (Node, error) {
 	case symbolForFloat:
 		_, ok = args[0].(Float)
 	case symbolForString:
-		_, ok = args[0].(fmt.Stringer)
+		_, ok = args[0].(StringTypes)
 	case symbolForUTF8String:
 		_, ok = args[0].(UTF8String)
 	case symbolForUTF32String:

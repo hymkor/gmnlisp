@@ -234,7 +234,7 @@ func cmdWithOpenFile(ctx context.Context, w *World, list Node) (Node, error) {
 		return nil, ErrTooManyArguments
 	}
 
-	fname, ok := args[0].(fmt.Stringer)
+	fname, ok := args[0].(StringTypes)
 	if !ok {
 		return nil, ErrExpectedString
 	}
@@ -274,7 +274,7 @@ func cmdWithOpenFile(ctx context.Context, w *World, list Node) (Node, error) {
 }
 
 func funCreateStringInputStream(ctx context.Context, w *World, list []Node) (Node, error) {
-	s, ok := list[0].(fmt.Stringer)
+	s, ok := list[0].(StringTypes)
 	if !ok {
 		return nil, ErrExpectedString
 	}
@@ -290,9 +290,9 @@ func cmdCreateStringOutputStream(ctx context.Context, w *World, list Node) (Node
 }
 
 func funGetOutputStreamString(ctx context.Context, w *World, list []Node) (Node, error) {
-	stringer, ok := list[0].(fmt.Stringer)
+	stringer, ok := list[0].(fmt.Stringer) // expect StringBuilder
 	if !ok {
 		return nil, ErrNotSupportType
 	}
-	return String(string(stringer.String())), nil
+	return String(stringer.String()), nil
 }

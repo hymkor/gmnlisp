@@ -10,12 +10,12 @@ import (
 	"strings"
 )
 
-func getWriterAndString(ctx context.Context, w *World, n Node) (io.Writer, fmt.Stringer, error) {
+func getWriterAndString(ctx context.Context, w *World, n Node) (io.Writer, StringTypes, error) {
 	_s, n, err := w.shiftAndEvalCar(ctx, n)
 	if err != nil {
 		return nil, emptyString, err
 	}
-	s, ok := _s.(fmt.Stringer)
+	s, ok := _s.(StringTypes)
 	if !ok {
 		return nil, emptyString, fmt.Errorf("%w `%s`", ErrExpectedString, toString(_s, PRINT))
 	}
