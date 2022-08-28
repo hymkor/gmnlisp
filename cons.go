@@ -96,6 +96,9 @@ func (cons *Cons) Equals(n Node, m EqlMode) bool {
 	if !ok {
 		return false
 	}
+	if m == STRICT {
+		return cons == value
+	}
 	return cons.GetCar().Equals(value.Car, m) &&
 		cons.GetCdr().Equals(value.Cdr, m)
 }

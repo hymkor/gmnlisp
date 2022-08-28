@@ -19,7 +19,8 @@ func TestEq(t *testing.T) {
 
 	assertEqual(t, `(eql 1 1)`, True)
 	assertEqual(t, `(eql 1 2)`, Null)
-	assertEqual(t, `(eql (cons 1 2) (cons 1 2))`, True)
+	assertEqual(t, `(eql (cons 1 2) (cons 1 2))`, Null)
+	assertEqual(t, `(equal (cons 1 2) (cons 1 2))`, True)
 	assertEqual(t, `(let ((a (cons 1 2))) (eql a a))`, True)
 
 	assertEqual(t, `(eql 1 1)`, True)
