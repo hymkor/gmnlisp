@@ -47,7 +47,7 @@ The text before proprocessed is [here](https://github.com/hymkor/gmnlisp/blob/ma
 Support Types
 -------------
 
-integer , float , string , symbol , cons , list , character , t/nil
+integer , float , string(UTF8 or UTF32) , symbol , cons , list , character , t/nil
 
 Support functions
 -----------------
@@ -69,13 +69,8 @@ Support functions
 
 #### string
 
-- (split-string STRING SEP)
 - (strcase STRING)
-- (strcat STRING1 STRING2...)
-- (strlen STRING)
-- (substr STRING START LENGTH)
 - (concatenate 'string {STRING1...})
-- (elt SEQUENCE INDEX)
 
 #### List and Sequence
 
@@ -105,6 +100,7 @@ Support functions
 - (assoc OBJ LIST)
 - (subst NEWITEM OLDITEM LIST)
 - (subseq SEQUENCE INDEX)
+- (elt SEQUENCE INDEX)
 
 #### Cons
 
