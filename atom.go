@@ -47,7 +47,7 @@ func (nt _NullType) Equals(n Node, m EqlMode) bool {
 var Null Node = _NullType{}
 
 type UTF32String []Rune
-type UTF8String []byte
+type UTF8String string
 
 type String = UTF8String
 type _StringBuilder = _UTF8StringBuilder
@@ -64,7 +64,7 @@ func (s UTF8String) String() string {
 
 func (s UTF8String) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	if m == PRINC {
-		return w.Write([]byte(s))
+		return io.WriteString(w, string(s))
 	} else {
 		return fmt.Fprintf(w, `"%s"`, unescapeSequenceReplacer.Replace(string(s)))
 	}
@@ -96,7 +96,7 @@ func (s UTF8String) firstRuneAndRestString() (Rune, StringTypes, bool) {
 	if len(s) <= 0 {
 		return Rune(utf8.RuneError), nil, false
 	}
-	r, siz := utf8.DecodeRune([]byte(s))
+	r, siz := utf8.DecodeRuneInString(string(s))
 	return Rune(r), UTF8String(s[siz:]), true
 }
 
@@ -104,7 +104,7 @@ func (s UTF8String) firstAndRest() (Node, Node, bool, func(Node) error) {
 	if len(s) <= 0 {
 		return nil, Null, false, nil
 	}
-	r, siz := utf8.DecodeRune([]byte(s))
+	r, siz := utf8.DecodeRuneInString(string(s))
 	return Rune(r), UTF8String(s[siz:]), true, func(value Node) error {
 		return ErrNotSupportType
 	}
@@ -112,33 +112,20 @@ func (s UTF8String) firstAndRest() (Node, Node, bool, func(Node) error) {
 
 func (s UTF8String) Add(n Node) (Node, error) {
 	if value, ok := n.(UTF8String); ok {
-		return UTF8String(append(s, value...)), nil
+		news := make([]byte, 0, len(s)+len(value)+1)
+		news = append(news, s...)
+		news = append(news, value...)
+		return UTF8String(news), nil
 	}
 	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n, PRINT))
 }
 
 func (s UTF8String) LessThan(n Node) (bool, error) {
-	if ns, ok := n.(UTF8String); ok {
-		equal := true
-		for i, left := range s {
-			if i >= len(ns) {
-				return true, nil
-			}
-			right := ns[i]
-			if left > right {
-				return false, nil
-			}
-			if left < right {
-				equal = false
-			}
-			if equal {
-				return len(s) >= len(ns), nil
-			}
-			return true, nil
-		}
-		return true, nil
+	ns, ok := n.(UTF8String)
+	if !ok {
+		return false, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n, PRINT))
 	}
-	return false, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n, PRINT))
+	return string(s) < string(ns), nil
 }
 
 var unescapeSequenceReplacer = strings.NewReplacer(

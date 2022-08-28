@@ -1,14 +1,13 @@
 package gmnlisp
 
 import (
-	"bytes"
 	"io"
 	"strings"
 	"unicode"
 )
 
 func readtokenWord(r io.RuneScanner) (string, error) {
-	var buffer bytes.Buffer
+	var buffer strings.Builder
 
 	quote := false
 	lastLastRune := '\u0000'

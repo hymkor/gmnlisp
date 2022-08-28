@@ -1,7 +1,6 @@
 package gmnlisp
 
 import (
-	"bytes"
 	"context"
 	"io"
 	"math"
@@ -77,7 +76,7 @@ func (S *_UTF32StringBuilder) Sequence() Node {
 }
 
 type _UTF8StringBuilder struct {
-	buffer bytes.Buffer
+	buffer strings.Builder
 }
 
 func (S *_UTF8StringBuilder) Add(n Node) error {
@@ -90,7 +89,7 @@ func (S *_UTF8StringBuilder) Add(n Node) error {
 }
 
 func (S *_UTF8StringBuilder) Sequence() Node {
-	return UTF8String(S.buffer.Bytes())
+	return UTF8String(S.buffer.String())
 }
 
 var sequenceBuilderTable = map[Symbol](func() _SeqBuilder){

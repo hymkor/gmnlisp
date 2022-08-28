@@ -1,7 +1,6 @@
 package gmnlisp
 
 import (
-	"bytes"
 	"context"
 	"strconv"
 	"strings"
@@ -27,15 +26,15 @@ func funStringAppend(ctx context.Context, w *World, list []Node) (Node, error) {
 		}
 		return UTF32String(buffer), nil
 	} else {
-		var buffer bytes.Buffer
+		var buffer strings.Builder
 		for _, s := range list {
 			str, ok := s.(UTF8String)
 			if !ok {
 				return nil, ErrExpectedString
 			}
-			buffer.Write([]byte(str))
+			str.PrintTo(&buffer, PRINC)
 		}
-		return UTF8String(buffer.Bytes()), nil
+		return UTF8String(buffer.String()), nil
 	}
 }
 
