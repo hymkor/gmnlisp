@@ -25,10 +25,11 @@ func TestEq(t *testing.T) {
 
 	assertEqual(t, `(eql 1 1)`, True)
 	assertEqual(t, `(eql 1 1.0)`, Null)
-	assertEqual(t, `(equal 1 1.0)`, True)
+	assertEqual(t, `(equal 1 1.0)`, Null)
 	assertEqual(t, `(equal "A" "A")`, True)
 	assertEqual(t, `(equal "a" "A")`, Null)
 	assertEqual(t, `(equalp "a" "A")`, True)
+	assertEqual(t, `(equalp 1 1.0)`, True)
 }
 
 func TestNotEqual(t *testing.T) {
