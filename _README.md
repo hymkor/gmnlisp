@@ -11,18 +11,18 @@ Gmnlisp is a small Lisp implementation in Go.
 ```go
 <%
 (defun detab (src)
-    (let (pos)
-        (while (setq pos (position #\tab src))
-            (setq src
-                (concatenate 'string
-                    (subseq src 0 pos)
-                    "    "
-                    (subseq src (1+ pos))
+    (let ((buffer (create-string-output-stream)))
+        (mapc
+            (lambda (c)
+                (if (equal c #\tab)
+                    (format buffer "    ")
+                    (format-char buffer c)
                 )
             )
+            src
         )
+        (get-output-stream-string buffer)
     )
-    src
 )
 (let (line (count 0))
     (with-open-file (fd "examples/example1.go")
