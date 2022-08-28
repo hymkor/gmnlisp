@@ -110,7 +110,7 @@ Support functions
 
 - (defparameter NAME VALUE)
 - (setq NAME VALUE)
-- (setf EXP1 EXP2 ...)
+- (setf EXP NEWVALUE)
 - (replaca CONS-EXP CAR-NEWVALUE)
 - (replacd CONS-EXP CDR-NEWVALUE)
 - (defvar NAME [VALUE])
@@ -172,6 +172,10 @@ Support functions
 
 - (coerce SEQUENCE 'list)
 - (coerce SEQUENCE 'string)
+- (coerce SEQUENCE 'utf8string)
+- (coerce SEQUENCE 'utf32string)
+- (to-utf8 "UTF32STRING")
+- (to-utf32 "UTF8STRING")
 
 #### Branch
 
@@ -198,9 +202,9 @@ Support functions
 
 #### Constant
 
-- most-postive-fixnum like CommonLisp
-- most-negative-fixnum like CommonLisp
-- pi like CommonLisp
+- most-postive-fixnum
+- most-negative-fixnum
+- pi
 
 #### Function Reference
 
@@ -211,7 +215,8 @@ Support functions
 
 - (defmacro NAME (PARAMS...) EXP1...)
 - (macroexpand ..)
-- not support backquotation and &amp;body
+
+Backquotations and &amp;body are not supported.
 
 #### Mapping
 
