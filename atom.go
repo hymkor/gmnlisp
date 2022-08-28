@@ -54,7 +54,7 @@ type _StringBuilder = _UTF8StringBuilder
 
 type StringTypes interface {
 	Node
-	fmt.Stringer
+	String() string
 	firstRuneAndRestString() (Rune, StringTypes, bool)
 }
 
