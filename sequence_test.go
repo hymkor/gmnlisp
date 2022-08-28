@@ -32,6 +32,8 @@ func TestMap(t *testing.T) {
 
 func TestCoerce(t *testing.T) {
 	assertEqual(t, `(coerce '(#\a #\b) 'string)`, String("ab"))
+	assertEqual(t, `(coerce '(#\a #\b) 'utf8string)`, UTF8String("ab"))
+	assertEqual(t, `(coerce '(#\a #\b) 'utf32string)`, UTF32String("ab"))
 	assertEqual(t, `(coerce '(#\a #\b) 'list)`, List(Rune('a'), Rune('b')))
 }
 

@@ -93,8 +93,10 @@ func (S *_UTF8StringBuilder) Sequence() Node {
 }
 
 var sequenceBuilderTable = map[Symbol](func() _SeqBuilder){
-	symbolForList:   func() _SeqBuilder { return &_ListBuilder{} },
-	symbolForString: func() _SeqBuilder { return &_StringBuilder{} },
+	symbolForList:        func() _SeqBuilder { return &_ListBuilder{} },
+	symbolForString:      func() _SeqBuilder { return &_StringBuilder{} },
+	symbolForUTF8String:  func() _SeqBuilder { return &_UTF8StringBuilder{} },
+	symbolForUTF32String: func() _SeqBuilder { return &_UTF32StringBuilder{} },
 }
 
 func newSeqBuilder(symbolNode Node) (_SeqBuilder, error) {
