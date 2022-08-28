@@ -15,6 +15,7 @@ all:
 	go build -o gmnlisp$(EXE) cmd/gmnlisp/main.go
 
 test:
+	go fmt
 	go test
 
 readme.md: _readme.md gmnlpp$(EXE)
