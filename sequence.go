@@ -221,7 +221,7 @@ func funLength(_ context.Context, _ *World, argv []Node) (Node, error) {
 	return Integer(length), err
 }
 
-func mapCar(ctx context.Context, w *World, funcNode Node, listSet []Node, resultSet _SeqBuilder) error {
+func mapCar(ctx context.Context, w *World, funcNode Node, sourceSet []Node, resultSet _SeqBuilder) error {
 	f, err := funcNode.Eval(ctx, w)
 	if err != nil {
 		return err
@@ -230,6 +230,8 @@ func mapCar(ctx context.Context, w *World, funcNode Node, listSet []Node, result
 	if !ok {
 		return ErrExpectedFunction
 	}
+	listSet := make([]Node, len(sourceSet))
+	copy(listSet, sourceSet)
 	for {
 		paramSet := make([]Node, len(listSet))
 		for i := 0; i < len(listSet); i++ {
