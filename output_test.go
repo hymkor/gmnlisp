@@ -21,4 +21,11 @@ func TestFormat(t *testing.T) {
 	assertEqual(t, `(format nil "~s" "ABC")`, String(`"ABC"`))
 	assertEqual(t, `(format nil "[~5d]" 123)`, String(`[  123]`))
 	assertEqual(t, `(format nil "[~5a]" "ABC")`, String(`[ABC  ]`))
+
+	assertEqual(t, `
+		(let ((s (create-string-output-stream)))
+			(format-char s #\A)
+			(format-char s #\B)
+			(get-output-stream-string s)
+		)`, String("AB"))
 }

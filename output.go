@@ -129,6 +129,19 @@ func printInt(w io.Writer, base, width, padding int, value Node) error {
 	return nil
 }
 
+func funFormatChar(_ context.Context, _ *World, list []Node) (Node, error) {
+	writer, ok := list[0].(runeWriter)
+	if !ok {
+		return nil, ErrExpectedWriter
+	}
+	r, ok := list[1].(Rune)
+	if !ok {
+		return nil, ErrExpectedCharacter
+	}
+	writer.WriteRune(rune(r))
+	return Null, nil
+}
+
 func funFormatInteger(_ context.Context, _ *World, list []Node) (Node, error) {
 	writer, ok := list[0].(io.Writer)
 	if !ok {

@@ -243,6 +243,7 @@ func New() *World {
 			"for":                         SpecialF(cmdFor),
 			"foreach":                     SpecialF(cmdForeach),
 			"format":                      defFormat,
+			"format-char":                 &Function{C: 2, F: funFormatChar},
 			"format-integer":              &Function{C: 3, F: funFormatInteger},
 			"funcall":                     SpecialF(cmdFunCall),
 			"function":                    &Function{C: 1, F: funFunction},
