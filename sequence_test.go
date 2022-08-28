@@ -30,6 +30,14 @@ func TestMap(t *testing.T) {
 	assertEqual(t, `(length (map 'list #'null '(nil 2 3)))`, Integer(3))
 }
 
+func TestMapC(t *testing.T) {
+	assertEqual(t, `
+		(let ((buffer (create-string-output-stream)) result)
+			(setq result (mapc (lambda (c) (format-char buffer (1+ c))) "ABC"))
+			(list result (get-output-stream-string buffer))
+		)`, List(String("ABC"), String("BCD")))
+}
+
 func TestCoerce(t *testing.T) {
 	assertEqual(t, `(coerce '(#\a #\b) 'string)`, String("ab"))
 	assertEqual(t, `(coerce '(#\a #\b) 'utf8string)`, UTF8String("ab"))

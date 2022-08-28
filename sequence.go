@@ -92,6 +92,16 @@ func (S *_UTF8StringBuilder) Sequence() Node {
 	return UTF8String(S.buffer.String())
 }
 
+type _BlackHall struct{}
+
+func (_BlackHall) Add(n Node) error {
+	return nil
+}
+
+func (_BlackHall) Sequence() Node {
+	return Null
+}
+
 var sequenceBuilderTable = map[Symbol](func() _SeqBuilder){
 	symbolForList:        func() _SeqBuilder { return &_ListBuilder{} },
 	symbolForString:      func() _SeqBuilder { return &_StringBuilder{} },
@@ -262,6 +272,17 @@ func funMapCar(ctx context.Context, w *World, argv []Node) (Node, error) {
 	var buffer _ListBuilder
 	err := mapCar(ctx, w, argv[0], argv[1:], &buffer)
 	return buffer.Sequence(), err
+}
+
+func funMapC(ctx context.Context, w *World, argv []Node) (Node, error) {
+	if len(argv) < 1 {
+		return nil, ErrTooFewArguments
+	}
+	err := mapCar(ctx, w, argv[0], argv[1:], &_BlackHall{})
+	if len(argv) < 2 {
+		return Null, err
+	}
+	return argv[1], err
 }
 
 func funMap(ctx context.Context, w *World, argv []Node) (Node, error) {
