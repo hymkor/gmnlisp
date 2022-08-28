@@ -61,6 +61,7 @@ Support functions
 - (prin1 OBJ)
 - (terpri [STREAM])
 - (format {t|nil|STREAM} FORMAT [ARGS..])
+- (format-char STREAM CHAR)
 
 #### float
 
@@ -221,6 +222,7 @@ Backquotations and &amp;body are not supported.
 #### Mapping
 
 - (mapcar #'FUNCTION LIST)
+- (mapc #'FUNCTION LIST)
 - (apply #'FUNCTION [PARAMS...] LIST)
 - (funcall #'FUNCTION EXP1...)
 - (map 'list #'FUNCTION SEQUENCE)
