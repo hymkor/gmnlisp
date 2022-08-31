@@ -257,7 +257,7 @@ func mapCar(ctx context.Context, w *World, funcNode Node, sourceSet []Node, resu
 				return nil
 			}
 		}
-		result, err := _f.Call(ctx, w, List(paramSet...))
+		result, err := _f.Call(ctx, w, listToQuotedList(paramSet))
 		if err != nil {
 			return err
 		}

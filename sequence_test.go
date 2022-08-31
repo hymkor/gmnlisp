@@ -22,6 +22,15 @@ func TestMapCar(t *testing.T) {
 		List(Integer(5), Integer(7), Integer(9)))
 	assertEqual(t, `(mapcar #'(lambda (a b) (+ a b)) '(1 2 3) '(4 5 6))`,
 		List(Integer(5), Integer(7), Integer(9)))
+
+	assertEqual(t, `(mapcar #'car '((1 a) (2 b) (3 c)))`,
+		List(Integer(1), Integer(2), Integer(3)))
+	// assertEqual(t, `(mapcar #'abs '((3 -4 2 -5 -6)))`,
+	//	List(Integer(3), Integer(4), Integer(2), Integer(5), Integer(6)))
+	assertEqual(t, `(mapcar #'cons '(a b c) '(1 2 3))`,
+		List(&Cons{Car: Symbol("a"), Cdr: Integer(1)},
+			&Cons{Car: Symbol("b"), Cdr: Integer(2)},
+			&Cons{Car: Symbol("c"), Cdr: Integer(3)}))
 }
 
 func TestMap(t *testing.T) {
