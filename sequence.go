@@ -297,6 +297,76 @@ func funMap(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return buffer.Sequence(), err
 }
 
+type _Quoted struct {
+	Value Node
+}
+
+func (q *_Quoted) Eval(_ context.Context, _ *World) (Node, error) {
+	return q.Value, nil
+}
+
+func (q *_Quoted) PrintTo(w io.Writer, m PrintMode) (int, error) {
+	return q.Value.PrintTo(w, m)
+}
+
+func (q *_Quoted) Equals(n Node, m EqlMode) bool {
+	return false
+}
+
+func listToQuotedList(list []Node) Node {
+	var cons Node = Null
+	for i := len(list) - 1; i >= 0; i-- {
+		cons = &Cons{
+			Car: &_Quoted{Value: list[i]},
+			Cdr: cons,
+		}
+	}
+	return cons
+}
+
+func mapList(ctx context.Context, w *World, funcNode Node, sourceSet []Node, resultSet _SeqBuilder) error {
+	f, err := funcNode.Eval(ctx, w)
+	if err != nil {
+		return err
+	}
+	_f, ok := f.(_Callable)
+	if !ok {
+		return ErrExpectedFunction
+	}
+	listSet := make([]Node, len(sourceSet))
+	copy(listSet, sourceSet)
+	for {
+		result, err := _f.Call(ctx, w, listToQuotedList(listSet))
+		if err != nil {
+			return err
+		}
+		resultSet.Add(result)
+
+		for i := 0; i < len(listSet); i++ {
+			if IsNull(listSet[i]) {
+				return nil
+			}
+			seq, ok := listSet[i].(_Sequence)
+			if !ok {
+				return ErrNotSupportType
+			}
+			_, listSet[i], ok, _ = seq.firstAndRest()
+			if !ok || IsNull(listSet[i]) {
+				return nil
+			}
+		}
+	}
+}
+
+func funMapList(ctx context.Context, w *World, argv []Node) (Node, error) {
+	if len(argv) < 1 {
+		return nil, ErrTooFewArguments
+	}
+	var buffer _ListBuilder
+	err := mapList(ctx, w, argv[0], argv[1:], &buffer)
+	return buffer.Sequence(), err
+}
+
 func funCoerce(_ context.Context, _ *World, argv []Node) (Node, error) {
 	buffer, err := newSeqBuilder(argv[1])
 	if err != nil {
