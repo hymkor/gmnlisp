@@ -226,6 +226,7 @@ Backquotations and &amp;body are not supported.
 
 - (mapcar #'FUNCTION LIST)
 - (mapc #'FUNCTION LIST)
+- (maplist #'FUNCTION LIST)
 - (apply #'FUNCTION [PARAMS...] LIST)
 - (funcall #'FUNCTION EXP1...)
 - (map 'list #'FUNCTION SEQUENCE)
