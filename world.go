@@ -264,6 +264,7 @@ func New() *World {
 			"mapc":                        &Function{C: -1, F: funMapC},
 			"mapcar":                      &Function{C: -1, F: funMapCar},
 			"mapcan":                      &Function{C: -1, F: funMapCan},
+			"mapcon":                      &Function{C: -1, F: funMapCon},
 			"mapl":                        &Function{C: -1, F: funMapL},
 			"maplist":                     &Function{C: -1, F: funMapList},
 			"member":                      &KWFunction{C: 2, F: funMember},

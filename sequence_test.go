@@ -71,6 +71,16 @@ func TestMapL(t *testing.T) {
 		k)`, Integer(4))
 }
 
+func TestMapCon(t *testing.T) {
+	assertEqual(t, `
+		(mapcon
+			(lambda (x)
+				(if (member (car x) (cdr x)) (list (car x)))
+			)
+			'(a b a c d b c b c)
+		)`, List(Symbol("a"), Symbol("b"), Symbol("c"), Symbol("b"), Symbol("c")))
+}
+
 func TestCoerce(t *testing.T) {
 	assertEqual(t, `(coerce '(#\a #\b) 'string)`, String("ab"))
 	assertEqual(t, `(coerce '(#\a #\b) 'utf8string)`, UTF8String("ab"))
