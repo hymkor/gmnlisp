@@ -92,16 +92,6 @@ func (S *_UTF8StringBuilder) Sequence() Node {
 	return UTF8String(S.buffer.String())
 }
 
-type _BlackHall struct{}
-
-func (_BlackHall) Add(n Node) error {
-	return nil
-}
-
-func (_BlackHall) Sequence() Node {
-	return Null
-}
-
 var sequenceBuilderTable = map[Symbol](func() _SeqBuilder){
 	symbolForList:        func() _SeqBuilder { return &_ListBuilder{} },
 	symbolForString:      func() _SeqBuilder { return &_StringBuilder{} },
@@ -231,7 +221,7 @@ func funLength(_ context.Context, _ *World, argv []Node) (Node, error) {
 	return Integer(length), err
 }
 
-func mapCar(ctx context.Context, w *World, funcNode Node, sourceSet []Node, resultSet _SeqBuilder) error {
+func mapCar(ctx context.Context, w *World, funcNode Node, sourceSet []Node, store func(Node)) error {
 	f, err := funcNode.Eval(ctx, w)
 	if err != nil {
 		return err
@@ -261,7 +251,7 @@ func mapCar(ctx context.Context, w *World, funcNode Node, sourceSet []Node, resu
 		if err != nil {
 			return err
 		}
-		resultSet.Add(result)
+		store(result)
 	}
 }
 
@@ -270,7 +260,7 @@ func funMapCar(ctx context.Context, w *World, argv []Node) (Node, error) {
 		return nil, ErrTooFewArguments
 	}
 	var buffer _ListBuilder
-	err := mapCar(ctx, w, argv[0], argv[1:], &buffer)
+	err := mapCar(ctx, w, argv[0], argv[1:], func(node Node) { buffer.Add(node) })
 	return buffer.Sequence(), err
 }
 
@@ -278,7 +268,7 @@ func funMapC(ctx context.Context, w *World, argv []Node) (Node, error) {
 	if len(argv) < 1 {
 		return nil, ErrTooFewArguments
 	}
-	err := mapCar(ctx, w, argv[0], argv[1:], &_BlackHall{})
+	err := mapCar(ctx, w, argv[0], argv[1:], func(Node) error { return nil })
 	if len(argv) < 2 {
 		return Null, err
 	}
@@ -293,7 +283,7 @@ func funMap(ctx context.Context, w *World, argv []Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = mapCar(ctx, w, argv[1], argv[2:], buffer)
+	err = mapCar(ctx, w, argv[1], argv[2:], func(n Node) { buffer.Add(n) })
 	return buffer.Sequence(), err
 }
 
@@ -324,7 +314,7 @@ func listToQuotedList(list []Node) Node {
 	return cons
 }
 
-func mapList(ctx context.Context, w *World, funcNode Node, sourceSet []Node, resultSet _SeqBuilder) error {
+func mapList(ctx context.Context, w *World, funcNode Node, sourceSet []Node, store func(Node)) error {
 	f, err := funcNode.Eval(ctx, w)
 	if err != nil {
 		return err
@@ -340,7 +330,7 @@ func mapList(ctx context.Context, w *World, funcNode Node, sourceSet []Node, res
 		if err != nil {
 			return err
 		}
-		resultSet.Add(result)
+		store(result)
 
 		for i := 0; i < len(listSet); i++ {
 			if IsNull(listSet[i]) {
@@ -363,7 +353,7 @@ func funMapList(ctx context.Context, w *World, argv []Node) (Node, error) {
 		return nil, ErrTooFewArguments
 	}
 	var buffer _ListBuilder
-	err := mapList(ctx, w, argv[0], argv[1:], &buffer)
+	err := mapList(ctx, w, argv[0], argv[1:], func(n Node) { buffer.Add(n) })
 	return buffer.Sequence(), err
 }
 
@@ -371,7 +361,7 @@ func funMapL(ctx context.Context, w *World, argv []Node) (Node, error) {
 	if len(argv) < 1 {
 		return nil, ErrTooFewArguments
 	}
-	err := mapList(ctx, w, argv[0], argv[1:], &_BlackHall{})
+	err := mapList(ctx, w, argv[0], argv[1:], func(Node) {})
 	if len(argv) < 2 {
 		return Null, err
 	}
