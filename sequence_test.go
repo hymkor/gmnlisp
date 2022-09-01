@@ -47,6 +47,11 @@ func TestMapC(t *testing.T) {
 		)`, List(String("ABC"), String("BCD")))
 }
 
+func TestMapCan(t *testing.T) {
+	assertEqual(t, `(mapcan (lambda (x) (if (> x 0) (list x))) '(-3 4 0 5 -2 7))`,
+		List(Integer(4), Integer(5), Integer(7)))
+}
+
 func TestMapList(t *testing.T) {
 	assertEqual(t, `(maplist #'append '(1 2 3 4) '(1 2) '(1 2 3))`,
 		List(List(Integer(1), Integer(2), Integer(3), Integer(4),

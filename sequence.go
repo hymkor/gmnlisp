@@ -268,11 +268,23 @@ func funMapC(ctx context.Context, w *World, argv []Node) (Node, error) {
 	if len(argv) < 1 {
 		return nil, ErrTooFewArguments
 	}
-	err := mapCar(ctx, w, argv[0], argv[1:], func(Node) error { return nil })
+	err := mapCar(ctx, w, argv[0], argv[1:], func(Node) {})
 	if len(argv) < 2 {
 		return Null, err
 	}
 	return argv[1], err
+}
+
+func funMapCan(ctx context.Context, w *World, argv []Node) (Node, error) {
+	if len(argv) < 1 {
+		return nil, ErrTooFewArguments
+	}
+	list := []Node{}
+	err := mapCar(ctx, w, argv[0], argv[1:], func(node Node) { list = append(list, node) })
+	if err != nil {
+		return nil, err
+	}
+	return funAppend(ctx, w, list)
 }
 
 func funMap(ctx context.Context, w *World, argv []Node) (Node, error) {
