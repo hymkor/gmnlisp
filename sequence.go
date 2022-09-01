@@ -367,6 +367,17 @@ func funMapList(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return buffer.Sequence(), err
 }
 
+func funMapL(ctx context.Context, w *World, argv []Node) (Node, error) {
+	if len(argv) < 1 {
+		return nil, ErrTooFewArguments
+	}
+	err := mapList(ctx, w, argv[0], argv[1:], &_BlackHall{})
+	if len(argv) < 2 {
+		return Null, err
+	}
+	return argv[0], err
+}
+
 func funCoerce(_ context.Context, _ *World, argv []Node) (Node, error) {
 	buffer, err := newSeqBuilder(argv[1])
 	if err != nil {
