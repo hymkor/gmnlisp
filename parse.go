@@ -46,6 +46,10 @@ var escapeSequenceReplacer = strings.NewReplacer(
 	"\\\"", "\"",
 )
 
+func newQuote(value Node) Node {
+	return &Cons{Car: Symbol("quote"), Cdr: &Cons{Car: value, Cdr: Null}}
+}
+
 func ReadNode(rs io.RuneScanner) (Node, error) {
 	token, err := readToken(rs)
 	if err != nil {
@@ -59,7 +63,7 @@ func ReadNode(rs io.RuneScanner) (Node, error) {
 			}
 			return nil, err
 		}
-		return &Cons{Car: Symbol("quote"), Cdr: &Cons{Car: quoted, Cdr: Null}}, nil
+		return newQuote(quoted), nil
 	}
 	if token == "#'" {
 		function, err := ReadNode(rs)

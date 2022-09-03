@@ -299,27 +299,11 @@ func funMap(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return buffer.Sequence(), err
 }
 
-type _Quoted struct {
-	Value Node
-}
-
-func (q *_Quoted) Eval(_ context.Context, _ *World) (Node, error) {
-	return q.Value, nil
-}
-
-func (q *_Quoted) PrintTo(w io.Writer, m PrintMode) (int, error) {
-	return q.Value.PrintTo(w, m)
-}
-
-func (q *_Quoted) Equals(n Node, m EqlMode) bool {
-	return false
-}
-
 func listToQuotedList(list []Node) Node {
 	var cons Node = Null
 	for i := len(list) - 1; i >= 0; i-- {
 		cons = &Cons{
-			Car: &_Quoted{Value: list[i]},
+			Car: newQuote(list[i]),
 			Cdr: cons,
 		}
 	}
