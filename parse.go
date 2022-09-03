@@ -14,22 +14,28 @@ var rxFloat = regexp.MustCompile(`^-?[0-9]+\.[0-9]*$`)
 var rxInteger = regexp.MustCompile(`^-?[0-9]+$`)
 
 func nodes2cons(nodes []Node) Node {
-	if nodes == nil {
+	if nodes == nil || len(nodes) <= 0 {
 		return Null
 	}
-	switch len(nodes) {
-	case 0:
-		return Null
-	case 1:
-		return &Cons{nodes[0], Null}
-	case 3:
-		if sym, ok := nodes[1].(Symbol); ok && string(sym) == "." {
-			return &Cons{nodes[0], nodes[2]}
+	var cons Node = Null
+	if len(nodes) >= 3 && nodes[len(nodes)-2] == Symbol(".") {
+		// dot pairs
+		cons = nodes[len(nodes)-1]
+		for i := len(nodes) - 3; i >= 0; i-- {
+			cons = &Cons{
+				Car: nodes[i],
+				Cdr: cons,
+			}
 		}
-		fallthrough
-	default:
-		return &Cons{Car: nodes[0], Cdr: nodes2cons(nodes[1:])}
+	} else {
+		for i := len(nodes) - 1; i >= 0; i-- {
+			cons = &Cons{
+				Car: nodes[i],
+				Cdr: cons,
+			}
+		}
 	}
+	return cons
 }
 
 var escapeSequenceReplacer = strings.NewReplacer(
