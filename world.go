@@ -218,7 +218,6 @@ func New() *World {
 			"defmacro":                    SpecialF(cmdDefMacro),
 			"defparameter":                SpecialF(cmdDefglobal),
 			"defun":                       SpecialF(cmdDefun),
-			"defvar":                      SpecialF(cmdDefvar),
 			"dolist":                      SpecialF(cmdDoList),
 			"dotimes":                     SpecialF(cmdDoTimes),
 			"dynamic":                     SpecialF(cmdDynamic),

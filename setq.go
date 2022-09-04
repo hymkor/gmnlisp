@@ -222,29 +222,6 @@ func cmdLetX(ctx context.Context, w *World, params Node) (Node, error) {
 	return progn(ctx, newWorld, params)
 }
 
-func cmdDefvar(ctx context.Context, w *World, list Node) (Node, error) {
-	// from CommonLisp
-	var symbolNode Node
-	var err error
-
-	symbolNode, list, err = shift(list)
-	if err != nil {
-		return nil, err
-	}
-	symbol, ok := symbolNode.(Symbol)
-	if !ok {
-		return nil, ErrExpectedSymbol
-	}
-	w.DefineVariable(symbol, func() Node {
-		var value Node = Null
-		if HasValue(list) {
-			value, _, err = w.shiftAndEvalCar(ctx, list)
-		}
-		return value
-	})
-	return symbol, err
-}
-
 // cmdDefglobal implements (defglobal) of ISLisp and (defparameter) of CommonLisp
 func cmdDefglobal(ctx context.Context, w *World, list Node) (Node, error) {
 	// from CommonLisp

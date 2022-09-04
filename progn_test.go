@@ -24,11 +24,13 @@ func TestIf(t *testing.T) {
 	}
 
 	assertEqual(t, `
-	(defvar aa)
-	(cond
-		((= (setq aa (string-append "a" "a")) "ab") "A")
-		((= aa "aa") "B")
-		(T "fail"))`, String("B"))
+	(let (aa)
+		(cond
+			((= (setq aa (string-append "a" "a")) "ab") "A")
+			((= aa "aa") "B")
+			(T "fail")
+		)
+	)`, String("B"))
 
 	assertEqual(t, `(let ((x 0)(i 0))
 						(foreach i (list 1 (+ 1 1) (* 1 3) 4 5)
@@ -79,11 +81,10 @@ func TestCase(t *testing.T) {
 
 func TestFor(t *testing.T) {
 	assertEqual(t, `
-		(defvar x)
-		(defvar y)
-		(for ((x 0 (1+ x)) (y 0 (+ y 10)))
-			((= x 5) (+ x y))
-		)`, Integer(55))
+		(let (x y)
+			(for ((x 0 (1+ x)) (y 0 (+ y 10)))
+				((= x 5) (+ x y))
+			))`, Integer(55))
 
 	assertEqual(t, `
 		(defun fibo2 (n)

@@ -9,26 +9,15 @@ func TestLet(t *testing.T) {
 	assertEqual(t, `(let ((x 0)) (let ((x 2)(y x)) y))`, Integer(0))
 }
 
-func TestDefvar(t *testing.T) {
-	assertEqual(t, `(defvar a "ahaha")`, Symbol("a"))
-	assertEqual(t, `(defvar a "ahaha")(defvar a "ihihi") a`, String("ahaha"))
-
-	assertEqual(t, `
-		(defvar counter 0)
-		(defvar a (setq counter (1+ counter)))
-		(defvar a (setq counter (1+ counter)))
-		counter`, Integer(1))
-}
-
 func TestDefparameter(t *testing.T) {
 	assertEqual(t, `(defglobal a "ahaha")`, Symbol("a"))
 	assertEqual(t, `(defglobal a "ahaha")(defglobal a "ihihi") a`, String("ihihi"))
 }
 
 func TestSetf(t *testing.T) {
-	assertEqual(t, `(defvar x)
+	assertEqual(t, `(let (x)
 					(setf (car (setq x (cons 1 2))) 3)
-					x`, &Cons{Integer(3), Integer(2)})
+					x)`, &Cons{Integer(3), Integer(2)})
 	assertEqual(t, `(defglobal x (cons 1 2))
 					(setf (cdr x) 3)
 					x`, &Cons{Integer(1), Integer(3)})
@@ -60,9 +49,9 @@ func TestSetf(t *testing.T) {
 					x`, List(Integer(1), Integer(2), Integer(3), Integer(0)))
 
 	assertEqual(t, `
-		(defvar m (list (cons 1 "A") (cons 2 "B") (cons 3 "C")))
-		(setf (cdr (assoc 1 m)) "X")
-		m`, List(
+		(let ((m (list (cons 1 "A") (cons 2 "B") (cons 3 "C"))))
+			(setf (cdr (assoc 1 m)) "X")
+		 m)`, List(
 		&Cons{Integer(1), String("X")},
 		&Cons{Integer(2), String("B")},
 		&Cons{Integer(3), String("C")}))
