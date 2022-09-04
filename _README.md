@@ -57,14 +57,9 @@ Support functions
 
 #### Output functions
 
-- (write STRING [:stream STREAM])
-- (write-line STRING [STREAM])
-- (print OBJ)
-- (princ OBJ)
-- (prin1 OBJ)
-- (terpri [STREAM])
 - (format {t|nil|STREAM} FORMAT [ARGS..])
 - (format-char STREAM CHAR)
+- (format-object STREAM STRING t|nil)
 
 #### float
 

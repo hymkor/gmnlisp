@@ -54,17 +54,6 @@ integer , float , string(UTF8 or UTF32) , symbol , cons , list , character , t/n
 Support functions
 -----------------
 
-#### Output functions
-
-- (write STRING [:stream STREAM])
-- (write-line STRING [STREAM])
-- (print OBJ)
-- (princ OBJ)
-- (prin1 OBJ)
-- (terpri [STREAM])
-- (format {t|nil|STREAM} FORMAT [ARGS..])
-- (format-char STREAM CHAR)
-
 #### float
 
 - (truncate REAL)
@@ -235,6 +224,9 @@ Backquotations and &amp;body are not supported.
 
 #### File I/O
 
+- (format {t|nil|STREAM} FORMAT [ARGS..])
+- (format-char STREAM CHAR)
+- (format-object STREAM STRING {t|nil})
 - (with-open-file (HANDLE FILENAME  
     \[:direction :output|:input\]  
     \[:if-does-not-exist\] like CommonLisp
