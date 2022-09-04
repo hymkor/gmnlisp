@@ -24,3 +24,8 @@ func TestDefvar(t *testing.T) {
 		(defvar a (setq counter (1+ counter)))
 		counter`, Integer(1))
 }
+
+func TestDefparameter(t *testing.T) {
+	assertEqual(t, `(defparameter a "ahaha")`, Symbol("a"))
+	assertEqual(t, `(defparameter a "ahaha")(defparameter a "ihihi") a`, String("ihihi"))
+}

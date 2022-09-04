@@ -9,7 +9,7 @@ func TestLet(t *testing.T) {
 	assertEqual(t, `(let ((x 0)) (let ((x 2)(y x)) y))`, Integer(0))
 }
 
-func TestDefparameter(t *testing.T) {
+func TestGlobal(t *testing.T) {
 	assertEqual(t, `(defglobal a "ahaha")`, Symbol("a"))
 	assertEqual(t, `(defglobal a "ahaha")(defglobal a "ihihi") a`, String("ihihi"))
 }

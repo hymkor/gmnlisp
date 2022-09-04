@@ -7,8 +7,13 @@ import (
 )
 
 func Using(w *World) *World {
+	defparameter, err := w.Get("defglobal")
+	if err != nil {
+		panic("not found defglobal")
+	}
 	return w.Let(Variables{
-		"defvar": SpecialF(cmdDefvar),
+		"defvar":       SpecialF(cmdDefvar),
+		"defparameter": defparameter,
 	})
 }
 
