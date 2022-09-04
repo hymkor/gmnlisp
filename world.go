@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-type _Scope interface {
+type Scope interface {
 	Get(Symbol) (Node, bool)
 	Set(Symbol, Node)
 }
@@ -55,11 +55,11 @@ type _Shared struct {
 
 type World struct {
 	parent  *World
-	lexical _Scope
+	lexical Scope
 	shared  *_Shared
 }
 
-func (w *World) New(scope _Scope) *World {
+func (w *World) New(scope Scope) *World {
 	return &World{
 		parent:  w,
 		lexical: scope,
