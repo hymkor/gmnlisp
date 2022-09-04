@@ -97,7 +97,8 @@ func (w *World) SetOrDefineParameter(name Symbol, value Node) {
 	}
 }
 
-func (w *World) DefineParameter(name Symbol, value Node) {
+// DefineGlobal implements (defglobal) of ISLisp or (defparameter) of CommonLisp.
+func (w *World) DefineGlobal(name Symbol, value Node) {
 	for w.parent != nil {
 		w = w.parent
 	}

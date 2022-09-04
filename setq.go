@@ -266,7 +266,7 @@ func cmdDefparameter(ctx context.Context, w *World, list Node) (Node, error) {
 	if HasValue(list) {
 		return nil, ErrTooManyArguments
 	}
-	w.DefineParameter(symbol, value)
+	w.DefineGlobal(symbol, value)
 	return symbol, nil
 }
 
