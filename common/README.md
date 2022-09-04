@@ -1,3 +1,4 @@
 This subpackage appends this function.
 
-- (defvar NAME VALUE)
+- (defvar NAME [VALUE])
+- (defparameter NAME VALUE)
