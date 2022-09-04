@@ -59,14 +59,6 @@ type World struct {
 	shared  *_Shared
 }
 
-func (w *World) New(scope Scope) *World {
-	return &World{
-		parent:  w,
-		lexical: scope,
-		shared:  w.shared,
-	}
-}
-
 type _Writer struct {
 	_Dummy
 	io.Writer

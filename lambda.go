@@ -108,7 +108,7 @@ func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
 	if err := checkContext(ctx); err != nil {
 		return nil, err
 	}
-	lexical := map[Symbol]Node{}
+	lexical := Variables{}
 	foundSlash := false
 	traceCount, traceDo := trace[L.name]
 	if traceDo {
@@ -148,7 +148,7 @@ func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
 	if L.rest != "" {
 		lexical[L.rest] = n
 	}
-	newWorld := L.lexical.New(Variables(lexical))
+	newWorld := L.lexical.Let(lexical)
 
 	var errEarlyReturns *ErrEarlyReturns
 
