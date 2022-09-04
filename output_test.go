@@ -28,4 +28,16 @@ func TestFormat(t *testing.T) {
 			(format-char s #\B)
 			(get-output-stream-string s)
 		)`, String("AB"))
+
+	assertEqual(t, `
+		(let ((s (create-string-output-stream)))
+			(format-object s "ahaha" t)
+			(get-output-stream-string s)
+		)`, String("\"ahaha\""))
+
+	assertEqual(t, `
+		(let ((s (create-string-output-stream)))
+			(format-object s "ahaha" nil)
+			(get-output-stream-string s)
+		)`, String("ahaha"))
 }
