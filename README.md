@@ -113,7 +113,6 @@ Support functions
 
 - (defglobal NAME VALUE)
     - alias: (defparameter NAME VALUE)
-- (defvar NAME VALUE)
 - (setq NAME VALUE)
 - (setf EXP NEWVALUE)
 - (replaca CONS-EXP CAR-NEWVALUE)
