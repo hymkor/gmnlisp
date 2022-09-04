@@ -269,7 +269,7 @@ func cmdWithOpenFile(ctx context.Context, w *World, list Node) (Node, error) {
 	} else {
 		return nil, fmt.Errorf("invalid :direction %s", toString(direction, PRINT))
 	}
-	newWorld := w.New(&_OneVariable{Key: symbol, Value: fdNode})
+	newWorld := w.New(&Pair{Key: symbol, Value: fdNode})
 	return progn(ctx, newWorld, list)
 }
 

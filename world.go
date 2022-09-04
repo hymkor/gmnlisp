@@ -27,23 +27,23 @@ func (m _Variables) Set(key Symbol, value Node) {
 	m[key] = value
 }
 
-type _OneVariable struct {
+type Pair struct {
 	Key   Symbol
 	Value Node
 }
 
-func (m *_OneVariable) Get(key Symbol) (Node, bool) {
+func (m *Pair) Get(key Symbol) (Node, bool) {
 	if key == m.Key {
 		return m.Value, true
 	}
 	return Null, false
 }
 
-func (m *_OneVariable) Set(key Symbol, value Node) {
+func (m *Pair) Set(key Symbol, value Node) {
 	if key == m.Key {
 		m.Value = value
 	}
-	panic("_OneVariable can be set value")
+	panic("Pair can be set value")
 }
 
 type _Shared struct {

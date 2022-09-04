@@ -484,7 +484,7 @@ func handlerCaseSub(ctx context.Context, w *World, caseBlock Node, c Node) (Node
 	if !ok {
 		return nil, ErrExpectedSymbol
 	}
-	newWorld := w.New(&_OneVariable{Key: symbol, Value: c})
+	newWorld := w.New(&Pair{Key: symbol, Value: c})
 	return progn(ctx, newWorld, caseBlock)
 }
 
