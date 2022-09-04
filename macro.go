@@ -26,7 +26,7 @@ func replaceMacro(n Node, table map[Symbol]Node) Node {
 		return &Cons{Car: car, Cdr: cdr}
 	}
 	if macroParam, ok := n.(_PlaceHolder); ok {
-		if result, ok := table[Symbol(macroParam)]; ok {
+		if result, ok := table[NewSymbol(string(macroParam))]; ok {
 			return result
 		}
 	}
@@ -95,7 +95,7 @@ func cmdDefMacro(ctx context.Context, w *World, n Node) (Node, error) {
 
 	lexical := Variables{}
 	for _, name := range param {
-		lexical[name] = _PlaceHolder(name)
+		lexical[name] = _PlaceHolder(name.String())
 	}
 	nw := w.Let(lexical)
 

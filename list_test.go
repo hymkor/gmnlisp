@@ -29,7 +29,7 @@ func TestList(t *testing.T) {
 
 	assertEqual(t, `(let ((collection '((a . 1) (b . 2) (c . 3))))
 			(assoc 'a collection))`,
-		&Cons{Car: Symbol("a"), Cdr: Integer(1)})
+		&Cons{Car: NewSymbol("a"), Cdr: Integer(1)})
 
 	assertEqual(t, `(nth 2 '(10 20 30 40))`, Integer(30))
 	assertEqual(t, `(nthcdr 2 '(10 20 30 40))`, List(Integer(30), Integer(40)))

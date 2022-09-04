@@ -17,7 +17,7 @@ func TestMacro(t *testing.T) {
 			(dbl (incf a1)))
 	`, Integer(7))
 
-	assertEqual(t, `(list ''foo)`, List(List(Symbol("quote"), Symbol("foo"))))
+	assertEqual(t, `(list ''foo)`, List(List(NewSymbol("quote"), NewSymbol("foo"))))
 }
 
 func TestMacroExpand(t *testing.T) {
@@ -26,6 +26,6 @@ func TestMacroExpand(t *testing.T) {
 		(defmacro incf (y) (list 'setq y (list '+ y 1)))
 		(let ((a1 2))
 			(macroexpand '(dbl (incf a1))))
-	`, List(Symbol("+"), List(Symbol("incf"), Symbol("a1")),
-		List(Symbol("incf"), Symbol("a1"))))
+	`, List(NewSymbol("+"), List(NewSymbol("incf"), NewSymbol("a1")),
+		List(NewSymbol("incf"), NewSymbol("a1"))))
 }

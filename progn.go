@@ -9,11 +9,11 @@ import (
 
 type ErrEarlyReturns struct {
 	Value Node
-	Name  string
+	Name  Symbol
 }
 
 func (e *ErrEarlyReturns) Error() string {
-	if e.Name == "" {
+	if e.Name == nulSymbol {
 		return "Unexpected (return)"
 	}
 	return fmt.Sprintf("Unexpected (return-from %s)", e.Name)
@@ -21,7 +21,7 @@ func (e *ErrEarlyReturns) Error() string {
 
 func funReturn(ctx context.Context, w *World, argv []Node) (Node, error) {
 	// from CommonLisp
-	return nil, &ErrEarlyReturns{Value: argv[0], Name: ""}
+	return nil, &ErrEarlyReturns{Value: argv[0], Name: nulSymbol}
 }
 
 func cmdReturnFrom(ctx context.Context, w *World, n Node) (Node, error) {
@@ -38,7 +38,7 @@ func cmdReturnFrom(ctx context.Context, w *World, n Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	return nil, &ErrEarlyReturns{Value: value, Name: string(symbol)}
+	return nil, &ErrEarlyReturns{Value: value, Name: symbol}
 }
 
 func progn(ctx context.Context, w *World, n Node) (value Node, err error) {
@@ -66,11 +66,10 @@ func cmdBlock(ctx context.Context, w *World, node Node) (Node, error) {
 	if !ok {
 		return nil, ErrExpectedSymbol
 	}
-	name := string(nameSymbol)
 
 	var errEarlyReturns *ErrEarlyReturns
 	rv, err := progn(ctx, w, statements)
-	if errors.As(err, &errEarlyReturns) && errEarlyReturns.Name == name {
+	if errors.As(err, &errEarlyReturns) && errEarlyReturns.Name == nameSymbol {
 		return errEarlyReturns.Value, nil
 	}
 	return rv, err
@@ -512,7 +511,7 @@ func matchError(ctx context.Context, w *World, casedSymbol Node, happenError err
 	if happenError == nil {
 		return false, nil
 	}
-	if casedSymbol == Symbol("error") {
+	if casedSymbol == NewSymbol("error") {
 		return true, nil
 	}
 	casedNode, err := casedSymbol.Eval(ctx, w)

@@ -14,8 +14,8 @@ import (
 func main() {
 	lisp := gmnlisp.New()
 	lisp = lisp.Let(gmnlisp.Variables{
-		"a": gmnlisp.Integer(1),
-		"b": gmnlisp.Integer(2),
+		gmnlisp.NewSymbol("a"): gmnlisp.Integer(1),
+		gmnlisp.NewSymbol("b"): gmnlisp.Integer(2),
 	})
 	value, err := lisp.Interpret(context.TODO(), "(+ a b)")
 	if err != nil {

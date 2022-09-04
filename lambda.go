@@ -17,8 +17,10 @@ type _Lambda struct {
 	lexical *World
 }
 
+var nulSymbol = NewSymbol("")
+
 func cmdLambda(_ context.Context, w *World, node Node) (Node, error) {
-	return newLambda(w, node, "")
+	return newLambda(w, node, nulSymbol)
 }
 
 type _Parameters struct {
@@ -26,6 +28,8 @@ type _Parameters struct {
 	rest  Symbol
 	code  Node
 }
+
+var ampRest = NewSymbol("&rest")
 
 func getParameterList(node Node) (*_Parameters, error) {
 	list, code, err := Shift(node)
@@ -45,7 +49,7 @@ func getParameterList(node Node) (*_Parameters, error) {
 		if !ok {
 			return nil, ErrExpectedSymbol
 		}
-		if nameSymbol == "&rest" {
+		if nameSymbol == ampRest {
 			nameNode, list, err = Shift(list)
 			if err != nil {
 				return nil, err
@@ -104,6 +108,8 @@ func (L *_Lambda) PrintTo(w io.Writer, m PrintMode) (int, error) {
 
 var trace = map[Symbol]int{}
 
+var slashSymbol = NewSymbol("/")
+
 func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
 	if err := checkContext(ctx); err != nil {
 		return nil, err
@@ -119,7 +125,7 @@ func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
 		}()
 	}
 	for _, name := range L.param {
-		if name == "/" {
+		if name == slashSymbol {
 			foundSlash = true
 			continue
 		}
@@ -142,10 +148,10 @@ func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
 		fmt.Fprintln(os.Stderr, ")]")
 	}
 
-	if HasValue(n) && L.rest == "" {
+	if HasValue(n) && L.rest == nulSymbol {
 		return nil, ErrTooManyArguments
 	}
-	if L.rest != "" {
+	if L.rest != nulSymbol {
 		lexical[L.rest] = n
 	}
 	newWorld := L.lexical.Let(lexical)
@@ -153,7 +159,7 @@ func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
 	var errEarlyReturns *ErrEarlyReturns
 
 	result, err := progn(ctx, newWorld, L.code)
-	if errors.As(err, &errEarlyReturns) && errEarlyReturns.Name == string(L.name) {
+	if errors.As(err, &errEarlyReturns) && errEarlyReturns.Name == L.name {
 		return errEarlyReturns.Value, nil
 	}
 	if traceDo {

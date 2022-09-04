@@ -22,7 +22,7 @@ func setArgv(w *gmnlisp.World, args []string) {
 	for _, s := range args {
 		posixArgv = append(posixArgv, gmnlisp.String(s))
 	}
-	w.Set("*posix-argv*", gmnlisp.List(posixArgv...))
+	w.Set(gmnlisp.NewSymbol("*posix-argv*"), gmnlisp.List(posixArgv...))
 }
 
 func defaultPrompt() (int, error) {

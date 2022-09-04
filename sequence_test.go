@@ -28,9 +28,9 @@ func TestMapCar(t *testing.T) {
 	// assertEqual(t, `(mapcar #'abs '((3 -4 2 -5 -6)))`,
 	//	List(Integer(3), Integer(4), Integer(2), Integer(5), Integer(6)))
 	assertEqual(t, `(mapcar #'cons '(a b c) '(1 2 3))`,
-		List(&Cons{Car: Symbol("a"), Cdr: Integer(1)},
-			&Cons{Car: Symbol("b"), Cdr: Integer(2)},
-			&Cons{Car: Symbol("c"), Cdr: Integer(3)}))
+		List(&Cons{Car: NewSymbol("a"), Cdr: Integer(1)},
+			&Cons{Car: NewSymbol("b"), Cdr: Integer(2)},
+			&Cons{Car: NewSymbol("c"), Cdr: Integer(3)}))
 }
 
 func TestMap(t *testing.T) {
@@ -78,7 +78,7 @@ func TestMapCon(t *testing.T) {
 				(if (member (car x) (cdr x)) (list (car x)))
 			)
 			'(a b a c d b c b c)
-		)`, List(Symbol("a"), Symbol("b"), Symbol("c"), Symbol("b"), Symbol("c")))
+		)`, List(NewSymbol("a"), NewSymbol("b"), NewSymbol("c"), NewSymbol("b"), NewSymbol("c")))
 }
 
 func TestCoerce(t *testing.T) {
@@ -109,7 +109,7 @@ func TestFind(t *testing.T) {
 
 func TestMember(t *testing.T) {
 	assertEqual(t, `(member 'c '(a b c d e))`,
-		List(Symbol("c"), Symbol("d"), Symbol("e")))
+		List(NewSymbol("c"), NewSymbol("d"), NewSymbol("e")))
 	assertEqual(t, `(member #\c "abcd")`, String("cd"))
 	assertEqual(t, `(member #\C "abcd" :test #'(lambda (a b) (equalp a b)))`, String("cd"))
 }
@@ -141,7 +141,7 @@ func TestSetfSubSeq(t *testing.T) {
 }
 
 func TestElt(t *testing.T) {
-	assertEqual(t, `(elt '(a b c) 2)`, Symbol("c"))
-	// assertEqual(t, `(elt (vector 'a 'b 'c) 1)`,Symbol("b"))
+	assertEqual(t, `(elt '(a b c) 2)`, NewSymbol("c"))
+	// assertEqual(t, `(elt (vector 'a 'b 'c) 1)`,NewSymbol("b"))
 	assertEqual(t, `(elt "abc" 0)`, Rune('a'))
 }

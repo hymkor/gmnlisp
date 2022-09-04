@@ -124,7 +124,7 @@ func mains(args []string) error {
 	for _, arg := range args {
 		pos := strings.IndexByte(arg, '=')
 		if pos >= 0 {
-			left := gmnlisp.Symbol(strings.ToUpper(arg[0:pos]))
+			left := gmnlisp.NewSymbol(strings.ToUpper(arg[0:pos]))
 			right := arg[pos+1:]
 			if *flagAnsi {
 				value, err := mbcs.UtoA(right, mbcs.ACP)

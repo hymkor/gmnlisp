@@ -13,12 +13,19 @@ var rxFloat = regexp.MustCompile(`^-?[0-9]+\.[0-9]*$`)
 
 var rxInteger = regexp.MustCompile(`^-?[0-9]+$`)
 
+var (
+	dotSymbol        = NewSymbol(".")
+	parenCloseSymbol = NewSymbol(")")
+	quoteSymbol      = NewSymbol("quote")
+	functionSymbol   = NewSymbol("function")
+)
+
 func nodes2cons(nodes []Node) Node {
 	if nodes == nil || len(nodes) <= 0 {
 		return Null
 	}
 	var cons Node = Null
-	if len(nodes) >= 3 && nodes[len(nodes)-2] == Symbol(".") {
+	if len(nodes) >= 3 && nodes[len(nodes)-2] == dotSymbol {
 		// dot pairs
 		cons = nodes[len(nodes)-1]
 		for i := len(nodes) - 3; i >= 0; i-- {
@@ -47,7 +54,7 @@ var escapeSequenceReplacer = strings.NewReplacer(
 )
 
 func newQuote(value Node) Node {
-	return &Cons{Car: Symbol("quote"), Cdr: &Cons{Car: value, Cdr: Null}}
+	return &Cons{Car: quoteSymbol, Cdr: &Cons{Car: value, Cdr: Null}}
 }
 
 func ReadNode(rs io.RuneScanner) (Node, error) {
@@ -73,7 +80,7 @@ func ReadNode(rs io.RuneScanner) (Node, error) {
 			}
 			return nil, err
 		}
-		return &Cons{Car: Symbol("function"), Cdr: &Cons{Car: function, Cdr: Null}}, nil
+		return &Cons{Car: functionSymbol, Cdr: &Cons{Car: function, Cdr: Null}}, nil
 	}
 	if token == "(" {
 		nodes := []Node{}
@@ -92,7 +99,7 @@ func ReadNode(rs io.RuneScanner) (Node, error) {
 				}
 				return nil, err
 			}
-			if node1 == Symbol(")") {
+			if node1 == parenCloseSymbol {
 				return nodes2cons(nodes), nil
 			}
 			nodes = append(nodes, node1)
@@ -143,7 +150,7 @@ func ReadNode(rs io.RuneScanner) (Node, error) {
 	if token == "nil" {
 		return Null, nil
 	}
-	return Symbol(token), nil
+	return NewSymbol(token), nil
 }
 
 func ReadAll(rs io.RuneScanner) ([]Node, error) {

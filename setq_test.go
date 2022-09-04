@@ -10,7 +10,7 @@ func TestLet(t *testing.T) {
 }
 
 func TestGlobal(t *testing.T) {
-	assertEqual(t, `(defglobal a "ahaha")`, Symbol("a"))
+	assertEqual(t, `(defglobal a "ahaha")`, NewSymbol("a"))
 	assertEqual(t, `(defglobal a "ahaha")(defglobal a "ihihi") a`, String("ihihi"))
 }
 
@@ -72,12 +72,12 @@ func TestDynamic(t *testing.T) {
 	assertEqual(t, `
 		(defdynamic *color* 'red)
 		(defun what-color () (dynamic *color*))
-		(what-color)`, Symbol("red"))
+		(what-color)`, NewSymbol("red"))
 }
 
 func TestDynamicLet(t *testing.T) {
 	assertEqual(t, `
 		(defdynamic *color* 'red)
 		(defun what-color () (dynamic *color*))
-		(dynamic-let ((*color* 'green)) (what-color))`, Symbol("green"))
+		(dynamic-let ((*color* 'green)) (what-color))`, NewSymbol("green"))
 }

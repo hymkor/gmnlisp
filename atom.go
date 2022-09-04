@@ -244,10 +244,24 @@ func (s UTF32String) Aref(n int) (Node, func(Node) error, error) {
 
 var emptyString UTF32String
 
-type Symbol string
+type Symbol int
+
+var symbols = []string{}
+
+var symbolMap = map[string]Symbol{}
+
+func NewSymbol(s string) Symbol {
+	if value, ok := symbolMap[s]; ok {
+		return value
+	}
+	value := Symbol(len(symbolMap))
+	symbolMap[s] = value
+	symbols = append(symbols, s)
+	return value
+}
 
 func (s Symbol) PrintTo(w io.Writer, m PrintMode) (int, error) {
-	return io.WriteString(w, string(s))
+	return io.WriteString(w, symbols[s])
 }
 
 func (s Symbol) Eval(_ context.Context, w *World) (Node, error) {
@@ -256,11 +270,11 @@ func (s Symbol) Eval(_ context.Context, w *World) (Node, error) {
 
 func (s Symbol) Equals(n Node, m EqlMode) bool {
 	ns, ok := n.(Symbol)
-	if m == EQUALP {
-		return ok && strings.EqualFold(string(s), string(ns))
-	} else {
-		return ok && s == ns
-	}
+	return ok && s == ns
+}
+
+func (s Symbol) String() string {
+	return symbols[s]
 }
 
 type Rune rune
