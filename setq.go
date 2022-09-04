@@ -245,7 +245,8 @@ func cmdDefvar(ctx context.Context, w *World, list Node) (Node, error) {
 	return symbol, err
 }
 
-func cmdDefparameter(ctx context.Context, w *World, list Node) (Node, error) {
+// cmdDefglobal implements (defglobal) of ISLisp and (defparameter) of CommonLisp
+func cmdDefglobal(ctx context.Context, w *World, list Node) (Node, error) {
 	// from CommonLisp
 	var symbolNode Node
 	var value Node
