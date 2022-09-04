@@ -129,7 +129,7 @@ func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
 		}
 		var err error
 		var value Node
-		value, n, err = w.shiftAndEvalCar(ctx, n)
+		value, n, err = w.ShiftAndEvalCar(ctx, n)
 		if err != nil {
 			return nil, err
 		}
@@ -191,7 +191,7 @@ func cmdDefun(_ context.Context, w *World, list Node) (Node, error) {
 }
 
 func cmdFunCall(ctx context.Context, w *World, node Node) (Node, error) {
-	f, node, err := w.shiftAndEvalCar(ctx, node)
+	f, node, err := w.ShiftAndEvalCar(ctx, node)
 	if err != nil {
 		return nil, err
 	}
@@ -203,7 +203,7 @@ func cmdFunCall(ctx context.Context, w *World, node Node) (Node, error) {
 }
 
 func cmdApply(ctx context.Context, w *World, list Node) (Node, error) {
-	funcNode, list, err := w.shiftAndEvalCar(ctx, list)
+	funcNode, list, err := w.ShiftAndEvalCar(ctx, list)
 	if err != nil {
 		return nil, err
 	}
@@ -336,7 +336,7 @@ func (f *Function) Call(ctx context.Context, w *World, list Node) (Node, error) 
 		var tmp Node
 		var err error
 
-		tmp, list, err = w.shiftAndEvalCar(ctx, list)
+		tmp, list, err = w.ShiftAndEvalCar(ctx, list)
 		if err != nil {
 			return nil, err
 		}
@@ -376,12 +376,12 @@ func listToKwargs(ctx context.Context, w *World, list Node) ([]Node, map[Keyword
 		var tmp Node
 		var err error
 
-		tmp, list, err = w.shiftAndEvalCar(ctx, list)
+		tmp, list, err = w.ShiftAndEvalCar(ctx, list)
 		if err != nil {
 			return nil, nil, err
 		}
 		if keyword, ok := tmp.(Keyword); ok {
-			tmp, list, err = w.shiftAndEvalCar(ctx, list)
+			tmp, list, err = w.ShiftAndEvalCar(ctx, list)
 			if err != nil {
 				return nil, nil, err
 			}

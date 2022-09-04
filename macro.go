@@ -115,7 +115,7 @@ func cmdDefMacro(ctx context.Context, w *World, n Node) (Node, error) {
 
 func cmdMacroExpand(ctx context.Context, w *World, n Node) (Node, error) {
 	var err error
-	n, _, err = w.shiftAndEvalCar(ctx, n)
+	n, _, err = w.ShiftAndEvalCar(ctx, n)
 	if err != nil {
 		return nil, err
 	}

@@ -21,7 +21,7 @@ func cmdSetq(ctx context.Context, w *World, params Node) (Node, error) {
 		if !ok {
 			return nil, fmt.Errorf("%w: `%s`", ErrExpectedSymbol, toString(nameSymbol, PRINT))
 		}
-		value, params, err = w.shiftAndEvalCar(ctx, params)
+		value, params, err = w.ShiftAndEvalCar(ctx, params)
 		if err != nil {
 			return nil, err
 		}
@@ -59,7 +59,7 @@ func (f *LeftValueF) Call(ctx context.Context, w *World, list Node) (Node, error
 
 	if f.C >= 0 {
 		for i := 0; i < f.C; i++ {
-			argv[i], list, err = w.shiftAndEvalCar(ctx, list)
+			argv[i], list, err = w.ShiftAndEvalCar(ctx, list)
 			if err != nil {
 				return nil, err
 			}
@@ -73,7 +73,7 @@ func (f *LeftValueF) Call(ctx context.Context, w *World, list Node) (Node, error
 		args := []Node{}
 		for HasValue(list) {
 			var arg1 Node
-			arg1, list, err = w.shiftAndEvalCar(ctx, list)
+			arg1, list, err = w.ShiftAndEvalCar(ctx, list)
 			if err != nil {
 				return nil, err
 			}
@@ -90,7 +90,7 @@ func (f *LeftValueF) Set(ctx context.Context, w *World, list Node, value Node) e
 		var tmp Node
 		var err error
 
-		tmp, list, err = w.shiftAndEvalCar(ctx, list)
+		tmp, list, err = w.ShiftAndEvalCar(ctx, list)
 		if err != nil {
 			return err
 		}
@@ -127,7 +127,7 @@ func cmdSetf(ctx context.Context, w *World, params Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		rightValue, params, err = w.shiftAndEvalCar(ctx, params)
+		rightValue, params, err = w.ShiftAndEvalCar(ctx, params)
 		if err != nil {
 			return nil, err
 		}
@@ -260,7 +260,7 @@ func cmdDefglobal(ctx context.Context, w *World, list Node) (Node, error) {
 	if !ok {
 		return nil, ErrExpectedSymbol
 	}
-	value, list, err = w.shiftAndEvalCar(ctx, list)
+	value, list, err = w.ShiftAndEvalCar(ctx, list)
 	if err != nil {
 		return nil, err
 	}
@@ -284,7 +284,7 @@ func cmdDefDynamic(ctx context.Context, w *World, list Node) (Node, error) {
 		return nil, ErrExpectedSymbol
 	}
 	var value Node
-	value, list, err = w.shiftAndEvalCar(ctx, list)
+	value, list, err = w.ShiftAndEvalCar(ctx, list)
 	if err != nil {
 		return nil, err
 	}
@@ -359,7 +359,7 @@ func cmdDynamicLet(ctx context.Context, w *World, list Node) (Node, error) {
 			if !ok {
 				return nil, ErrExpectedSymbol
 			}
-			value, varAndValue, err = w.shiftAndEvalCar(ctx, varAndValue)
+			value, varAndValue, err = w.ShiftAndEvalCar(ctx, varAndValue)
 			if err != nil {
 				return nil, err
 			}

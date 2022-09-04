@@ -156,7 +156,7 @@ func cmdAnd(ctx context.Context, w *World, param Node) (Node, error) {
 		var value Node
 		var err error
 
-		value, param, err = w.shiftAndEvalCar(ctx, param)
+		value, param, err = w.ShiftAndEvalCar(ctx, param)
 		if err != nil {
 			return nil, err
 		}
@@ -174,7 +174,7 @@ func cmdOr(ctx context.Context, w *World, param Node) (Node, error) {
 		var value Node
 		var err error
 
-		value, param, err = w.shiftAndEvalCar(ctx, param)
+		value, param, err = w.ShiftAndEvalCar(ctx, param)
 		if err != nil {
 			return nil, err
 		}
@@ -233,7 +233,7 @@ func incfDecf(ctx context.Context, w *World, list Node, f func(Symbol, Node, Nod
 	}
 	var right Node = Integer(1)
 	if HasValue(list) {
-		right, list, err = w.shiftAndEvalCar(ctx, list)
+		right, list, err = w.ShiftAndEvalCar(ctx, list)
 		if HasValue(list) {
 			return nil, ErrTooManyArguments
 		}

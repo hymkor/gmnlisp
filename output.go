@@ -11,7 +11,7 @@ import (
 )
 
 func getWriterAndString(ctx context.Context, w *World, n Node) (io.Writer, StringTypes, error) {
-	_s, n, err := w.shiftAndEvalCar(ctx, n)
+	_s, n, err := w.ShiftAndEvalCar(ctx, n)
 	if err != nil {
 		return nil, emptyString, err
 	}
@@ -21,7 +21,7 @@ func getWriterAndString(ctx context.Context, w *World, n Node) (io.Writer, Strin
 	}
 	var writer io.Writer
 	if HasValue(n) {
-		_writer, n, err := w.shiftAndEvalCar(ctx, n)
+		_writer, n, err := w.ShiftAndEvalCar(ctx, n)
 		if err != nil {
 			return nil, emptyString, err
 		}

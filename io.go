@@ -56,7 +56,7 @@ func openAsWrite(fname string) (Node, error) {
 }
 
 func cmdOpen(ctx context.Context, w *World, n Node) (Node, error) {
-	fnameNode, n, err := w.shiftAndEvalCar(ctx, n)
+	fnameNode, n, err := w.ShiftAndEvalCar(ctx, n)
 	if err != nil {
 		return nil, err
 	}
@@ -69,7 +69,7 @@ func cmdOpen(ctx context.Context, w *World, n Node) (Node, error) {
 		return openAsRead(fname)
 	}
 
-	modeNode, n, err := w.shiftAndEvalCar(ctx, n)
+	modeNode, n, err := w.ShiftAndEvalCar(ctx, n)
 	if HasValue(n) {
 		return nil, ErrTooManyArguments
 	}

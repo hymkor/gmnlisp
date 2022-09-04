@@ -328,8 +328,8 @@ func New() *World {
 	}
 }
 
-func (w *World) shiftAndEvalCar(ctx context.Context, list Node) (Node, Node, error) {
-	first, list, err := shift(list)
+func (w *World) ShiftAndEvalCar(ctx context.Context, list Node) (Node, Node, error) {
+	first, list, err := Shift(list)
 	if err != nil {
 		return nil, list, err
 	}
@@ -341,7 +341,7 @@ func (w *World) shiftAndEvalCar(ctx context.Context, list Node) (Node, Node, err
 }
 
 func (w *World) inject(ctx context.Context, list Node, f func(left, right Node) (Node, error)) (Node, error) {
-	result, list, err := w.shiftAndEvalCar(ctx, list)
+	result, list, err := w.ShiftAndEvalCar(ctx, list)
 	if err != nil {
 		return nil, err
 	}
@@ -349,7 +349,7 @@ func (w *World) inject(ctx context.Context, list Node, f func(left, right Node) 
 		var next Node
 		var err error
 
-		next, list, err = w.shiftAndEvalCar(ctx, list)
+		next, list, err = w.ShiftAndEvalCar(ctx, list)
 		if err != nil {
 			return nil, err
 		}

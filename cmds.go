@@ -22,14 +22,14 @@ func funAtom(_ context.Context, _ *World, argv []Node) (Node, error) {
 }
 
 func equalSub(ctx context.Context, w *World, list Node, eq func(Node, Node) bool) (Node, error) {
-	first, rest, err := w.shiftAndEvalCar(ctx, list)
+	first, rest, err := w.ShiftAndEvalCar(ctx, list)
 	if err != nil {
 		return nil, err
 	}
 	for HasValue(rest) {
 		var next Node
 
-		next, rest, err = w.shiftAndEvalCar(ctx, rest)
+		next, rest, err = w.ShiftAndEvalCar(ctx, rest)
 		if err != nil {
 			return nil, err
 		}

@@ -44,7 +44,7 @@ func cmdReturnFrom(ctx context.Context, w *World, n Node) (Node, error) {
 func progn(ctx context.Context, w *World, n Node) (value Node, err error) {
 	value = Null
 	for HasValue(n) {
-		value, n, err = w.shiftAndEvalCar(ctx, n)
+		value, n, err = w.ShiftAndEvalCar(ctx, n)
 		if err != nil {
 			return nil, err
 		}
@@ -86,7 +86,7 @@ func (e *ErrThrown) Error() string {
 }
 func cmdCatch(ctx context.Context, w *World, node Node) (Node, error) {
 	// from ISLisp
-	tagForm, statements, err := w.shiftAndEvalCar(ctx, node)
+	tagForm, statements, err := w.ShiftAndEvalCar(ctx, node)
 	if err != nil {
 		return nil, err
 	}
@@ -113,7 +113,7 @@ func cmdCond(ctx context.Context, w *World, list Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		cond, act, err := w.shiftAndEvalCar(ctx, condAndAct)
+		cond, act, err := w.ShiftAndEvalCar(ctx, condAndAct)
 		if err != nil {
 			return nil, err
 		}
@@ -128,7 +128,7 @@ func cmdCase(ctx context.Context, w *World, list Node) (Node, error) {
 	var swValue Node
 	var err error
 
-	swValue, list, err = w.shiftAndEvalCar(ctx, list)
+	swValue, list, err = w.ShiftAndEvalCar(ctx, list)
 	if err != nil {
 		return nil, err
 	}
@@ -148,7 +148,7 @@ func cmdCase(ctx context.Context, w *World, list Node) (Node, error) {
 			var list Node = cons
 			for HasValue(list) {
 				var _caseValue Node
-				_caseValue, list, err = w.shiftAndEvalCar(ctx, list)
+				_caseValue, list, err = w.ShiftAndEvalCar(ctx, list)
 				if err != nil {
 					return nil, err
 				}
@@ -170,7 +170,7 @@ func cmdCase(ctx context.Context, w *World, list Node) (Node, error) {
 }
 
 func cmdIf(ctx context.Context, w *World, params Node) (Node, error) {
-	cond, params, err := w.shiftAndEvalCar(ctx, params)
+	cond, params, err := w.ShiftAndEvalCar(ctx, params)
 	if err != nil {
 		return nil, err
 	}
@@ -198,7 +198,7 @@ func cmdIf(ctx context.Context, w *World, params Node) (Node, error) {
 }
 
 func cmdWhen(ctx context.Context, w *World, args Node) (Node, error) {
-	cond, args, err := w.shiftAndEvalCar(ctx, args)
+	cond, args, err := w.ShiftAndEvalCar(ctx, args)
 	if err != nil {
 		return nil, err
 	}
@@ -209,7 +209,7 @@ func cmdWhen(ctx context.Context, w *World, args Node) (Node, error) {
 }
 
 func cmdUnless(ctx context.Context, w *World, args Node) (Node, error) {
-	cond, args, err := w.shiftAndEvalCar(ctx, args)
+	cond, args, err := w.ShiftAndEvalCar(ctx, args)
 	if err != nil {
 		return nil, err
 	}
@@ -235,7 +235,7 @@ func cmdForeach(ctx context.Context, w *World, args Node) (Node, error) {
 
 	var list Node
 	var code Node
-	list, code, err = w.shiftAndEvalCar(ctx, args)
+	list, code, err = w.ShiftAndEvalCar(ctx, args)
 	if err != nil {
 		return nil, err
 	}
@@ -403,7 +403,7 @@ func cmdFor(ctx context.Context, w *World, list Node) (Node, error) {
 		if !ok {
 			return nil, ErrExpectedSymbol
 		}
-		initv, varInitStep, err = w.shiftAndEvalCar(ctx, varInitStep)
+		initv, varInitStep, err = w.ShiftAndEvalCar(ctx, varInitStep)
 		if err != nil {
 			return nil, err
 		}
@@ -528,7 +528,7 @@ func matchError(ctx context.Context, w *World, casedSymbol Node, happenError err
 
 func cmdWithHandler(ctx context.Context, w *World, list Node) (Node, error) {
 	// ISLisp
-	handlerNode, list, err := w.shiftAndEvalCar(ctx, list)
+	handlerNode, list, err := w.ShiftAndEvalCar(ctx, list)
 	if err != nil {
 		return nil, err
 	}
@@ -550,7 +550,7 @@ func cmdWithHandler(ctx context.Context, w *World, list Node) (Node, error) {
 func cmdUnwindProtect(ctx context.Context, w *World, list Node) (Node, error) {
 	var formErr error
 
-	_, list, formErr = w.shiftAndEvalCar(ctx, list)
+	_, list, formErr = w.ShiftAndEvalCar(ctx, list)
 
 	value, err := progn(ctx, w, list)
 	if err != nil {
