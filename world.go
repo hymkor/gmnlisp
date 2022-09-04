@@ -405,3 +405,11 @@ func (w *World) Call(ctx context.Context, f Node, params ...Node) (Node, error) 
 	}
 	return _f.Call(ctx, w, List(params...))
 }
+
+func (w *World) Let(scope Scope) *World {
+	return &World{
+		parent:  w,
+		lexical: scope,
+		shared:  w.shared,
+	}
+}
