@@ -298,7 +298,6 @@ func New() *World {
 			NewSymbol("setq"):                        SpecialF(cmdSetq),
 			NewSymbol("standard-input"):              SpecialF(cmdStandardInput),
 			NewSymbol("standard-output"):             SpecialF(cmdStandardOutput),
-			NewSymbol("strcase"):                     &Function{C: 1, F: funStrCase},
 			NewSymbol("string-append"):               &Function{C: -1, F: funStringAppend},
 			NewSymbol("stringp"):                     &Function{C: 1, F: funAnyTypep[String]},
 			NewSymbol("subseq"):                      &LeftValueF{C: -1, F: funSubSeq},

@@ -72,7 +72,6 @@ Support functions
 
 #### string
 
-- (strcase STRING)
 - (concatenate 'string {STRING1...})
 
 #### List and Sequence
