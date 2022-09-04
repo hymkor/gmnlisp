@@ -171,12 +171,12 @@ func (w *World) Stdin() *_Reader {
 func New() *World {
 	return &World{
 		shared: &_Shared{
-			dynamic: Variables(map[Symbol]Node{}),
+			dynamic: Variables{},
 			stdin:   &_Reader{Reader: bufio.NewReader(os.Stdin)},
 			stdout:  &_Writer{Writer: os.Stdout},
 			errout:  &_Writer{Writer: os.Stderr},
 		},
-		lexical: Variables(map[Symbol]Node{
+		lexical: Variables{
 			"*":                           SpecialF(cmdMulti),
 			"*err-exist*":                 &ErrorNode{Value: os.ErrExist},
 			"*err-not-exist*":             &ErrorNode{Value: os.ErrNotExist},
@@ -332,7 +332,7 @@ func New() *World {
 			"write":                       &KWFunction{C: 1, F: funWrite},
 			"write-line":                  SpecialF(cmdWriteLine),
 			"zerop":                       &Function{C: 1, F: funZerop},
-		}),
+		},
 	}
 }
 
