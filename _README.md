@@ -55,12 +55,6 @@ integer , float , string(UTF8 or UTF32) , symbol , cons , list , character , t/n
 Support functions
 -----------------
 
-#### Output functions
-
-- (format {t|nil|STREAM} FORMAT [ARGS..])
-- (format-char STREAM CHAR)
-- (format-object STREAM STRING t|nil)
-
 #### float
 
 - (truncate REAL)
@@ -231,10 +225,12 @@ Backquotations and &amp;body are not supported.
 
 #### File I/O
 
+- (format {t|nil|STREAM} FORMAT [ARGS..])
+- (format-char STREAM CHAR)
+- (format-object STREAM STRING {t|nil})
 - (with-open-file (HANDLE FILENAME  
     \[:direction :output|:input\]  
     \[:if-does-not-exist\] like CommonLisp
-- (open "filename" "mode") like autolisp
 - (close HANDLE)
 - (command NAME ARG1...)
 - (create-string-input-stream STRING)

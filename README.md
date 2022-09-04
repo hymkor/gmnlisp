@@ -230,7 +230,6 @@ Backquotations and &amp;body are not supported.
 - (with-open-file (HANDLE FILENAME  
     \[:direction :output|:input\]  
     \[:if-does-not-exist\] like CommonLisp
-- (open "filename" "mode") like autolisp
 - (close HANDLE)
 - (command NAME ARG1...)
 - (create-string-input-stream STRING)
