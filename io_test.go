@@ -16,7 +16,7 @@ func TestIo(t *testing.T) {
 
 	assertEqual(t, `
 		(let ((fd (open (quote "temp.txt") "w")))
-			(write-line "hogehoge" fd)
+			(format fd "hogehoge~%")
 			(close fd))
 		(let (fd line)
 			(setq fd (open "temp.txt" "r")
@@ -34,7 +34,7 @@ func TestWithOpenFile(t *testing.T) {
 	assertEqual(t, `
 		(let (output)
 			(with-open-file (w "datafile" :direction :output)
-				(write-line "hogehoge" w)
+				(format w "hogehoge~%")
 			)
 			(with-open-file (r "datafile")
 				(setq output (read-line r))

@@ -242,8 +242,6 @@ func (s UTF32String) Aref(n int) (Node, func(Node) error, error) {
 	}, nil
 }
 
-var emptyString UTF32String
-
 type Symbol int
 
 var symbols = []string{}

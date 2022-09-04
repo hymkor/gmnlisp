@@ -28,7 +28,7 @@ Gmnlisp is a small Lisp implementation in Go.
     (with-open-file (fd "examples/example1.go")
         (while (setq line (read-line fd nil))
             (when (>= count 3)
-                (write-line (detab line)))
+                (format (standard-output) "~a~%" (detab line)))
             (incf count)
         )
     )

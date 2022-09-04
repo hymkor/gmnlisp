@@ -12,8 +12,14 @@ func Using(w *World) *World {
 		panic("not found defglobal")
 	}
 	return w.Let(Variables{
-		NewSymbol("defvar"):       SpecialF(cmdDefvar),
 		NewSymbol("defparameter"): defparameter,
+		NewSymbol("defvar"):       SpecialF(cmdDefvar),
+		NewSymbol("prin1"):        &Function{C: 1, F: funPrin1},
+		NewSymbol("princ"):        &Function{C: 1, F: funPrinc},
+		NewSymbol("print"):        &Function{C: 1, F: funPrint},
+		NewSymbol("terpri"):       &Function{C: -1, F: funTerpri},
+		NewSymbol("write"):        &KWFunction{C: 1, F: funWrite},
+		NewSymbol("write-line"):   SpecialF(cmdWriteLine),
 	})
 }
 

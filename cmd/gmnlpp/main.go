@@ -68,19 +68,19 @@ func replaceFunc(source []byte) []byte {
 		before, after, found := bytes.Cut(source, []byte{'\n'})
 		if !found {
 			if len(source) > 0 {
-				fmt.Fprint(&buffer, `(write "`)
+				fmt.Fprint(&buffer, `(format (standard-output) "~a" "`)
 				unescapeSequenceReplacer.WriteString(&buffer, string(source))
 				fmt.Fprintln(&buffer, `")`)
 			}
 			if equalMark {
-				buffer.WriteString("(princ ")
+				buffer.WriteString("(format (standard-output) ")
 			}
 			return buffer.Bytes()
 		}
 		if len(before) > 0 && before[len(before)-1] == '\r' {
 			before = before[:len(before)-1]
 		}
-		fmt.Fprint(&buffer, `(write-line "`)
+		fmt.Fprint(&buffer, `(format (standard-output) "~a~%" "`)
 		unescapeSequenceReplacer.WriteString(&buffer, string(before))
 		fmt.Fprintln(&buffer, `")`)
 		source = []byte(after)
