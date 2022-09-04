@@ -9,14 +9,8 @@ import (
 
 func assertEqual(t *testing.T, equation string, expect Node) {
 	w := New()
-	result, err := w.Interpret(context.TODO(), equation)
-	if err != nil {
-		t.Fatalf("%s: %s", equation, err.Error())
-		return
-	}
-	if !result.Equals(expect, EQUAL) {
-		t.Fatalf("%s != %s (was %s)", equation, toString(expect, PRINT), toString(result, PRINT))
-		return
+	if e := w.Assert(equation, expect); e != "" {
+		t.Fatal(e)
 	}
 }
 
