@@ -13,7 +13,7 @@ func cmdSetq(ctx context.Context, w *World, params Node) (Node, error) {
 		var nameNode Node
 		var err error
 
-		nameNode, params, err = shift(params)
+		nameNode, params, err = Shift(params)
 		if err != nil {
 			return nil, err
 		}
@@ -123,7 +123,7 @@ func cmdSetf(ctx context.Context, w *World, params Node) (Node, error) {
 		var rightValue Node
 		var err error
 
-		leftValue, params, err = shift(params)
+		leftValue, params, err = Shift(params)
 		if err != nil {
 			return nil, err
 		}
@@ -137,7 +137,7 @@ func cmdSetf(ctx context.Context, w *World, params Node) (Node, error) {
 				return value, err
 			}
 		} else if list, ok := leftValue.(*Cons); ok {
-			commandName, list, err := shift(list)
+			commandName, list, err := Shift(list)
 			if err != nil {
 				return nil, err
 			}
@@ -166,7 +166,7 @@ func letValuesToVars(ctx context.Context, w *World, list Node, lexical map[Symbo
 		var item Node
 		var err error
 
-		item, list, err = shift(list)
+		item, list, err = Shift(list)
 		if symbol, ok := item.(Symbol); ok {
 			lexical[symbol] = Null
 			continue
@@ -191,7 +191,7 @@ func letValuesToVars(ctx context.Context, w *World, list Node, lexical map[Symbo
 
 func cmdLet(ctx context.Context, w *World, params Node) (Node, error) {
 	// from CommonLisp
-	list, params, err := shift(params)
+	list, params, err := Shift(params)
 	if err != nil {
 		return nil, err
 	}
@@ -207,7 +207,7 @@ func cmdLet(ctx context.Context, w *World, params Node) (Node, error) {
 
 func cmdLetX(ctx context.Context, w *World, params Node) (Node, error) {
 	// from CommonLisp
-	list, params, err := shift(params)
+	list, params, err := Shift(params)
 	if err != nil {
 		return nil, err
 	}
@@ -252,7 +252,7 @@ func cmdDefglobal(ctx context.Context, w *World, list Node) (Node, error) {
 	var value Node
 	var err error
 
-	symbolNode, list, err = shift(list)
+	symbolNode, list, err = Shift(list)
 	if err != nil {
 		return nil, err
 	}
@@ -275,7 +275,7 @@ func cmdDefDynamic(ctx context.Context, w *World, list Node) (Node, error) {
 	var err error
 	var symbolNode Node
 
-	symbolNode, list, err = shift(list)
+	symbolNode, list, err = Shift(list)
 	if err != nil {
 		return nil, err
 	}
@@ -300,7 +300,7 @@ func cmdDynamic(ctx context.Context, w *World, list Node) (Node, error) {
 	var err error
 	var symbolNode Node
 
-	symbolNode, list, err = shift(list)
+	symbolNode, list, err = Shift(list)
 	if err != nil {
 		return nil, err
 	}
@@ -319,7 +319,7 @@ func cmdDynamicLet(ctx context.Context, w *World, list Node) (Node, error) {
 	var vars Node
 	var err error
 
-	vars, list, err = shift(list)
+	vars, list, err = Shift(list)
 	if err != nil {
 		return nil, err
 	}
@@ -336,7 +336,7 @@ func cmdDynamicLet(ctx context.Context, w *World, list Node) (Node, error) {
 
 	for HasValue(vars) {
 		var varAndValue Node
-		varAndValue, vars, err = shift(vars)
+		varAndValue, vars, err = Shift(vars)
 		if err != nil {
 			return nil, err
 		}
@@ -351,7 +351,7 @@ func cmdDynamicLet(ctx context.Context, w *World, list Node) (Node, error) {
 			var symbolNode Node
 			var value Node
 
-			symbolNode, varAndValue, err = shift(varAndValue)
+			symbolNode, varAndValue, err = Shift(varAndValue)
 			if err != nil {
 				return nil, err
 			}

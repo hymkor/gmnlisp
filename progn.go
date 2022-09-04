@@ -58,7 +58,7 @@ func cmdProgn(ctx context.Context, w *World, c Node) (Node, error) {
 
 func cmdBlock(ctx context.Context, w *World, node Node) (Node, error) {
 	// from CommonLisp
-	nameNode, statements, err := shift(node)
+	nameNode, statements, err := Shift(node)
 	if err != nil {
 		return nil, err
 	}
@@ -109,7 +109,7 @@ func cmdCond(ctx context.Context, w *World, list Node) (Node, error) {
 		var condAndAct Node
 		var err error
 
-		condAndAct, list, err = shift(list)
+		condAndAct, list, err = Shift(list)
 		if err != nil {
 			return nil, err
 		}
@@ -136,11 +136,11 @@ func cmdCase(ctx context.Context, w *World, list Node) (Node, error) {
 		var caseAndAct Node
 		var err error
 
-		caseAndAct, list, err = shift(list)
+		caseAndAct, list, err = Shift(list)
 		if err != nil {
 			return nil, err
 		}
-		caseValue, act, err := shift(caseAndAct)
+		caseValue, act, err := Shift(caseAndAct)
 		if err != nil {
 			return nil, err
 		}
@@ -174,13 +174,13 @@ func cmdIf(ctx context.Context, w *World, params Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	thenClause, params, err := shift(params)
+	thenClause, params, err := Shift(params)
 	if err != nil {
 		return nil, err
 	}
 	var elseClause Node = Null
 	if HasValue(params) {
-		elseClause, params, err = shift(params)
+		elseClause, params, err = Shift(params)
 		if err != nil {
 			return nil, err
 		}
@@ -224,7 +224,7 @@ func cmdForeach(ctx context.Context, w *World, args Node) (Node, error) {
 	var _symbol Node
 	var err error
 
-	_symbol, args, err = shift(args)
+	_symbol, args, err = Shift(args)
 	if err != nil {
 		return nil, err
 	}
@@ -244,7 +244,7 @@ func cmdForeach(ctx context.Context, w *World, args Node) (Node, error) {
 	for HasValue(list) {
 		var value Node
 
-		value, list, err = shift(list)
+		value, list, err = Shift(list)
 		if err != nil {
 			return nil, err
 		}
@@ -262,7 +262,7 @@ func cmdForeach(ctx context.Context, w *World, args Node) (Node, error) {
 
 func cmdWhile(ctx context.Context, w *World, n Node) (Node, error) {
 	// from autolisp, ISLisp
-	cond, statements, err := shift(n)
+	cond, statements, err := Shift(n)
 	if err != nil {
 		return nil, err
 	}
@@ -294,7 +294,7 @@ func cmdDoTimes(ctx context.Context, w *World, list Node) (Node, error) {
 	var varAndValueNode Node
 	var err error
 
-	varAndValueNode, list, err = shift(list)
+	varAndValueNode, list, err = Shift(list)
 	if err != nil {
 		return nil, err
 	}
@@ -336,7 +336,7 @@ func cmdDoList(ctx context.Context, w *World, list Node) (Node, error) {
 	var varAndValueNode Node
 	var err error
 
-	varAndValueNode, list, err = shift(list)
+	varAndValueNode, list, err = Shift(list)
 	if err != nil {
 		return nil, err
 	}
@@ -359,7 +359,7 @@ func cmdDoList(ctx context.Context, w *World, list Node) (Node, error) {
 		}
 		var value1 Node
 
-		value1, values, err = shift(values)
+		value1, values, err = Shift(values)
 		if err != nil {
 			return nil, err
 		}
@@ -379,7 +379,7 @@ func cmdFor(ctx context.Context, w *World, list Node) (Node, error) {
 	var vars Node
 	var err error
 
-	vars, list, err = shift(list)
+	vars, list, err = Shift(list)
 	if err != nil {
 		return nil, err
 	}
@@ -391,11 +391,11 @@ func cmdFor(ctx context.Context, w *World, list Node) (Node, error) {
 		var initv Node
 		var step Node
 
-		varInitStep, vars, err = shift(vars)
+		varInitStep, vars, err = Shift(vars)
 		if err != nil {
 			return nil, err
 		}
-		var1, varInitStep, err = shift(varInitStep)
+		var1, varInitStep, err = Shift(varInitStep)
 		if err != nil {
 			return nil, err
 		}
@@ -410,7 +410,7 @@ func cmdFor(ctx context.Context, w *World, list Node) (Node, error) {
 		if err = w.Set(symbol, initv); err != nil {
 			return nil, err
 		}
-		step, varInitStep, err = shift(varInitStep)
+		step, varInitStep, err = Shift(varInitStep)
 		if err != nil {
 			return nil, err
 		}
@@ -425,15 +425,15 @@ func cmdFor(ctx context.Context, w *World, list Node) (Node, error) {
 	var cond Node
 	var result Node
 
-	conds, list, err = shift(list)
+	conds, list, err = Shift(list)
 	if err != nil {
 		return nil, err
 	}
-	cond, conds, err = shift(conds)
+	cond, conds, err = Shift(conds)
 	if err != nil {
 		return nil, err
 	}
-	result, conds, err = shift(conds)
+	result, conds, err = Shift(conds)
 	if err != nil {
 		return nil, err
 	}
@@ -465,7 +465,7 @@ func cmdFor(ctx context.Context, w *World, list Node) (Node, error) {
 }
 
 func handlerCaseSub(ctx context.Context, w *World, caseBlock Node, c Node) (Node, error) {
-	paramList, caseBlock, err := shift(caseBlock)
+	paramList, caseBlock, err := Shift(caseBlock)
 	if err != nil {
 		return nil, err
 	}
@@ -473,7 +473,7 @@ func handlerCaseSub(ctx context.Context, w *World, caseBlock Node, c Node) (Node
 		return progn(ctx, w, caseBlock)
 	}
 	// (error (c) ... )
-	conditionVarName, paramList, err := shift(paramList)
+	conditionVarName, paramList, err := Shift(paramList)
 	if err != nil {
 		return nil, err
 	}

@@ -87,7 +87,7 @@ func List(nodes ...Node) Node {
 	return cons
 }
 
-func shift(list Node) (Node, Node, error) {
+func Shift(list Node) (Node, Node, error) {
 	cons, ok := list.(*Cons)
 	if !ok {
 		return nil, nil, ErrTooFewArguments
@@ -99,7 +99,7 @@ func listToArray(list Node, slice []Node) error {
 	for i := 0; i < len(slice); i++ {
 		var err error
 
-		slice[i], list, err = shift(list)
+		slice[i], list, err = Shift(list)
 		if err != nil {
 			return err
 		}

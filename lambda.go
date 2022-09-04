@@ -28,7 +28,7 @@ type _Parameters struct {
 }
 
 func getParameterList(node Node) (*_Parameters, error) {
-	list, code, err := shift(node)
+	list, code, err := Shift(node)
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +37,7 @@ func getParameterList(node Node) (*_Parameters, error) {
 	for HasValue(list) {
 		var nameNode Node
 
-		nameNode, list, err = shift(list)
+		nameNode, list, err = Shift(list)
 		if err != nil {
 			return nil, err
 		}
@@ -46,7 +46,7 @@ func getParameterList(node Node) (*_Parameters, error) {
 			return nil, ErrExpectedSymbol
 		}
 		if nameSymbol == "&rest" {
-			nameNode, list, err = shift(list)
+			nameNode, list, err = Shift(list)
 			if err != nil {
 				return nil, err
 			}
@@ -174,7 +174,7 @@ func (*_Lambda) Equals(Node, EqlMode) bool {
 }
 
 func cmdDefun(_ context.Context, w *World, list Node) (Node, error) {
-	_symbol, list, err := shift(list)
+	_symbol, list, err := Shift(list)
 	if err != nil {
 		return nil, err
 	}
@@ -215,7 +215,7 @@ func cmdApply(ctx context.Context, w *World, list Node) (Node, error) {
 	for {
 		var value Node
 
-		value, list, err = shift(list)
+		value, list, err = Shift(list)
 		if err != nil {
 			return nil, err
 		}
@@ -278,7 +278,7 @@ func cmdTrace(_ context.Context, _ *World, list Node) (Node, error) {
 		var symbolNode Node
 		var err error
 
-		symbolNode, list, err = shift(list)
+		symbolNode, list, err = Shift(list)
 		if err != nil {
 			return nil, err
 		}

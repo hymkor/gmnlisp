@@ -206,13 +206,13 @@ func cmdWithOpenFile(ctx context.Context, w *World, list Node) (Node, error) {
 	var param Node
 	var err error
 
-	param, list, err = shift(list)
+	param, list, err = Shift(list)
 	if err != nil {
 		return nil, err
 	}
 
 	var symbolNode Node
-	symbolNode, param, err = shift(param)
+	symbolNode, param, err = Shift(param)
 	if err != nil {
 		return nil, err
 	}

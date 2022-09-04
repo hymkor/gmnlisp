@@ -227,7 +227,7 @@ func incfDecf(ctx context.Context, w *World, list Node, f func(Symbol, Node, Nod
 	var name Node
 	var err error
 
-	name, list, err = shift(list)
+	name, list, err = Shift(list)
 	if err != nil {
 		return nil, err
 	}
