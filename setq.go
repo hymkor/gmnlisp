@@ -19,7 +19,7 @@ func cmdSetq(ctx context.Context, w *World, params Node) (Node, error) {
 		}
 		nameSymbol, ok := nameNode.(Symbol)
 		if !ok {
-			return nil, fmt.Errorf("%w: `%s`", ErrExpectedSymbol, toString(nameSymbol, PRINT))
+			return nil, fmt.Errorf("%w: `%s`", ErrExpectedSymbol, ToString(nameSymbol, PRINT))
 		}
 		value, params, err = w.ShiftAndEvalCar(ctx, params)
 		if err != nil {
@@ -155,7 +155,7 @@ func cmdSetf(ctx context.Context, w *World, params Node) (Node, error) {
 			}
 			return rightValue, f.Set(ctx, w, list, rightValue)
 		} else {
-			return nil, fmt.Errorf("%w: %s", ErrExpectedSymbolOrList, toString(leftValue, PRINT))
+			return nil, fmt.Errorf("%w: %s", ErrExpectedSymbolOrList, ToString(leftValue, PRINT))
 		}
 	}
 	return value, nil
@@ -178,7 +178,7 @@ func letValuesToVars(ctx context.Context, w *World, list Node, lexical map[Symbo
 		}
 		symbol, ok := argv[0].(Symbol)
 		if !ok {
-			return fmt.Errorf("%w `%s`", ErrExpectedSymbol, toString(argv[0], PRINT))
+			return fmt.Errorf("%w `%s`", ErrExpectedSymbol, ToString(argv[0], PRINT))
 		}
 		value, err := argv[1].Eval(ctx, w)
 		if err != nil {

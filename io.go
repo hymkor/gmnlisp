@@ -62,7 +62,7 @@ func cmdOpen(ctx context.Context, w *World, n Node) (Node, error) {
 	}
 	fnameString, ok := fnameNode.(StringTypes)
 	if !ok {
-		return nil, fmt.Errorf("%w `%s`", ErrExpectedString, toString(fnameString, PRINT))
+		return nil, fmt.Errorf("%w `%s`", ErrExpectedString, ToString(fnameString, PRINT))
 	}
 	fname := fnameString.String()
 	if IsNull(n) {
@@ -75,7 +75,7 @@ func cmdOpen(ctx context.Context, w *World, n Node) (Node, error) {
 	}
 	modeString, ok := modeNode.(StringTypes)
 	if !ok {
-		return nil, fmt.Errorf("%w `%s`", ErrExpectedString, toString(modeNode, PRINT))
+		return nil, fmt.Errorf("%w `%s`", ErrExpectedString, ToString(modeNode, PRINT))
 	}
 	mode := modeString.String()
 
@@ -137,7 +137,7 @@ func newStreamInput(w *World, argv []Node) (*_StreamInput, error) {
 		var ok bool
 		this.reader, ok = argv[0].(_ReadStringer)
 		if !ok {
-			return nil, fmt.Errorf("Expected Reader `%s`", toString(argv[0], PRINT))
+			return nil, fmt.Errorf("Expected Reader `%s`", ToString(argv[0], PRINT))
 		}
 	case 0:
 		this.reader = w.Stdin()
@@ -179,7 +179,7 @@ func funRead(_ context.Context, w *World, argv []Node) (Node, error) {
 func funClose(_ context.Context, _ *World, argv []Node) (Node, error) {
 	c, ok := argv[0].(io.Closer)
 	if !ok {
-		return nil, fmt.Errorf("Expected Closer `%s`", toString(argv[0], PRINT))
+		return nil, fmt.Errorf("Expected Closer `%s`", ToString(argv[0], PRINT))
 	}
 	return Null, c.Close()
 }
@@ -267,7 +267,7 @@ func cmdWithOpenFile(ctx context.Context, w *World, list Node) (Node, error) {
 		fdNode = &Writer{Writer: fd}
 		defer fd.Close()
 	} else {
-		return nil, fmt.Errorf("invalid :direction %s", toString(direction, PRINT))
+		return nil, fmt.Errorf("invalid :direction %s", ToString(direction, PRINT))
 	}
 	newWorld := w.Let(&Pair{Key: symbol, Value: fdNode})
 	return progn(ctx, newWorld, list)

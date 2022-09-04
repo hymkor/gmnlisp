@@ -51,7 +51,7 @@ type Node interface {
 	PrintTo(io.Writer, PrintMode) (int, error)
 }
 
-func toString(node Node, m PrintMode) string {
+func ToString(node Node, m PrintMode) string {
 	if node == nil {
 		return "()"
 	}

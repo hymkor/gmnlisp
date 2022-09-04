@@ -9,7 +9,7 @@ import (
 func funGetCar(_ context.Context, _ *World, argv []Node) (Node, func(Node) error, error) {
 	cons, ok := argv[0].(*Cons)
 	if !ok {
-		return nil, nil, fmt.Errorf("%w: %s", ErrExpectedCons, toString(argv[0], PRINT))
+		return nil, nil, fmt.Errorf("%w: %s", ErrExpectedCons, ToString(argv[0], PRINT))
 	}
 	return cons.Car, func(value Node) error { cons.Car = value; return nil }, nil
 }

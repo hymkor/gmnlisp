@@ -117,13 +117,13 @@ func (s UTF8String) Add(n Node) (Node, error) {
 		news = append(news, value...)
 		return UTF8String(news), nil
 	}
-	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n, PRINT))
+	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, ToString(n, PRINT))
 }
 
 func (s UTF8String) LessThan(n Node) (bool, error) {
 	ns, ok := n.(UTF8String)
 	if !ok {
-		return false, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n, PRINT))
+		return false, fmt.Errorf("%w: `%s`", ErrNotSupportType, ToString(n, PRINT))
 	}
 	return string(s) < string(ns), nil
 }
@@ -201,7 +201,7 @@ func (s UTF32String) Add(n Node) (Node, error) {
 	if value, ok := n.(UTF32String); ok {
 		return UTF32String(append(s, value...)), nil
 	}
-	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n, PRINT))
+	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, ToString(n, PRINT))
 }
 
 func (s UTF32String) LessThan(n Node) (bool, error) {
@@ -225,7 +225,7 @@ func (s UTF32String) LessThan(n Node) (bool, error) {
 		}
 		return true, nil
 	}
-	return false, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n, PRINT))
+	return false, fmt.Errorf("%w: `%s`", ErrNotSupportType, ToString(n, PRINT))
 }
 
 func (s UTF32String) Aref(n int) (Node, func(Node) error, error) {
@@ -332,7 +332,7 @@ func (r Rune) Add(n Node) (Node, error) {
 	if value, ok := n.(Rune); ok {
 		return r + value, nil
 	}
-	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n, PRINT))
+	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, ToString(n, PRINT))
 }
 
 func (r Rune) Sub(n Node) (Node, error) {
@@ -342,7 +342,7 @@ func (r Rune) Sub(n Node) (Node, error) {
 	if value, ok := n.(Rune); ok {
 		return r - value, nil
 	}
-	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, toString(n, PRINT))
+	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, ToString(n, PRINT))
 }
 
 type Keyword string

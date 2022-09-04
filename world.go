@@ -409,7 +409,7 @@ func (w *World) Assert(equation string, expect Node) string {
 		return fmt.Sprintf("%s: %s", equation, err.Error())
 	}
 	if !result.Equals(expect, EQUAL) {
-		return fmt.Sprintf("%s != %s (was %s)", equation, toString(expect, PRINT), toString(result, PRINT))
+		return fmt.Sprintf("%s != %s (was %s)", equation, ToString(expect, PRINT), ToString(result, PRINT))
 	}
 	return ""
 }

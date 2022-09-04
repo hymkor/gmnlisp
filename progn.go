@@ -81,7 +81,7 @@ type ErrThrown struct {
 }
 
 func (e *ErrThrown) Error() string {
-	return fmt.Sprintf("Thrown tag-form %s was not caught", toString(e.TagForm, PRINT))
+	return fmt.Sprintf("Thrown tag-form %s was not caught", ToString(e.TagForm, PRINT))
 }
 func cmdCatch(ctx context.Context, w *World, node Node) (Node, error) {
 	// from ISLisp
@@ -520,7 +520,7 @@ func matchError(ctx context.Context, w *World, casedSymbol Node, happenError err
 	}
 	errNode, ok := casedNode.(*ErrorNode)
 	if !ok {
-		return false, fmt.Errorf("not an error object in hander-case: %s", toString(casedSymbol, PRINT))
+		return false, fmt.Errorf("not an error object in hander-case: %s", ToString(casedSymbol, PRINT))
 	}
 	return errors.Is(happenError, errNode.Value), nil
 }
