@@ -16,14 +16,14 @@ type _Scope interface {
 	Set(Symbol, Node)
 }
 
-type _Variables map[Symbol]Node
+type Variables map[Symbol]Node
 
-func (m _Variables) Get(key Symbol) (Node, bool) {
+func (m Variables) Get(key Symbol) (Node, bool) {
 	value, ok := m[key]
 	return value, ok
 }
 
-func (m _Variables) Set(key Symbol, value Node) {
+func (m Variables) Set(key Symbol, value Node) {
 	m[key] = value
 }
 
@@ -47,7 +47,7 @@ func (m *Pair) Set(key Symbol, value Node) {
 }
 
 type _Shared struct {
-	dynamic _Variables
+	dynamic Variables
 	stdout  *_Writer
 	errout  *_Writer
 	stdin   *_Reader
@@ -171,12 +171,12 @@ func (w *World) Stdin() *_Reader {
 func New() *World {
 	return &World{
 		shared: &_Shared{
-			dynamic: _Variables(map[Symbol]Node{}),
+			dynamic: Variables(map[Symbol]Node{}),
 			stdin:   &_Reader{Reader: bufio.NewReader(os.Stdin)},
 			stdout:  &_Writer{Writer: os.Stdout},
 			errout:  &_Writer{Writer: os.Stderr},
 		},
-		lexical: _Variables(map[Symbol]Node{
+		lexical: Variables(map[Symbol]Node{
 			"*":                           SpecialF(cmdMulti),
 			"*err-exist*":                 &ErrorNode{Value: os.ErrExist},
 			"*err-not-exist*":             &ErrorNode{Value: os.ErrNotExist},

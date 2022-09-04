@@ -97,7 +97,7 @@ func cmdDefMacro(ctx context.Context, w *World, n Node) (Node, error) {
 	for _, name := range param {
 		lexical[name] = _PlaceHolder(name)
 	}
-	nw := w.New(_Variables(lexical))
+	nw := w.New(Variables(lexical))
 
 	code, err = progn(ctx, nw, code)
 	if err != nil {

@@ -201,7 +201,7 @@ func cmdLet(ctx context.Context, w *World, params Node) (Node, error) {
 		return nil, err
 	}
 
-	newWorld := w.New(_Variables(lexical))
+	newWorld := w.New(Variables(lexical))
 	return progn(ctx, newWorld, params)
 }
 
@@ -213,7 +213,7 @@ func cmdLetX(ctx context.Context, w *World, params Node) (Node, error) {
 	}
 	lexical := map[Symbol]Node{}
 
-	newWorld := w.New(_Variables(lexical))
+	newWorld := w.New(Variables(lexical))
 
 	if err := letValuesToVars(ctx, newWorld, list, lexical); err != nil {
 		return nil, err
