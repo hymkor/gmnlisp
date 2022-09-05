@@ -13,12 +13,10 @@ import (
 	. "github.com/hymkor/gmnlisp"
 )
 
-func Using(w *World) *World {
-	return w.Let(Variables{
-		NewSymbol("command"): defCommand,
-		NewSymbol("open"):    SpecialF(cmdOpen),
-		NewSymbol("strcase"): &Function{C: 1, F: funStrCase},
-	})
+var Functions = Variables{
+	NewSymbol("command"): defCommand,
+	NewSymbol("open"):    SpecialF(cmdOpen),
+	NewSymbol("strcase"): &Function{C: 1, F: funStrCase},
 }
 
 func funStrCase(ctx context.Context, w *World, argv []Node) (Node, error) {

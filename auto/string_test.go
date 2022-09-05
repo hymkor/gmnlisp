@@ -8,8 +8,7 @@ import (
 )
 
 func assertEqual(t *testing.T, equation string, expect gmnlisp.Node) {
-	w := gmnlisp.New()
-	w = Using(w)
+	w := gmnlisp.New().Let(Functions)
 	if e := w.Assert(equation, expect); e != "" {
 		t.Fatal(e)
 	}
