@@ -232,7 +232,6 @@ Backquotations and &amp;body are not supported.
     \[:direction :output|:input\]  
     \[:if-does-not-exist\] like CommonLisp
 - (close HANDLE)
-- (command NAME ARG1...)
 - (create-string-input-stream STRING)
 - (create-string-output-stream)
 - (get-output-stream-string STRSTREAM)
