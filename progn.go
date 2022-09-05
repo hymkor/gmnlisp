@@ -531,7 +531,7 @@ func cmdWithHandler(ctx context.Context, w *World, list Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	handler, ok := handlerNode.(_Callable)
+	handler, ok := handlerNode.(Callable)
 	if !ok {
 		return nil, ErrExpectedFunction
 	}

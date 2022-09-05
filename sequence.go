@@ -226,7 +226,7 @@ func mapCar(ctx context.Context, w *World, funcNode Node, sourceSet []Node, stor
 	if err != nil {
 		return err
 	}
-	_f, ok := f.(_Callable)
+	_f, ok := f.(Callable)
 	if !ok {
 		return ErrExpectedFunction
 	}
@@ -315,7 +315,7 @@ func mapList(ctx context.Context, w *World, funcNode Node, sourceSet []Node, sto
 	if err != nil {
 		return err
 	}
-	_f, ok := f.(_Callable)
+	_f, ok := f.(Callable)
 	if !ok {
 		return ErrExpectedFunction
 	}
@@ -420,7 +420,7 @@ func funReverse(_ context.Context, _ *World, argv []Node) (Node, error) {
 
 func getTestParameter(kwargs map[Keyword]Node) (func(context.Context, *World, Node, Node) (bool, error), error) {
 	if test, ok := kwargs[":test"]; ok {
-		caller, ok := test.(_Callable)
+		caller, ok := test.(Callable)
 		if !ok {
 			return nil, ErrExpectedFunction
 		}

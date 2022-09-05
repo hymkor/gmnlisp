@@ -201,7 +201,7 @@ func cmdFunCall(ctx context.Context, w *World, node Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	_f, ok := f.(_Callable)
+	_f, ok := f.(Callable)
 	if !ok {
 		return nil, ErrExpectedFunction
 	}
@@ -213,7 +213,7 @@ func cmdApply(ctx context.Context, w *World, list Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	f, ok := funcNode.(_Callable)
+	f, ok := funcNode.(Callable)
 	if !ok {
 		return nil, ErrExpectedFunction
 	}
@@ -241,7 +241,7 @@ func cmdApply(ctx context.Context, w *World, list Node) (Node, error) {
 	}
 }
 
-type _Callable interface {
+type Callable interface {
 	Node
 	Call(context.Context, *World, Node) (Node, error)
 }
@@ -268,7 +268,7 @@ func (f SpecialF) Call(ctx context.Context, w *World, n Node) (Node, error) {
 }
 
 func funFunction(_ context.Context, _ *World, argv []Node) (Node, error) {
-	f, ok := argv[0].(_Callable)
+	f, ok := argv[0].(Callable)
 	if !ok {
 		return nil, ErrExpectedFunction
 	}

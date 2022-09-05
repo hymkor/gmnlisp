@@ -381,7 +381,7 @@ func (w *World) InterpretBytes(ctx context.Context, code []byte) (Node, error) {
 }
 
 func (w *World) Call(ctx context.Context, f Node, params ...Node) (Node, error) {
-	_f, ok := f.(_Callable)
+	_f, ok := f.(Callable)
 	if !ok {
 		return nil, ErrExpectedFunction
 	}
