@@ -119,8 +119,7 @@ func replaceReader(lisp *gmnlisp.World, r io.Reader, w, sourceOut io.Writer) (er
 var flagAnsi = flag.Bool("ansi", false, "macro value is not UTF8 (ANSI)")
 
 func mains(args []string) error {
-	lisp := gmnlisp.New()
-	lisp = auto.Using(lisp)
+	lisp := gmnlisp.New().Let(auto.Functions)
 
 	fileCount := 0
 	for _, arg := range args {
