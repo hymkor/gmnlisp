@@ -22,7 +22,7 @@ func TestString(t *testing.T) {
 func TestIo(t *testing.T) {
 	assertEqual(t, `
 		(let (fd line)
-			(setq fd (open (quote "../LICENSE") (quote "r"))
+			(setq fd (open (quote "../../LICENSE") (quote "r"))
 				  line (read-line fd))
 			(close fd)
 			line
@@ -42,4 +42,8 @@ func TestIo(t *testing.T) {
 
 	// not exist file test
 	assertEqual(t, `(open "temp.txt" "r")`, gmnlisp.Null)
+}
+
+func TestReadFromString(t *testing.T) {
+	assertEqual(t, `(read-from-string "(1 2 3)")`, gmnlisp.List(gmnlisp.Integer(1), gmnlisp.Integer(2), gmnlisp.Integer(3)))
 }

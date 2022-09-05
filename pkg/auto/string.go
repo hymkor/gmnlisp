@@ -14,9 +14,10 @@ import (
 )
 
 var Functions = Variables{
-	NewSymbol("command"): defCommand,
-	NewSymbol("open"):    SpecialF(cmdOpen),
-	NewSymbol("strcase"): &Function{C: 1, F: funStrCase},
+	NewSymbol("command"):          defCommand,
+	NewSymbol("open"):             SpecialF(cmdOpen),
+	NewSymbol("read-from-string"): &Function{C: 1, F: funReadFromString},
+	NewSymbol("strcase"):          &Function{C: 1, F: funStrCase},
 }
 
 func funStrCase(ctx context.Context, w *World, argv []Node) (Node, error) {
@@ -128,4 +129,20 @@ func funCommand(ctx context.Context, w *World, list []Node) (Node, error) {
 	cmd.Stderr = w.Errout()
 	cmd.Stdin = os.Stdin // w.Stdin()
 	return Null, cmd.Run()
+}
+
+func funReadFromString(_ context.Context, _ *World, args []Node) (Node, error) {
+	// compatible with autolisp's (read)
+	script, ok := args[0].(StringTypes)
+	if !ok {
+		return nil, ErrExpectedString
+	}
+	nodes, err := ReadAll(strings.NewReader(script.String()))
+	if err != nil {
+		return nil, err
+	}
+	if len(nodes) < 1 {
+		return Null, nil
+	}
+	return nodes[0], nil
 }

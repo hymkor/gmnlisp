@@ -3,7 +3,6 @@ package gmnlisp
 import (
 	"context"
 	"os"
-	"strings"
 )
 
 func cmdQuote(_ context.Context, _ *World, n Node) (Node, error) {
@@ -83,22 +82,6 @@ func funNotEqual(_ context.Context, _ *World, argv []Node) (Node, error) {
 		return Null, nil
 	}
 	return True, nil
-}
-
-func funReadFromString(_ context.Context, _ *World, args []Node) (Node, error) {
-	// compatible with autolisp's (read)
-	script, ok := args[0].(StringTypes)
-	if !ok {
-		return nil, ErrExpectedString
-	}
-	nodes, err := ReadAll(strings.NewReader(script.String()))
-	if err != nil {
-		return nil, err
-	}
-	if len(nodes) < 1 {
-		return Null, nil
-	}
-	return nodes[0], nil
 }
 
 func xxxxP(args []Node, f1 func(Integer) bool, f2 func(Float) bool) (Node, error) {

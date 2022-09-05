@@ -280,7 +280,6 @@ func New() *World {
 			NewSymbol("quit"):                        SpecialF(cmdQuit),
 			NewSymbol("quote"):                       SpecialF(cmdQuote),
 			NewSymbol("read"):                        defRead,
-			NewSymbol("read-from-string"):            &Function{C: 1, F: funReadFromString},
 			NewSymbol("read-line"):                   defReadLine,
 			NewSymbol("rem"):                         &Function{C: 2, F: funRem},
 			NewSymbol("replaca"):                     &Function{C: 2, F: funReplaca},
