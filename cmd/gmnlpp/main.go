@@ -12,7 +12,7 @@ import (
 	"strings"
 
 	"github.com/hymkor/gmnlisp"
-	"github.com/hymkor/gmnlisp/auto"
+	"github.com/hymkor/gmnlisp/pkg/auto"
 	"github.com/nyaosorg/go-windows-mbcs"
 )
 
