@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"github.com/hymkor/gmnlisp"
+	"github.com/hymkor/gmnlisp/auto"
 	"github.com/nyaosorg/go-windows-mbcs"
 )
 
@@ -119,6 +120,7 @@ var flagAnsi = flag.Bool("ansi", false, "macro value is not UTF8 (ANSI)")
 
 func mains(args []string) error {
 	lisp := gmnlisp.New()
+	lisp = auto.Using(lisp)
 
 	fileCount := 0
 	for _, arg := range args {

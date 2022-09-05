@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"os/exec"
 	"strings"
 )
 
@@ -112,24 +111,6 @@ func funClose(_ context.Context, _ *World, argv []Node) (Node, error) {
 		return nil, fmt.Errorf("Expected Closer `%s`", ToString(argv[0], PRINT))
 	}
 	return Null, c.Close()
-}
-
-var defCommand = &Function{Min: 1, F: funCommand}
-
-func funCommand(ctx context.Context, w *World, list []Node) (Node, error) {
-	// from autolisp
-	argv := make([]string, len(list))
-	for i, value := range list {
-		var buffer strings.Builder
-		value.PrintTo(&buffer, PRINC)
-		argv[i] = buffer.String()
-	}
-
-	cmd := exec.CommandContext(ctx, argv[0], argv[1:]...)
-	cmd.Stdout = w.Stdout()
-	cmd.Stderr = w.Errout()
-	cmd.Stdin = os.Stdin // w.Stdin()
-	return Null, cmd.Run()
 }
 
 func cmdWithOpenFile(ctx context.Context, w *World, list Node) (Node, error) {
