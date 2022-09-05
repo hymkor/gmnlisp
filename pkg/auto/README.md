@@ -1,4 +1,4 @@
-
 - (strcase STRING)
-- (open "filename" "mode") like autolisp
+- (open "filename" "mode")
 - (command NAME ARG1...)
+- (read-from-string [STRING])

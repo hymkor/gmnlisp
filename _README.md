@@ -246,7 +246,6 @@ Backquotations and &amp;body are not supported.
 
 - (read [STREAM [EOF-FLAG [EOF-VALUE]]])
 - (read-line [STREAM [EOF-FLAG [EOF-VALUE]]])
-- (read-from-string [STRING]) == autolisp's read
 
 #### Exceptions
 
