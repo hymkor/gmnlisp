@@ -6,21 +6,32 @@ import (
 	. "github.com/hymkor/gmnlisp"
 )
 
-func Using(w *World) *World {
-	defparameter, err := w.Get(NewSymbol("defglobal"))
-	if err != nil {
-		panic("not found defglobal")
+var Functions = Variables{
+	NewSymbol("defparameter"): SpecialF(cmdDefparameter),
+	NewSymbol("defvar"):       SpecialF(cmdDefvar),
+	NewSymbol("prin1"):        &Function{C: 1, F: funPrin1},
+	NewSymbol("princ"):        &Function{C: 1, F: funPrinc},
+	NewSymbol("print"):        &Function{C: 1, F: funPrint},
+	NewSymbol("terpri"):       &Function{C: -1, F: funTerpri},
+	NewSymbol("write"):        &KWFunction{C: 1, F: funWrite},
+	NewSymbol("write-line"):   SpecialF(cmdWriteLine),
+}
+
+var defparameter Callable
+
+func cmdDefparameter(ctx context.Context, w *World, list Node) (Node, error) {
+	if IsNull(defparameter) {
+		_defparameter, err := w.Get(NewSymbol("defglobal"))
+		if err != nil {
+			return nil, err
+		}
+		var ok bool
+		defparameter, ok = _defparameter.(Callable)
+		if !ok {
+			return nil, ErrExpectedFunction
+		}
 	}
-	return w.Let(Variables{
-		NewSymbol("defparameter"): defparameter,
-		NewSymbol("defvar"):       SpecialF(cmdDefvar),
-		NewSymbol("prin1"):        &Function{C: 1, F: funPrin1},
-		NewSymbol("princ"):        &Function{C: 1, F: funPrinc},
-		NewSymbol("print"):        &Function{C: 1, F: funPrint},
-		NewSymbol("terpri"):       &Function{C: -1, F: funTerpri},
-		NewSymbol("write"):        &KWFunction{C: 1, F: funWrite},
-		NewSymbol("write-line"):   SpecialF(cmdWriteLine),
-	})
+	return defparameter.Call(ctx, w, list)
 }
 
 func cmdDefvar(ctx context.Context, w *World, list Node) (Node, error) {

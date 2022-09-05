@@ -6,19 +6,18 @@ import (
 	. "github.com/hymkor/gmnlisp"
 )
 
-func TestWrite(t *testing.T){
+func TestWrite(t *testing.T) {
 	assertEqual(t, `
 		(let ((buffer (create-string-output-stream)))
 			(write "123" :stream buffer)
 			(get-output-stream-string buffer)
-		)`,String(`"123"`))
+		)`, String(`"123"`))
 }
 
-func TestWriteLine(t *testing.T){
+func TestWriteLine(t *testing.T) {
 	assertEqual(t, `
 		(let ((buffer (create-string-output-stream)))
 			(write-line "123" buffer)
 			(get-output-stream-string buffer)
-		)`,String("123\n"))
+		)`, String("123\n"))
 }
-
