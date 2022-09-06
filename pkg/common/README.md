@@ -11,3 +11,5 @@ This subpackage appends this function.
 - (find ATOM LIST [:test #'TESTFUNC])
 - (member ATOM LIST [:test #'TESTFUNC])
 - (position EXP LIST [:test #'TESTFUNC]))
+- (unless COND ELSE-EXPs...)
+- (cond (COND1 EXP1) (COND2 EXP2) ...)

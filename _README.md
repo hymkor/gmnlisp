@@ -27,7 +27,7 @@ Gmnlisp is a small Lisp implementation in Go.
 (let (line (count 0))
     (with-open-file (fd "examples/example1.go")
         (while (setq line (read-line fd nil))
-            (when (>= count 3)
+            (if (>= count 3)
                 (format (standard-output) "~a~%" (detab line)))
             (incf count)
         )
@@ -171,8 +171,6 @@ Support functions
 
 - (if COND THEN-EXP ELSE-EXP)
 - (when COND THEN-EXPs...)
-- (unless COND ELSE-EXPs...)
-- (cond (COND1 EXP1) (COND2 EXP2) ...)
 - (case KEYFORM (KEY1 FORM1) (KEY2 FORM2) .... )
 
 #### Loop

@@ -170,8 +170,6 @@ Support functions
 
 - (if COND THEN-EXP ELSE-EXP)
 - (when COND THEN-EXPs...)
-- (unless COND ELSE-EXPs...)
-- (cond (COND1 EXP1) (COND2 EXP2) ...)
 - (case KEYFORM (KEY1 FORM1) (KEY2 FORM2) .... )
 
 #### Loop
