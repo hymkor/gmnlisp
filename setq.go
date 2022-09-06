@@ -53,7 +53,7 @@ func (f *LeftValueF) Call(ctx context.Context, w *World, list Node) (Node, error
 	var argv [maxParameterOfEasyFunc]Node
 	var err error
 
-	if err := checkContext(ctx); err != nil {
+	if err := CheckContext(ctx); err != nil {
 		return nil, err
 	}
 
@@ -173,7 +173,7 @@ func letValuesToVars(ctx context.Context, w *World, list Node, lexical map[Symbo
 		}
 		var argv [2]Node
 
-		if err := listToArray(item, argv[:]); err != nil {
+		if err := ListToArray(item, argv[:]); err != nil {
 			return err
 		}
 		symbol, ok := argv[0].(Symbol)

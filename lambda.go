@@ -111,7 +111,7 @@ var trace = map[Symbol]int{}
 var slashSymbol = NewSymbol("/")
 
 func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
-	if err := checkContext(ctx); err != nil {
+	if err := CheckContext(ctx); err != nil {
 		return nil, err
 	}
 	lexical := Variables{}
@@ -261,7 +261,7 @@ func (f SpecialF) Equals(n Node, m EqlMode) bool {
 }
 
 func (f SpecialF) Call(ctx context.Context, w *World, n Node) (Node, error) {
-	if err := checkContext(ctx); err != nil {
+	if err := CheckContext(ctx); err != nil {
 		return nil, err
 	}
 	return f(ctx, w, n)
@@ -320,7 +320,7 @@ func (f *Function) Equals(n Node, m EqlMode) bool {
 const maxParameterOfEasyFunc = 8
 
 func (f *Function) Call(ctx context.Context, w *World, list Node) (Node, error) {
-	if err := checkContext(ctx); err != nil {
+	if err := CheckContext(ctx); err != nil {
 		return nil, err
 	}
 	max := math.MaxInt
@@ -400,7 +400,7 @@ func listToKwargs(ctx context.Context, w *World, list Node) ([]Node, map[Keyword
 }
 
 func (f *KWFunction) Call(ctx context.Context, w *World, list Node) (Node, error) {
-	if err := checkContext(ctx); err != nil {
+	if err := CheckContext(ctx); err != nil {
 		return nil, err
 	}
 	args, kwargs, err := listToKwargs(ctx, w, list)

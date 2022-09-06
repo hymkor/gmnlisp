@@ -31,6 +31,8 @@ var Functions = Variables{
 	NewSymbol("second"):      &LeftValueF{C: 1, F: funCadr},
 	NewSymbol("third"):       &LeftValueF{C: 1, F: funCaddr},
 	NewSymbol("concatenate"): defConcatenate,
+	NewSymbol("dolist"):      SpecialF(cmdDoList),
+	NewSymbol("dotimes"):     SpecialF(cmdDoTimes),
 }
 
 var defparameter Callable

@@ -7,7 +7,7 @@ import (
 
 func cmdQuote(_ context.Context, _ *World, n Node) (Node, error) {
 	var argv [1]Node
-	if err := listToArray(n, argv[:]); err != nil {
+	if err := ListToArray(n, argv[:]); err != nil {
 		return nil, err
 	}
 	return argv[0], nil

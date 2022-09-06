@@ -95,7 +95,7 @@ func Shift(list Node) (Node, Node, error) {
 	return cons.GetCar(), cons.Cdr, nil
 }
 
-func listToArray(list Node, slice []Node) error {
+func ListToArray(list Node, slice []Node) error {
 	for i := 0; i < len(slice); i++ {
 		var err error
 
@@ -110,7 +110,7 @@ func listToArray(list Node, slice []Node) error {
 	return nil
 }
 
-func checkContext(ctx context.Context) error {
+func CheckContext(ctx context.Context) error {
 	select {
 	case <-ctx.Done():
 		return ctx.Err()
