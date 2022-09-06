@@ -23,3 +23,4 @@ This subpackage appends this function.
 <!-- - (first LIST) -->
 - (second LIST)
 - (third LIST)
+- (concatenate 'string {STRING1...})

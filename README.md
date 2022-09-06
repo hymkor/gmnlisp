@@ -59,10 +59,6 @@ Support functions
 - (truncate REAL)
 - (parse-integer STRING)
 
-#### string
-
-- (concatenate 'string {STRING1...})
-
 #### List and Sequence
 
 - (quote {LIST|ATOM}...)
