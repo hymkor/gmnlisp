@@ -28,8 +28,9 @@ var Functions = Variables{
 	NewSymbol("cdddr"):        &LeftValueF{C: 1, F: funCdddr},
 	NewSymbol("cddr"):         &LeftValueF{C: 1, F: funCddr},
 	//NewSymbol("first"):                       &LeftValueF{C: 1, F: funGetCar},
-	NewSymbol("second"): &LeftValueF{C: 1, F: funCadr},
-	NewSymbol("third"):  &LeftValueF{C: 1, F: funCaddr},
+	NewSymbol("second"):      &LeftValueF{C: 1, F: funCadr},
+	NewSymbol("third"):       &LeftValueF{C: 1, F: funCaddr},
+	NewSymbol("concatenate"): defConcatenate,
 }
 
 var defparameter Callable

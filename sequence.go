@@ -190,28 +190,6 @@ func funElt(_ context.Context, _ *World, args []Node) (Node, func(Node) error, e
 	return value, setter, nil
 }
 
-var defConcatenate = &Function{Min: 1, F: funConcatenate}
-
-func funConcatenate(ctx context.Context, w *World, list []Node) (Node, error) {
-	if len(list) < 1 {
-		return Null, nil
-	}
-	buffer, err := newSeqBuilder(list[0])
-	if err != nil {
-		return nil, err
-	}
-	for _, element := range list[1:] {
-		err := SeqEach(element, func(value Node) error {
-			buffer.Add(value)
-			return nil
-		})
-		if err != nil {
-			return nil, err
-		}
-	}
-	return buffer.Sequence(), nil
-}
-
 func funLength(_ context.Context, _ *World, argv []Node) (Node, error) {
 	length := 0
 	err := SeqEach(argv[0], func(_ Node) error {

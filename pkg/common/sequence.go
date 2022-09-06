@@ -104,3 +104,25 @@ func funPosition(c context.Context, w *World, argv []Node, kwargs map[Keyword]No
 	}
 	return Null, nil
 }
+
+var defConcatenate = &Function{Min: 1, F: funConcatenate}
+
+func funConcatenate(ctx context.Context, w *World, list []Node) (Node, error) {
+	if len(list) < 1 {
+		return Null, nil
+	}
+	buffer, err := NewSeqBuilder(list[0])
+	if err != nil {
+		return nil, err
+	}
+	for _, element := range list[1:] {
+		err := SeqEach(element, func(value Node) error {
+			buffer.Add(value)
+			return nil
+		})
+		if err != nil {
+			return nil, err
+		}
+	}
+	return buffer.Sequence(), nil
+}

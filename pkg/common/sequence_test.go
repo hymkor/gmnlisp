@@ -26,3 +26,10 @@ func TestPosition(t *testing.T) {
 	assertEqual(t, `(position #\C "abcd")`, Null)
 	assertEqual(t, `(position #\C "abcd" :test #'(lambda (a b) (equalp a b)))`, Integer(2))
 }
+
+func TestConcatenate(t *testing.T) {
+	assertEqual(t, `(concatenate 'string "123" "456")`, String("123456"))
+	assertEqual(t, `(concatenate 'list '(1 2 3) '(4 5 6))`,
+		List(Integer(1), Integer(2), Integer(3), Integer(4), Integer(5), Integer(6)))
+	assertEqual(t, `(apply #'concatenate 'string '("1" "2" "3"))`, String("123"))
+}

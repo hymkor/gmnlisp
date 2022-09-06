@@ -200,7 +200,6 @@ func New() *World {
 			NewSymbol("cdr"):                         &LeftValueF{C: 1, F: funGetCdr},
 			NewSymbol("close"):                       &Function{C: 1, F: funClose},
 			NewSymbol("coerce"):                      &Function{C: 2, F: funCoerce},
-			NewSymbol("concatenate"):                 defConcatenate,
 			NewSymbol("cond"):                        SpecialF(cmdCond),
 			NewSymbol("cons"):                        &Function{C: 2, F: funCons},
 			NewSymbol("consp"):                       &Function{C: 1, F: funAnyTypep[*Cons]},
