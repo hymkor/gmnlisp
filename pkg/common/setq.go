@@ -7,6 +7,9 @@ import (
 )
 
 var Functions = Variables{
+	NewSymbol("member"):       &KWFunction{C: 2, F: funMember},
+	NewSymbol("find"):         &KWFunction{C: 2, F: funFind},
+	NewSymbol("position"):     &KWFunction{C: 2, F: funPosition},
 	NewSymbol("defparameter"): SpecialF(cmdDefparameter),
 	NewSymbol("defvar"):       SpecialF(cmdDefvar),
 	NewSymbol("prin1"):        &Function{C: 1, F: funPrin1},
