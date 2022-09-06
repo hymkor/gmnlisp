@@ -2,3 +2,4 @@
 - (open "filename" "mode")
 - (command NAME ARG1...)
 - (read-from-string [STRING])
+- (foreach (ITEMS) FORMS...)

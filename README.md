@@ -181,7 +181,6 @@ Support functions
 - (while COND EXP1...)
 - (for ((VAR INIT STEP)...) (COND RESULT) EXP1 EXP2...) like ISLISP
 - (progn EXP1 EXP2...)
-- (foreach (ITEMS) FORMS...)
 
 #### Functions
 
