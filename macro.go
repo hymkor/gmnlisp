@@ -99,7 +99,7 @@ func cmdDefMacro(ctx context.Context, w *World, n Node) (Node, error) {
 	}
 	nw := w.Let(lexical)
 
-	code, err = progn(ctx, nw, code)
+	code, err = Progn(ctx, nw, code)
 	if err != nil {
 		return nil, err
 	}

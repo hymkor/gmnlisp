@@ -158,7 +158,7 @@ func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
 
 	var errEarlyReturns *ErrEarlyReturns
 
-	result, err := progn(ctx, newWorld, L.code)
+	result, err := Progn(ctx, newWorld, L.code)
 	if errors.As(err, &errEarlyReturns) && errEarlyReturns.Name == L.name {
 		return errEarlyReturns.Value, nil
 	}

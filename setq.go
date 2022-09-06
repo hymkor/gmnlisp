@@ -202,7 +202,7 @@ func cmdLet(ctx context.Context, w *World, params Node) (Node, error) {
 	}
 
 	newWorld := w.Let(lexical)
-	return progn(ctx, newWorld, params)
+	return Progn(ctx, newWorld, params)
 }
 
 func cmdLetX(ctx context.Context, w *World, params Node) (Node, error) {
@@ -219,7 +219,7 @@ func cmdLetX(ctx context.Context, w *World, params Node) (Node, error) {
 		return nil, err
 	}
 
-	return progn(ctx, newWorld, params)
+	return Progn(ctx, newWorld, params)
 }
 
 // cmdDefglobal implements (defglobal) of ISLisp and (defparameter) of CommonLisp
@@ -351,5 +351,5 @@ func cmdDynamicLet(ctx context.Context, w *World, list Node) (Node, error) {
 			w.shared.dynamic.Set(symbol, value)
 		}
 	}
-	return progn(ctx, w, list)
+	return Progn(ctx, w, list)
 }

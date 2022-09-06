@@ -41,7 +41,7 @@ func cmdReturnFrom(ctx context.Context, w *World, n Node) (Node, error) {
 	return nil, &ErrEarlyReturns{Value: value, Name: symbol}
 }
 
-func progn(ctx context.Context, w *World, n Node) (value Node, err error) {
+func Progn(ctx context.Context, w *World, n Node) (value Node, err error) {
 	value = Null
 	for HasValue(n) {
 		value, n, err = w.ShiftAndEvalCar(ctx, n)
@@ -53,7 +53,7 @@ func progn(ctx context.Context, w *World, n Node) (value Node, err error) {
 }
 
 func cmdProgn(ctx context.Context, w *World, c Node) (Node, error) {
-	return progn(ctx, w, c)
+	return Progn(ctx, w, c)
 }
 
 func cmdBlock(ctx context.Context, w *World, node Node) (Node, error) {
@@ -68,7 +68,7 @@ func cmdBlock(ctx context.Context, w *World, node Node) (Node, error) {
 	}
 
 	var errEarlyReturns *ErrEarlyReturns
-	rv, err := progn(ctx, w, statements)
+	rv, err := Progn(ctx, w, statements)
 	if errors.As(err, &errEarlyReturns) && errEarlyReturns.Name == nameSymbol {
 		return errEarlyReturns.Value, nil
 	}
@@ -91,7 +91,7 @@ func cmdCatch(ctx context.Context, w *World, node Node) (Node, error) {
 	}
 
 	var errThrown *ErrThrown
-	rv, err := progn(ctx, w, statements)
+	rv, err := Progn(ctx, w, statements)
 	if errors.As(err, &errThrown) && errThrown.TagForm.Equals(tagForm, EQUALP) {
 		return errThrown.Value, nil
 	}
@@ -117,7 +117,7 @@ func cmdCond(ctx context.Context, w *World, list Node) (Node, error) {
 			return nil, err
 		}
 		if HasValue(cond) {
-			return progn(ctx, w, act)
+			return Progn(ctx, w, act)
 		}
 	}
 	return Null, nil
@@ -152,7 +152,7 @@ func cmdCase(ctx context.Context, w *World, list Node) (Node, error) {
 					return nil, err
 				}
 				if swValue.Equals(_caseValue, EQUALP) {
-					return progn(ctx, w, act)
+					return Progn(ctx, w, act)
 				}
 			}
 		} else {
@@ -161,7 +161,7 @@ func cmdCase(ctx context.Context, w *World, list Node) (Node, error) {
 				return nil, err
 			}
 			if swValue.Equals(_caseValue, EQUALP) {
-				return progn(ctx, w, act)
+				return Progn(ctx, w, act)
 			}
 		}
 	}
@@ -204,7 +204,7 @@ func cmdWhen(ctx context.Context, w *World, args Node) (Node, error) {
 	if IsNull(cond) {
 		return Null, nil
 	}
-	return progn(ctx, w, args)
+	return Progn(ctx, w, args)
 }
 
 func cmdUnless(ctx context.Context, w *World, args Node) (Node, error) {
@@ -277,7 +277,7 @@ func cmdWhile(ctx context.Context, w *World, n Node) (Node, error) {
 		if IsNull(cont) {
 			return last, nil
 		}
-		last, err = progn(ctx, w, statements)
+		last, err = Progn(ctx, w, statements)
 		if err != nil {
 			return nil, err
 		}
@@ -322,7 +322,7 @@ func cmdDoTimes(ctx context.Context, w *World, list Node) (Node, error) {
 		if err := w.Set(symbol, i); err != nil {
 			return nil, err
 		}
-		last, err = progn(ctx, w, list)
+		last, err = Progn(ctx, w, list)
 		if err != nil {
 			return nil, err
 		}
@@ -365,7 +365,7 @@ func cmdDoList(ctx context.Context, w *World, list Node) (Node, error) {
 		if err := w.Set(symbol, value1); err != nil {
 			return nil, err
 		}
-		last, err = progn(ctx, w, list)
+		last, err = Progn(ctx, w, list)
 		if err != nil {
 			return nil, err
 		}
@@ -445,7 +445,7 @@ func cmdFor(ctx context.Context, w *World, list Node) (Node, error) {
 		if HasValue(value) {
 			return result.Eval(ctx, w)
 		}
-		_, err = progn(ctx, w, list)
+		_, err = Progn(ctx, w, list)
 		if err != nil {
 			return nil, err
 		}
@@ -469,7 +469,7 @@ func handlerCaseSub(ctx context.Context, w *World, caseBlock Node, c Node) (Node
 		return nil, err
 	}
 	if IsNull(paramList) { // (error () ... )
-		return progn(ctx, w, caseBlock)
+		return Progn(ctx, w, caseBlock)
 	}
 	// (error (c) ... )
 	conditionVarName, paramList, err := Shift(paramList)
@@ -484,7 +484,7 @@ func handlerCaseSub(ctx context.Context, w *World, caseBlock Node, c Node) (Node
 		return nil, ErrExpectedSymbol
 	}
 	newWorld := w.Let(&Pair{Key: symbol, Value: c})
-	return progn(ctx, newWorld, caseBlock)
+	return Progn(ctx, newWorld, caseBlock)
 }
 
 type ErrorNode struct {
@@ -535,7 +535,7 @@ func cmdWithHandler(ctx context.Context, w *World, list Node) (Node, error) {
 	if !ok {
 		return nil, ErrExpectedFunction
 	}
-	value, err := progn(ctx, w, list)
+	value, err := Progn(ctx, w, list)
 	if err == nil {
 		return value, nil
 	}
@@ -551,7 +551,7 @@ func cmdUnwindProtect(ctx context.Context, w *World, list Node) (Node, error) {
 
 	_, list, formErr = w.ShiftAndEvalCar(ctx, list)
 
-	value, err := progn(ctx, w, list)
+	value, err := Progn(ctx, w, list)
 	if err != nil {
 		return nil, err
 	}

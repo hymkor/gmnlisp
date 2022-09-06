@@ -181,7 +181,7 @@ func cmdWithOpenFile(ctx context.Context, w *World, list Node) (Node, error) {
 		return nil, fmt.Errorf("invalid :direction %s", ToString(direction, PRINT))
 	}
 	newWorld := w.Let(&Pair{Key: symbol, Value: fdNode})
-	return progn(ctx, newWorld, list)
+	return Progn(ctx, newWorld, list)
 }
 
 func funCreateStringInputStream(ctx context.Context, w *World, list []Node) (Node, error) {
