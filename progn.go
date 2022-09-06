@@ -196,28 +196,6 @@ func cmdIf(ctx context.Context, w *World, params Node) (Node, error) {
 	}
 }
 
-func cmdWhen(ctx context.Context, w *World, args Node) (Node, error) {
-	cond, args, err := w.ShiftAndEvalCar(ctx, args)
-	if err != nil {
-		return nil, err
-	}
-	if IsNull(cond) {
-		return Null, nil
-	}
-	return Progn(ctx, w, args)
-}
-
-func cmdUnless(ctx context.Context, w *World, args Node) (Node, error) {
-	cond, args, err := w.ShiftAndEvalCar(ctx, args)
-	if err != nil {
-		return nil, err
-	}
-	if HasValue(cond) {
-		return Null, nil
-	}
-	return Progn(ctx, w, args)
-}
-
 func cmdWhile(ctx context.Context, w *World, n Node) (Node, error) {
 	// from autolisp, ISLisp
 	cond, statements, err := Shift(n)

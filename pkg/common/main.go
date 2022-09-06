@@ -18,6 +18,8 @@ var Functions = Variables{
 	NewSymbol("terpri"):       &Function{C: -1, F: funTerpri},
 	NewSymbol("write"):        &KWFunction{C: 1, F: funWrite},
 	NewSymbol("write-line"):   SpecialF(cmdWriteLine),
+	NewSymbol("when"):         SpecialF(cmdWhen),
+	NewSymbol("unless"):       SpecialF(cmdUnless),
 }
 
 var defparameter Callable
@@ -58,4 +60,26 @@ func cmdDefvar(ctx context.Context, w *World, list Node) (Node, error) {
 		return value
 	})
 	return symbol, err
+}
+
+func cmdWhen(ctx context.Context, w *World, args Node) (Node, error) {
+	cond, args, err := w.ShiftAndEvalCar(ctx, args)
+	if err != nil {
+		return nil, err
+	}
+	if IsNull(cond) {
+		return Null, nil
+	}
+	return Progn(ctx, w, args)
+}
+
+func cmdUnless(ctx context.Context, w *World, args Node) (Node, error) {
+	cond, args, err := w.ShiftAndEvalCar(ctx, args)
+	if err != nil {
+		return nil, err
+	}
+	if HasValue(cond) {
+		return Null, nil
+	}
+	return Progn(ctx, w, args)
 }

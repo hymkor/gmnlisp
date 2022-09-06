@@ -28,3 +28,13 @@ func TestDefparameter(t *testing.T) {
 	assertEqual(t, `(defparameter a "ahaha")`, NewSymbol("a"))
 	assertEqual(t, `(defparameter a "ahaha")(defparameter a "ihihi") a`, String("ihihi"))
 }
+
+func TestWhen(t *testing.T) {
+	assertEqual(t, `(let ((a 0)) (when (> 5 3) (setq a 1)) a)`, Integer(1))
+	assertEqual(t, `(let ((a 0)) (when (< 5 3) (setq a 1)) a)`, Integer(0))
+}
+
+func TestUnless(t *testing.T) {
+	assertEqual(t, `(let ((a 0)) (unless (> 5 3) (setq a 1)) a)`, Integer(0))
+	assertEqual(t, `(let ((a 0)) (unless (< 5 3) (setq a 1)) a)`, Integer(1))
+}
