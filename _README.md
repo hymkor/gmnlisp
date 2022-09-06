@@ -86,13 +86,11 @@ Support functions
 - (last LIST)
 - (reverse LIST)
 - (append LIST...)
-- (find ATOM LIST [:test #'TESTFUNC])
-- (member ATOM LIST [:test #'TESTFUNC])
-- (position EXP LIST [:test #'TESTFUNC]))
 - (assoc OBJ LIST)
 - (subst NEWITEM OLDITEM LIST)
 - (subseq SEQUENCE INDEX)
 - (elt SEQUENCE INDEX)
+- (member ATOM LIST)
 
 #### Cons
 

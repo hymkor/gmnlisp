@@ -8,3 +8,6 @@ This subpackage appends this function.
 - (princ OBJ)
 - (prin1 OBJ)
 - (terpri [STREAM])
+- (find ATOM LIST [:test #'TESTFUNC])
+- (member ATOM LIST [:test #'TESTFUNC])
+- (position EXP LIST [:test #'TESTFUNC]))
