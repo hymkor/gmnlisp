@@ -31,13 +31,6 @@ func TestIf(t *testing.T) {
 			(T "fail")
 		)
 	)`, String("B"))
-
-	assertEqual(t, `(let ((x 0)(i 0))
-						(foreach i (list 1 (+ 1 1) (* 1 3) 4 5)
-							(setq x (+ x i))
-						)
-						x
-					)`, Integer(15))
 }
 
 func TestDoTimes(t *testing.T) {

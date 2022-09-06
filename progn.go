@@ -215,48 +215,7 @@ func cmdUnless(ctx context.Context, w *World, args Node) (Node, error) {
 	if HasValue(cond) {
 		return Null, nil
 	}
-	return progn(ctx, w, args)
-}
-
-func cmdForeach(ctx context.Context, w *World, args Node) (Node, error) {
-	// from autolisp
-	var _symbol Node
-	var err error
-
-	_symbol, args, err = Shift(args)
-	if err != nil {
-		return nil, err
-	}
-	symbol, ok := _symbol.(Symbol)
-	if !ok {
-		return nil, ErrExpectedSymbol
-	}
-
-	var list Node
-	var code Node
-	list, code, err = w.ShiftAndEvalCar(ctx, args)
-	if err != nil {
-		return nil, err
-	}
-
-	var last Node
-	for HasValue(list) {
-		var value Node
-
-		value, list, err = Shift(list)
-		if err != nil {
-			return nil, err
-		}
-		if err := w.Set(symbol, value); err != nil {
-			return nil, err
-		}
-
-		last, err = progn(ctx, w, code)
-		if err != nil {
-			return nil, err
-		}
-	}
-	return last, nil
+	return Progn(ctx, w, args)
 }
 
 func cmdWhile(ctx context.Context, w *World, n Node) (Node, error) {

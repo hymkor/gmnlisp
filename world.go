@@ -231,7 +231,6 @@ func New() *World {
 			NewSymbol("first"):                       &LeftValueF{C: 1, F: funGetCar},
 			NewSymbol("floatp"):                      &Function{C: 1, F: funAnyTypep[Float]},
 			NewSymbol("for"):                         SpecialF(cmdFor),
-			NewSymbol("foreach"):                     SpecialF(cmdForeach),
 			NewSymbol("format"):                      defFormat,
 			NewSymbol("format-char"):                 &Function{C: 2, F: funFormatChar},
 			NewSymbol("format-integer"):              &Function{C: 3, F: funFormatInteger},

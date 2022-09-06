@@ -14,6 +14,7 @@ import (
 )
 
 var Functions = Variables{
+	NewSymbol("foreach"):          SpecialF(cmdForeach),
 	NewSymbol("command"):          defCommand,
 	NewSymbol("open"):             SpecialF(cmdOpen),
 	NewSymbol("read-from-string"): &Function{C: 1, F: funReadFromString},
@@ -145,4 +146,45 @@ func funReadFromString(_ context.Context, _ *World, args []Node) (Node, error) {
 		return Null, nil
 	}
 	return nodes[0], nil
+}
+
+func cmdForeach(ctx context.Context, w *World, args Node) (Node, error) {
+	// from autolisp
+	var _symbol Node
+	var err error
+
+	_symbol, args, err = Shift(args)
+	if err != nil {
+		return nil, err
+	}
+	symbol, ok := _symbol.(Symbol)
+	if !ok {
+		return nil, ErrExpectedSymbol
+	}
+
+	var list Node
+	var code Node
+	list, code, err = w.ShiftAndEvalCar(ctx, args)
+	if err != nil {
+		return nil, err
+	}
+
+	var last Node
+	for HasValue(list) {
+		var value Node
+
+		value, list, err = Shift(list)
+		if err != nil {
+			return nil, err
+		}
+		if err := w.Set(symbol, value); err != nil {
+			return nil, err
+		}
+
+		last, err = Progn(ctx, w, code)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return last, nil
 }

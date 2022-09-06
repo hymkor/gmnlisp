@@ -47,3 +47,13 @@ func TestIo(t *testing.T) {
 func TestReadFromString(t *testing.T) {
 	assertEqual(t, `(read-from-string "(1 2 3)")`, gmnlisp.List(gmnlisp.Integer(1), gmnlisp.Integer(2), gmnlisp.Integer(3)))
 }
+
+func TestForeach(t *testing.T) {
+	assertEqual(t, `(let ((x 0)(i 0))
+						(foreach i (list 1 (+ 1 1) (* 1 3) 4 5)
+							(setq x (+ x i))
+						)
+						x
+					)`, gmnlisp.Integer(15))
+
+}
