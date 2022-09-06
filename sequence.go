@@ -99,7 +99,7 @@ var sequenceBuilderTable = map[Symbol](func() _SeqBuilder){
 	symbolForUTF32String: func() _SeqBuilder { return &_UTF32StringBuilder{} },
 }
 
-func newSeqBuilder(symbolNode Node) (_SeqBuilder, error) {
+func NewSeqBuilder(symbolNode Node) (_SeqBuilder, error) {
 	symbol, ok := symbolNode.(Symbol)
 	if !ok {
 		return nil, ErrExpectedSymbol
@@ -291,7 +291,7 @@ func funMap(ctx context.Context, w *World, argv []Node) (Node, error) {
 	if len(argv) < 2 {
 		return nil, ErrTooFewArguments
 	}
-	buffer, err := newSeqBuilder(argv[0])
+	buffer, err := NewSeqBuilder(argv[0])
 	if err != nil {
 		return nil, err
 	}
@@ -377,7 +377,7 @@ func funMapCon(ctx context.Context, w *World, argv []Node) (Node, error) {
 }
 
 func funCoerce(_ context.Context, _ *World, argv []Node) (Node, error) {
-	buffer, err := newSeqBuilder(argv[1])
+	buffer, err := NewSeqBuilder(argv[1])
 	if err != nil {
 		return nil, ErrNotSupportType
 	}
