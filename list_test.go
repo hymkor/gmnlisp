@@ -13,14 +13,6 @@ func TestList(t *testing.T) {
 	assertEqual(t, `(list 1 2 3 4)`,
 		List(Integer(1), Integer(2), Integer(3), Integer(4)))
 
-	assertEqual(t, `(cadr '(1 2 3))`, Integer(2))
-	assertEqual(t, `(caddr '(1 2 3 4 5 ))`, Integer(3))
-	assertEqual(t, `(cadddr '(1 2 3 4 5))`, Integer(4))
-	assertEqual(t, `(cddr '(1 2 3 4 5))`,
-		List(Integer(3), Integer(4), Integer(5)))
-	assertEqual(t, `(cdddr '(1 2 3 4 5))`,
-		List(Integer(4), Integer(5)))
-
 	assertEqual(t, "(cons 1 2)", &Cons{Car: Integer(1), Cdr: Integer(2)})
 
 	assertEqual(t, `(listp ())`, True)
@@ -30,10 +22,6 @@ func TestList(t *testing.T) {
 	assertEqual(t, `(let ((collection '((a . 1) (b . 2) (c . 3))))
 			(assoc 'a collection))`,
 		&Cons{Car: NewSymbol("a"), Cdr: Integer(1)})
-
-	assertEqual(t, `(nth 2 '(10 20 30 40))`, Integer(30))
-	assertEqual(t, `(nthcdr 2 '(10 20 30 40))`, List(Integer(30), Integer(40)))
-
 }
 
 func TestSubst(t *testing.T) {
@@ -74,9 +62,9 @@ func TestAppend(t *testing.T) {
 				(part2 (list 4 5 6))
 				(part3 (list 7 8 9))
 				(all (append part1 part2 part3)))
-					(setf (nth 1 all) "aaa")
-					(setf (nth 4 all) "bbb")
-					(setf (nth 7 all) "ccc")
+					(setf (elt all 1) "aaa")
+					(setf (elt all 4) "bbb")
+					(setf (elt all 7) "ccc")
 					(and
 						(equal part1 '(1 2 3))
 						(equal part2 '(4 5 6))
@@ -94,11 +82,4 @@ func TestDestoroy(t *testing.T) {
 
 	assertEqual(t, `(let ((c '("A" . "D"))) (replacd c "X") c)`,
 		&Cons{Car: String("A"), Cdr: String("X")})
-}
-
-func TestFirst(t *testing.T) {
-	assertEqual(t, `(first '(1 2 3 4))`, Integer(1))
-	assertEqual(t, `(second '(1 2 3 4))`, Integer(2))
-	assertEqual(t, `(third '(1 2 3 4))`, Integer(3))
-	assertEqual(t, `(rest '(1 2 3 4))`, List(Integer(2), Integer(3), Integer(4)))
 }

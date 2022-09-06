@@ -20,6 +20,16 @@ var Functions = Variables{
 	NewSymbol("write-line"):   SpecialF(cmdWriteLine),
 	NewSymbol("when"):         SpecialF(cmdWhen),
 	NewSymbol("unless"):       SpecialF(cmdUnless),
+	NewSymbol("nth"):          &LeftValueF{C: 2, F: funNth},
+	NewSymbol("nthcdr"):       &LeftValueF{C: 2, F: funNthcdr},
+	NewSymbol("cadddr"):       &LeftValueF{C: 1, F: funCadddr},
+	NewSymbol("caddr"):        &LeftValueF{C: 1, F: funCaddr},
+	NewSymbol("cadr"):         &LeftValueF{C: 1, F: funCadr},
+	NewSymbol("cdddr"):        &LeftValueF{C: 1, F: funCdddr},
+	NewSymbol("cddr"):         &LeftValueF{C: 1, F: funCddr},
+	//NewSymbol("first"):                       &LeftValueF{C: 1, F: funGetCar},
+	NewSymbol("second"): &LeftValueF{C: 1, F: funCadr},
+	NewSymbol("third"):  &LeftValueF{C: 1, F: funCaddr},
 }
 
 var defparameter Callable
