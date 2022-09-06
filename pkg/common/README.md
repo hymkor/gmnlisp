@@ -13,3 +13,13 @@ This subpackage appends this function.
 - (position EXP LIST [:test #'TESTFUNC]))
 - (unless COND ELSE-EXPs...)
 - (cond (COND1 EXP1) (COND2 EXP2) ...)
+- (nth INDEX LIST)
+- (nthcdr INDX LIST)
+- (cadr LIST)
+- (caddr LIST)
+- (cadddr LIST)
+- (cddr LIST)
+- (cdddr LIST)
+<!-- - (first LIST) -->
+- (second LIST)
+- (third LIST)
