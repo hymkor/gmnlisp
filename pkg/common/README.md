@@ -24,3 +24,5 @@ This subpackage appends this function.
 - (second LIST)
 - (third LIST)
 - (concatenate 'string {STRING1...})
+- (dotimes (VAR NUM) EXP1...)
+- (dolist (VAR LIST) EXP1...)
