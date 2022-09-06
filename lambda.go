@@ -231,7 +231,7 @@ func cmdApply(ctx context.Context, w *World, list Node) (Node, error) {
 			if err != nil {
 				return nil, err
 			}
-			seqEach(value, func(n Node) error {
+			SeqEach(value, func(n Node) error {
 				newargs.Add(n)
 				return nil
 			})

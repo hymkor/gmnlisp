@@ -7,19 +7,19 @@ import (
 	"strings"
 )
 
-type _Sequence interface {
-	firstAndRest() (Node, Node, bool, func(Node) error)
+type Sequence interface {
+	FirstAndRest() (Node, Node, bool, func(Node) error)
 }
 
-func seqEach(list Node, f func(Node) error) error {
+func SeqEach(list Node, f func(Node) error) error {
 	for HasValue(list) {
-		seq, ok := list.(_Sequence)
+		seq, ok := list.(Sequence)
 		if !ok {
 			return ErrExpectedSequence
 		}
 		var value Node
 
-		value, list, ok, _ = seq.firstAndRest()
+		value, list, ok, _ = seq.FirstAndRest()
 		if !ok {
 			break
 		}
@@ -180,11 +180,11 @@ func funElt(_ context.Context, _ *World, args []Node) (Node, func(Node) error, e
 	}
 
 	for index >= 0 {
-		seq, ok := list.(_Sequence)
+		seq, ok := list.(Sequence)
 		if !ok {
 			return Null, nil, nil
 		}
-		value, list, _, setter = seq.firstAndRest()
+		value, list, _, setter = seq.FirstAndRest()
 		index--
 	}
 	return value, setter, nil
@@ -201,7 +201,7 @@ func funConcatenate(ctx context.Context, w *World, list []Node) (Node, error) {
 		return nil, err
 	}
 	for _, element := range list[1:] {
-		err := seqEach(element, func(value Node) error {
+		err := SeqEach(element, func(value Node) error {
 			buffer.Add(value)
 			return nil
 		})
@@ -214,7 +214,7 @@ func funConcatenate(ctx context.Context, w *World, list []Node) (Node, error) {
 
 func funLength(_ context.Context, _ *World, argv []Node) (Node, error) {
 	length := 0
-	err := seqEach(argv[0], func(_ Node) error {
+	err := SeqEach(argv[0], func(_ Node) error {
 		length++
 		return nil
 	})
@@ -238,11 +238,11 @@ func mapCar(ctx context.Context, w *World, funcNode Node, sourceSet []Node, stor
 			if IsNull(listSet[i]) {
 				return nil
 			}
-			seq, ok := listSet[i].(_Sequence)
+			seq, ok := listSet[i].(Sequence)
 			if !ok {
 				return ErrNotSupportType
 			}
-			paramSet[i], listSet[i], ok, _ = seq.firstAndRest()
+			paramSet[i], listSet[i], ok, _ = seq.FirstAndRest()
 			if !ok {
 				return nil
 			}
@@ -332,11 +332,11 @@ func mapList(ctx context.Context, w *World, funcNode Node, sourceSet []Node, sto
 			if IsNull(listSet[i]) {
 				return nil
 			}
-			seq, ok := listSet[i].(_Sequence)
+			seq, ok := listSet[i].(Sequence)
 			if !ok {
 				return ErrNotSupportType
 			}
-			_, listSet[i], ok, _ = seq.firstAndRest()
+			_, listSet[i], ok, _ = seq.FirstAndRest()
 			if !ok || IsNull(listSet[i]) {
 				return nil
 			}
@@ -381,7 +381,7 @@ func funCoerce(_ context.Context, _ *World, argv []Node) (Node, error) {
 	if err != nil {
 		return nil, ErrNotSupportType
 	}
-	err = seqEach(argv[0], func(value Node) error {
+	err = SeqEach(argv[0], func(value Node) error {
 		buffer.Add(value)
 		return nil
 	})
@@ -390,7 +390,7 @@ func funCoerce(_ context.Context, _ *World, argv []Node) (Node, error) {
 
 func funReverse(_ context.Context, _ *World, argv []Node) (Node, error) {
 	var result Node
-	err := seqEach(argv[0], func(value Node) error {
+	err := SeqEach(argv[0], func(value Node) error {
 		result = &Cons{
 			Car: value,
 			Cdr: result,
@@ -402,14 +402,14 @@ func funReverse(_ context.Context, _ *World, argv []Node) (Node, error) {
 	}
 	if _, ok := argv[0].(UTF32String); ok {
 		var buffer _UTF32StringBuilder
-		err = seqEach(result, func(value Node) error {
+		err = SeqEach(result, func(value Node) error {
 			buffer.Add(value)
 			return nil
 		})
 		return buffer.Sequence(), err
 	} else if _, ok := argv[0].(UTF8String); ok {
 		var buffer _UTF8StringBuilder
-		err = seqEach(result, func(value Node) error {
+		err = SeqEach(result, func(value Node) error {
 			buffer.Add(value)
 			return nil
 		})
@@ -543,7 +543,7 @@ func funSubSeq(ctx context.Context, w *World, args []Node) (Node, func(Node) err
 		buffer = &_ListBuilder{}
 	}
 	count := Integer(0)
-	err := seqEach(args[0], func(value Node) (e error) {
+	err := SeqEach(args[0], func(value Node) (e error) {
 		if count >= end {
 			return io.EOF
 		}
@@ -571,21 +571,21 @@ func funSubSeq(ctx context.Context, w *World, args []Node) (Node, func(Node) err
 			var ok bool
 			var setter func(Node) error
 
-			wSeq, ok := list.(_Sequence)
+			wSeq, ok := list.(Sequence)
 			if !ok {
 				return nil
 			}
-			_, list, ok, setter = wSeq.firstAndRest()
+			_, list, ok, setter = wSeq.FirstAndRest()
 			if !ok {
 				return nil
 			}
 			if count >= start && count < end {
 				var newvalue1 Node
-				rSeq, ok := newvalue.(_Sequence)
+				rSeq, ok := newvalue.(Sequence)
 				if !ok {
 					return ErrExpectedSequence
 				}
-				newvalue1, newvalue, ok, _ = rSeq.firstAndRest()
+				newvalue1, newvalue, ok, _ = rSeq.FirstAndRest()
 				if !ok {
 					return nil
 				}

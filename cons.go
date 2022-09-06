@@ -11,7 +11,7 @@ type Cons struct {
 	Cdr Node
 }
 
-func (cons *Cons) firstAndRest() (Node, Node, bool, func(Node) error) {
+func (cons *Cons) FirstAndRest() (Node, Node, bool, func(Node) error) {
 	car := cons.Car
 	if car == nil {
 		car = Null

@@ -100,7 +100,7 @@ func (s UTF8String) firstRuneAndRestString() (Rune, StringTypes, bool) {
 	return Rune(r), UTF8String(s[siz:]), true
 }
 
-func (s UTF8String) firstAndRest() (Node, Node, bool, func(Node) error) {
+func (s UTF8String) FirstAndRest() (Node, Node, bool, func(Node) error) {
 	if len(s) <= 0 {
 		return nil, Null, false, nil
 	}
@@ -181,9 +181,9 @@ func (s UTF32String) firstRuneAndRestString() (Rune, StringTypes, bool) {
 	return Rune(s[0]), UTF32String(s[1:]), true
 }
 
-// firstAndRest returns first character, rest string and true.
+// FirstAndRest returns first character, rest string and true.
 // When string is empty, boolean is false.
-func (s UTF32String) firstAndRest() (Node, Node, bool, func(Node) error) {
+func (s UTF32String) FirstAndRest() (Node, Node, bool, func(Node) error) {
 	if len(s) <= 0 {
 		return nil, Null, false, nil
 	}
