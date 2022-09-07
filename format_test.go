@@ -40,4 +40,10 @@ func TestFormat(t *testing.T) {
 			(format-object s "ahaha" nil)
 			(get-output-stream-string s)
 		)`, String("ahaha"))
+
+	assertEqual(t, `
+		(let ((s (create-string-output-stream)))
+			(format-float s 0.3)
+			(get-output-stream-string s)
+		)`, String("0.3"))
 }

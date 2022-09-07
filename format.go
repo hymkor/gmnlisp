@@ -95,6 +95,14 @@ func printFloat(w io.Writer, mark, width, prec int, value Node) error {
 	return nil
 }
 
+func funFormatFloat(_ context.Context, w *World, list []Node) (Node, error) {
+	writer, ok := list[0].(io.Writer)
+	if !ok {
+		return nil, ErrExpectedWriter
+	}
+	return Null, printFloat(writer, 'f', 0, 0, list[1])
+}
+
 func printSpaces(n int, w io.Writer) {
 	for n > 0 {
 		w.Write([]byte{' '})
