@@ -212,6 +212,7 @@ Backquotations and &amp;body are not supported.
 - (format-integer STREAM INTEGER)
 - (format-float STREAM FLOAT)
 - (open-input-file FILENAME)
+- (open-output-file FILENAME)
 - (close HANDLE)
 - (create-string-input-stream STRING)
 - (create-string-output-stream)
