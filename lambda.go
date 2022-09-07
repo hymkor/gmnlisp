@@ -375,7 +375,7 @@ func (f *KWFunction) Equals(n Node, m EqlMode) bool {
 	return false
 }
 
-func listToKwargs(ctx context.Context, w *World, list Node) ([]Node, map[Keyword]Node, error) {
+func ListToKwargs(ctx context.Context, w *World, list Node) ([]Node, map[Keyword]Node, error) {
 	args := []Node{}
 	kwargs := map[Keyword]Node{}
 	for HasValue(list) {
@@ -403,7 +403,7 @@ func (f *KWFunction) Call(ctx context.Context, w *World, list Node) (Node, error
 	if err := CheckContext(ctx); err != nil {
 		return nil, err
 	}
-	args, kwargs, err := listToKwargs(ctx, w, list)
+	args, kwargs, err := ListToKwargs(ctx, w, list)
 	if err != nil {
 		return nil, err
 	}
