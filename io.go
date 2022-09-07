@@ -153,3 +153,26 @@ func funOpenInputFile(ctx context.Context, w *World, list []Node) (Node, error) 
 	}
 	return &InputStream{Reader: bufio.NewReader(reader), Closer: reader}, nil
 }
+
+type _OutputFileStream struct {
+	_Dummy
+	*bufio.Writer
+	closer io.Closer
+}
+
+func (o *_OutputFileStream) Close() error {
+	o.Writer.Flush()
+	return o.closer.Close()
+}
+
+func funOpenOutputFile(ctx context.Context, w *World, list []Node) (Node, error) {
+	filename, ok := list[0].(StringTypes)
+	if !ok {
+		return nil, ErrExpectedString
+	}
+	writer, err := os.Create(filename.String())
+	if err != nil {
+		return nil, err
+	}
+	return &_OutputFileStream{Writer: bufio.NewWriter(writer), closer: writer}, nil
+}

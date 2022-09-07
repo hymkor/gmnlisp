@@ -260,6 +260,7 @@ func New() *World {
 			NewSymbol("numberp"):                     &Function{C: 1, F: funNumberp},
 			NewSymbol("oddp"):                        &Function{C: 1, F: funOddp},
 			NewSymbol("open-input-file"):             &Function{C: 1, F: funOpenInputFile},
+			NewSymbol("open-output-file"):            &Function{C: 1, F: funOpenOutputFile},
 			NewSymbol("or"):                          SpecialF(cmdOr),
 			NewSymbol("parse-integer"):               &Function{C: 1, F: funParseInt},
 			NewSymbol("pi"):                          Float(math.Pi),
