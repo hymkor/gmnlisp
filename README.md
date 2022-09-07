@@ -206,9 +206,9 @@ Backquotations and &amp;body are not supported.
 - (format {t|nil|STREAM} FORMAT [ARGS..])
 - (format-char STREAM CHAR)
 - (format-object STREAM STRING {t|nil})
-- (with-open-file (HANDLE FILENAME  
-    \[:direction :output|:input\]  
-    \[:if-does-not-exist\] like CommonLisp
+- (format-integer STREAM INTEGER)
+- (format-float STREAM FLOAT)
+- (open-input-file FILENAME)
 - (close HANDLE)
 - (create-string-input-stream STRING)
 - (create-string-output-stream)

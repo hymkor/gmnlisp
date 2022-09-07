@@ -26,3 +26,6 @@ This subpackage appends this function.
 - (concatenate 'string {STRING1...})
 - (dotimes (VAR NUM) EXP1...)
 - (dolist (VAR LIST) EXP1...)
+- (with-open-file (HANDLE FILENAME  
+    \[:direction :output|:input\]  
+    \[:if-does-not-exist\] like CommonLisp
