@@ -294,7 +294,6 @@ func New() *World {
 			NewSymbol("unwind-protect"):              SpecialF(cmdUnwindProtect),
 			NewSymbol("while"):                       SpecialF(cmdWhile),
 			NewSymbol("with-handler"):                SpecialF(cmdWithHandler),
-			NewSymbol("with-open-file"):              SpecialF(cmdWithOpenFile),
 			NewSymbol("zerop"):                       &Function{C: 1, F: funZerop},
 		},
 	}

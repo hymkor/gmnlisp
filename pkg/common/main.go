@@ -28,11 +28,12 @@ var Functions = Variables{
 	NewSymbol("cdddr"):        &LeftValueF{C: 1, F: funCdddr},
 	NewSymbol("cddr"):         &LeftValueF{C: 1, F: funCddr},
 	//NewSymbol("first"):                       &LeftValueF{C: 1, F: funGetCar},
-	NewSymbol("second"):      &LeftValueF{C: 1, F: funCadr},
-	NewSymbol("third"):       &LeftValueF{C: 1, F: funCaddr},
-	NewSymbol("concatenate"): defConcatenate,
-	NewSymbol("dolist"):      SpecialF(cmdDoList),
-	NewSymbol("dotimes"):     SpecialF(cmdDoTimes),
+	NewSymbol("second"):         &LeftValueF{C: 1, F: funCadr},
+	NewSymbol("third"):          &LeftValueF{C: 1, F: funCaddr},
+	NewSymbol("concatenate"):    defConcatenate,
+	NewSymbol("dolist"):         SpecialF(cmdDoList),
+	NewSymbol("dotimes"):        SpecialF(cmdDoTimes),
+	NewSymbol("with-open-file"): SpecialF(cmdWithOpenFile),
 }
 
 var defparameter Callable

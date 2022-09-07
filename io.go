@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"os"
 	"strings"
 )
 
@@ -111,77 +110,6 @@ func funClose(_ context.Context, _ *World, argv []Node) (Node, error) {
 		return nil, fmt.Errorf("Expected Closer `%s`", ToString(argv[0], PRINT))
 	}
 	return Null, c.Close()
-}
-
-func cmdWithOpenFile(ctx context.Context, w *World, list Node) (Node, error) {
-	var param Node
-	var err error
-
-	param, list, err = Shift(list)
-	if err != nil {
-		return nil, err
-	}
-
-	var symbolNode Node
-	symbolNode, param, err = Shift(param)
-	if err != nil {
-		return nil, err
-	}
-	symbol, ok := symbolNode.(Symbol)
-	if !ok {
-		return nil, ErrExpectedSymbol
-	}
-	//var kwargs map[Keyword]Node
-	var args []Node
-	var kwargs map[Keyword]Node
-	args, kwargs, err = listToKwargs(ctx, w, param)
-	if err != nil {
-		return nil, err
-	}
-	if len(args) < 1 {
-		return nil, ErrTooFewArguments
-	}
-	if len(args) > 1 {
-		return nil, ErrTooManyArguments
-	}
-
-	fname, ok := args[0].(StringTypes)
-	if !ok {
-		return nil, ErrExpectedString
-	}
-	var fdNode Node
-	direction, ok := kwargs[":direction"]
-	if !ok || direction == Keyword(":input") {
-		fd, err := os.Open(fname.String())
-		if err != nil {
-			fdNode, ok = kwargs[":if-does-not-exist"]
-			if !ok {
-				return nil, err
-			}
-		} else {
-			type Reader struct {
-				_Dummy
-				*bufio.Reader
-			}
-			fdNode = &Reader{Reader: bufio.NewReader(fd)}
-			defer fd.Close()
-		}
-	} else if direction == Keyword(":output") {
-		fd, err := os.Create(fname.String())
-		if err != nil {
-			return nil, err
-		}
-		type Writer struct {
-			_Dummy
-			io.Writer
-		}
-		fdNode = &Writer{Writer: fd}
-		defer fd.Close()
-	} else {
-		return nil, fmt.Errorf("invalid :direction %s", ToString(direction, PRINT))
-	}
-	newWorld := w.Let(&Pair{Key: symbol, Value: fdNode})
-	return Progn(ctx, newWorld, list)
 }
 
 func funCreateStringInputStream(ctx context.Context, w *World, list []Node) (Node, error) {
