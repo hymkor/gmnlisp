@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"os"
 	"strings"
 )
 
@@ -134,4 +135,21 @@ func funGetOutputStreamString(ctx context.Context, w *World, list []Node) (Node,
 		return nil, ErrNotSupportType
 	}
 	return String(stringer.String()), nil
+}
+
+func funOpenInputFile(ctx context.Context, w *World, list []Node) (Node, error) {
+	filename, ok := list[0].(StringTypes)
+	if !ok {
+		return nil, ErrExpectedString
+	}
+	reader, err := os.Open(filename.String())
+	if err != nil {
+		return nil, err
+	}
+	type InputStream struct {
+		_Dummy
+		*bufio.Reader
+		io.Closer
+	}
+	return &InputStream{Reader: bufio.NewReader(reader), Closer: reader}, nil
 }
