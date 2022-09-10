@@ -103,8 +103,8 @@ func TestSubSeq(t *testing.T) {
 
 func TestSetfSubSeq(t *testing.T) {
 	assertEqual(t, `
-		(let ((m (to-utf32 "12345")))
-			(setf (subseq m 2 4) (to-utf32 "xx"))
+		(let ((m (convert "12345" <utf32string>)))
+			(setf (subseq m 2 4) (convert "xx" <utf32string>))
 			m)`, UTF32String("12xx5"))
 
 	assertEqual(t, `

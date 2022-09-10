@@ -289,8 +289,6 @@ func New() *World {
 			NewSymbol("symbolp"):                     &Function{C: 1, F: funAnyTypep[Symbol]},
 			NewSymbol("t"):                           True,
 			NewSymbol("throw"):                       &Function{C: 2, F: funThrow},
-			NewSymbol("to-utf32"):                    &Function{C: 1, F: funToUTF32},
-			NewSymbol("to-utf8"):                     &Function{C: 1, F: funToUTF8},
 			NewSymbol("trace"):                       SpecialF(cmdTrace),
 			NewSymbol("truncate"):                    &Function{C: 1, F: funTruncate},
 			NewSymbol("typep"):                       &Function{C: 2, F: funTypep},
