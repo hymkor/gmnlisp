@@ -37,7 +37,7 @@ func getParameterList(node Node) (*_Parameters, error) {
 		return nil, err
 	}
 	params := []Symbol{}
-	var rest Symbol
+	rest := nulSymbol
 	for HasValue(list) {
 		var nameNode Node
 

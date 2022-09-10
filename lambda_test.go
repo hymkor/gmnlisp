@@ -80,7 +80,7 @@ func TestLambdaGo(t *testing.T) {
 
 	_, err = w.Interpret(ctx, `(f 1 2 3)`)
 	if !errors.Is(err, ErrTooManyArguments) {
-		t.Fatal("Few argumenets error did not occur")
+		t.Fatal("Too Many argumenets error did not occur")
 	}
 }
 
