@@ -63,3 +63,9 @@ func TestOpenOutpuFile(t *testing.T) {
 		t.Fatalf(`expect "hogehoge" but "%s"`, o)
 	}
 }
+
+func TestWithOpenInputFile(t *testing.T) {
+	assertEqual(t, `
+		(with-open-input-file (fd "LICENSE")
+			(read-line fd))`, String("MIT License"))
+}

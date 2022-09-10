@@ -156,8 +156,14 @@ func funGetOutputStreamString(ctx context.Context, w *World, list []Node) (Node,
 	return String(stringer.String()), nil
 }
 
-func funOpenInputFile(ctx context.Context, w *World, list []Node) (Node, error) {
-	filename, ok := list[0].(StringTypes)
+type inputStream struct {
+	_Dummy
+	_Reader
+	io.Closer
+}
+
+func openInputFile(fname Node) (*inputStream, error) {
+	filename, ok := fname.(StringTypes)
 	if !ok {
 		return nil, ErrExpectedString
 	}
@@ -165,12 +171,38 @@ func funOpenInputFile(ctx context.Context, w *World, list []Node) (Node, error) 
 	if err != nil {
 		return nil, err
 	}
-	type InputStream struct {
-		_Dummy
-		_Reader
-		io.Closer
+	return &inputStream{_Reader: bufio.NewReader(reader), Closer: reader}, nil
+}
+
+func funOpenInputFile(ctx context.Context, w *World, list []Node) (Node, error) {
+	return openInputFile(list[0])
+}
+
+func cmdWithOpenInputFile(ctx context.Context, w *World, list Node) (Node, error) {
+	param, list, err := Shift(list)
+	if err != nil {
+		return nil, err
 	}
-	return &InputStream{_Reader: bufio.NewReader(reader), Closer: reader}, nil
+	varName, param, err := Shift(param)
+	if err != nil {
+		return nil, err
+	}
+	symbol, ok := varName.(Symbol)
+	if !ok {
+		return nil, ErrExpectedSymbol
+	}
+	filename, _, err := w.ShiftAndEvalCar(ctx, param)
+	if err != nil {
+		return nil, err
+	}
+	stream, err := openInputFile(filename)
+	if err != nil {
+		return nil, err
+	}
+	defer stream.Close()
+
+	nw := w.Let(&Pair{Key: symbol, Value: stream})
+	return Progn(ctx, nw, list)
 }
 
 type _OutputFileStream struct {
