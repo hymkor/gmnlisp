@@ -57,6 +57,38 @@ func newQuote(value Node) Node {
 	return &Cons{Car: quoteSymbol, Cdr: &Cons{Car: value, Cdr: Null}}
 }
 
+func tryParseAsFloat(token string) (Node, bool, error) {
+	if !rxFloat.MatchString(token) {
+		return nil, false, nil
+	}
+	val, err := strconv.ParseFloat(token, 64)
+	if err != nil {
+		return nil, true, fmt.Errorf("%s: %w", token, err)
+	}
+	return Float(val), true, nil
+}
+
+func tryParseAsInt(token string) (Node, bool, error) {
+	if !rxInteger.MatchString(token) {
+		return nil, false, nil
+	}
+	val, err := strconv.ParseInt(token, 10, 63)
+	if err != nil {
+		return nil, true, fmt.Errorf("%s: %w", token, err)
+	}
+	return Integer(val), true, nil
+}
+
+func tryParseAsNumber(token string) (Node, bool, error) {
+	if val, ok, err := tryParseAsFloat(token); ok {
+		return val, true, err
+	}
+	if val, ok, err := tryParseAsInt(token); ok {
+		return val, true, err
+	}
+	return nil, false, nil
+}
+
 func ReadNode(rs io.RuneScanner) (Node, error) {
 	token, err := readToken(rs)
 	if err != nil {
@@ -108,19 +140,8 @@ func ReadNode(rs io.RuneScanner) (Node, error) {
 	if len(token) > 0 && token[0] == ':' {
 		return Keyword(token), nil
 	}
-	if rxFloat.MatchString(token) {
-		val, err := strconv.ParseFloat(token, 64)
-		if err != nil {
-			return nil, fmt.Errorf("%s: %w", token, err)
-		}
-		return Float(val), nil
-	}
-	if rxInteger.MatchString(token) {
-		val, err := strconv.ParseInt(token, 10, 63)
-		if err != nil {
-			return nil, fmt.Errorf("%s: %w", token, err)
-		}
-		return Integer(val), nil
+	if val, ok, err := tryParseAsNumber(token); ok {
+		return val, err
 	}
 	if strings.HasPrefix(token, "#\\") {
 		var val rune
