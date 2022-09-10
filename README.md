@@ -153,7 +153,7 @@ Support functions
 - (if TEST-FORM THEN-FORM ELSE-FORM)
 - (while TEST-FORM BODY-FORM...)
 - (cond (TEST FORM...)...)
-- (case KEYFORM ((KEY...) FORM...)... )
+- (case KEYFORM ((KEY...) FORM...)... [(t FORM...)])
 
 #### Loop
 
