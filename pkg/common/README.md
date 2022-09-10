@@ -29,3 +29,7 @@ This subpackage appends this function.
 - (with-open-file (HANDLE FILENAME  
     \[:direction :output|:input\]  
     \[:if-does-not-exist\] like CommonLisp
+- (coerce SEQUENCE 'list)
+- (coerce SEQUENCE 'string)
+- (coerce SEQUENCE 'utf8string)
+- (coerce SEQUENCE 'utf32string)
