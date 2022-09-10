@@ -36,9 +36,9 @@ func TestIf(t *testing.T) {
 func TestCase(t *testing.T) {
 	assertEqual(t, `
 		(case 2
-			(1 "a")
-			(2 "b")
-			(3 "c")
+			((1) "a")
+			((2) "b")
+			((3) "c")
 		)`, String("b"))
 
 	assertEqual(t, `
@@ -47,6 +47,13 @@ func TestCase(t *testing.T) {
 			((3 4) "B")
 			((5 6) "C")
 		)`, String("B"))
+
+	assertEqual(t, `
+		(case 7
+			((1 2) "A")
+			((3 4) "B")
+			(t "C")
+		)`, String("C"))
 }
 
 func TestFor(t *testing.T) {

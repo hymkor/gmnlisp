@@ -123,6 +123,8 @@ func cmdCond(ctx context.Context, w *World, list Node) (Node, error) {
 	return Null, nil
 }
 
+var symbolT = NewSymbol("t")
+
 func cmdCase(ctx context.Context, w *World, list Node) (Node, error) {
 	var swValue Node
 	var err error
@@ -155,14 +157,8 @@ func cmdCase(ctx context.Context, w *World, list Node) (Node, error) {
 					return Progn(ctx, w, act)
 				}
 			}
-		} else {
-			_caseValue, err := caseValue.Eval(ctx, w)
-			if err != nil {
-				return nil, err
-			}
-			if swValue.Equals(_caseValue, EQUALP) {
-				return Progn(ctx, w, act)
-			}
+		} else if caseValue.Equals(symbolT, STRICT) {
+			return Progn(ctx, w, act)
 		}
 	}
 	return Null, nil
