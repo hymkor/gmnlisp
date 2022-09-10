@@ -57,17 +57,14 @@ integer , float , string(UTF8 or UTF32) , symbol , cons , list , character , t/n
 Support functions
 -----------------
 
-#### float
-
-- (truncate REAL)
-
 #### List and Sequence
 
+- (cons OBJ1 OBJ2)
+- (car CONS)
+- (cdr CONS)
 - (quote {LIST|ATOM}...)
 - '({LIST|ATOM}...)
 - (list {LIST|ATOM}...)
-- (car LIST)
-- (cdr LIST)
 - (rest LIST)
 - (length LIST)
 - (last LIST)
@@ -78,10 +75,6 @@ Support functions
 - (subseq SEQUENCE INDEX)
 - (elt SEQUENCE INDEX)
 - (member ATOM LIST)
-
-#### Cons
-
-- (cons CAR CDR)
 
 #### Variables
 
@@ -130,20 +123,21 @@ Support functions
 
 #### test
 
-- (zerop EXP)
-- (numberp EXP)
-- (plusp EXP)
-- (minusp EXP)
-- (oddp EXP)
-- (evenp EXP)
-- (null EXP)
-- (atom EXP)
-- (integerp EXP)
-- (floatp EXP)
-- (symbolp EXP)
-- (stringp EXP)
-- (listp EXP)
-- (consp EXP)
+- (atom OBJ)
+- (consp OBJ)
+- (evenp OBJ)
+- (floatp OBJ)
+- (functionp OBJ)
+- (integerp OBJ)
+- (listp OBJ)
+- (minusp OBJ)
+- (null OBJ)
+- (numberp OBJ)
+- (oddp OBJ)
+- (plusp OBJ)
+- (stringp OBJ)
+- (symbolp OBJ)
+- (zerop OBJ)
 
 #### Convert
 
@@ -155,12 +149,14 @@ Support functions
 - (convert OBJ &lt;utf32string&gt;)
 - (convert OBJ &lt;utf8string&gt;)
 - (parse-number STRING)
+- (truncate X)
 
 #### Branch
 
-- (if COND THEN-EXP ELSE-EXP)
-- (when COND THEN-EXPs...)
-- (case KEYFORM (KEY1 FORM1) (KEY2 FORM2) .... )
+- (if TEST-FORM THEN-FORM ELSE-FORM)
+- (while TEST-FORM BODY-FORM...)
+- (cond (TEST FORM...)...)
+- (case KEYFORM ((KEY...) FORM...)... )
 
 #### Loop
 
