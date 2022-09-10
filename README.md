@@ -145,16 +145,13 @@ Support functions
 
 #### Convert
 
-- (convert VALUE &lt;integer&gt;)
-- (convert VALUE &lt;float&gt;)
-- (convert VALUE &lt;string&gt;)
-- (convert VALUE &lt;utf8string&gt;)
-- (convert VALUE &lt;utf32string&gt;)
-
-- (coerce SEQUENCE 'list)
-- (coerce SEQUENCE 'string)
-- (coerce SEQUENCE 'utf8string)
-- (coerce SEQUENCE 'utf32string)
+- (convert OBJ &lt;float&gt;)
+- (convert OBJ &lt;integer&gt;)
+- (convert OBJ &lt;list&gt;)
+- (convert OBJ &lt;string&gt;)
+- (convert OBJ &lt;symbol&gt;)
+- (convert OBJ &lt;utf32string&gt;)
+- (convert OBJ &lt;utf8string&gt;)
 
 #### Branch
 

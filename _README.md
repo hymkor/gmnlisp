@@ -148,11 +148,13 @@ Support functions
 
 #### Convert
 
-- (convert OBJ &lt;integer&gt;)
 - (convert OBJ &lt;float&gt;)
+- (convert OBJ &lt;integer&gt;)
+- (convert OBJ &lt;list&gt;)
 - (convert OBJ &lt;string&gt;)
-- (convert OBJ &lt;utf8string&gt;)
+- (convert OBJ &lt;symbol&gt;)
 - (convert OBJ &lt;utf32string&gt;)
+- (convert OBJ &lt;utf8string&gt;)
 
 #### Branch
 
