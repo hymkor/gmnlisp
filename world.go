@@ -50,7 +50,7 @@ type _Shared struct {
 	dynamic Variables
 	stdout  *_Writer
 	errout  *_Writer
-	stdin   *_Reader
+	stdin   *_ReaderNode
 }
 
 type World struct {
@@ -64,9 +64,14 @@ type _Writer struct {
 	io.Writer
 }
 
-type _Reader struct {
+type _Reader interface {
+	io.RuneScanner
+	ReadString(byte) (string, error)
+}
+
+type _ReaderNode struct {
 	_Dummy
-	*bufio.Reader
+	_Reader
 }
 
 func (w *World) Get(name Symbol) (Node, error) {
@@ -156,7 +161,7 @@ func (w *World) SetErrout(writer io.Writer) {
 func cmdStandardInput(ctx context.Context, w *World, list Node) (Node, error) {
 	return w.shared.stdin, nil
 }
-func (w *World) Stdin() *_Reader {
+func (w *World) Stdin() *_ReaderNode {
 	return w.shared.stdin
 }
 
@@ -164,7 +169,7 @@ func New() *World {
 	return &World{
 		shared: &_Shared{
 			dynamic: Variables{},
-			stdin:   &_Reader{Reader: bufio.NewReader(os.Stdin)},
+			stdin:   &_ReaderNode{_Reader: bufio.NewReader(os.Stdin)},
 			stdout:  &_Writer{Writer: os.Stdout},
 			errout:  &_Writer{Writer: os.Stderr},
 		},

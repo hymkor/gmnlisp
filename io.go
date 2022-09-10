@@ -35,14 +35,8 @@ func chomp(s string) string {
 	return s
 }
 
-type _ReadStringer interface {
-	io.Reader
-	io.RuneScanner
-	ReadString(byte) (string, error)
-}
-
 type _StreamInput struct {
-	reader   _ReadStringer
+	reader   _Reader
 	eofFlag  bool
 	eofValue Node
 }
@@ -64,7 +58,7 @@ func newStreamInput(w *World, argv []Node) (*_StreamInput, error) {
 		fallthrough
 	case 1:
 		var ok bool
-		this.reader, ok = argv[0].(_ReadStringer)
+		this.reader, ok = argv[0].(_Reader)
 		if !ok {
 			return nil, fmt.Errorf("Expected Reader `%s`", ToString(argv[0], PRINT))
 		}
@@ -118,7 +112,7 @@ func funCreateStringInputStream(ctx context.Context, w *World, list []Node) (Nod
 	if !ok {
 		return nil, ErrExpectedString
 	}
-	return _Reader{Reader: bufio.NewReader(strings.NewReader(s.String()))}, nil
+	return _ReaderNode{_Reader: bufio.NewReader(strings.NewReader(s.String()))}, nil
 }
 
 func cmdCreateStringOutputStream(ctx context.Context, w *World, list Node) (Node, error) {
@@ -148,10 +142,10 @@ func funOpenInputFile(ctx context.Context, w *World, list []Node) (Node, error) 
 	}
 	type InputStream struct {
 		_Dummy
-		*bufio.Reader
+		_Reader
 		io.Closer
 	}
-	return &InputStream{Reader: bufio.NewReader(reader), Closer: reader}, nil
+	return &InputStream{_Reader: bufio.NewReader(reader), Closer: reader}, nil
 }
 
 type _OutputFileStream struct {
