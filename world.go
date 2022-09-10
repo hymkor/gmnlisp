@@ -66,7 +66,7 @@ type _Writer struct {
 
 type _Reader interface {
 	io.RuneScanner
-	ReadString(byte) (string, error)
+	io.ByteReader
 }
 
 type _ReaderNode struct {

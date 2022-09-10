@@ -68,6 +68,20 @@ func newStreamInput(w *World, argv []Node) (*_StreamInput, error) {
 	return this, nil
 }
 
+func readString(r io.ByteReader, delim byte) (string, error) {
+	var buffer strings.Builder
+	for {
+		b, err := r.ReadByte()
+		if err != nil {
+			return buffer.String(), err
+		}
+		buffer.WriteByte(b)
+		if b == delim {
+			return buffer.String(), nil
+		}
+	}
+}
+
 var defReadLine = &Function{Max: 3, F: funReadLine}
 
 func funReadLine(_ context.Context, w *World, argv []Node) (Node, error) {
@@ -75,7 +89,18 @@ func funReadLine(_ context.Context, w *World, argv []Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	s, err := stream.reader.ReadString('\n')
+	type _ReadStringer interface {
+		ReadString(delim byte) (string, error)
+	}
+	var s string
+	if r, ok := stream.reader.(_ReadStringer); ok {
+		s, err = r.ReadString('\n')
+	} else {
+		s, err = readString(stream.reader, '\n')
+	}
+	if len(s) > 0 {
+		return String(chomp(s)), nil
+	}
 	if err == io.EOF {
 		if stream.eofFlag {
 			return Null, io.EOF
@@ -112,7 +137,7 @@ func funCreateStringInputStream(ctx context.Context, w *World, list []Node) (Nod
 	if !ok {
 		return nil, ErrExpectedString
 	}
-	return _ReaderNode{_Reader: bufio.NewReader(strings.NewReader(s.String()))}, nil
+	return _ReaderNode{_Reader: strings.NewReader(s.String())}, nil
 }
 
 func cmdCreateStringOutputStream(ctx context.Context, w *World, list Node) (Node, error) {
