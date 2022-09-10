@@ -48,8 +48,8 @@ func (m *Pair) Set(key Symbol, value Node) {
 
 type _Shared struct {
 	dynamic Variables
-	stdout  *_Writer
-	errout  *_Writer
+	stdout  *_WriterNode
+	errout  *_WriterNode
 	stdin   *_ReaderNode
 }
 
@@ -57,11 +57,6 @@ type World struct {
 	parent  *World
 	lexical Scope
 	shared  *_Shared
-}
-
-type _Writer struct {
-	_Dummy
-	io.Writer
 }
 
 type _Reader interface {
@@ -72,6 +67,13 @@ type _Reader interface {
 type _ReaderNode struct {
 	_Dummy
 	_Reader
+}
+
+type _Writer = io.Writer
+
+type _WriterNode struct {
+	_Dummy
+	_Writer
 }
 
 func (w *World) Get(name Symbol) (Node, error) {
@@ -140,7 +142,7 @@ func (w *World) Stdout() io.Writer {
 }
 
 func (w *World) SetStdout(writer io.Writer) {
-	w.shared.stdout = &_Writer{Writer: writer}
+	w.shared.stdout = &_WriterNode{_Writer: writer}
 }
 
 func cmdErrorOutput(ctx context.Context, w *World, list Node) (Node, error) {
@@ -155,7 +157,7 @@ func (w *World) Errout() io.Writer {
 }
 
 func (w *World) SetErrout(writer io.Writer) {
-	w.shared.errout = &_Writer{Writer: writer}
+	w.shared.errout = &_WriterNode{_Writer: writer}
 }
 
 func cmdStandardInput(ctx context.Context, w *World, list Node) (Node, error) {
@@ -170,8 +172,8 @@ func New() *World {
 		shared: &_Shared{
 			dynamic: Variables{},
 			stdin:   &_ReaderNode{_Reader: bufio.NewReader(os.Stdin)},
-			stdout:  &_Writer{Writer: os.Stdout},
-			errout:  &_Writer{Writer: os.Stderr},
+			stdout:  &_WriterNode{_Writer: os.Stdout},
+			errout:  &_WriterNode{_Writer: os.Stderr},
 		},
 		lexical: Variables{
 			NewSymbol("*"):                           SpecialF(cmdMulti),
