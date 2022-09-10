@@ -354,18 +354,6 @@ func funMapCon(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return funAppend(ctx, w, list)
 }
 
-func funCoerce(_ context.Context, _ *World, argv []Node) (Node, error) {
-	buffer, err := NewSeqBuilder(argv[1])
-	if err != nil {
-		return nil, ErrNotSupportType
-	}
-	err = SeqEach(argv[0], func(value Node) error {
-		buffer.Add(value)
-		return nil
-	})
-	return buffer.Sequence(), err
-}
-
 func funReverse(_ context.Context, _ *World, argv []Node) (Node, error) {
 	var result Node
 	err := SeqEach(argv[0], func(value Node) error {

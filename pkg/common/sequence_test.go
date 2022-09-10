@@ -33,3 +33,10 @@ func TestConcatenate(t *testing.T) {
 		List(Integer(1), Integer(2), Integer(3), Integer(4), Integer(5), Integer(6)))
 	assertEqual(t, `(apply #'concatenate 'string '("1" "2" "3"))`, String("123"))
 }
+
+func TestCoerce(t *testing.T) {
+	assertEqual(t, `(coerce '(#\a #\b) 'string)`, String("ab"))
+	assertEqual(t, `(coerce '(#\a #\b) 'utf8string)`, UTF8String("ab"))
+	assertEqual(t, `(coerce '(#\a #\b) 'utf32string)`, UTF32String("ab"))
+	assertEqual(t, `(coerce '(#\a #\b) 'list)`, List(Rune('a'), Rune('b')))
+}

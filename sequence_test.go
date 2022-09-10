@@ -81,13 +81,6 @@ func TestMapCon(t *testing.T) {
 		)`, List(NewSymbol("a"), NewSymbol("b"), NewSymbol("c"), NewSymbol("b"), NewSymbol("c")))
 }
 
-func TestCoerce(t *testing.T) {
-	assertEqual(t, `(coerce '(#\a #\b) 'string)`, String("ab"))
-	assertEqual(t, `(coerce '(#\a #\b) 'utf8string)`, UTF8String("ab"))
-	assertEqual(t, `(coerce '(#\a #\b) 'utf32string)`, UTF32String("ab"))
-	assertEqual(t, `(coerce '(#\a #\b) 'list)`, List(Rune('a'), Rune('b')))
-}
-
 func TestReverse(t *testing.T) {
 	assertEqual(t, `(reverse '(1 2 3 4))`,
 		List(Integer(4), Integer(3), Integer(2), Integer(1)))

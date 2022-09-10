@@ -126,3 +126,15 @@ func funConcatenate(ctx context.Context, w *World, list []Node) (Node, error) {
 	}
 	return buffer.Sequence(), nil
 }
+
+func funCoerce(_ context.Context, _ *World, argv []Node) (Node, error) {
+	buffer, err := NewSeqBuilder(argv[1])
+	if err != nil {
+		return nil, ErrNotSupportType
+	}
+	err = SeqEach(argv[0], func(value Node) error {
+		buffer.Add(value)
+		return nil
+	})
+	return buffer.Sequence(), err
+}

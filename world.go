@@ -199,7 +199,6 @@ func New() *World {
 			NewSymbol("catch"):                       SpecialF(cmdCatch),
 			NewSymbol("cdr"):                         &LeftValueF{C: 1, F: funGetCdr},
 			NewSymbol("close"):                       &Function{C: 1, F: funClose},
-			NewSymbol("coerce"):                      &Function{C: 2, F: funCoerce},
 			NewSymbol("cond"):                        SpecialF(cmdCond),
 			NewSymbol("cons"):                        &Function{C: 2, F: funCons},
 			NewSymbol("consp"):                       &Function{C: 1, F: funAnyTypep[*Cons]},

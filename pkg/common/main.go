@@ -34,6 +34,7 @@ var Functions = Variables{
 	NewSymbol("dolist"):         SpecialF(cmdDoList),
 	NewSymbol("dotimes"):        SpecialF(cmdDoTimes),
 	NewSymbol("with-open-file"): SpecialF(cmdWithOpenFile),
+	NewSymbol("coerce"):         &Function{C: 2, F: funCoerce},
 }
 
 var defparameter Callable
