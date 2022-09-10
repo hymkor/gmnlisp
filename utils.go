@@ -28,6 +28,7 @@ var (
 	ErrTooManyArguments     = errors.New("Too many arguments")
 	ErrTooShortTokens       = errors.New("too short tokens")
 	ErrVariableUnbound      = errors.New("Unbound variable")
+	ErrCanNotParseNumber    = errors.New("Can not parse number")
 )
 
 type EqlMode int

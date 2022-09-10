@@ -81,10 +81,16 @@ func tryParseAsInt(token string) (Node, bool, error) {
 
 func tryParseAsNumber(token string) (Node, bool, error) {
 	if val, ok, err := tryParseAsFloat(token); ok {
-		return val, true, err
+		if err != nil {
+			return nil, true, fmt.Errorf("%w (%s)", ErrCanNotParseNumber, err.Error())
+		}
+		return val, true, nil
 	}
 	if val, ok, err := tryParseAsInt(token); ok {
-		return val, true, err
+		if err != nil {
+			return nil, true, fmt.Errorf("%w (%s)", ErrCanNotParseNumber, err.Error())
+		}
+		return val, true, nil
 	}
 	return nil, false, nil
 }

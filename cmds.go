@@ -148,3 +148,15 @@ func funAnyTypep[T Node](_ context.Context, _ *World, args []Node) (Node, error)
 	}
 	return Null, nil
 }
+
+func funParseNumber(_ context.Context, _ *World, args []Node) (Node, error) {
+	s, ok := args[0].(StringTypes)
+	if !ok {
+		return nil, ErrExpectedString
+	}
+	val, ok, err := tryParseAsNumber(s.String())
+	if !ok {
+		return nil, ErrCanNotParseNumber
+	}
+	return val, err
+}

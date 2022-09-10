@@ -115,3 +115,8 @@ func TestCreateStringInputStream(t *testing.T) {
 			(read-line fd)
 		)`, String("2"))
 }
+
+func TestParseNumber(t *testing.T) {
+	assertEqual(t, `(parse-number "1")`, Integer(1))
+	assertEqual(t, `(parse-number "1.1")`, Float(1.1))
+}
