@@ -8,11 +8,13 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"unicode/utf8"
 )
 
-type runeWriter interface {
-	WriteRune(rune) (int, error)
-	io.Writer
+func writeRune(r rune, w io.Writer) {
+	var buffer [utf8.UTFMax]byte
+	size := utf8.EncodeRune(buffer[:], r)
+	w.Write(buffer[:size])
 }
 
 func printInt(w io.Writer, base, width, padding int, value Node) error {
@@ -50,7 +52,7 @@ func funFormatObject(_ context.Context, _ *World, list []Node) (Node, error) {
 }
 
 func funFormatChar(_ context.Context, _ *World, list []Node) (Node, error) {
-	writer, ok := list[0].(runeWriter)
+	writer, ok := list[0].(io.Writer)
 	if !ok {
 		return nil, ErrExpectedWriter
 	}
@@ -58,7 +60,7 @@ func funFormatChar(_ context.Context, _ *World, list []Node) (Node, error) {
 	if !ok {
 		return nil, ErrExpectedCharacter
 	}
-	writer.WriteRune(rune(r))
+	writeRune(rune(r), writer)
 	return Null, nil
 }
 
@@ -110,7 +112,10 @@ func printSpaces(n int, w io.Writer) {
 	}
 }
 
-func formatSub(w runeWriter, format StringTypes, argv []Node) (Node, error) {
+func formatSub(_w io.Writer, format StringTypes, argv []Node) (Node, error) {
+	w := bufio.NewWriter(_w)
+	defer w.Flush()
+
 	var ok bool = true
 	for ok && HasValue(format) {
 		var c Rune
