@@ -60,7 +60,6 @@ Support functions
 #### float
 
 - (truncate REAL)
-- (parse-integer STRING)
 
 #### List and Sequence
 
@@ -155,6 +154,7 @@ Support functions
 - (convert OBJ &lt;symbol&gt;)
 - (convert OBJ &lt;utf32string&gt;)
 - (convert OBJ &lt;utf8string&gt;)
+- (parse-number STRING)
 
 #### Branch
 
