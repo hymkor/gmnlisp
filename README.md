@@ -143,14 +143,18 @@ Support functions
 - (listp EXP)
 - (consp EXP)
 
-#### Coerce
+#### Convert
+
+- (convert VALUE &lt;integer&gt;)
+- (convert VALUE &lt;float&gt;)
+- (convert VALUE &lt;string&gt;)
+- (convert VALUE &lt;utf8string&gt;)
+- (convert VALUE &lt;utf32string&gt;)
 
 - (coerce SEQUENCE 'list)
 - (coerce SEQUENCE 'string)
 - (coerce SEQUENCE 'utf8string)
 - (coerce SEQUENCE 'utf32string)
-- (to-utf8 "UTF32STRING")
-- (to-utf32 "UTF8STRING")
 
 #### Branch
 
