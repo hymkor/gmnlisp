@@ -24,15 +24,13 @@ Gmnlisp is a small Lisp implementation in Go.
         (get-output-stream-string buffer)
     )
 )
-(let (line fd (count 0))
-    (setq fd (open-input-file "examples/example1.go"))
-    (unwind-protect
+(let (line (count 0))
+    (with-open-input-file (fd "examples/example1.go")
         (while (setq line (read-line fd nil))
             (if (>= count 3)
                 (format (standard-output) "~a~%" (detab line)))
             (incf count)
         )
-        (close fd)
     )
 )
 %>
@@ -52,7 +50,7 @@ The text before proprocessed is [here](https://github.com/hymkor/gmnlisp/blob/ma
 Support Types
 -------------
 
-integer , float , string(UTF8 or UTF32) , symbol , cons , list , character , t/nil
+integer , float , string(utf8string or utf32string) , symbol , cons , list , character , t/nil
 
 Support functions
 -----------------
@@ -210,6 +208,7 @@ Backquotations and &amp;body are not supported.
 - (format-float STREAM FLOAT)
 - (open-input-file FILENAME)
 - (open-output-file FILENAME)
+- (with-open-input-file (STREAM FILENAME) FORM...)
 - (close HANDLE)
 - (create-string-input-stream STRING)
 - (create-string-output-stream)

@@ -207,6 +207,7 @@ Backquotations and &amp;body are not supported.
 - (format-float STREAM FLOAT)
 - (open-input-file FILENAME)
 - (open-output-file FILENAME)
+- (with-open-input-file (STREAM FILENAME) FORM...)
 - (close HANDLE)
 - (create-string-input-stream STRING)
 - (create-string-output-stream)
