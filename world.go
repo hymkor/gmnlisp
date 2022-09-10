@@ -229,6 +229,7 @@ func New() *World {
 			NewSymbol("format-object"):               &Function{C: 3, F: funFormatObject},
 			NewSymbol("funcall"):                     SpecialF(cmdFunCall),
 			NewSymbol("function"):                    &Function{C: 1, F: funFunction},
+			NewSymbol("functionp"):                   &Function{C: 1, F: funAnyTypep[Callable]},
 			NewSymbol("get-output-stream-string"):    &Function{C: 1, F: funGetOutputStreamString},
 			NewSymbol("if"):                          SpecialF(cmdIf),
 			NewSymbol("incf"):                        SpecialF(cmdIncf),

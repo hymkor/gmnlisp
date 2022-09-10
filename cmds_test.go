@@ -96,6 +96,7 @@ func TestAnyTypes(t *testing.T) {
 	assertEqual(t, `(stringp 1)`, Null)
 	assertEqual(t, `(consp '(1) )`, True)
 	assertEqual(t, `(consp 1)`, Null)
+	assertEqual(t, `(functionp consp)`, True)
 }
 
 func TestTypep(t *testing.T) {
