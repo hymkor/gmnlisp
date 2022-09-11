@@ -116,6 +116,13 @@ Support functions
 - (or EXP1 EXP2..)
 - (not EXP)
 
+- (string= STRING1 STRING2)
+- (string/= STRING1 STRING2)
+- (string&lt; STRING1 STRING2)
+- (string&gt; STRING1 STRING2)
+- (string&gt;= STRING1 STRING2)
+- (string&lt;= STRING1 STRING2)
+
 #### test
 
 - (atom OBJ)
