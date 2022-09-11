@@ -37,6 +37,9 @@ func funList(_ context.Context, _ *World, list []Node) (Node, error) {
 
 func lastOfList(node Node) (*Cons, error) {
 	for {
+		if IsNull(node) {
+			return nil, nil
+		}
 		cons, ok := node.(*Cons)
 		if !ok {
 			return nil, fmt.Errorf("%w `%s`", ErrExpectedCons, node)
@@ -56,6 +59,9 @@ func funLast(_ context.Context, _ *World, list []Node) (Node, error) {
 	tail, err := lastOfList(list[0])
 	if err != nil {
 		return nil, err
+	}
+	if tail == nil {
+		return Null, nil
 	}
 	return tail.Car, nil
 }
@@ -85,6 +91,9 @@ func funAppend(_ context.Context, _ *World, list []Node) (Node, error) {
 	tail, err := lastOfList(head)
 	if err != nil {
 		return nil, err
+	}
+	if tail == nil {
+		return Null, nil
 	}
 	tail.Cdr = list[len(list)-1]
 	return head, nil
