@@ -78,3 +78,23 @@ func TestMod(t *testing.T) {
 	assertEqual(t, `(rem -5 3)`, Integer(-2))
 	assertEqual(t, `(rem 5 -3)`, Integer(2))
 }
+
+func TestTruncate(t *testing.T) {
+	assertEqual(t, `(truncate 1.6)`, Integer(1))
+	assertEqual(t, `(truncate -1.6)`, Integer(-1))
+}
+
+func TestCeiling(t *testing.T) {
+	assertEqual(t, `(ceiling 1.6)`, Integer(2))
+	assertEqual(t, `(ceiling -1.6)`, Integer(-1))
+}
+
+func TestFloor(t *testing.T) {
+	assertEqual(t, `(floor 1.6)`, Integer(1))
+	assertEqual(t, `(floor -1.6)`, Integer(-2))
+}
+
+func TestRound(t *testing.T) {
+	assertEqual(t, `(round 1.6)`, Integer(2))
+	assertEqual(t, `(round -1.6)`, Integer(-2))
+}

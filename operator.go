@@ -187,14 +187,33 @@ func cmdOr(ctx context.Context, w *World, param Node) (Node, error) {
 	}
 }
 
-func funTruncate(ctx context.Context, w *World, argv []Node) (Node, error) {
+func floatToInteger(argv []Node, f func(float64) float64) (Node, error) {
 	if value, ok := argv[0].(Integer); ok {
 		return value, nil
 	}
 	if value, ok := argv[0].(Float); ok {
-		return Integer(int(math.Trunc(float64(value)))), nil
+		return Integer(int(f(float64(value)))), nil
 	}
 	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, ToString(argv[0], PRINT))
+}
+
+// funTruncate implements (truncte X). It returns the integer value of X.
+func funTruncate(ctx context.Context, w *World, argv []Node) (Node, error) {
+	return floatToInteger(argv, math.Trunc)
+}
+
+// funFloor implements (truncte X). It returns the greatest integer value less than or equal to x.
+func funFloor(ctx context.Context, w *World, argv []Node) (Node, error) {
+	return floatToInteger(argv, math.Floor)
+}
+
+// funCeiling implements (ceiling X). It returns the least integer value greater than or equal to x.
+func funCeiling(ctx context.Context, w *World, argv []Node) (Node, error) {
+	return floatToInteger(argv, math.Ceil)
+}
+
+func funRound(ctx context.Context, w *World, argv []Node) (Node, error) {
+	return floatToInteger(argv, math.Round)
 }
 
 func funOnePlus(ctx context.Context, w *World, argv []Node) (Node, error) {
