@@ -49,7 +49,7 @@ The text before proprocessed is [here](https://github.com/hymkor/gmnlisp/blob/ma
 Support Types
 -------------
 
-integer , float , string(UTF8 or UTF32) , symbol , cons , list , character , t/nil
+integer , float , string(utf8string or utf32string) , symbol , cons , list , character , t/nil
 
 Support functions
 -----------------
@@ -208,6 +208,7 @@ Backquotations and &amp;body are not supported.
 - (open-input-file FILENAME)
 - (open-output-file FILENAME)
 - (with-open-input-file (STREAM FILENAME) FORM...)
+- (with-open-output-file (STREAM FILENAME) FORM...)
 - (close HANDLE)
 - (create-string-input-stream STRING)
 - (create-string-output-stream)
