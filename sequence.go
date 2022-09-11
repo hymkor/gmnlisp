@@ -199,7 +199,7 @@ func funLength(_ context.Context, _ *World, argv []Node) (Node, error) {
 	return Integer(length), err
 }
 
-func mapCar(ctx context.Context, w *World, funcNode Node, sourceSet []Node, store func(Node)) error {
+func MapCar(ctx context.Context, w *World, funcNode Node, sourceSet []Node, store func(Node)) error {
 	f, err := funcNode.Eval(ctx, w)
 	if err != nil {
 		return err
@@ -238,7 +238,7 @@ func funMapCar(ctx context.Context, w *World, argv []Node) (Node, error) {
 		return nil, ErrTooFewArguments
 	}
 	var buffer _ListBuilder
-	err := mapCar(ctx, w, argv[0], argv[1:], func(node Node) { buffer.Add(node) })
+	err := MapCar(ctx, w, argv[0], argv[1:], func(node Node) { buffer.Add(node) })
 	return buffer.Sequence(), err
 }
 
@@ -246,7 +246,7 @@ func funMapC(ctx context.Context, w *World, argv []Node) (Node, error) {
 	if len(argv) < 1 {
 		return nil, ErrTooFewArguments
 	}
-	err := mapCar(ctx, w, argv[0], argv[1:], func(Node) {})
+	err := MapCar(ctx, w, argv[0], argv[1:], func(Node) {})
 	if len(argv) < 2 {
 		return Null, err
 	}
@@ -258,7 +258,7 @@ func funMapCan(ctx context.Context, w *World, argv []Node) (Node, error) {
 		return nil, ErrTooFewArguments
 	}
 	list := []Node{}
-	err := mapCar(ctx, w, argv[0], argv[1:], func(node Node) { list = append(list, node) })
+	err := MapCar(ctx, w, argv[0], argv[1:], func(node Node) { list = append(list, node) })
 	if err != nil {
 		return nil, err
 	}
@@ -273,7 +273,7 @@ func funMap(ctx context.Context, w *World, argv []Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = mapCar(ctx, w, argv[1], argv[2:], func(n Node) { buffer.Add(n) })
+	err = MapCar(ctx, w, argv[1], argv[2:], func(n Node) { buffer.Add(n) })
 	return buffer.Sequence(), err
 }
 
