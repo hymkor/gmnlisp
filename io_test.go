@@ -69,3 +69,24 @@ func TestWithOpenInputFile(t *testing.T) {
 		(with-open-input-file (fd "LICENSE")
 			(read-line fd))`, String("MIT License"))
 }
+
+func TestOpenOutputFile(t *testing.T) {
+	w := New()
+	_, err := w.Interpret(context.TODO(), `
+		(with-open-output-file (w "hogehoge")
+			(format w "hogehoge~%")
+		)
+	`)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	defer os.Remove("hogehoge")
+
+	output, err := os.ReadFile("hogehoge")
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	if o := string(output); o != "hogehoge\n" {
+		t.Fatalf(`expect "hogehoge" but "%s"`, o)
+	}
+}

@@ -216,8 +216,8 @@ func (o *_OutputFileStream) Close() error {
 	return o.closer.Close()
 }
 
-func funOpenOutputFile(ctx context.Context, w *World, list []Node) (Node, error) {
-	filename, ok := list[0].(StringTypes)
+func openOutputFile(fnameNode Node) (*_OutputFileStream, error) {
+	filename, ok := fnameNode.(StringTypes)
 	if !ok {
 		return nil, ErrExpectedString
 	}
@@ -226,4 +226,35 @@ func funOpenOutputFile(ctx context.Context, w *World, list []Node) (Node, error)
 		return nil, err
 	}
 	return &_OutputFileStream{Writer: bufio.NewWriter(writer), closer: writer}, nil
+}
+
+func funOpenOutputFile(ctx context.Context, w *World, list []Node) (Node, error) {
+	return openOutputFile(list[0])
+}
+
+func cmdWithOpenOutputFile(ctx context.Context, w *World, list Node) (Node, error) {
+	param, list, err := Shift(list)
+	if err != nil {
+		return nil, err
+	}
+	varName, param, err := Shift(param)
+	if err != nil {
+		return nil, err
+	}
+	symbol, ok := varName.(Symbol)
+	if !ok {
+		return nil, ErrExpectedSymbol
+	}
+	filename, _, err := w.ShiftAndEvalCar(ctx, param)
+	if err != nil {
+		return nil, err
+	}
+	stream, err := openOutputFile(filename)
+	if err != nil {
+		return nil, err
+	}
+	defer stream.Close()
+
+	nw := w.Let(&Pair{Key: symbol, Value: stream})
+	return Progn(ctx, nw, list)
 }

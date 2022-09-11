@@ -303,6 +303,7 @@ func New() *World {
 			NewSymbol("while"):                       SpecialF(cmdWhile),
 			NewSymbol("with-handler"):                SpecialF(cmdWithHandler),
 			NewSymbol("with-open-input-file"):        SpecialF(cmdWithOpenInputFile),
+			NewSymbol("with-open-output-file"):       SpecialF(cmdWithOpenOutputFile),
 			NewSymbol("zerop"):                       &Function{C: 1, F: funZerop},
 		},
 	}
