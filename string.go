@@ -4,6 +4,7 @@ import (
 	"context"
 	"strconv"
 	"strings"
+	"unicode/utf8"
 )
 
 func funStringAppend(ctx context.Context, w *World, list []Node) (Node, error) {
@@ -84,4 +85,42 @@ func funStringGe(ctx context.Context, w *World, argv []Node) (Node, error) {
 }
 func funStringNe(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return compareString(argv, func(cmp int) bool { return cmp != 0 })
+}
+
+func funStringIndex(ctx context.Context, w *World, argv []Node) (Node, error) {
+	if len(argv) < 2 {
+		return nil, ErrTooFewArguments
+	}
+	_subStr, ok := argv[0].(StringTypes)
+	if !ok {
+		return nil, ErrExpectedString
+	}
+	subStr := _subStr.String()
+	start := 0
+	if len(argv) >= 3 {
+		_start, ok := argv[2].(Integer)
+		if !ok {
+			return nil, ErrExpectedNumber
+		}
+		if len(argv) >= 4 {
+			return nil, ErrTooManyArguments
+		}
+		start = int(_start)
+	}
+	_str, ok := argv[1].(StringTypes)
+	if !ok {
+		return nil, ErrExpectedString
+	}
+	str := _str.String()
+
+	for i := 0; i < start && len(str) > 0; i++ {
+		_, siz := utf8.DecodeRuneInString(str)
+		str = str[siz:]
+	}
+
+	index := strings.Index(str, subStr)
+	if index < 0 {
+		return Null, nil
+	}
+	return Integer(start + utf8.RuneCountInString(str[:index])), nil
 }

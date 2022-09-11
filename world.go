@@ -292,6 +292,7 @@ func New() *World {
 			NewSymbol("standard-input"):              SpecialF(cmdStandardInput),
 			NewSymbol("standard-output"):             SpecialF(cmdStandardOutput),
 			NewSymbol("string-append"):               &Function{C: -1, F: funStringAppend},
+			NewSymbol("string-index"):                &Function{C: -1, F: funStringIndex},
 			NewSymbol("string/="):                    &Function{C: 2, F: funStringNe},
 			NewSymbol("string<"):                     &Function{C: 2, F: funStringLt},
 			NewSymbol("string<="):                    &Function{C: 2, F: funStringLe},
