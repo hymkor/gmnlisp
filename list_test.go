@@ -69,6 +69,8 @@ func TestAppend(t *testing.T) {
 						(equal part1 '(1 2 3))
 						(equal part2 '(4 5 6))
 						(equal part3 '(7 "ccc" 9))))`, True)
+
+	assertEqual(t, `(append '() '(1))`, List(Integer(1)))
 }
 
 func TestLast(t *testing.T) {

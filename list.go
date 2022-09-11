@@ -93,7 +93,7 @@ func funAppend(_ context.Context, _ *World, list []Node) (Node, error) {
 		return nil, err
 	}
 	if tail == nil {
-		return Null, nil
+		return list[len(list)-1], nil
 	}
 	tail.Cdr = list[len(list)-1]
 	return head, nil
