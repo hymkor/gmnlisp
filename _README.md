@@ -60,11 +60,11 @@ Support functions
 - (cons OBJ1 OBJ2)
 - (car CONS)
 - (cdr CONS)
-- (quote {LIST|ATOM}...)
-- '({LIST|ATOM}...)
-- (list {LIST|ATOM}...)
+- (quote OBJ)
+- 'OBJ
+- (list OBJ...)
 - (rest LIST)
-- (length LIST)
+- (length SEQUENCE)
 - (last LIST)
 - (reverse LIST)
 - (append LIST...)
@@ -76,20 +76,18 @@ Support functions
 
 #### Variables
 
-- (defglobal NAME VALUE)
-- (setq NAME VALUE)
-- (setf EXP NEWVALUE)
+- (defdyncamic NAME FORM)
+- (defglobal NAME FORM)
+- (dynamic VAR)
+- (dynamic-let ((VAR FORM)...) BODY-FORM...)
+- (let ((VAR FORM)... ) BODY-FORM...)
+- (let (VAR...) BODY-FORM...)
+- (let\* ((VAR FORM)...) BODY-FORM...)
+- (let\* (VAR...) BODY-FORM...)
 - (replaca CONS-EXP CAR-NEWVALUE)
 - (replacd CONS-EXP CDR-NEWVALUE)
-- (defvar NAME [VALUE])
-- (let (NAME1 NAME2..) STATEMENTS)
-- (let ((NAME1 VALUE1) (NAME2 VALUE2)...) STATEMENTS)
-- (let\* (NAME1 NAME2..) STATEMENTS)
-- (let\* ((NAME1 VALUE1) (NAME2 VALUE2)...) STATEMENTS)
-- (defdyncamic NAME VALUE)
-- (dynamic NAME)
-- (dynamic-let (NAME1 NAME2..) STATEMENTS)
-- (dynamic-let ((NAME1 VALUE1) (NAME2 VALUE2)...) STATEMENTS)
+- (setf PLACE FORM)
+- (setq VAR FORM)
 
 #### Operator
 
@@ -192,42 +190,35 @@ Backquotations and &amp;body are not supported.
 - (apply #'FUNCTION [PARAMS...] LIST)
 - (funcall #'FUNCTION EXP1...)
 
-#### File I/O
+#### I/O
 
-- (format OUTPUT-STREAM FORMAT [ARGS..])
-- (format-char OUTPUT-STREAM CHAR)
-- (format-object OUTPUT-STREAM STRING {t|nil})
-- (format-integer OUTPUT-STREAM INTEGER)
-- (format-float OUTPUT-STREAM FLOAT)
-- (open-input-file FILENAME)
-- (open-output-file FILENAME)
-- (with-open-input-file (INPUT-STREAM FILENAME) FORM...)
-- (with-open-output-file (OUTPUT-STREAM FILENAME) FORM...)
 - (close STREAM)
 - (create-string-input-stream STRING)
 - (create-string-output-stream)
-- (get-output-stream-string STRSTREAM)
-
-#### Standard I/O Handle
-
-- (standard-input)
-- (standard-output)
 - (error-output)
-
-#### Input functions
-
+- (format OUTPUT-STREAM FORMAT-STRING OBJ..)
+- (format-char OUTPUT-STREAM CHAR)
+- (format-float OUTPUT-STREAM FLOAT)
+- (format-integer OUTPUT-STREAM INTEGER RADIX)
+- (format-object OUTPUT-STREAM OBJ ESCAPE-P)
+- (get-output-stream-string STRSTREAM)
+- (open-input-file FILENAME)
+- (open-output-file FILENAME)
 - (read [STREAM [EOF-FLAG [EOF-VALUE]]])
 - (read-line [STREAM [EOF-FLAG [EOF-VALUE]]])
+- (standard-input)
+- (standard-output)
+- (with-open-input-file (NAME FILENAME) FORM...)
+- (with-open-output-file (NAME FILENAME) FORM...)
 
 #### Exceptions
 
 - (block NAME FORM...)
-    - (return-from NAME VALUE)
-    - (return VALUE)
-- (with-handler HANDLER FORM...) like ISLisp
-- (unwind-protect FORM CLEANUP-FORM...)  like ISLisp
-- (catch TAG FORM)
-    - (throw TAG RESULT) like ISLisp
+    - (return-from NAME RESULT-FORM)
+- (catch TAG-FORM FORM...)
+    - (throw TAG-FORM RESULT-FORM)
+- (unwind-protect FORM CLEANUP-FORM...)
+- (with-handler HANDLER FORM...)
 
 #### Quit
 
