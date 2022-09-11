@@ -30,11 +30,6 @@ func SeqEach(list Node, f func(Node) error) error {
 	return nil
 }
 
-type _SeqBuilder interface {
-	Add(Node) error
-	Sequence() Node
-}
-
 type ListBuilder struct {
 	first Cons
 	last  *Cons
@@ -90,75 +85,6 @@ func (S *UTF8StringBuilder) Add(n Node) error {
 
 func (S *UTF8StringBuilder) Sequence() Node {
 	return UTF8String(S.buffer.String())
-}
-
-var sequenceBuilderTable = map[Symbol](func() _SeqBuilder){
-	symbolForList:        func() _SeqBuilder { return &ListBuilder{} },
-	symbolForString:      func() _SeqBuilder { return &StringBuilder{} },
-	symbolForUTF8String:  func() _SeqBuilder { return &UTF8StringBuilder{} },
-	symbolForUTF32String: func() _SeqBuilder { return &UTF32StringBuilder{} },
-}
-
-func NewSeqBuilder(symbolNode Node) (_SeqBuilder, error) {
-	symbol, ok := symbolNode.(Symbol)
-	if !ok {
-		return nil, ErrExpectedSymbol
-	}
-	builder, ok := sequenceBuilderTable[symbol]
-	if !ok {
-		return nil, ErrNotSupportType
-	}
-	return builder(), nil
-}
-
-var (
-	symbolForNumber      = NewSymbol("number")
-	symbolForInteger     = NewSymbol("integer")
-	symbolForFloat       = NewSymbol("float")
-	symbolForString      = NewSymbol("string")
-	symbolForSymbol      = NewSymbol("symbol")
-	symbolForCons        = NewSymbol("cons")
-	symbolForList        = NewSymbol("list")
-	symbolForUTF8String  = NewSymbol("utf8string")
-	symbolForUTF32String = NewSymbol("utf32string")
-)
-
-func funTypep(_ context.Context, _ *World, args []Node) (Node, error) {
-	symbol, ok := args[1].(Symbol)
-	if !ok {
-		return nil, ErrExpectedSymbol
-	}
-	ok = false
-	switch symbol {
-	case symbolForNumber:
-		_, ok = args[0].(Integer)
-		if !ok {
-			_, ok = args[0].(Float)
-		}
-	case symbolForInteger:
-		_, ok = args[0].(Integer)
-	case symbolForFloat:
-		_, ok = args[0].(Float)
-	case symbolForString:
-		_, ok = args[0].(StringTypes)
-	case symbolForUTF8String:
-		_, ok = args[0].(UTF8String)
-	case symbolForUTF32String:
-		_, ok = args[0].(UTF32String)
-	case symbolForSymbol:
-		_, ok = args[0].(Symbol)
-	case symbolForCons:
-		_, ok = args[0].(*Cons)
-	case symbolForList:
-		ok = IsNull(args[0])
-		if !ok {
-			_, ok = args[0].(*Cons)
-		}
-	}
-	if ok {
-		return True, nil
-	}
-	return Null, nil
 }
 
 func funElt(_ context.Context, _ *World, args []Node) (Node, func(Node) error, error) {
@@ -372,6 +298,11 @@ func funReverse(_ context.Context, _ *World, argv []Node) (Node, error) {
 	return result, nil
 }
 
+type SeqBuilder interface {
+	Add(Node) error
+	Sequence() Node
+}
+
 func funSubSeq(ctx context.Context, w *World, args []Node) (Node, func(Node) error, error) {
 	if len(args) < 2 {
 		return nil, nil, ErrTooFewArguments
@@ -390,7 +321,7 @@ func funSubSeq(ctx context.Context, w *World, args []Node) (Node, func(Node) err
 			return nil, nil, ErrExpectedNumber
 		}
 	}
-	var buffer _SeqBuilder
+	var buffer SeqBuilder
 	if _, ok := args[0].(UTF32String); ok {
 		buffer = &UTF32StringBuilder{}
 	} else if _, ok := args[0].(UTF8String); ok {

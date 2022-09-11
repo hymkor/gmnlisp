@@ -297,7 +297,6 @@ func New() *World {
 			NewSymbol("throw"):                       &Function{C: 2, F: funThrow},
 			NewSymbol("trace"):                       SpecialF(cmdTrace),
 			NewSymbol("truncate"):                    &Function{C: 1, F: funTruncate},
-			NewSymbol("typep"):                       &Function{C: 2, F: funTypep},
 			NewSymbol("unwind-protect"):              SpecialF(cmdUnwindProtect),
 			NewSymbol("while"):                       SpecialF(cmdWhile),
 			NewSymbol("with-handler"):                SpecialF(cmdWithHandler),

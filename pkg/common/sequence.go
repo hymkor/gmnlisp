@@ -139,6 +139,25 @@ func funCoerce(_ context.Context, _ *World, argv []Node) (Node, error) {
 	return buffer.Sequence(), err
 }
 
+var sequenceBuilderTable = map[Symbol](func() SeqBuilder){
+	symbolForList:        func() SeqBuilder { return &ListBuilder{} },
+	symbolForString:      func() SeqBuilder { return &StringBuilder{} },
+	symbolForUTF8String:  func() SeqBuilder { return &UTF8StringBuilder{} },
+	symbolForUTF32String: func() SeqBuilder { return &UTF32StringBuilder{} },
+}
+
+func NewSeqBuilder(symbolNode Node) (SeqBuilder, error) {
+	symbol, ok := symbolNode.(Symbol)
+	if !ok {
+		return nil, ErrExpectedSymbol
+	}
+	builder, ok := sequenceBuilderTable[symbol]
+	if !ok {
+		return nil, ErrNotSupportType
+	}
+	return builder(), nil
+}
+
 func funMap(ctx context.Context, w *World, argv []Node) (Node, error) {
 	if len(argv) < 2 {
 		return nil, ErrTooFewArguments
@@ -149,4 +168,54 @@ func funMap(ctx context.Context, w *World, argv []Node) (Node, error) {
 	}
 	err = MapCar(ctx, w, argv[1], argv[2:], func(n Node) { buffer.Add(n) })
 	return buffer.Sequence(), err
+}
+
+var (
+	symbolForNumber      = NewSymbol("number")
+	symbolForInteger     = NewSymbol("integer")
+	symbolForFloat       = NewSymbol("float")
+	symbolForString      = NewSymbol("string")
+	symbolForSymbol      = NewSymbol("symbol")
+	symbolForCons        = NewSymbol("cons")
+	symbolForList        = NewSymbol("list")
+	symbolForUTF8String  = NewSymbol("utf8string")
+	symbolForUTF32String = NewSymbol("utf32string")
+)
+
+func funTypep(_ context.Context, _ *World, args []Node) (Node, error) {
+	symbol, ok := args[1].(Symbol)
+	if !ok {
+		return nil, ErrExpectedSymbol
+	}
+	ok = false
+	switch symbol {
+	case symbolForNumber:
+		_, ok = args[0].(Integer)
+		if !ok {
+			_, ok = args[0].(Float)
+		}
+	case symbolForInteger:
+		_, ok = args[0].(Integer)
+	case symbolForFloat:
+		_, ok = args[0].(Float)
+	case symbolForString:
+		_, ok = args[0].(StringTypes)
+	case symbolForUTF8String:
+		_, ok = args[0].(UTF8String)
+	case symbolForUTF32String:
+		_, ok = args[0].(UTF32String)
+	case symbolForSymbol:
+		_, ok = args[0].(Symbol)
+	case symbolForCons:
+		_, ok = args[0].(*Cons)
+	case symbolForList:
+		ok = IsNull(args[0])
+		if !ok {
+			_, ok = args[0].(*Cons)
+		}
+	}
+	if ok {
+		return True, nil
+	}
+	return Null, nil
 }

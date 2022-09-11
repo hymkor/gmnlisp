@@ -36,6 +36,7 @@ var Functions = Variables{
 	NewSymbol("with-open-file"): SpecialF(cmdWithOpenFile),
 	NewSymbol("coerce"):         &Function{C: 2, F: funCoerce},
 	NewSymbol("map"):            &Function{C: -1, F: funMap},
+	NewSymbol("typep"):          &Function{C: 2, F: funTypep},
 }
 
 var defparameter Callable

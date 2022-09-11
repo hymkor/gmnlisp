@@ -99,15 +99,6 @@ func TestAnyTypes(t *testing.T) {
 	assertEqual(t, `(functionp consp)`, True)
 }
 
-func TestTypep(t *testing.T) {
-	assertEqual(t, `(typep 1 'number)`, True)
-	assertEqual(t, `(typep 1 'integer)`, True)
-	assertEqual(t, `(typep 1.0 'float)`, True)
-	assertEqual(t, `(typep 1 'float)`, Null)
-	assertEqual(t, `(typep "ABC" 'string)`, True)
-	assertEqual(t, `(typep 1 'string)`, Null)
-}
-
 func TestCreateStringInputStream(t *testing.T) {
 	assertEqual(t, `
 		(let ((fd (create-string-input-stream "1\n2\n3")))

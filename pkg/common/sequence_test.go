@@ -46,3 +46,12 @@ func TestMap(t *testing.T) {
 	assertEqual(t, `(map 'list '1+ '(1 2 3))`, List(Integer(2), Integer(3), Integer(4)))
 	assertEqual(t, `(length (map 'list #'null '(nil 2 3)))`, Integer(3))
 }
+
+func TestTypep(t *testing.T) {
+	assertEqual(t, `(typep 1 'number)`, True)
+	assertEqual(t, `(typep 1 'integer)`, True)
+	assertEqual(t, `(typep 1.0 'float)`, True)
+	assertEqual(t, `(typep 1 'float)`, Null)
+	assertEqual(t, `(typep "ABC" 'string)`, True)
+	assertEqual(t, `(typep 1 'string)`, Null)
+}
