@@ -35,12 +35,12 @@ type _SeqBuilder interface {
 	Sequence() Node
 }
 
-type _ListBuilder struct {
+type ListBuilder struct {
 	first Cons
 	last  *Cons
 }
 
-func (L *_ListBuilder) Add(n Node) error {
+func (L *ListBuilder) Add(n Node) error {
 	tmp := &Cons{
 		Car: n,
 		Cdr: Null,
@@ -54,15 +54,15 @@ func (L *_ListBuilder) Add(n Node) error {
 	return nil
 }
 
-func (L *_ListBuilder) Sequence() Node {
+func (L *ListBuilder) Sequence() Node {
 	return L.first.Cdr
 }
 
-type _UTF32StringBuilder struct {
+type UTF32StringBuilder struct {
 	buffer []Rune
 }
 
-func (S *_UTF32StringBuilder) Add(n Node) error {
+func (S *UTF32StringBuilder) Add(n Node) error {
 	r, ok := n.(Rune)
 	if !ok {
 		return ErrExpectedCharacter
@@ -71,15 +71,15 @@ func (S *_UTF32StringBuilder) Add(n Node) error {
 	return nil
 }
 
-func (S *_UTF32StringBuilder) Sequence() Node {
+func (S *UTF32StringBuilder) Sequence() Node {
 	return UTF32String(S.buffer)
 }
 
-type _UTF8StringBuilder struct {
+type UTF8StringBuilder struct {
 	buffer strings.Builder
 }
 
-func (S *_UTF8StringBuilder) Add(n Node) error {
+func (S *UTF8StringBuilder) Add(n Node) error {
 	r, ok := n.(Rune)
 	if !ok {
 		return ErrExpectedCharacter
@@ -88,15 +88,15 @@ func (S *_UTF8StringBuilder) Add(n Node) error {
 	return nil
 }
 
-func (S *_UTF8StringBuilder) Sequence() Node {
+func (S *UTF8StringBuilder) Sequence() Node {
 	return UTF8String(S.buffer.String())
 }
 
 var sequenceBuilderTable = map[Symbol](func() _SeqBuilder){
-	symbolForList:        func() _SeqBuilder { return &_ListBuilder{} },
-	symbolForString:      func() _SeqBuilder { return &_StringBuilder{} },
-	symbolForUTF8String:  func() _SeqBuilder { return &_UTF8StringBuilder{} },
-	symbolForUTF32String: func() _SeqBuilder { return &_UTF32StringBuilder{} },
+	symbolForList:        func() _SeqBuilder { return &ListBuilder{} },
+	symbolForString:      func() _SeqBuilder { return &StringBuilder{} },
+	symbolForUTF8String:  func() _SeqBuilder { return &UTF8StringBuilder{} },
+	symbolForUTF32String: func() _SeqBuilder { return &UTF32StringBuilder{} },
 }
 
 func NewSeqBuilder(symbolNode Node) (_SeqBuilder, error) {
@@ -237,7 +237,7 @@ func funMapCar(ctx context.Context, w *World, argv []Node) (Node, error) {
 	if len(argv) < 1 {
 		return nil, ErrTooFewArguments
 	}
-	var buffer _ListBuilder
+	var buffer ListBuilder
 	err := MapCar(ctx, w, argv[0], argv[1:], func(node Node) { buffer.Add(node) })
 	return buffer.Sequence(), err
 }
@@ -326,7 +326,7 @@ func funMapList(ctx context.Context, w *World, argv []Node) (Node, error) {
 	if len(argv) < 1 {
 		return nil, ErrTooFewArguments
 	}
-	var buffer _ListBuilder
+	var buffer ListBuilder
 	err := mapList(ctx, w, argv[0], argv[1:], func(n Node) { buffer.Add(n) })
 	return buffer.Sequence(), err
 }
@@ -367,14 +367,14 @@ func funReverse(_ context.Context, _ *World, argv []Node) (Node, error) {
 		return nil, err
 	}
 	if _, ok := argv[0].(UTF32String); ok {
-		var buffer _UTF32StringBuilder
+		var buffer UTF32StringBuilder
 		err = SeqEach(result, func(value Node) error {
 			buffer.Add(value)
 			return nil
 		})
 		return buffer.Sequence(), err
 	} else if _, ok := argv[0].(UTF8String); ok {
-		var buffer _UTF8StringBuilder
+		var buffer UTF8StringBuilder
 		err = SeqEach(result, func(value Node) error {
 			buffer.Add(value)
 			return nil
@@ -404,11 +404,11 @@ func funSubSeq(ctx context.Context, w *World, args []Node) (Node, func(Node) err
 	}
 	var buffer _SeqBuilder
 	if _, ok := args[0].(UTF32String); ok {
-		buffer = &_UTF32StringBuilder{}
+		buffer = &UTF32StringBuilder{}
 	} else if _, ok := args[0].(UTF8String); ok {
-		buffer = &_UTF8StringBuilder{}
+		buffer = &UTF8StringBuilder{}
 	} else {
-		buffer = &_ListBuilder{}
+		buffer = &ListBuilder{}
 	}
 	count := Integer(0)
 	err := SeqEach(args[0], func(value Node) (e error) {

@@ -50,7 +50,7 @@ type UTF32String []Rune
 type UTF8String string
 
 type String = UTF8String
-type _StringBuilder = _UTF8StringBuilder
+type StringBuilder = UTF8StringBuilder
 
 type StringTypes interface {
 	Node

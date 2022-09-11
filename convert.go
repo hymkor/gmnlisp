@@ -46,7 +46,7 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 		case classUTF32String:
 			return val, nil
 		case classList:
-			var buffer _ListBuilder
+			var buffer ListBuilder
 			for _, r := range val {
 				buffer.Add(Rune(r))
 			}
@@ -75,7 +75,7 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 		case classUTF32String:
 			return UTF32String(val.String()), nil
 		case classList:
-			var buffer _ListBuilder
+			var buffer ListBuilder
 			for _, r := range val {
 				buffer.Add(Rune(r))
 			}

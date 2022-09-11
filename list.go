@@ -64,7 +64,7 @@ func funLast(_ context.Context, _ *World, list []Node) (Node, error) {
 func funAppend(_ context.Context, _ *World, list []Node) (Node, error) {
 	var value Node
 	var err error
-	var buffer _ListBuilder
+	var buffer ListBuilder
 
 	if len(list) <= 0 {
 		return Null, nil

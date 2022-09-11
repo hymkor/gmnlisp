@@ -217,7 +217,7 @@ func cmdApply(ctx context.Context, w *World, list Node) (Node, error) {
 	if !ok {
 		return nil, ErrExpectedFunction
 	}
-	var newargs _ListBuilder
+	var newargs ListBuilder
 	for {
 		var value Node
 
