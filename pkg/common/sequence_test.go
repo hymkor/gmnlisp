@@ -40,3 +40,9 @@ func TestCoerce(t *testing.T) {
 	assertEqual(t, `(coerce '(#\a #\b) 'utf32string)`, UTF32String("ab"))
 	assertEqual(t, `(coerce '(#\a #\b) 'list)`, List(Rune('a'), Rune('b')))
 }
+
+func TestMap(t *testing.T) {
+	assertEqual(t, `(map 'string '1+ "123")`, String("234"))
+	assertEqual(t, `(map 'list '1+ '(1 2 3))`, List(Integer(2), Integer(3), Integer(4)))
+	assertEqual(t, `(length (map 'list #'null '(nil 2 3)))`, Integer(3))
+}

@@ -138,3 +138,15 @@ func funCoerce(_ context.Context, _ *World, argv []Node) (Node, error) {
 	})
 	return buffer.Sequence(), err
 }
+
+func funMap(ctx context.Context, w *World, argv []Node) (Node, error) {
+	if len(argv) < 2 {
+		return nil, ErrTooFewArguments
+	}
+	buffer, err := NewSeqBuilder(argv[0])
+	if err != nil {
+		return nil, err
+	}
+	err = MapCar(ctx, w, argv[1], argv[2:], func(n Node) { buffer.Add(n) })
+	return buffer.Sequence(), err
+}

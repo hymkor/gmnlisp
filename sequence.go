@@ -265,18 +265,6 @@ func funMapCan(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return funAppend(ctx, w, list)
 }
 
-func funMap(ctx context.Context, w *World, argv []Node) (Node, error) {
-	if len(argv) < 2 {
-		return nil, ErrTooFewArguments
-	}
-	buffer, err := NewSeqBuilder(argv[0])
-	if err != nil {
-		return nil, err
-	}
-	err = MapCar(ctx, w, argv[1], argv[2:], func(n Node) { buffer.Add(n) })
-	return buffer.Sequence(), err
-}
-
 func listToQuotedList(list []Node) Node {
 	var cons Node = Null
 	for i := len(list) - 1; i >= 0; i-- {
