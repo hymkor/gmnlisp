@@ -149,24 +149,19 @@ Support functions
 - (parse-number STRING)
 - (truncate X)
 
-#### Branch
+#### Branch and Loop
 
-- (if TEST-FORM THEN-FORM ELSE-FORM)
-- (while TEST-FORM BODY-FORM...)
-- (cond (TEST FORM...)...)
 - (case KEYFORM ((KEY...) FORM...)... [(t FORM...)])
-
-#### Loop
-
-- (while COND EXP1...)
-- (for ((VAR INIT STEP)...) (COND RESULT) EXP1 EXP2...) like ISLISP
-- (progn EXP1 EXP2...)
+- (cond (TEST FORM...)...)
+- (for ((VAR INIT [STEP])...) (END-TEST RESULT...) FORM... )
+- (if TEST-FORM THEN-FORM ELSE-FORM)
+- (progn FORM...)
+- (while TEST-FORM BODY-FORM...)
 
 #### Functions
 
-- (defun NAME (\[PARAMVAR1... \]\[/ LOCALVAR1...\]) EXP1 EXP2...) like autolisp
-    - &amp;rest; 
-- (lambda (\[PARAMVAR1...\]\[/ LOCALVAR1...\]) EXP1 EXP2...) like autolisp
+- (defun FUNCTION-NAME (IDENTIFIER... [&amp;rest IDENTIFIER]) FORM...)
+- (lambda (IDENTIFIER... [&amp;rest IDENTIFIER]) FORM...)
 
 #### Constant
 
@@ -196,21 +191,19 @@ Backquotations and &amp;body are not supported.
 - (mapcon #'FUNCTION LIST)
 - (apply #'FUNCTION [PARAMS...] LIST)
 - (funcall #'FUNCTION EXP1...)
-- (map 'list #'FUNCTION SEQUENCE)
-- (map 'string #'FUNCTION SEQUENCE)
 
 #### File I/O
 
-- (format {t|nil|STREAM} FORMAT [ARGS..])
-- (format-char STREAM CHAR)
-- (format-object STREAM STRING {t|nil})
-- (format-integer STREAM INTEGER)
-- (format-float STREAM FLOAT)
+- (format OUTPUT-STREAM FORMAT [ARGS..])
+- (format-char OUTPUT-STREAM CHAR)
+- (format-object OUTPUT-STREAM STRING {t|nil})
+- (format-integer OUTPUT-STREAM INTEGER)
+- (format-float OUTPUT-STREAM FLOAT)
 - (open-input-file FILENAME)
 - (open-output-file FILENAME)
-- (with-open-input-file (STREAM FILENAME) FORM...)
-- (with-open-output-file (STREAM FILENAME) FORM...)
-- (close HANDLE)
+- (with-open-input-file (INPUT-STREAM FILENAME) FORM...)
+- (with-open-output-file (OUTPUT-STREAM FILENAME) FORM...)
+- (close STREAM)
 - (create-string-input-stream STRING)
 - (create-string-output-stream)
 - (get-output-stream-string STRSTREAM)

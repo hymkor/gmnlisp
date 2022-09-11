@@ -33,3 +33,6 @@ This subpackage appends this function.
 - (coerce SEQUENCE 'string)
 - (coerce SEQUENCE 'utf8string)
 - (coerce SEQUENCE 'utf32string)
+- (typep OBJ 'TYPENAME)
+- (map 'list #'FUNCTION SEQUENCE)
+- (map 'string #'FUNCTION SEQUENCE)
