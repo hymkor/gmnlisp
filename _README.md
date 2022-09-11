@@ -153,6 +153,9 @@ Support functions
 - (convert OBJ &lt;utf8string&gt;)
 - (parse-number STRING)
 - (truncate X)
+- (floor X)
+- (ceiling X)
+- (round X)
 
 #### Branch and Loop
 
