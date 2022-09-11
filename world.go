@@ -176,6 +176,7 @@ func New() *World {
 			errout:  &_WriterNode{_Writer: os.Stderr},
 		},
 		lexical: Variables{
+			// *sort*start*
 			NewSymbol("*"):                           SpecialF(cmdMulti),
 			NewSymbol("*err-exist*"):                 &ErrorNode{Value: os.ErrExist},
 			NewSymbol("*err-not-exist*"):             &ErrorNode{Value: os.ErrNotExist},
@@ -313,6 +314,7 @@ func New() *World {
 			NewSymbol("with-open-input-file"):        SpecialF(cmdWithOpenInputFile),
 			NewSymbol("with-open-output-file"):       SpecialF(cmdWithOpenOutputFile),
 			NewSymbol("zerop"):                       &Function{C: 1, F: funZerop},
+			// *sort*end*
 		},
 	}
 }

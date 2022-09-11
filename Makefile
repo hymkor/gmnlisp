@@ -33,3 +33,8 @@ gmnlpp$(EXE): gmnlisp$(EXE)
 
 clean:
 	$(RM) gmnlpp$(EXE) gmnlisp$(EXE)
+
+sort-world:
+	gmnlisp gosort.lsp < world.go > world.go_
+	-cmp world.go world.go_ || copy world.go_ world.go
+	del world.go_
