@@ -115,13 +115,14 @@ Support functions
 - (and EXP1 EXP2..)
 - (or EXP1 EXP2..)
 - (not EXP)
-
 - (string= STRING1 STRING2)
 - (string/= STRING1 STRING2)
 - (string&lt; STRING1 STRING2)
 - (string&gt; STRING1 STRING2)
 - (string&gt;= STRING1 STRING2)
 - (string&lt;= STRING1 STRING2)
+- (string-index SUBSTRING STRING [START])
+- (string-append STRING...)
 
 #### test
 
