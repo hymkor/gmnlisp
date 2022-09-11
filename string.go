@@ -50,3 +50,38 @@ func funParseInt(ctx context.Context, w *World, argv []Node) (Node, error) {
 	}
 	return Integer(value), nil
 }
+
+func compareString(argv []Node, f func(int) bool) (Node, error) {
+	left, ok := argv[0].(StringTypes)
+	if !ok {
+		return nil, ErrExpectedString
+	}
+	right, ok := argv[1].(StringTypes)
+	if !ok {
+		return nil, ErrExpectedString
+	}
+	cmp := strings.Compare(left.String(), right.String())
+	if f(cmp) {
+		return True, nil
+	}
+	return Null, nil
+}
+
+func funStringLt(ctx context.Context, w *World, argv []Node) (Node, error) {
+	return compareString(argv, func(cmp int) bool { return cmp < 0 })
+}
+func funStringLe(ctx context.Context, w *World, argv []Node) (Node, error) {
+	return compareString(argv, func(cmp int) bool { return cmp <= 0 })
+}
+func funStringEq(ctx context.Context, w *World, argv []Node) (Node, error) {
+	return compareString(argv, func(cmp int) bool { return cmp == 0 })
+}
+func funStringGt(ctx context.Context, w *World, argv []Node) (Node, error) {
+	return compareString(argv, func(cmp int) bool { return cmp > 0 })
+}
+func funStringGe(ctx context.Context, w *World, argv []Node) (Node, error) {
+	return compareString(argv, func(cmp int) bool { return cmp >= 0 })
+}
+func funStringNe(ctx context.Context, w *World, argv []Node) (Node, error) {
+	return compareString(argv, func(cmp int) bool { return cmp != 0 })
+}
