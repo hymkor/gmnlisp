@@ -72,6 +72,8 @@ Support functions
 - (subseq SEQUENCE INDEX)
 - (elt SEQUENCE INDEX)
 - (member ATOM LIST)
+- (vector OBJ...)
+- #(OBJ...)
 
 #### Variables
 
