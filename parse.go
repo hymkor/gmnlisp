@@ -95,6 +95,31 @@ func tryParseAsNumber(token string) (Node, bool, error) {
 	return nil, false, nil
 }
 
+func readUntilCloseParen(rs io.RuneScanner) ([]Node, error) {
+	nodes := []Node{}
+	var err error
+	for {
+		if err != nil {
+			if err == io.EOF {
+				return nil, ErrTooShortTokens
+			}
+			return nil, err
+		}
+		var node1 Node
+		node1, err = ReadNode(rs)
+		if err != nil {
+			if err == io.EOF {
+				return nil, ErrTooShortTokens
+			}
+			return nil, err
+		}
+		if node1 == parenCloseSymbol {
+			return nodes, nil
+		}
+		nodes = append(nodes, node1)
+	}
+}
+
 func ReadNode(rs io.RuneScanner) (Node, error) {
 	token, err := readToken(rs)
 	if err != nil {
@@ -120,28 +145,19 @@ func ReadNode(rs io.RuneScanner) (Node, error) {
 		}
 		return &Cons{Car: functionSymbol, Cdr: &Cons{Car: function, Cdr: Null}}, nil
 	}
-	if token == "(" {
-		nodes := []Node{}
-		for {
-			if err != nil {
-				if err == io.EOF {
-					return nil, ErrTooShortTokens
-				}
-				return nil, err
-			}
-			var node1 Node
-			node1, err = ReadNode(rs)
-			if err != nil {
-				if err == io.EOF {
-					return nil, ErrTooShortTokens
-				}
-				return nil, err
-			}
-			if node1 == parenCloseSymbol {
-				return nodes2cons(nodes), nil
-			}
-			nodes = append(nodes, node1)
+	if token == "#(" {
+		nodes, err := readUntilCloseParen(rs)
+		if err != nil {
+			return nil, err
 		}
+		return Vector(nodes), nil
+	}
+	if token == "(" {
+		nodes, err := readUntilCloseParen(rs)
+		if err != nil {
+			return nil, err
+		}
+		return nodes2cons(nodes), nil
 	}
 	if len(token) > 0 && token[0] == ':' {
 		return Keyword(token), nil

@@ -326,6 +326,8 @@ func funSubSeq(ctx context.Context, w *World, args []Node) (Node, func(Node) err
 		buffer = &UTF32StringBuilder{}
 	} else if _, ok := args[0].(UTF8String); ok {
 		buffer = &UTF8StringBuilder{}
+	} else if _, ok := args[0].(Vector); ok {
+		buffer = &VectorBuilder{}
 	} else {
 		buffer = &ListBuilder{}
 	}

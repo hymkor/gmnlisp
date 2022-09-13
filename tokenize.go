@@ -18,6 +18,10 @@ func readtokenWord(r io.RuneScanner) (string, error) {
 		}
 
 		if !quote {
+			if lastLastRune == '#' && lastRune == '(' {
+				buffer.WriteRune(lastRune)
+				return buffer.String(), nil
+			}
 			if lastRune == ')' || lastRune == '(' || lastRune == ';' || unicode.IsSpace(lastRune) {
 				r.UnreadRune()
 				return buffer.String(), nil
