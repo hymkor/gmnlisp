@@ -417,3 +417,34 @@ func (f *KWFunction) Call(ctx context.Context, w *World, list Node) (Node, error
 	}
 	return f.F(ctx, w, args, kwargs)
 }
+
+func cmdFlet(ctx context.Context, w *World, list Node) (Node, error) {
+	flist, list, err := Shift(list)
+	if err != nil {
+		return nil, err
+	}
+	lexical := Variables{}
+	for HasValue(flist) {
+		var flist1 Node
+		flist1, flist, err = Shift(flist)
+		if err != nil {
+			return nil, err
+		}
+		var name Node
+		name, flist1, err = Shift(flist1)
+		if err != nil {
+			return nil, err
+		}
+		symbol, ok := name.(Symbol)
+		if !ok {
+			return nil, ErrExpectedSymbol
+		}
+		lambda, err := newLambda(w, flist1, symbol)
+		if err != nil {
+			return nil, err
+		}
+		lexical[symbol] = lambda
+	}
+	nw := w.Let(lexical)
+	return Progn(ctx, nw, list)
+}

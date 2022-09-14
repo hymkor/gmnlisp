@@ -229,6 +229,7 @@ func New() *World {
 			NewSymbol("error-output"):                SpecialF(cmdErrorOutput),
 			NewSymbol("evenp"):                       &Function{C: 1, F: funEvenp},
 			NewSymbol("exit"):                        SpecialF(cmdQuit),
+			NewSymbol("flet"):                        SpecialF(cmdFlet),
 			NewSymbol("floatp"):                      &Function{C: 1, F: funAnyTypep[Float]},
 			NewSymbol("floor"):                       &Function{C: 1, F: funFloor},
 			NewSymbol("for"):                         SpecialF(cmdFor),

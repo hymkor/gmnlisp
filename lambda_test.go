@@ -106,3 +106,12 @@ func TestRest(t *testing.T) {
 		)
 		(cat "1" "2" "3" "4" "5")`, String("12345"))
 }
+
+func TestFlet(t *testing.T) {
+	assertEqual(t, `
+		(flet ((f (x) (+ x 3)))
+			(flet ((f (x) (+ x (f x))))
+				(f 7)
+			)
+		)`, Integer(17))
+}
