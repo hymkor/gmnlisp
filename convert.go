@@ -14,6 +14,7 @@ var (
 	classInteger     = NewSymbol("<integer>")
 	classFloat       = NewSymbol("<float>")
 	classList        = NewSymbol("<list>")
+	classVector      = NewSymbol("<general-vector>")
 )
 
 func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
@@ -51,6 +52,12 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 				buffer.Add(Rune(r))
 			}
 			return buffer.Sequence(), nil
+		case classVector:
+			var buffer VectorBuilder
+			for _, r := range val {
+				buffer.Add(Rune(r))
+			}
+			return buffer.Sequence(), nil
 		}
 	case UTF8String:
 		switch class {
@@ -76,6 +83,12 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 			return UTF32String(val.String()), nil
 		case classList:
 			var buffer ListBuilder
+			for _, r := range val {
+				buffer.Add(Rune(r))
+			}
+			return buffer.Sequence(), nil
+		case classVector:
+			var buffer VectorBuilder
 			for _, r := range val {
 				buffer.Add(Rune(r))
 			}
@@ -108,8 +121,32 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 			return UTF32String(fmt.Sprintf("%d", int(val))), nil
 		}
 	case *Cons:
-		if class == classList {
+		switch class {
+		case classList:
 			return val, nil
+		case classVector:
+			var buffer VectorBuilder
+			for HasValue(val) {
+				buffer.Add(val.Car)
+				var ok bool
+				val, ok = val.Cdr.(*Cons)
+				if !ok {
+					break
+				}
+			}
+			return buffer.Sequence(), nil
+		}
+	case Vector:
+		switch class {
+		case classVector:
+			return val, nil
+		case classList:
+			var buffer ListBuilder
+			err := SeqEach(val, func(value Node) error {
+				buffer.Add(value)
+				return nil
+			})
+			return buffer.Sequence(), err
 		}
 	}
 	return nil, ErrNotSupportType

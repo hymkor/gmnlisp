@@ -18,4 +18,12 @@ func TestConvert(t *testing.T) {
 	assertEqual(t, `(convert "abc" <list>)`, List(Rune('a'), Rune('b'), Rune('c')))
 	assertEqual(t, `(convert (convert "abc" <utf32string>) <list>)`, List(Rune('a'), Rune('b'), Rune('c')))
 	assertEqual(t, `(convert '(1 2 3) <list>)`, List(Integer(1), Integer(2), Integer(3)))
+	assertEqual(t, `(convert "abc" <general-vector>)`,
+		NewVector(Rune('a'), Rune('b'), Rune('c')))
+	assertEqual(t, `(convert (convert "abc" <utf32string>) <general-vector>)`,
+		NewVector(Rune('a'), Rune('b'), Rune('c')))
+	assertEqual(t, `(convert '(1 2 3) <general-vector>)`,
+		NewVector(Integer(1), Integer(2), Integer(3)))
+	assertEqual(t, `(convert #(1 2 3) <list>)`,
+		List(Integer(1), Integer(2), Integer(3)))
 }
