@@ -50,7 +50,7 @@ func (c *Coloring) Next(ch rune) int {
 		color = readline.Magenta
 	} else if ch == '(' || ch == ')' {
 		color = readline.Cyan
-	} else if ch == '\\' {
+	} else if ch == '\\' || ch == '#' || ch == '\'' {
 		color = readline.Red
 	} else {
 		color = readline.White
