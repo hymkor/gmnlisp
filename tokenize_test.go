@@ -39,6 +39,10 @@ func TestTokenizer1(t *testing.T) {
 	assertEqual(t, `"\""`, String(`"`))
 }
 
+func TestComment(t *testing.T) {
+	assertEqual(t, `(list 1 #|ahaha ihihi|# 2)`, List(Integer(1), Integer(2)))
+}
+
 /*
 func TestShebang(t *testing.T) {
 	assertEqual(t, `@gmnlisp.exe "%~f0" & exit /b

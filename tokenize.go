@@ -6,6 +6,53 @@ import (
 	"unicode"
 )
 
+func skipComment(r io.RuneScanner) (bool, error) {
+	c, _, err := r.ReadRune()
+	if err != nil {
+		return false, err
+	}
+	if c != '|' {
+		if e := r.UnreadRune(); e != nil {
+			panic(e.Error())
+		}
+		return false, nil
+	}
+	nest := 1
+	for {
+		c, _, err = r.ReadRune()
+		if err != nil {
+			return true, err
+		}
+		switch c {
+		case '|':
+			c, _, err = r.ReadRune()
+			if err != nil {
+				return true, err
+			}
+			if c == '#' {
+				nest--
+				if nest == 0 {
+					return true, nil
+				}
+			} else {
+				r.UnreadRune()
+			}
+		case '#':
+			c, _, err = r.ReadRune()
+			if err != nil {
+				return true, err
+			}
+			if c == '|' {
+				nest++
+			} else {
+				if e := r.UnreadRune(); e != nil {
+					panic(e.Error())
+				}
+			}
+		}
+	}
+}
+
 func readtokenWord(r io.RuneScanner) (string, error) {
 	var buffer strings.Builder
 
@@ -18,6 +65,15 @@ func readtokenWord(r io.RuneScanner) (string, error) {
 		}
 
 		if !quote {
+			if lastRune == '#' {
+				done, err := skipComment(r)
+				if err != nil {
+					return "", err
+				}
+				if done {
+					continue
+				}
+			}
 			if lastLastRune == '#' && lastRune == '(' {
 				buffer.WriteRune(lastRune)
 				return buffer.String(), nil
@@ -54,11 +110,25 @@ func readToken(r io.RuneScanner) (string, error) {
 			}
 			continue
 		}
+		/*
+			if lastRune == '#' {
+				done, err := skipComment(r)
+				if err != nil {
+					return "", err
+				}
+				if done {
+					continue
+				}
+			}
+		*/
+
 		if strings.ContainsRune("'()", lastRune) {
 			token := string(lastRune)
 			return token, nil
 		}
-		r.UnreadRune()
+		if e := r.UnreadRune(); e != nil {
+			panic(e.Error())
+		}
 		var token string
 		token, err = readtokenWord(r)
 		if token != "" {
