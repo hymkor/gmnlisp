@@ -170,8 +170,10 @@ Support functions
 
 #### Functions
 
-- (defun FUNCTION-NAME (IDENTIFIER... [&amp;rest IDENTIFIER]) FORM...)
 - (lambda (IDENTIFIER... [&amp;rest IDENTIFIER]) FORM...)
+- (defun FUNCTION-NAME (IDENTIFIER... [&amp;rest IDENTIFIER]) FORM...)
+- (labels ((FUNCTION-NAME LAMBDA-LIST FORM...)...) BODY-FORM...)
+- (flet ((FUNCTION-NAME LAMBDA-LIST FORM...)...) BODY-FORM...)
 
 #### Constant
 
