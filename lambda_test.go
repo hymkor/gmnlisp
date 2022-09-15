@@ -115,3 +115,17 @@ func TestFlet(t *testing.T) {
 			)
 		)`, Integer(17))
 }
+
+func TestLabels(t *testing.T) {
+	assertEqual(t, `
+		(labels
+			((evenp (n)
+				(if (= n 0)
+					t
+					(oddp (- n 1))))
+			(oddp (n)
+				(if (= n 0)
+					nil
+					(evenp (- n 1)))))
+		(evenp 88))`, True)
+}

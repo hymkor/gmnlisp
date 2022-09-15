@@ -245,6 +245,7 @@ func New() *World {
 			NewSymbol("if"):                          SpecialF(cmdIf),
 			NewSymbol("incf"):                        SpecialF(cmdIncf),
 			NewSymbol("integerp"):                    &Function{C: 1, F: funAnyTypep[Integer]},
+			NewSymbol("labels"):                      SpecialF(cmdLabels),
 			NewSymbol("lambda"):                      SpecialF(cmdLambda),
 			NewSymbol("last"):                        &Function{C: 1, F: funLast},
 			NewSymbol("length"):                      &Function{C: 1, F: funLength},
