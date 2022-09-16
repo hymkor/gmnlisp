@@ -2,6 +2,7 @@ package gmnlisp
 
 import (
 	"io"
+	"regexp"
 	"strings"
 	"unicode"
 )
@@ -53,6 +54,8 @@ func skipComment(r io.RuneScanner) (bool, error) {
 	}
 }
 
+var rxSharpAndNumber = regexp.MustCompile(`^#(\d+a)?$`)
+
 func readtokenWord(r io.RuneScanner) (string, error) {
 	var buffer strings.Builder
 
@@ -74,7 +77,7 @@ func readtokenWord(r io.RuneScanner) (string, error) {
 					continue
 				}
 			}
-			if lastLastRune == '#' && lastRune == '(' {
+			if lastRune == '(' && rxSharpAndNumber.MatchString(buffer.String()) {
 				buffer.WriteRune(lastRune)
 				return buffer.String(), nil
 			}
@@ -110,18 +113,6 @@ func readToken(r io.RuneScanner) (string, error) {
 			}
 			continue
 		}
-		/*
-			if lastRune == '#' {
-				done, err := skipComment(r)
-				if err != nil {
-					return "", err
-				}
-				if done {
-					continue
-				}
-			}
-		*/
-
 		if strings.ContainsRune("'()", lastRune) {
 			token := string(lastRune)
 			return token, nil

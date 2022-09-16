@@ -1,6 +1,7 @@
 package gmnlisp
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"regexp"
@@ -9,9 +10,11 @@ import (
 	"unicode/utf8"
 )
 
-var rxFloat = regexp.MustCompile(`^-?[0-9]+\.[0-9]*$`)
-
-var rxInteger = regexp.MustCompile(`^-?[0-9]+$`)
+var (
+	rxFloat   = regexp.MustCompile(`^-?[0-9]+\.[0-9]*$`)
+	rxInteger = regexp.MustCompile(`^-?[0-9]+$`)
+	rxArray   = regexp.MustCompile(`^#(\d*)a\(`)
+)
 
 var (
 	dotSymbol        = NewSymbol(".")
@@ -43,6 +46,34 @@ func nodes2cons(nodes []Node) Node {
 		}
 	}
 	return cons
+}
+
+func readArrayDimN(dim int, rs io.RuneScanner) (Node, error) {
+	if dim <= 1 {
+		nodes, err := readUntilCloseParen(rs)
+		if err != nil {
+			return nil, err
+		}
+		return Vector(nodes), nil
+	}
+	nodes := []Node{}
+	for {
+		token, err := readToken(rs)
+		if err != nil {
+			return nil, err
+		}
+		if token == "(" {
+			tmp, err := readArrayDimN(dim-1, rs)
+			if err != nil {
+				return nil, err
+			}
+			nodes = append(nodes, tmp)
+		} else if token == ")" {
+			return Vector(nodes), nil
+		} else {
+			return nil, errors.New("Expected array")
+		}
+	}
 }
 
 var escapeSequenceReplacer = strings.NewReplacer(
@@ -151,6 +182,13 @@ func ReadNode(rs io.RuneScanner) (Node, error) {
 			return nil, err
 		}
 		return Vector(nodes), nil
+	}
+	if m := rxArray.FindStringSubmatch(token); m != nil {
+		dim, err := strconv.Atoi(m[1])
+		if err != nil {
+			panic(err.Error())
+		}
+		return readArrayDimN(dim, rs)
 	}
 	if token == "(" {
 		nodes, err := readUntilCloseParen(rs)
