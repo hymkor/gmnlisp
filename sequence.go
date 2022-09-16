@@ -88,9 +88,8 @@ func (S *UTF8StringBuilder) Sequence() Node {
 }
 
 func funElt(_ context.Context, _ *World, args []Node) (Node, func(Node) error, error) {
-	// ISLisp's (elt)
-	type _Aref interface {
-		Aref(int) (Node, func(Node) error, error)
+	type canElt interface {
+		Elt(int) (Node, func(Node) error, error)
 	}
 
 	index, ok := args[1].(Integer)
@@ -101,8 +100,8 @@ func funElt(_ context.Context, _ *World, args []Node) (Node, func(Node) error, e
 	var value Node = Null
 	var setter func(Node) error
 
-	if aref, ok := list.(_Aref); ok {
-		return aref.Aref(int(index))
+	if aref, ok := list.(canElt); ok {
+		return aref.Elt(int(index))
 	}
 
 	for index >= 0 {

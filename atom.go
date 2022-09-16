@@ -228,7 +228,7 @@ func (s UTF32String) LessThan(n Node) (bool, error) {
 	return false, fmt.Errorf("%w: `%s`", ErrNotSupportType, ToString(n, PRINT))
 }
 
-func (s UTF32String) Aref(n int) (Node, func(Node) error, error) {
+func (s UTF32String) Elt(n int) (Node, func(Node) error, error) {
 	if n < 0 || n >= len(s) {
 		return nil, nil, ErrIndexOutOfRange
 	}

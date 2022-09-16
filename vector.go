@@ -62,7 +62,7 @@ func (v Vector) FirstAndRest() (Node, Node, bool, func(Node) error) {
 	}
 }
 
-func (v Vector) Aref(n int) (Node, func(Node) error, error) {
+func (v Vector) Elt(n int) (Node, func(Node) error, error) {
 	if n < 0 || n >= len(v) {
 		return nil, nil, ErrIndexOutOfRange
 	}
