@@ -46,6 +46,11 @@ func TestDynamic(t *testing.T) {
 		(defdynamic *color* 'red)
 		(defun what-color () (dynamic *color*))
 		(what-color)`, NewSymbol("red"))
+
+	assertEqual(t, `
+		(defdynamic hoge 1)
+		(setf (dynamic hoge) 3)
+		(dynamic hoge)`, Integer(3))
 }
 
 func TestDynamicLet(t *testing.T) {

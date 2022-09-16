@@ -32,6 +32,39 @@ func cmdSetq(ctx context.Context, w *World, params Node) (Node, error) {
 	return value, nil
 }
 
+type LeftValueCmd func(context.Context, *World, Node) (Node, func(Node) error, error)
+
+func (f LeftValueCmd) PrintTo(w io.Writer, m PrintMode) (int, error) {
+	return io.WriteString(w, "bultin Special(Set/Get)")
+}
+
+func (f LeftValueCmd) Eval(context.Context, *World) (Node, error) {
+	return f, nil
+}
+
+func (f LeftValueCmd) Equals(n Node, m EqlMode) bool {
+	return false
+}
+
+func (f LeftValueCmd) Call(ctx context.Context, w *World, list Node) (Node, error) {
+	if err := CheckContext(ctx); err != nil {
+		return nil, err
+	}
+	value, _, err := f(ctx, w, list)
+	return value, err
+}
+
+func (f LeftValueCmd) Set(ctx context.Context, w *World, list Node, value Node) error {
+	if err := CheckContext(ctx); err != nil {
+		return err
+	}
+	_, setter, err := f(ctx, w, list)
+	if err != nil {
+		return err
+	}
+	return setter(value)
+}
+
 type LeftValueF struct {
 	C int
 	F func(context.Context, *World, []Node) (Node, func(Node) error, error)
@@ -273,23 +306,26 @@ func cmdDefDynamic(ctx context.Context, w *World, list Node) (Node, error) {
 	return symbol, nil
 }
 
-func cmdDynamic(ctx context.Context, w *World, list Node) (Node, error) {
+func cmdDynamic(ctx context.Context, w *World, list Node) (Node, func(Node) error, error) {
 	var err error
 	var symbolNode Node
 
 	symbolNode, list, err = Shift(list)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	symbol, ok := symbolNode.(Symbol)
 	if !ok {
-		return nil, ErrExpectedSymbol
+		return nil, nil, ErrExpectedSymbol
 	}
 	value, ok := w.shared.dynamic.Get(symbol)
 	if !ok {
-		return nil, ErrVariableUnbound
+		return nil, nil, ErrVariableUnbound
 	}
-	return value, nil
+	return value, func(val Node) error {
+		w.shared.dynamic.Set(symbol, val)
+		return nil
+	}, nil
 }
 
 func cmdDynamicLet(ctx context.Context, w *World, list Node) (Node, error) {

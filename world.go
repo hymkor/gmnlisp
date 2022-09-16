@@ -219,7 +219,7 @@ func New() *World {
 			NewSymbol("defglobal"):                   SpecialF(cmdDefglobal),
 			NewSymbol("defmacro"):                    SpecialF(cmdDefMacro),
 			NewSymbol("defun"):                       SpecialF(cmdDefun),
-			NewSymbol("dynamic"):                     SpecialF(cmdDynamic),
+			NewSymbol("dynamic"):                     LeftValueCmd(cmdDynamic),
 			NewSymbol("dynamic-let"):                 SpecialF(cmdDynamicLet),
 			NewSymbol("elt"):                         &LeftValueF{C: 2, F: funElt},
 			NewSymbol("eq"):                          SpecialF(cmdEq),
