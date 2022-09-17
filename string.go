@@ -11,32 +11,25 @@ func funStringAppend(ctx context.Context, w *World, list []Node) (Node, error) {
 	if len(list) <= 0 {
 		return Null, nil
 	}
+	var buffer SeqBuilder
 	if _, ok := list[0].(UTF32String); ok {
-		length := 0
-		for _, n := range list {
-			str, ok := n.(UTF32String)
-			if !ok {
-				return nil, ErrExpectedString
-			}
-			length += len(str)
-		}
-		buffer := make([]Rune, 0, length)
-		for _, n := range list {
-			str := n.(UTF32String)
-			buffer = append(buffer, []Rune(str)...)
-		}
-		return UTF32String(buffer), nil
+		buffer = &UTF32StringBuilder{}
+	} else if _, ok := list[0].(UTF8String); ok {
+		buffer = &UTF8StringBuilder{}
 	} else {
-		var buffer strings.Builder
-		for _, s := range list {
-			str, ok := s.(UTF8String)
-			if !ok {
-				return nil, ErrExpectedString
-			}
-			str.PrintTo(&buffer, PRINC)
-		}
-		return UTF8String(buffer.String()), nil
+		return nil, ErrNotSupportType
 	}
+	for _, s := range list {
+		str, ok := s.(StringTypes)
+		if !ok {
+			return nil, ErrNotSupportType
+		}
+		str.EachRune(func(r Rune) error {
+			buffer.Add(r)
+			return nil
+		})
+	}
+	return buffer.Sequence(), nil
 }
 
 func funParseInt(ctx context.Context, w *World, argv []Node) (Node, error) {

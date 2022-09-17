@@ -56,6 +56,7 @@ type StringTypes interface {
 	Node
 	String() string
 	firstRuneAndRestString() (Rune, StringTypes, bool)
+	EachRune(func(Rune) error) error
 }
 
 func (s UTF8String) String() string {
@@ -98,6 +99,15 @@ func (s UTF8String) firstRuneAndRestString() (Rune, StringTypes, bool) {
 	}
 	r, siz := utf8.DecodeRuneInString(string(s))
 	return Rune(r), UTF8String(s[siz:]), true
+}
+
+func (s UTF8String) EachRune(f func(Rune) error) error {
+	for _, r := range s {
+		if err := f(Rune(r)); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func (s UTF8String) FirstAndRest() (Node, Node, bool, func(Node) error) {
@@ -172,6 +182,15 @@ func (s UTF32String) Equals(n Node, m EqlMode) bool {
 		}
 		return true
 	}
+}
+
+func (s UTF32String) EachRune(f func(Rune) error) error {
+	for _, c := range s {
+		if err := f(Rune(c)); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func (s UTF32String) firstRuneAndRestString() (Rune, StringTypes, bool) {
