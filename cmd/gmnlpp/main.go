@@ -69,19 +69,19 @@ func replaceFunc(source []byte) []byte {
 		before, after, found := bytes.Cut(source, []byte{'\n'})
 		if !found {
 			if len(source) > 0 {
-				fmt.Fprint(&buffer, `(format (standard-output) "~a" "`)
+				fmt.Fprint(&buffer, `(write "`)
 				unescapeSequenceReplacer.WriteString(&buffer, string(source))
 				fmt.Fprintln(&buffer, `")`)
 			}
 			if equalMark {
-				buffer.WriteString("(format (standard-output) ")
+				buffer.WriteString("(write ")
 			}
 			return buffer.Bytes()
 		}
 		if len(before) > 0 && before[len(before)-1] == '\r' {
 			before = before[:len(before)-1]
 		}
-		fmt.Fprint(&buffer, `(format (standard-output) "~a~%" "`)
+		fmt.Fprint(&buffer, `(write-line "`)
 		unescapeSequenceReplacer.WriteString(&buffer, string(before))
 		fmt.Fprintln(&buffer, `")`)
 		source = []byte(after)
@@ -93,6 +93,7 @@ func replaceReader(lisp *gmnlisp.World, r io.Reader, w, sourceOut io.Writer) (er
 	if err != nil {
 		return err
 	}
+
 	bw := bufio.NewWriter(w)
 
 	source = rxBeginning.ReplaceAllFunc(source, replaceFunc)
@@ -120,6 +121,21 @@ var flagAnsi = flag.Bool("ansi", false, "macro value is not UTF8 (ANSI)")
 
 func mains(args []string) error {
 	lisp := gmnlisp.New().Let(auto.Functions)
+	ctx := context.Background()
+
+	f1, err := lisp.Interpret(ctx, `(lambda (s) (format (standard-output) "~a~%" s))`)
+	if err != nil {
+		return err
+	}
+	f2, err := lisp.Interpret(ctx, `(lambda (s) (format-object (standard-output) s nil))`)
+	if err != nil {
+		return err
+	}
+	lisp = lisp.Let(
+		gmnlisp.Variables{
+			gmnlisp.NewSymbol("write-line"): f1,
+			gmnlisp.NewSymbol("write"):      f2,
+		})
 
 	fileCount := 0
 	for _, arg := range args {
