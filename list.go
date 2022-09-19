@@ -116,10 +116,8 @@ func funListp(_ context.Context, _ *World, argv []Node) (Node, error) {
 }
 
 // funAssoc implements (assoc KEY LIST)
-func funAssoc(_ context.Context, _ *World, argv []Node) (Node, error) {
-	key := argv[0]
-	list := argv[1]
 
+func Assoc(key Node, list Node) (Node, error) {
 	for HasValue(list) {
 		var element Node
 		var err error
@@ -137,6 +135,10 @@ func funAssoc(_ context.Context, _ *World, argv []Node) (Node, error) {
 		}
 	}
 	return Null, nil
+}
+
+func funAssoc(_ context.Context, _ *World, argv []Node) (Node, error) {
+	return Assoc(argv[0], argv[1])
 }
 
 func subst(newItem, oldItem, list Node) Node {
