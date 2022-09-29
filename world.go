@@ -303,7 +303,7 @@ func New() *World {
 			NewSymbol("string>"):                     &Function{C: 2, F: funStringGt},
 			NewSymbol("string>="):                    &Function{C: 2, F: funStringGe},
 			NewSymbol("stringp"):                     &Function{C: 1, F: funAnyTypep[String]},
-			NewSymbol("subseq"):                      &LeftValueF{C: -1, F: funSubSeq},
+			NewSymbol("subseq"):                      &LeftValueF{C: 3, F: funSubSeq},
 			NewSymbol("subst"):                       &Function{C: 3, F: funSubst},
 			NewSymbol("symbolp"):                     &Function{C: 1, F: funAnyTypep[Symbol]},
 			NewSymbol("t"):                           True,

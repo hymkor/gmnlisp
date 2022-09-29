@@ -3,7 +3,6 @@ package gmnlisp
 import (
 	"context"
 	"io"
-	"math"
 	"strings"
 )
 
@@ -303,22 +302,13 @@ type SeqBuilder interface {
 }
 
 func funSubSeq(ctx context.Context, w *World, args []Node) (Node, func(Node) error, error) {
-	if len(args) < 2 {
-		return nil, nil, ErrTooFewArguments
-	}
-	if len(args) > 3 {
-		return nil, nil, ErrTooManyArguments
-	}
 	start, ok := args[1].(Integer)
 	if !ok {
 		return nil, nil, ErrExpectedNumber
 	}
-	end := Integer(math.MaxInt)
-	if len(args) >= 3 {
-		end, ok = args[2].(Integer)
-		if !ok {
-			return nil, nil, ErrExpectedNumber
-		}
+	end, ok := args[2].(Integer)
+	if !ok {
+		return nil, nil, ErrExpectedNumber
 	}
 	var buffer SeqBuilder
 	if _, ok := args[0].(UTF32String); ok {
