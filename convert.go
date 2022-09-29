@@ -15,6 +15,7 @@ var (
 	classFloat       = NewSymbol("<float>")
 	classList        = NewSymbol("<list>")
 	classVector      = NewSymbol("<general-vector>")
+	classCharacter   = NewSymbol("<character>")
 )
 
 func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
@@ -33,6 +34,8 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 	switch val := source.(type) {
 	case Rune:
 		switch class {
+		case classCharacter:
+			return val, nil
 		case classInteger:
 			return Integer(val), nil
 		case classSymbol:
@@ -109,6 +112,8 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 		}
 	case Integer:
 		switch class {
+		case classCharacter:
+			return Rune(val), nil
 		case classInteger:
 			return val, nil
 		case classFloat:
