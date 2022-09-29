@@ -36,3 +36,4 @@ This subpackage appends this function.
 - (typep OBJ 'TYPENAME)
 - (map 'list #'FUNCTION SEQUENCE)
 - (map 'string #'FUNCTION SEQUENCE)
+- (subst NEWITEM OLDITEM LIST)
