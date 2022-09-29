@@ -124,6 +124,7 @@ Support functions
 - (string&lt;= STRING1 STRING2)
 - (string-index SUBSTRING STRING [START])
 - (string-append STRING...)
+- (create-String I [INITIAL-CHARACTER])
 
 #### test
 
