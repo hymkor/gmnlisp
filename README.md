@@ -69,7 +69,7 @@ Support functions
 - (append LIST...)
 - (assoc OBJ LIST)
 - (subst NEWITEM OLDITEM LIST)
-- (subseq SEQUENCE INDEX)
+- (subseq SEQUENCE Z1 Z2)
 - (elt SEQUENCE INDEX)
 - (member ATOM LIST)
 - (vector OBJ...)
