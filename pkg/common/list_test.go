@@ -25,3 +25,23 @@ func TestFirst(t *testing.T) {
 	assertEqual(t, `(third '(1 2 3 4))`, Integer(3))
 	assertEqual(t, `(rest '(1 2 3 4))`, List(Integer(2), Integer(3), Integer(4)))
 }
+
+func TestSubst(t *testing.T) {
+	assertEqual(t, `
+	(let ((m '(("X" . 1) ("Y" . 2) ("Z" . 4))))
+		(subst (cons "X" 7) (assoc "X" m) m))`,
+		List(
+			&Cons{Car: String("X"), Cdr: Integer(7)},
+			&Cons{Car: String("Y"), Cdr: Integer(2)},
+			&Cons{Car: String("Z"), Cdr: Integer(4)}))
+
+	// subst does not destoroy original list
+	assertEqual(t, `
+	(let ((m '(("X" . 1) ("Y" . 2) ("Z" . 4))))
+		(subst (cons "X" 7) (assoc "X" m) m)
+		m)`,
+		List(
+			&Cons{Car: String("X"), Cdr: Integer(1)},
+			&Cons{Car: String("Y"), Cdr: Integer(2)},
+			&Cons{Car: String("Z"), Cdr: Integer(4)}))
+}

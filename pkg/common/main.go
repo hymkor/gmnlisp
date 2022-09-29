@@ -37,6 +37,7 @@ var Functions = Variables{
 	NewSymbol("coerce"):         &Function{C: 2, F: funCoerce},
 	NewSymbol("map"):            &Function{C: -1, F: funMap},
 	NewSymbol("typep"):          &Function{C: 2, F: funTypep},
+	NewSymbol("subst"):          &Function{C: 3, F: funSubst},
 }
 
 var defparameter Callable

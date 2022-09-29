@@ -75,3 +75,22 @@ func funCddr(_ context.Context, _ *World, argv []Node) (Node, func(Node) error, 
 func funCdddr(_ context.Context, _ *World, argv []Node) (Node, func(Node) error, error) {
 	return nthcdr(3, argv[0])
 }
+
+func subst(newItem, oldItem, list Node) Node {
+	if list.Equals(oldItem, STRICT) {
+		return newItem
+	}
+	cons, ok := list.(*Cons)
+	if ok {
+		return &Cons{
+			Car: subst(newItem, oldItem, cons.Car),
+			Cdr: subst(newItem, oldItem, cons.Cdr),
+		}
+	}
+	return list
+}
+
+// funSubst implements (subst NEWITEM OLDITEM LIST)
+func funSubst(_ context.Context, _ *World, argv []Node) (Node, error) {
+	return subst(argv[0], argv[1], argv[2]), nil
+}
