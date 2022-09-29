@@ -117,3 +117,25 @@ func funStringIndex(ctx context.Context, w *World, argv []Node) (Node, error) {
 	}
 	return Integer(start + utf8.RuneCountInString(str[:index])), nil
 }
+
+func funCreateString(ctx context.Context, w *World, list []Node) (Node, error) {
+	if len(list) < 1 {
+		return nil, ErrTooFewArguments
+	}
+	length, ok := list[0].(Integer)
+	if !ok {
+		return nil, ErrExpectedNumber
+	}
+	if len(list) > 2 {
+		return nil, ErrTooManyArguments
+	}
+	ch := Rune(' ')
+	if len(list) == 2 {
+		var ok bool
+		ch, ok = list[1].(Rune)
+		if !ok {
+			return nil, ErrExpectedCharacter
+		}
+	}
+	return String(strings.Repeat(string(ch), int(length))), nil
+}

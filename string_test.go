@@ -22,3 +22,8 @@ func TestStringIndex(t *testing.T) {
 	assertEqual(t, `(string-index "foo" "")`, Null)
 	assertEqual(t, `(string-index "" "foo")`, Integer(0))
 }
+
+func TestCreateString(t *testing.T) {
+	assertEqual(t, `(create-string 1 #\A)`, String("A"))
+	assertEqual(t, `(create-string 2 #\B)`, String("BB"))
+}

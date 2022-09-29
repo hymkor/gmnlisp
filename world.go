@@ -212,6 +212,7 @@ func New() *World {
 			NewSymbol("cons"):                        &Function{C: 2, F: funCons},
 			NewSymbol("consp"):                       &Function{C: 1, F: funAnyTypep[*Cons]},
 			NewSymbol("convert"):                     SpecialF(cmdConvert),
+			NewSymbol("create-string"):               &Function{C: -1, F: funCreateString},
 			NewSymbol("create-string-input-stream"):  &Function{C: 1, F: funCreateStringInputStream},
 			NewSymbol("create-string-output-stream"): SpecialF(cmdCreateStringOutputStream),
 			NewSymbol("decf"):                        SpecialF(cmdDecf),
