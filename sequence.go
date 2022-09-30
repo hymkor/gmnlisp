@@ -266,34 +266,26 @@ func funMapCon(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return funAppend(ctx, w, list)
 }
 
-func funReverse(_ context.Context, _ *World, argv []Node) (Node, error) {
-	var result Node
-	err := SeqEach(argv[0], func(value Node) error {
+func Reverse(list Node) (Node, error) {
+	var result Node = Null
+	for HasValue(list) {
+		var car Node
+		var err error
+
+		car, list, err = Shift(list)
+		if err != nil {
+			return nil, err
+		}
 		result = &Cons{
-			Car: value,
+			Car: car,
 			Cdr: result,
 		}
-		return nil
-	})
-	if err != nil {
-		return nil, err
-	}
-	if _, ok := argv[0].(UTF32String); ok {
-		var buffer UTF32StringBuilder
-		err = SeqEach(result, func(value Node) error {
-			buffer.Add(value)
-			return nil
-		})
-		return buffer.Sequence(), err
-	} else if _, ok := argv[0].(UTF8String); ok {
-		var buffer UTF8StringBuilder
-		err = SeqEach(result, func(value Node) error {
-			buffer.Add(value)
-			return nil
-		})
-		return buffer.Sequence(), err
 	}
 	return result, nil
+}
+
+func funReverse(_ context.Context, _ *World, argv []Node) (Node, error) {
+	return Reverse(argv[0])
 }
 
 type SeqBuilder interface {

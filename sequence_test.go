@@ -78,7 +78,6 @@ func TestMapCon(t *testing.T) {
 func TestReverse(t *testing.T) {
 	assertEqual(t, `(reverse '(1 2 3 4))`,
 		List(Integer(4), Integer(3), Integer(2), Integer(1)))
-	assertEqual(t, `(reverse "12345")`, String("54321"))
 }
 
 func TestSubSeq(t *testing.T) {
