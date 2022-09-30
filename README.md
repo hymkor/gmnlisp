@@ -66,6 +66,7 @@ Support functions
 - (length SEQUENCE)
 - (last LIST)
 - (reverse LIST)
+- (nreverse LIST)
 - (append LIST...)
 - (assoc OBJ LIST)
 - (subseq SEQUENCE Z1 Z2)
