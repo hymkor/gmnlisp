@@ -80,6 +80,11 @@ func TestReverse(t *testing.T) {
 		List(Integer(4), Integer(3), Integer(2), Integer(1)))
 }
 
+func TestNReverse(t *testing.T) {
+	assertEqual(t, `(nreverse '(1 2 3 4))`,
+		List(Integer(4), Integer(3), Integer(2), Integer(1)))
+}
+
 func TestSubSeq(t *testing.T) {
 	assertEqual(t, `(subseq "12345" 2 4)`, String("34"))
 	assertEqual(t, `(subseq '(1 2 3 4 5) 2 4)`, List(Integer(3), Integer(4)))

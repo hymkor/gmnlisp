@@ -284,8 +284,26 @@ func Reverse(list Node) (Node, error) {
 	return result, nil
 }
 
+func NReverse(list Node) (Node, error) {
+	var result Node = Null
+	for HasValue(list) {
+		cons, ok := list.(*Cons)
+		if !ok {
+			return nil, ErrExpectedCons
+		}
+		list = cons.Cdr
+		cons.Cdr = result
+		result = cons
+	}
+	return result, nil
+}
+
 func funReverse(_ context.Context, _ *World, argv []Node) (Node, error) {
 	return Reverse(argv[0])
+}
+
+func funNReverse(_ context.Context, _ *World, argv []Node) (Node, error) {
+	return NReverse(argv[0])
 }
 
 type SeqBuilder interface {

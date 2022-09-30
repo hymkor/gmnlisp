@@ -269,6 +269,7 @@ func New() *World {
 			NewSymbol("most-positive-fixnum"):        Integer(math.MaxInt),
 			NewSymbol("nil"):                         Null,
 			NewSymbol("not"):                         &Function{C: 1, F: funNot},
+			NewSymbol("nreverse"):                    &Function{C: 1, F: funNReverse},
 			NewSymbol("null"):                        &Function{C: 1, F: funNullp},
 			NewSymbol("numberp"):                     &Function{C: 1, F: funNumberp},
 			NewSymbol("oddp"):                        &Function{C: 1, F: funOddp},
