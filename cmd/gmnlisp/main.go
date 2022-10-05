@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"context"
 	"errors"
 	"flag"
@@ -126,11 +127,25 @@ func mains(args []string) error {
 	} else if len(args) > 0 {
 		setArgv(lisp, args[1:])
 
-		var script []byte
-		script, err = os.ReadFile(args[0])
+		fd, err := os.Open(args[0])
 		if err != nil {
 			return err
 		}
+		defer fd.Close()
+
+		br := bufio.NewReader(fd)
+		magicByte, err := br.Peek(1)
+		if err != nil {
+			return fmt.Errorf("%s: %w", args[0], err)
+		}
+		if magicByte[0] == '#' || magicByte[0] == '@' {
+			br.ReadString('\n')
+		}
+		script, err := io.ReadAll(br)
+		if err != nil {
+			return fmt.Errorf("%s: %w", args[0], err)
+		}
+
 		_, err = lisp.InterpretBytes(ctx, script)
 	} else {
 		return interactive(lisp)
