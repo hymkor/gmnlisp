@@ -212,7 +212,7 @@ Backquotations and &amp;body are not supported.
 - (create-string-input-stream STRING)
 - (create-string-output-stream)
 - (error-output)
-- (format OUTPUT-STREAM FORMAT-STRING OBJ..)
+- (format [OUTPUT-STREAM|t|nil] FORMAT-STRING OBJ..)
 - (format-char OUTPUT-STREAM CHAR)
 - (format-float OUTPUT-STREAM FLOAT)
 - (format-integer OUTPUT-STREAM INTEGER RADIX)
