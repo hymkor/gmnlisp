@@ -209,6 +209,10 @@ func formatSub(_w io.Writer, format StringTypes, argv []Node) (Node, error) {
 			}
 		}
 
+		if len(argv) <= 0 {
+			return nil, ErrTooFewArguments
+		}
+
 		value := argv[0]
 		argv = argv[1:]
 
