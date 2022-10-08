@@ -43,13 +43,6 @@ func TestComment(t *testing.T) {
 	assertEqual(t, `(list 1 #|ahaha ihihi|# 2)`, List(Integer(1), Integer(2)))
 }
 
-/*
-func TestShebang(t *testing.T) {
-	assertEqual(t, `@gmnlisp.exe "%~f0" & exit /b
-		(+ 1 2)`, Integer(3))
-
-	assertEqual(t, `#!gmnlisp
-		(+ 3 4)`, Integer(7))
-
+func TestParser(t *testing.T) {
+	assertEqual(t, `"foo\\bar\\gar"`, String(`foo\bar\gar`))
 }
-*/

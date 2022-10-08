@@ -76,14 +76,6 @@ func readArrayDimN(dim int, rs io.RuneScanner) (Node, error) {
 	}
 }
 
-var escapeSequenceReplacer = strings.NewReplacer(
-	"\\r", "\r",
-	"\\n", "\n",
-	"\\t", "\t",
-	"\\b", "\b",
-	"\\\"", "\"",
-)
-
 func newQuote(value Node) Node {
 	return &Cons{Car: quoteSymbol, Cdr: &Cons{Car: value, Cdr: Null}}
 }
@@ -224,7 +216,26 @@ func ReadNode(rs io.RuneScanner) (Node, error) {
 		if L := len(token); L > 0 && token[L-1] == '"' {
 			token = token[:L-1]
 		}
-		token = escapeSequenceReplacer.Replace(token)
+		var buffer strings.Builder
+		flag := false
+		for _, c := range token {
+			if flag {
+				switch c {
+				case '\\':
+					buffer.WriteByte('\\')
+				case '"':
+					buffer.WriteByte('"')
+				default:
+					buffer.WriteRune(c)
+				}
+				flag = false
+			} else if c == '\\' {
+				flag = true
+			} else {
+				buffer.WriteRune(c)
+			}
+		}
+		token = buffer.String()
 		// UTF32String or UTF8String
 		return String(token), nil
 	}
