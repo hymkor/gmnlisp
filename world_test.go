@@ -84,7 +84,13 @@ func TestContextWhile(t *testing.T) {
 		context.Background(),
 		100*time.Millisecond)
 	w := New()
-	_, err := w.Interpret(ctx, `(while t (format (standard-output) " \b"))`)
+	_, err := w.Interpret(ctx, `
+		(let* ((bs (create-string 1 (convert 8 <character>)))
+		       (s (string-append " " bs)))
+			(while t
+				(format (standard-output) s)
+			)
+		)`)
 	cancel()
 	if !errors.Is(err, context.DeadlineExceeded) {
 		if err == nil {
@@ -102,8 +108,11 @@ func TestContextLambda(t *testing.T) {
 	w := New()
 	_, err := w.Interpret(ctx, `
 		(defun foo ()
-			(format (standard-output) " \b")
-			(foo)
+			(let* ((bs (create-string 1 (convert 8 <character>)))
+				   (s (string-append " " bs)))
+				(format (standard-output) s)
+				(foo)
+			)
 		)
 		(foo)`)
 	cancel()

@@ -29,7 +29,10 @@ func TestRead(t *testing.T) {
 
 func TestReadLine(t *testing.T) {
 	assertEqual(t, `
-		(let ((r (create-string-input-stream "1\n2\n3")))
+		(let*
+			((lf (create-string 1 #\newline))
+			 (s (string-append "1" lf "2" lf "3"))
+			 (r (create-string-input-stream s)))
 			(and
 				(equalp (read-line r nil "EOF") "1")
 				(equalp (read-line r nil "EOF") "2")

@@ -101,7 +101,9 @@ func TestAnyTypes(t *testing.T) {
 
 func TestCreateStringInputStream(t *testing.T) {
 	assertEqual(t, `
-		(let ((fd (create-string-input-stream "1\n2\n3")))
+		(let*
+			((lf (create-string 1 #\newline))
+			 (fd (create-string-input-stream (string-append "1" lf "2" lf "3"))))
 			(read-line fd)
 			(read-line fd)
 		)`, String("2"))
