@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"runtime"
 	"strings"
 
 	"github.com/hymkor/gmnlisp"
@@ -15,6 +16,8 @@ import (
 	"github.com/nyaosorg/go-readline-ny"
 	"github.com/nyaosorg/go-readline-ny/simplehistory"
 )
+
+var version string = "snapshot"
 
 var flagExecute = flag.String("e", "", "execute string")
 
@@ -69,6 +72,12 @@ func interactive(lisp *gmnlisp.World) error {
 		Coloring:       &Coloring{},
 		HistoryCycling: true,
 	}
+	fmt.Printf("gmnlisp %s-%s-%s by %s\n",
+		version,
+		runtime.GOOS,
+		runtime.GOARCH,
+		runtime.Version())
+
 	ctx := context.Background()
 	var buffer strings.Builder
 	for {

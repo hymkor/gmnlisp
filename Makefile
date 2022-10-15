@@ -1,4 +1,5 @@
 EXE=$(shell go env GOEXE)
+VERSION=$(shell git describe --tags)
 
 ifeq ($(OS),Windows_NT)
     SHELL=CMD.EXE
@@ -14,7 +15,7 @@ all:
 	go fmt
 	go build
 	go fmt cmd/gmnlisp/main.go
-	go build -o gmnlisp$(EXE) cmd/gmnlisp/main.go
+	cd cmd/gmnlisp && go build -o ../../gmnlisp$(EXE) -ldflags "-s -w -X main.version=$(VERSION)"
 
 test:
 	go fmt
