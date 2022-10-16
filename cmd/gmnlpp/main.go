@@ -32,11 +32,8 @@ var (
 )
 
 var unescapeSequenceReplacer = strings.NewReplacer(
-	"\n", "\\n",
-	"\r", "\\r",
-	"\t", "\\t",
-	"\b", "\\b",
 	"\"", "\\\"",
+	"\\", "\\\\",
 )
 
 var equalMark = false
