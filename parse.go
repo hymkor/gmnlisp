@@ -21,6 +21,7 @@ var (
 	parenCloseSymbol = NewSymbol(")")
 	quoteSymbol      = NewSymbol("quote")
 	functionSymbol   = NewSymbol("function")
+	listSymbol       = NewSymbol("list")
 )
 
 func nodes2cons(nodes []Node) Node {
@@ -78,6 +79,37 @@ func readArrayDimN(dim int, rs io.RuneScanner) (Node, error) {
 
 func newQuote(value Node) Node {
 	return &Cons{Car: quoteSymbol, Cdr: &Cons{Car: value, Cdr: Null}}
+}
+
+func newBackQuote(value Node) Node {
+	cons, ok := value.(*Cons)
+	if !ok {
+		return &Cons{Car: quoteSymbol, Cdr: &Cons{Car: value, Cdr: Null}}
+	}
+	list := []Node{listSymbol}
+	comma := false
+	for {
+		if comma {
+			list = append(list, cons.Car)
+			comma = false
+		} else if cons.Car == NewSymbol(",") {
+			comma = true
+		} else {
+			list = append(list, newBackQuote(cons.Car))
+		}
+		if IsNull(cons.Cdr) {
+			return List(list...)
+		}
+		if _cons, ok := cons.Cdr.(*Cons); ok {
+			cons = _cons
+		} else {
+			var result Node = cons.Cdr
+			for i := len(list) - 1; i >= 0; i-- {
+				result = &Cons{Car: list[i], Cdr: result}
+			}
+			return result
+		}
+	}
 }
 
 func tryParseAsFloat(token string) (Node, bool, error) {
@@ -147,6 +179,16 @@ func ReadNode(rs io.RuneScanner) (Node, error) {
 	token, err := readToken(rs)
 	if err != nil {
 		return nil, err
+	}
+	if token == "`" {
+		quoted, err := ReadNode(rs)
+		if err != nil {
+			if err == io.EOF {
+				return nil, ErrTooShortTokens
+			}
+			return nil, err
+		}
+		return newBackQuote(quoted), nil
 	}
 	if token == "'" {
 		quoted, err := ReadNode(rs)

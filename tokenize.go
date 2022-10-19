@@ -113,7 +113,7 @@ func readToken(r io.RuneScanner) (string, error) {
 			}
 			continue
 		}
-		if strings.ContainsRune("'()", lastRune) {
+		if strings.ContainsRune("',`()", lastRune) {
 			token := string(lastRune)
 			return token, nil
 		}
