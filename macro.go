@@ -5,30 +5,80 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"os"
 )
+
+const macro_trace = false
 
 type _Macro struct {
 	_Dummy
 	param []Symbol
 	code  Node
+	rest  Symbol
 }
 
-func replaceMacro(n Node, table map[Symbol]Node) Node {
-	if cons, ok := n.(*Cons); ok {
-		var car Node
-		var cdr Node
-		if cons.Car != nil {
-			car = replaceMacro(cons.Car, table)
+type _JoinedForm []Node
+
+func (j _JoinedForm) PrintTo(w io.Writer, m PrintMode) (int, error) {
+	dem := "_JoinedForm("
+	n := 0
+	for _, e := range j {
+		_n, err := io.WriteString(w, dem)
+		n += _n
+		if err != nil {
+			return n, err
 		}
+		dem = " "
+
+		_n, err = e.PrintTo(w, m)
+		n += _n
+		if err != nil {
+			return n, err
+		}
+	}
+	_n, err := w.Write([]byte{')'})
+	n += _n
+	return n, err
+}
+
+func (j _JoinedForm) Eval(ctx context.Context, w *World) (Node, error) {
+	return Null, errors.New("not supported")
+}
+
+func (j _JoinedForm) Equals(_other Node, m EqlMode) bool {
+	other, ok := _other.(_JoinedForm)
+	if !ok {
+		return false
+	}
+	if len(j) != len(other) {
+		return false
+	}
+	for i := range j {
+		if j[i].Equals(other[i], m) {
+			return false
+		}
+	}
+	return true
+}
+
+func expandJoinedForm(n Node) Node {
+	if cons, ok := n.(*Cons); ok {
+		var cdr Node
 		if cons.Cdr != nil {
-			cdr = replaceMacro(cons.Cdr, table)
+			cdr = expandJoinedForm(cons.Cdr)
+		}
+		var car Node
+		if cons.Car != nil {
+			car = expandJoinedForm(cons.Car)
+			if c, ok := car.(_JoinedForm); ok {
+				var _cons Node = cdr
+				for i := len(c) - 1; i >= 0; i-- {
+					_cons = &Cons{Car: expandJoinedForm(c[i]), Cdr: _cons}
+				}
+				return _cons
+			}
 		}
 		return &Cons{Car: car, Cdr: cdr}
-	}
-	if macroParam, ok := n.(_PlaceHolder); ok {
-		if result, ok := table[NewSymbol(string(macroParam))]; ok {
-			return result
-		}
 	}
 	return n
 }
@@ -46,35 +96,64 @@ func (m *_Macro) expand(n Node) (Node, error) {
 		replaceTbl[name] = cons.Car
 		n = cons.Cdr
 	}
-	if HasValue(n) {
-		return nil, ErrTooManyArguments
+	replaceTbl[m.rest] = n
+
+	j := _JoinedForm{}
+	for cons, ok := n.(*Cons); ok && HasValue(cons); cons, ok = cons.Cdr.(*Cons) {
+		j = append(j, cons.Car)
 	}
-	return replaceMacro(m.code, replaceTbl), nil
+	replaceTbl[NewSymbol("@"+m.rest.String())] = j
+
+	rc := expandJoinedForm(m.code)
+	if macro_trace {
+		rc.PrintTo(os.Stderr, PRINT)
+		fmt.Fprintln(os.Stderr)
+	}
+	return rc, nil
 }
 
 func (m *_Macro) Call(ctx context.Context, w *World, n Node) (Node, error) {
-	code, err := m.expand(n)
+	var err error
+
+	lexical := Variables{}
+	for _, name := range m.param {
+		lexical[name], n, err = Shift(n)
+		if err != nil {
+			return nil, err
+		}
+	}
+	lexical[m.rest] = n
+	joinedForm := _JoinedForm{}
+	for cons, ok := n.(*Cons); ok && HasValue(cons); cons, ok = cons.Cdr.(*Cons) {
+		joinedForm = append(joinedForm, cons.Car)
+	}
+	lexical[NewSymbol("@"+m.rest.String())] = joinedForm
+
+	newWorld := w.Let(lexical)
+
+	if macro_trace {
+		m.code.PrintTo(os.Stderr, PRINT)
+		fmt.Fprintln(os.Stderr, "\n----")
+	}
+
+	newCode, err := Progn(ctx, newWorld, m.code)
 	if err != nil {
 		return nil, err
 	}
-	return code.Eval(ctx, w)
-}
 
-type _PlaceHolder string
-
-func (mp _PlaceHolder) PrintTo(w io.Writer, m PrintMode) (int, error) {
-	return fmt.Fprintf(w, "$(%s)", string(mp))
-}
-
-func (mp _PlaceHolder) Equals(n Node, m EqlMode) bool {
-	if _n, ok := n.(_PlaceHolder); ok {
-		return mp == _n
+	if macro_trace {
+		newCode.PrintTo(os.Stderr, PRINT)
+		fmt.Fprintln(os.Stderr, "\n----")
 	}
-	return false
-}
 
-func (mp _PlaceHolder) Eval(context.Context, *World) (Node, error) {
-	return mp, nil
+	newCode = expandJoinedForm(newCode)
+
+	if macro_trace {
+		newCode.PrintTo(os.Stderr, PRINT)
+		fmt.Fprintln(os.Stderr, "\n----")
+	}
+
+	return newCode.Eval(ctx, newWorld)
 }
 
 func cmdDefMacro(ctx context.Context, w *World, n Node) (Node, error) {
@@ -90,24 +169,10 @@ func cmdDefMacro(ctx context.Context, w *World, n Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	param := p.param
-	code := p.code
-
-	lexical := Variables{}
-	for _, name := range param {
-		lexical[name] = _PlaceHolder(name.String())
-	}
-	nw := w.Let(lexical)
-
-	code, err = Progn(ctx, nw, code)
-	if err != nil {
-		return nil, err
-	}
-	// code.PrintTo(os.Stdout)
-
 	value := &_Macro{
-		param: param,
-		code:  code,
+		param: p.param,
+		code:  p.code,
+		rest:  p.rest,
 	}
 	w.SetOrDefineParameter(macroName, value)
 	return value, nil
