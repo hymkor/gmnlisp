@@ -13,7 +13,7 @@ else
     D=/
 endif
 
-$(NAME)$(EXE):
+$(NAME)$(EXE): $(wildcard *.go)
 	go fmt
 	go build
 	go fmt cmd/gmnlisp/main.go
