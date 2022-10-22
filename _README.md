@@ -188,6 +188,13 @@ Support functions
 - (function FUNCTION)
 - #'FUNCTION
 
+#### Macro
+
+- (defmacro NAME (PARAMS...) EXP1...)
+- (macroexpand ..)
+
+Backquotations and &amp;body are not supported.
+
 #### Mapping
 
 - (mapcar #'FUNCTION LIST)
