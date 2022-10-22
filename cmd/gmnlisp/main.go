@@ -154,8 +154,8 @@ func mains(args []string) error {
 		if err != nil {
 			return fmt.Errorf("%s: %w", args[0], err)
 		}
-
 		_, err = lisp.InterpretBytes(ctx, script)
+		return err
 	} else {
 		return interactive(lisp)
 	}
