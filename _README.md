@@ -191,7 +191,6 @@ Support functions
 #### Macro
 
 - (defmacro NAME (PARAMS...) EXP1...)
-- (macroexpand ..)
 
 Backquotations and &amp;body are not supported.
 
