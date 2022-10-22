@@ -22,34 +22,12 @@ func TestMacro(t *testing.T) {
 	assertEqual(t, `
 		(defmacro dolist (pair &rest commands)
 		  (let ((key (car pair))
-				(_values (car (cdr pair))))
-			`+"`"+`(let ((VALUES ,_values)
-				   (,key nil))
-			   (while
-				 VALUES
-
-				 (setq ,key (car VALUES))
-				 (setq VALUES (cdr VALUES))
-
-				 ,@commands
-				 )
-			   )
+				(values (car (cdr pair))))
+			`+"`"+`(mapc (lambda (,key) ,@commands) ,values)
 			)
 		  )
 		(let ((result nil))
 		  (dolist (x '(1 2 3)) (setq result (cons x result)))
 		  result
 		  )`, List(Integer(3), Integer(2), Integer(1)))
-}
-
-func TestMacroExpand(t *testing.T) {
-	/*
-		assertEqual(t, `
-			(defmacro dbl  (x) (list '+ x x))
-			(defmacro incf (y) (list 'setq y (list '+ y 1)))
-			(let ((a1 2))
-				(macroexpand '(dbl (incf a1))))
-		`, List(NewSymbol("+"), List(NewSymbol("incf"), NewSymbol("a1")),
-			List(NewSymbol("incf"), NewSymbol("a1"))))
-	*/
 }
