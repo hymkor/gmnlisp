@@ -112,7 +112,7 @@ var slashSymbol = NewSymbol("/")
 
 func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
 	if err := CheckContext(ctx); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("%s: %w", L.name, err)
 	}
 	lexical := Variables{}
 	foundSlash := false
@@ -137,7 +137,7 @@ func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
 		var value Node
 		value, n, err = w.ShiftAndEvalCar(ctx, n)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("%s: %w", L.name, err)
 		}
 		lexical[name] = value
 		if traceDo {
@@ -149,7 +149,7 @@ func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
 	}
 
 	if HasValue(n) && L.rest == nulSymbol {
-		return nil, ErrTooManyArguments
+		return nil, fmt.Errorf("%s: %w", L.name, ErrTooManyArguments)
 	}
 	if L.rest != nulSymbol {
 		lexical[L.rest] = n
@@ -168,7 +168,10 @@ func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
 			L.name,
 			ToString(result, PRINT))
 	}
-	return result, err
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", L.name, err)
+	}
+	return result, nil
 }
 
 func (L *_Lambda) Eval(context.Context, *World) (Node, error) {
