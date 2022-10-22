@@ -255,7 +255,6 @@ func New() *World {
 			NewSymbol("list"):                        &Function{C: -1, F: funList},
 			NewSymbol("listp"):                       &Function{C: 1, F: funListp},
 			NewSymbol("load"):                        &Function{C: 1, F: funLoad},
-			NewSymbol("macroexpand"):                 SpecialF(cmdMacroExpand),
 			NewSymbol("mapc"):                        &Function{C: -1, F: funMapC},
 			NewSymbol("mapcan"):                      &Function{C: -1, F: funMapCan},
 			NewSymbol("mapcar"):                      &Function{C: -1, F: funMapCar},

@@ -83,35 +83,6 @@ func expandJoinedForm(n Node) Node {
 	return n
 }
 
-func (m *_Macro) expand(n Node) (Node, error) {
-	replaceTbl := map[Symbol]Node{}
-	for _, name := range m.param {
-		if IsNull(n) {
-			return nil, ErrTooFewArguments
-		}
-		cons, ok := n.(*Cons)
-		if !ok {
-			return nil, ErrExpectedCons
-		}
-		replaceTbl[name] = cons.Car
-		n = cons.Cdr
-	}
-	replaceTbl[m.rest] = n
-
-	j := _JoinedForm{}
-	for cons, ok := n.(*Cons); ok && HasValue(cons); cons, ok = cons.Cdr.(*Cons) {
-		j = append(j, cons.Car)
-	}
-	replaceTbl[NewSymbol("@"+m.rest.String())] = j
-
-	rc := expandJoinedForm(m.code)
-	if macro_trace {
-		rc.PrintTo(os.Stderr, PRINT)
-		fmt.Fprintln(os.Stderr)
-	}
-	return rc, nil
-}
-
 func (m *_Macro) Call(ctx context.Context, w *World, n Node) (Node, error) {
 	var err error
 
@@ -176,29 +147,4 @@ func cmdDefMacro(ctx context.Context, w *World, n Node) (Node, error) {
 	}
 	w.SetOrDefineParameter(macroName, value)
 	return value, nil
-}
-
-func cmdMacroExpand(ctx context.Context, w *World, n Node) (Node, error) {
-	var err error
-	n, _, err = w.ShiftAndEvalCar(ctx, n)
-	if err != nil {
-		return nil, err
-	}
-	cons, ok := n.(*Cons)
-	if !ok {
-		return nil, ErrExpectedCons
-	}
-	macroName, ok := cons.Car.(Symbol)
-	if !ok {
-		return nil, ErrExpectedSymbol
-	}
-	node, err := w.Get(macroName)
-	if err != nil {
-		return nil, err
-	}
-	macro, ok := node.(*_Macro)
-	if !ok {
-		return nil, errors.New("Expected Macro")
-	}
-	return macro.expand(cons.Cdr)
 }
