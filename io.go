@@ -271,3 +271,23 @@ func funProbeFile(ctx context.Context, w *World, list []Node) (Node, error) {
 	}
 	return True, nil
 }
+
+func funFileLength(ctx context.Context, w *World, list []Node) (Node, error) {
+	_fname, ok := list[0].(StringTypes)
+	if !ok {
+		return nil, ErrExpectedString
+	}
+	fname := _fname.String()
+
+	_n, ok := list[1].(Integer)
+	if !ok {
+		return nil, ErrExpectedNumber
+	}
+	n := int64(_n)
+
+	stat, err := os.Stat(fname)
+	if err != nil {
+		return Null, nil
+	}
+	return Integer(stat.Size() * 8 / n), nil
+}

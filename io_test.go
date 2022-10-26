@@ -3,6 +3,7 @@ package gmnlisp
 import (
 	"context"
 	"os"
+	"path/filepath"
 	"testing"
 )
 
@@ -97,4 +98,24 @@ func TestOpenOutputFile(t *testing.T) {
 func TestProbeFile(t *testing.T) {
 	assertEqual(t, `(probe-file ".")`, True)
 	assertEqual(t, `(probe-file "notexist.lsp")`, Null)
+}
+
+func TestFileLength(t *testing.T) {
+	testFile := filepath.Join(os.TempDir(), "testfile")
+	fd, err := os.Create(testFile)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	fd.WriteString("0123456789")
+	fd.Close()
+	defer os.Remove(testFile)
+
+	lisp := New()
+	lisp = lisp.Let(Variables{NewSymbol("fname"): String(testFile)})
+	if eStr := lisp.Assert(`(file-length fname 8)`, Integer(10)); eStr != "" {
+		t.Fatal(eStr)
+	}
+	if eStr := lisp.Assert(`(file-length fname 2)`, Integer(40)); eStr != "" {
+		t.Fatal(eStr)
+	}
 }
