@@ -219,6 +219,7 @@ Backquotations and &amp;body are not supported.
 - (get-output-stream-string STRSTREAM)
 - (open-input-file FILENAME)
 - (open-output-file FILENAME)
+- (probe-file FILENAME)
 - (read [STREAM [EOF-FLAG [EOF-VALUE]]])
 - (read-line [STREAM [EOF-FLAG [EOF-VALUE]]])
 - (standard-input)
