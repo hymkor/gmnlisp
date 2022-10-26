@@ -4,12 +4,16 @@ import (
 	"bufio"
 	"bytes"
 	"context"
+	_ "embed"
 	"fmt"
 	"io"
 	"math"
 	"os"
 	"strings"
 )
+
+//go:embed embed.lsp
+var embededLsp string
 
 type Scope interface {
 	Get(Symbol) (Node, bool)
@@ -168,7 +172,7 @@ func (w *World) Stdin() *_ReaderNode {
 }
 
 func New() *World {
-	return &World{
+	w := &World{
 		shared: &_Shared{
 			dynamic: Variables{},
 			stdin:   &_ReaderNode{_Reader: bufio.NewReader(os.Stdin)},
@@ -293,7 +297,6 @@ func New() *World {
 			NewSymbol("return-from"):                 SpecialF(cmdReturnFrom),
 			NewSymbol("reverse"):                     &Function{C: 1, F: funReverse},
 			NewSymbol("round"):                       &Function{C: 1, F: funRound},
-			NewSymbol("setf"):                        SpecialF(cmdSetf),
 			NewSymbol("setq"):                        SpecialF(cmdSetq),
 			NewSymbol("standard-input"):              SpecialF(cmdStandardInput),
 			NewSymbol("standard-output"):             SpecialF(cmdStandardOutput),
@@ -322,6 +325,11 @@ func New() *World {
 			// *sort*end*
 		},
 	}
+	_, err := w.Interpret(context.Background(), embededLsp)
+	if err != nil {
+		panic(err.Error())
+	}
+	return w
 }
 
 func (w *World) ShiftAndEvalCar(ctx context.Context, list Node) (Node, Node, error) {
