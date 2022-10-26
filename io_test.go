@@ -93,3 +93,8 @@ func TestOpenOutputFile(t *testing.T) {
 		t.Fatalf(`expect "hogehoge" but "%s"`, o)
 	}
 }
+
+func TestProbeFile(t *testing.T) {
+	assertEqual(t, `(probe-file ".")`, True)
+	assertEqual(t, `(probe-file "notexist.lsp")`, Null)
+}

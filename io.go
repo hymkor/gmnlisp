@@ -258,3 +258,16 @@ func cmdWithOpenOutputFile(ctx context.Context, w *World, list Node) (Node, erro
 	nw := w.Let(&Pair{Key: symbol, Value: stream})
 	return Progn(ctx, nw, list)
 }
+
+func funProbeFile(ctx context.Context, w *World, list []Node) (Node, error) {
+	_fname, ok := list[0].(StringTypes)
+	if !ok {
+		return nil, ErrExpectedString
+	}
+	fname := _fname.String()
+	_, err := os.Stat(fname)
+	if err != nil {
+		return Null, nil
+	}
+	return True, nil
+}

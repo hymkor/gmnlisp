@@ -278,6 +278,7 @@ func New() *World {
 			NewSymbol("parse-number"):                &Function{C: 1, F: funParseNumber},
 			NewSymbol("pi"):                          Float(math.Pi),
 			NewSymbol("plusp"):                       &Function{C: 1, F: funPlusp},
+			NewSymbol("probe-file"):                  &Function{C: 1, F: funProbeFile},
 			NewSymbol("progn"):                       SpecialF(cmdProgn),
 			NewSymbol("quit"):                        SpecialF(cmdQuit),
 			NewSymbol("quote"):                       SpecialF(cmdQuote),
