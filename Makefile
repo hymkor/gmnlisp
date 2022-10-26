@@ -24,8 +24,8 @@ all: $(NAME)$(EXE) gmnlpp$(EXE)
 test:
 	go fmt
 	go test
-	cd pkg/common && go test
-	cd pkg/auto && go test
+#	cd pkg/common && go test
+#	cd pkg/auto && go test
 
 readme.md: _readme.md gmnlpp$(EXE)
 	.$(D)gmnlpp$(EXE) _README.md > README.md
