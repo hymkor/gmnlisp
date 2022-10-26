@@ -33,6 +33,10 @@
        (let ((seq (elt expr 1)) (z (elt expr 2)))
          `(setf ,seq (swap-elt ,seq ,z ,newvalue))
          ))
+      (('dynamic)
+       (let ((name (elt expr 1)))
+         `(defdynamic ,name ,newvalue))
+       )
       (t
         (error))
       ) ; case
