@@ -211,6 +211,7 @@ Backquotations and &amp;body are not supported.
 - (create-string-input-stream STRING)
 - (create-string-output-stream)
 - (error-output)
+- (file-length FILENAME ELEMENT-CLASS)
 - (format [OUTPUT-STREAM|t|nil] FORMAT-STRING OBJ..)
 - (format-char OUTPUT-STREAM CHAR)
 - (format-float OUTPUT-STREAM FLOAT)
