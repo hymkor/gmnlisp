@@ -29,6 +29,14 @@
        (append (subseq seq 0 start)
                newvalue
                (subseq seq end (length seq))))))
+(defun subst (newitem olditem L)
+  (let ((result nil))
+    (while L
+      (if (equal olditem (car L))
+        (setq result (cons newitem result))
+        (setq result (cons (car L) result)))
+      (setq L (cdr L)))
+    (nreverse result)))
 (defmacro setf (expr newvalue)
   (if (symbolp expr)
     `(setq ,expr ,newvalue)
@@ -55,6 +63,12 @@
       (('setq)
        (let ((name (elt expr 1)) (value (elt expr 2)))
          `(progn (setq ,name ,value) (setf ,name ,newvalue))
+         )
+       )
+      (('assoc)
+       (let ((key (elt expr 1)) (m (elt expr 2)))
+         `(let ((_m ,m))
+            (setf ,m (subst ,newvalue (assoc ,key _m) _m)))
          )
        )
       (t
