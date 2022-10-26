@@ -19,6 +19,16 @@
       )
     )
   )
+(defun swap-subseq (seq start end newvalue)
+  (cond
+    ((stringp seq)
+     (string-append (subseq seq 0 start)
+                    newvalue
+                    (subseq seq end (length seq))))
+     (t
+       (append (subseq seq 0 start)
+               newvalue
+               (subseq seq end (length seq))))))
 (defmacro setf (expr newvalue)
   (if (symbolp expr)
     `(setq ,expr ,newvalue)
@@ -36,6 +46,11 @@
       (('dynamic)
        (let ((name (elt expr 1)))
          `(defdynamic ,name ,newvalue))
+       )
+      (('subseq)
+       (let ((seq (elt expr 1)) (start (elt expr 2)) (end (elt expr 3)))
+         `(setf ,seq (swap-subseq ,seq ,start ,end ,newvalue))
+         )
        )
       (t
         (error))
