@@ -6,16 +6,14 @@
        (create-string 1 newvalue)
        (subseq source (1+ z) (length source))))
     (t
-      (let ((result nil))
-        (while source
-          (setq result
-                (cons (if (zerop z)
-                        newvalue
-                        (car source)) result))
+      (let ((s source))
+        (while s
+          (if (zerop z)
+            (replaca s newvalue))
           (setq z (1- z))
-          (setq source (cdr source))
+          (setq s (cdr s))
           )
-        (nreverse result))
+        source)
       )
     )
   )
