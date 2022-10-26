@@ -1,32 +1,42 @@
-(defmacro newsetf (expr newvalue)
+(defun swap-elt (source z newvalue)
   (cond
-    ((symbolp expr)
-     `(setq ,expr ,newvalue))
+    ((stringp source)
+     (string-append
+       (subseq source 0 z)
+       (create-string 1 newvalue)
+       (subseq source (1+ z) (length source))))
     (t
-      (case (car expr)
-        (('car)
-         (let ((cns (elt expr 1)))
-           `(setq ,cns (cons ,newvalue (cdr ,cns)))))
-        (('cdr)
-         (let ((cns (elt expr 1)))
-           `(setq ,cns (cons (car ,cns) ,newvalue))))
-        (('elt)
-         (let ((arg1 (elt expr 1)) (arg2 (elt expr 2)))
-           `(let ((result nil) (source ,arg1) (count ,arg2) )
-              (while source
-                (setq result
-                      (append result
-                              (list (if (equal count 0)
-                                      newvalue
-                                      (car source)))))
-                (setq count (1- count))
-                (setq source (cdr source)))
-              (setq ,arg1 result))))
-        (t
-          (error))
-        ) ; case
-      ) ; t
-    ) ; cond
+      (let ((result nil))
+        (while source
+          (setq result
+                (cons (if (zerop z)
+                        newvalue
+                        (car source)) result))
+          (setq z (1- z))
+          (setq source (cdr source))
+          )
+        (nreverse result))
+      )
+    )
+  )
+(defmacro newsetf (expr newvalue)
+  (if (symbolp expr)
+    `(setq ,expr ,newvalue)
+    (case (car expr)
+      (('car)
+       (let ((cns (elt expr 1)))
+         `(newsetf ,cns (cons ,newvalue (cdr ,cns)))))
+      (('cdr)
+       (let ((cns (elt expr 1)))
+         `(newsetf ,cns (cons (car ,cns) ,newvalue))))
+      (('elt)
+       (let ((seq (elt expr 1)) (z (elt expr 2)))
+         `(newsetf ,seq (swap-elt ,seq ,z ,newvalue))
+         ))
+      (t
+        (error))
+      ) ; case
+    ); if
   ) ; defmacro
 
 (let ((a nil))
@@ -38,6 +48,12 @@
   (format t "~s~%" a) ; (9 8 7)
   (newsetf (elt a 1) 0)
   (format t "~s~%" a) ; (9 0 7)
+  (setq a "あいうえお")
+  (newsetf (elt a 2) #\ん)
+  (format t "~s~%" a) ;
+  (setq a '("ahaha" "ihihi"))
+  (newsetf (elt (car a) 1) #\あ)
+  (format t "~s~%" a) ;
   )
 
 ; vim:set lispwords+=while:
