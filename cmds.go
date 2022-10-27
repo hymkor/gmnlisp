@@ -66,11 +66,11 @@ func funNot(_ context.Context, w *World, argv []Node) (Node, error) {
 }
 
 func funLoad(ctx context.Context, w *World, argv []Node) (Node, error) {
-	fname, ok := argv[0].(UTF32String)
+	fname, ok := argv[0].(StringTypes)
 	if !ok {
 		return nil, ErrExpectedString
 	}
-	script, err := os.ReadFile(string(fname))
+	script, err := os.ReadFile(fname.String())
 	if err != nil {
 		return nil, err
 	}

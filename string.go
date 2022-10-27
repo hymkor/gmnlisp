@@ -2,7 +2,6 @@ package gmnlisp
 
 import (
 	"context"
-	"strconv"
 	"strings"
 	"unicode/utf8"
 )
@@ -12,9 +11,7 @@ func funStringAppend(ctx context.Context, w *World, list []Node) (Node, error) {
 		return Null, nil
 	}
 	var buffer SeqBuilder
-	if _, ok := list[0].(UTF32String); ok {
-		buffer = &UTF32StringBuilder{}
-	} else if _, ok := list[0].(UTF8String); ok {
+	if _, ok := list[0].(UTF8String); ok {
 		buffer = &UTF8StringBuilder{}
 	} else {
 		return nil, ErrNotSupportType
@@ -30,19 +27,6 @@ func funStringAppend(ctx context.Context, w *World, list []Node) (Node, error) {
 		})
 	}
 	return buffer.Sequence(), nil
-}
-
-func funParseInt(ctx context.Context, w *World, argv []Node) (Node, error) {
-	// from CommonLisp
-	s, ok := argv[0].(UTF32String)
-	if !ok {
-		return nil, ErrExpectedString
-	}
-	value, err := strconv.Atoi(string(s))
-	if err != nil {
-		return Null, nil
-	}
-	return Integer(value), nil
 }
 
 func compareString(argv []Node, f func(int) bool) (Node, error) {
