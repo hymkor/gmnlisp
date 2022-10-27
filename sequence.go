@@ -86,32 +86,32 @@ func (S *UTF8StringBuilder) Sequence() Node {
 	return UTF8String(S.buffer.String())
 }
 
-func funElt(_ context.Context, _ *World, args []Node) (Node, func(Node) error, error) {
+func funElt(_ context.Context, _ *World, args []Node) (Node, error) {
 	type canElt interface {
 		Elt(int) (Node, func(Node) error, error)
 	}
 
 	index, ok := args[1].(Integer)
 	if !ok {
-		return nil, nil, ErrExpectedNumber
+		return nil, ErrExpectedNumber
 	}
 	list := args[0]
 	var value Node = Null
-	var setter func(Node) error
 
 	if aref, ok := list.(canElt); ok {
-		return aref.Elt(int(index))
+		rc, _, err := aref.Elt(int(index))
+		return rc, err
 	}
 
 	for index >= 0 {
 		seq, ok := list.(Sequence)
 		if !ok {
-			return Null, nil, nil
+			return Null, nil
 		}
-		value, list, _, setter = seq.FirstAndRest()
+		value, list, _, _ = seq.FirstAndRest()
 		index--
 	}
-	return value, setter, nil
+	return value, nil
 }
 
 func funLength(_ context.Context, _ *World, argv []Node) (Node, error) {
@@ -311,14 +311,14 @@ type SeqBuilder interface {
 	Sequence() Node
 }
 
-func funSubSeq(ctx context.Context, w *World, args []Node) (Node, func(Node) error, error) {
+func funSubSeq(ctx context.Context, w *World, args []Node) (Node, error) {
 	start, ok := args[1].(Integer)
 	if !ok {
-		return nil, nil, ErrExpectedNumber
+		return nil, ErrExpectedNumber
 	}
 	end, ok := args[2].(Integer)
 	if !ok {
-		return nil, nil, ErrExpectedNumber
+		return nil, ErrExpectedNumber
 	}
 	var buffer SeqBuilder
 	if _, ok := args[0].(UTF32String); ok {
@@ -341,49 +341,7 @@ func funSubSeq(ctx context.Context, w *World, args []Node) (Node, func(Node) err
 		count++
 		return
 	})
-	return buffer.Sequence(), func(newvalue Node) error {
-		if _, ok := args[0].(UTF8String); ok {
-			return ErrNotSupportType
-		}
-		if s1, ok := args[0].(UTF32String); ok {
-			s2, ok := newvalue.(UTF32String)
-			if !ok {
-				return ErrExpectedString
-			}
-			copy(s1[start:end], s2[:])
-			return nil
-		}
-		count := Integer(0)
-		list := args[0]
-		for {
-			var ok bool
-			var setter func(Node) error
-
-			wSeq, ok := list.(Sequence)
-			if !ok {
-				return nil
-			}
-			_, list, ok, setter = wSeq.FirstAndRest()
-			if !ok {
-				return nil
-			}
-			if count >= start && count < end {
-				var newvalue1 Node
-				rSeq, ok := newvalue.(Sequence)
-				if !ok {
-					return ErrExpectedSequence
-				}
-				newvalue1, newvalue, ok, _ = rSeq.FirstAndRest()
-				if !ok {
-					return nil
-				}
-				if err := setter(newvalue1); err != nil {
-					return err
-				}
-			}
-			count++
-		}
-	}, ignoreEOF(err)
+	return buffer.Sequence(), ignoreEOF(err)
 }
 
 func funMember(c context.Context, w *World, argv []Node) (Node, error) {

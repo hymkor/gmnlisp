@@ -5,22 +5,22 @@ import (
 	"fmt"
 )
 
-// funGetCar implements (car X) and (setf (car X) Y)
-func funGetCar(_ context.Context, _ *World, argv []Node) (Node, func(Node) error, error) {
+// funGetCar implements (car X)
+func funGetCar(_ context.Context, _ *World, argv []Node) (Node, error) {
 	cons, ok := argv[0].(*Cons)
 	if !ok {
-		return nil, nil, fmt.Errorf("%w: %s", ErrExpectedCons, ToString(argv[0], PRINT))
+		return nil, fmt.Errorf("%w: %s", ErrExpectedCons, ToString(argv[0], PRINT))
 	}
-	return cons.Car, func(value Node) error { cons.Car = value; return nil }, nil
+	return cons.Car, nil
 }
 
-// funGetCdr implements (cdr X) and (setf (cdr X) Y)
-func funGetCdr(_ context.Context, _ *World, argv []Node) (Node, func(Node) error, error) {
+// funGetCdr implements (cdr X)
+func funGetCdr(_ context.Context, _ *World, argv []Node) (Node, error) {
 	cons, ok := argv[0].(*Cons)
 	if !ok {
-		return nil, nil, ErrExpectedCons
+		return nil, ErrExpectedCons
 	}
-	return cons.Cdr, func(value Node) error { cons.Cdr = value; return nil }, nil
+	return cons.Cdr, nil
 }
 
 // funList implements (list A B ...)

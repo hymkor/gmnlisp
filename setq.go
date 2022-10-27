@@ -3,7 +3,6 @@ package gmnlisp
 import (
 	"context"
 	"fmt"
-	"io"
 )
 
 func cmdSetq(ctx context.Context, w *World, params Node) (Node, error) {
@@ -27,168 +26,6 @@ func cmdSetq(ctx context.Context, w *World, params Node) (Node, error) {
 		}
 		if err := w.Set(nameSymbol, value); err != nil {
 			return value, err
-		}
-	}
-	return value, nil
-}
-
-type LeftValueCmd func(context.Context, *World, Node) (Node, func(Node) error, error)
-
-func (f LeftValueCmd) PrintTo(w io.Writer, m PrintMode) (int, error) {
-	return io.WriteString(w, "bultin Special(Set/Get)")
-}
-
-func (f LeftValueCmd) Eval(context.Context, *World) (Node, error) {
-	return f, nil
-}
-
-func (f LeftValueCmd) Equals(n Node, m EqlMode) bool {
-	return false
-}
-
-func (f LeftValueCmd) Call(ctx context.Context, w *World, list Node) (Node, error) {
-	if err := CheckContext(ctx); err != nil {
-		return nil, err
-	}
-	value, _, err := f(ctx, w, list)
-	return value, err
-}
-
-func (f LeftValueCmd) Set(ctx context.Context, w *World, list Node, value Node) error {
-	if err := CheckContext(ctx); err != nil {
-		return err
-	}
-	_, setter, err := f(ctx, w, list)
-	if err != nil {
-		return err
-	}
-	return setter(value)
-}
-
-type LeftValueF struct {
-	C int
-	F func(context.Context, *World, []Node) (Node, func(Node) error, error)
-}
-
-func (*LeftValueF) PrintTo(w io.Writer, m PrintMode) (int, error) {
-	return io.WriteString(w, "buildin function(Set/Get)")
-}
-
-func (f *LeftValueF) Eval(context.Context, *World) (Node, error) {
-	return f, nil
-}
-
-func (f *LeftValueF) Equals(n Node, m EqlMode) bool {
-	return false
-}
-
-func (f *LeftValueF) Call(ctx context.Context, w *World, list Node) (Node, error) {
-	var argv [maxParameterOfEasyFunc]Node
-	var err error
-
-	if err := CheckContext(ctx); err != nil {
-		return nil, err
-	}
-
-	if f.C >= 0 {
-		for i := 0; i < f.C; i++ {
-			argv[i], list, err = w.ShiftAndEvalCar(ctx, list)
-			if err != nil {
-				return nil, err
-			}
-		}
-		if HasValue(list) {
-			return nil, ErrTooManyArguments
-		}
-		value, _, err := f.F(ctx, w, argv[:f.C])
-		return value, err
-	} else {
-		args := []Node{}
-		for HasValue(list) {
-			var arg1 Node
-			arg1, list, err = w.ShiftAndEvalCar(ctx, list)
-			if err != nil {
-				return nil, err
-			}
-			args = append(args, arg1)
-		}
-		value, _, err := f.F(ctx, w, args)
-		return value, err
-	}
-}
-
-func (f *LeftValueF) Set(ctx context.Context, w *World, list Node, value Node) error {
-	args := []Node{}
-	for HasValue(list) {
-		var tmp Node
-		var err error
-
-		tmp, list, err = w.ShiftAndEvalCar(ctx, list)
-		if err != nil {
-			return err
-		}
-		args = append(args, tmp)
-	}
-	if f.C >= 0 {
-		if len(args) < f.C {
-			return ErrTooFewArguments
-		}
-		if len(args) > f.C {
-			return ErrTooManyArguments
-		}
-	}
-	_, setter, err := f.F(ctx, w, args)
-	if err != nil {
-		return err
-	}
-	return setter(value)
-}
-
-func cmdSetf(ctx context.Context, w *World, params Node) (Node, error) {
-	type hasSetter interface {
-		Set(ctx context.Context, w *World, list Node, value Node) error
-	}
-
-	var value Node = Null
-
-	for HasValue(params) {
-		var leftValue Node
-		var rightValue Node
-		var err error
-
-		leftValue, params, err = Shift(params)
-		if err != nil {
-			return nil, err
-		}
-		rightValue, params, err = w.ShiftAndEvalCar(ctx, params)
-		if err != nil {
-			return nil, err
-		}
-
-		if nameSymbol, ok := leftValue.(Symbol); ok {
-			if err := w.Set(nameSymbol, rightValue); err != nil {
-				return value, err
-			}
-		} else if list, ok := leftValue.(*Cons); ok {
-			commandName, list, err := Shift(list)
-			if err != nil {
-				return nil, err
-			}
-			commandSymbol, ok := commandName.(Symbol)
-			if !ok {
-				return nil, ErrExpectedSymbol
-			}
-			_f, err := w.Get(commandSymbol)
-			if err != nil {
-				return nil, ErrVariableUnbound
-			}
-			f, ok := _f.(hasSetter)
-			if !ok {
-				return nil, fmt.Errorf("%w: %s", ErrNotSupportBySetf, commandName)
-			}
-			return rightValue, f.Set(ctx, w, list, rightValue)
-		} else {
-			return nil, fmt.Errorf("%w: %s", ErrExpectedSymbolOrList, ToString(leftValue, PRINT))
 		}
 	}
 	return value, nil
@@ -306,26 +143,23 @@ func cmdDefDynamic(ctx context.Context, w *World, list Node) (Node, error) {
 	return symbol, nil
 }
 
-func cmdDynamic(ctx context.Context, w *World, list Node) (Node, func(Node) error, error) {
+func cmdDynamic(ctx context.Context, w *World, list Node) (Node, error) {
 	var err error
 	var symbolNode Node
 
 	symbolNode, list, err = Shift(list)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 	symbol, ok := symbolNode.(Symbol)
 	if !ok {
-		return nil, nil, ErrExpectedSymbol
+		return nil, ErrExpectedSymbol
 	}
 	value, ok := w.shared.dynamic.Get(symbol)
 	if !ok {
-		return nil, nil, ErrVariableUnbound
+		return nil, ErrVariableUnbound
 	}
-	return value, func(val Node) error {
-		w.shared.dynamic.Set(symbol, val)
-		return nil
-	}, nil
+	return value, nil
 }
 
 func cmdDynamicLet(ctx context.Context, w *World, list Node) (Node, error) {
