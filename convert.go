@@ -118,6 +118,11 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 			})
 			return buffer.Sequence(), err
 		}
+	case Symbol:
+		switch class {
+		case classString:
+			return String(val.String()), nil
+		}
 	}
 	return nil, ErrNotSupportType
 }
