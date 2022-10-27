@@ -12,9 +12,10 @@ const macro_trace = false
 
 type _Macro struct {
 	_Dummy
-	param []Symbol
-	code  Node
-	rest  Symbol
+	param   []Symbol
+	code    Node
+	rest    Symbol
+	lexical *World
 }
 
 type _JoinedForm []Node
@@ -100,7 +101,7 @@ func (m *_Macro) Call(ctx context.Context, w *World, n Node) (Node, error) {
 	}
 	lexical[NewSymbol("@"+m.rest.String())] = joinedForm
 
-	newWorld := w.Let(lexical)
+	newWorld := m.lexical.Let(lexical)
 
 	if macro_trace {
 		m.code.PrintTo(os.Stderr, PRINT)
@@ -124,7 +125,7 @@ func (m *_Macro) Call(ctx context.Context, w *World, n Node) (Node, error) {
 		fmt.Fprintln(os.Stderr, "\n----")
 	}
 
-	return newCode.Eval(ctx, newWorld)
+	return newCode.Eval(ctx, w)
 }
 
 func cmdDefMacro(ctx context.Context, w *World, n Node) (Node, error) {
@@ -141,9 +142,10 @@ func cmdDefMacro(ctx context.Context, w *World, n Node) (Node, error) {
 		return nil, err
 	}
 	value := &_Macro{
-		param: p.param,
-		code:  p.code,
-		rest:  p.rest,
+		param:   p.param,
+		code:    p.code,
+		rest:    p.rest,
+		lexical: w,
 	}
 	w.SetOrDefineParameter(macroName, value)
 	return value, nil
