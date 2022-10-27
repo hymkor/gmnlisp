@@ -23,10 +23,8 @@ var Functions = Variables{
 
 func funStrCase(ctx context.Context, w *World, argv []Node) (Node, error) {
 	// from autolisp
-	if str, ok := argv[0].(UTF32String); ok {
-		return UTF32String(strings.ToUpper(string(str))), nil
-	} else if str, ok := argv[0].(UTF8String); ok {
-		return UTF8String(strings.ToUpper(string(str))), nil
+	if str, ok := argv[0].(StringTypes); ok {
+		return UTF8String(strings.ToUpper(str.String())), nil
 	}
 	return nil, ErrExpectedString
 }
