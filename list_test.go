@@ -59,9 +59,9 @@ func TestLast(t *testing.T) {
 }
 
 func TestDestoroy(t *testing.T) {
-	assertEqual(t, `(let ((c '("A" . "D"))) (replaca c "X") c)`,
+	assertEqual(t, `(let ((c '("A" . "D"))) (set-car "X" c) c)`,
 		&Cons{Car: String("X"), Cdr: String("D")})
 
-	assertEqual(t, `(let ((c '("A" . "D"))) (replacd c "X") c)`,
+	assertEqual(t, `(let ((c '("A" . "D"))) (set-cdr "X" c) c)`,
 		&Cons{Car: String("A"), Cdr: String("X")})
 }
