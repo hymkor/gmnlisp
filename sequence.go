@@ -88,7 +88,7 @@ func (S *UTF8StringBuilder) Sequence() Node {
 
 func funElt(_ context.Context, _ *World, args []Node) (Node, error) {
 	type canElt interface {
-		Elt(int) (Node, func(Node) error, error)
+		Elt(int) (Node, error)
 	}
 
 	index, ok := args[1].(Integer)
@@ -99,8 +99,7 @@ func funElt(_ context.Context, _ *World, args []Node) (Node, error) {
 	var value Node = Null
 
 	if aref, ok := list.(canElt); ok {
-		rc, _, err := aref.Elt(int(index))
-		return rc, err
+		return aref.Elt(int(index))
 	}
 
 	for index >= 0 {

@@ -247,18 +247,11 @@ func (s UTF32String) LessThan(n Node) (bool, error) {
 	return false, fmt.Errorf("%w: `%s`", ErrNotSupportType, ToString(n, PRINT))
 }
 
-func (s UTF32String) Elt(n int) (Node, func(Node) error, error) {
+func (s UTF32String) Elt(n int) (Node, error) {
 	if n < 0 || n >= len(s) {
-		return nil, nil, ErrIndexOutOfRange
+		return nil, ErrIndexOutOfRange
 	}
-	return Rune(s[n]), func(value Node) error {
-		theRune, ok := value.(Rune)
-		if !ok {
-			return ErrNotSupportType
-		}
-		s[n] = theRune
-		return nil
-	}, nil
+	return Rune(s[n]), nil
 }
 
 type Symbol int

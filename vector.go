@@ -62,14 +62,11 @@ func (v Vector) FirstAndRest() (Node, Node, bool, func(Node) error) {
 	}
 }
 
-func (v Vector) Elt(n int) (Node, func(Node) error, error) {
+func (v Vector) Elt(n int) (Node, error) {
 	if n < 0 || n >= len(v) {
-		return nil, nil, ErrIndexOutOfRange
+		return nil, ErrIndexOutOfRange
 	}
-	return v[n], func(value Node) error {
-		v[n] = value
-		return nil
-	}, nil
+	return v[n], nil
 }
 
 type VectorBuilder struct {
