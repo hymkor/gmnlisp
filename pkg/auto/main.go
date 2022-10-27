@@ -23,8 +23,8 @@ var Functions = Variables{
 
 func funStrCase(ctx context.Context, w *World, argv []Node) (Node, error) {
 	// from autolisp
-	if str, ok := argv[0].(StringTypes); ok {
-		return UTF8String(strings.ToUpper(str.String())), nil
+	if str, ok := argv[0].(String); ok {
+		return String(strings.ToUpper(str.String())), nil
 	}
 	return nil, ErrExpectedString
 }
@@ -78,7 +78,7 @@ func cmdOpen(ctx context.Context, w *World, n Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	fnameString, ok := fnameNode.(StringTypes)
+	fnameString, ok := fnameNode.(String)
 	if !ok {
 		return nil, fmt.Errorf("%w `%s`", ErrExpectedString, ToString(fnameString, PRINT))
 	}
@@ -91,7 +91,7 @@ func cmdOpen(ctx context.Context, w *World, n Node) (Node, error) {
 	if HasValue(n) {
 		return nil, ErrTooManyArguments
 	}
-	modeString, ok := modeNode.(StringTypes)
+	modeString, ok := modeNode.(String)
 	if !ok {
 		return nil, fmt.Errorf("%w `%s`", ErrExpectedString, ToString(modeNode, PRINT))
 	}
@@ -132,7 +132,7 @@ func funCommand(ctx context.Context, w *World, list []Node) (Node, error) {
 
 func funReadFromString(_ context.Context, _ *World, args []Node) (Node, error) {
 	// compatible with autolisp's (read)
-	script, ok := args[0].(StringTypes)
+	script, ok := args[0].(String)
 	if !ok {
 		return nil, ErrExpectedString
 	}
