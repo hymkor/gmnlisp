@@ -278,7 +278,6 @@ func ReadNode(rs io.RuneScanner) (Node, error) {
 			}
 		}
 		token = buffer.String()
-		// UTF32String or UTF8String
 		return String(token), nil
 	}
 	if token == "nil" {

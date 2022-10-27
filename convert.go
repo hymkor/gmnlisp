@@ -7,14 +7,13 @@ import (
 )
 
 var (
-	classString     = NewSymbol("<string>")
-	classUTF8String = NewSymbol("<utf8string>")
-	classSymbol     = NewSymbol("<symbol>")
-	classInteger    = NewSymbol("<integer>")
-	classFloat      = NewSymbol("<float>")
-	classList       = NewSymbol("<list>")
-	classVector     = NewSymbol("<general-vector>")
-	classCharacter  = NewSymbol("<character>")
+	classString    = NewSymbol("<string>")
+	classSymbol    = NewSymbol("<symbol>")
+	classInteger   = NewSymbol("<integer>")
+	classFloat     = NewSymbol("<float>")
+	classList      = NewSymbol("<list>")
+	classVector    = NewSymbol("<general-vector>")
+	classCharacter = NewSymbol("<character>")
 )
 
 func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
@@ -57,8 +56,6 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 		case classSymbol:
 			return NewSymbol(val.String()), nil
 		case classString:
-			fallthrough
-		case classUTF8String:
 			return val, nil
 		case classList:
 			var buffer ListBuilder
@@ -80,8 +77,6 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 		case classFloat:
 			return val, nil
 		case classString:
-			fallthrough
-		case classUTF8String:
 			return String(fmt.Sprintf("%f", float64(val))), nil
 		}
 	case Integer:
@@ -93,8 +88,6 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 		case classFloat:
 			return Float(val), nil
 		case classString:
-			fallthrough
-		case classUTF8String:
 			return String(fmt.Sprintf("%d", int(val))), nil
 		}
 	case *Cons:
