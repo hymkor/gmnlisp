@@ -52,11 +52,11 @@ func (L *ListBuilder) Sequence() Node {
 	return L.first.Cdr
 }
 
-type UTF8StringBuilder struct {
+type StringBuilder struct {
 	buffer strings.Builder
 }
 
-func (S *UTF8StringBuilder) Add(n Node) error {
+func (S *StringBuilder) Add(n Node) error {
 	r, ok := n.(Rune)
 	if !ok {
 		return ErrExpectedCharacter
@@ -65,8 +65,8 @@ func (S *UTF8StringBuilder) Add(n Node) error {
 	return nil
 }
 
-func (S *UTF8StringBuilder) Sequence() Node {
-	return UTF8String(S.buffer.String())
+func (S *StringBuilder) Sequence() Node {
+	return String(S.buffer.String())
 }
 
 func funElt(_ context.Context, _ *World, args []Node) (Node, error) {
@@ -303,8 +303,8 @@ func funSubSeq(ctx context.Context, w *World, args []Node) (Node, error) {
 		return nil, ErrExpectedNumber
 	}
 	var buffer SeqBuilder
-	if _, ok := args[0].(UTF8String); ok {
-		buffer = &UTF8StringBuilder{}
+	if _, ok := args[0].(String); ok {
+		buffer = &StringBuilder{}
 	} else if _, ok := args[0].(Vector); ok {
 		buffer = &VectorBuilder{}
 	} else {

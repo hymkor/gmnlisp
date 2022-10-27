@@ -11,13 +11,13 @@ func funStringAppend(ctx context.Context, w *World, list []Node) (Node, error) {
 		return Null, nil
 	}
 	var buffer SeqBuilder
-	if _, ok := list[0].(UTF8String); ok {
-		buffer = &UTF8StringBuilder{}
+	if _, ok := list[0].(String); ok {
+		buffer = &StringBuilder{}
 	} else {
 		return nil, ErrNotSupportType
 	}
 	for _, s := range list {
-		str, ok := s.(StringTypes)
+		str, ok := s.(String)
 		if !ok {
 			return nil, ErrNotSupportType
 		}
@@ -30,11 +30,11 @@ func funStringAppend(ctx context.Context, w *World, list []Node) (Node, error) {
 }
 
 func compareString(argv []Node, f func(int) bool) (Node, error) {
-	left, ok := argv[0].(StringTypes)
+	left, ok := argv[0].(String)
 	if !ok {
 		return nil, ErrExpectedString
 	}
-	right, ok := argv[1].(StringTypes)
+	right, ok := argv[1].(String)
 	if !ok {
 		return nil, ErrExpectedString
 	}
@@ -68,7 +68,7 @@ func funStringIndex(ctx context.Context, w *World, argv []Node) (Node, error) {
 	if len(argv) < 2 {
 		return nil, ErrTooFewArguments
 	}
-	_subStr, ok := argv[0].(StringTypes)
+	_subStr, ok := argv[0].(String)
 	if !ok {
 		return nil, ErrExpectedString
 	}
@@ -84,7 +84,7 @@ func funStringIndex(ctx context.Context, w *World, argv []Node) (Node, error) {
 		}
 		start = int(_start)
 	}
-	_str, ok := argv[1].(StringTypes)
+	_str, ok := argv[1].(String)
 	if !ok {
 		return nil, ErrExpectedString
 	}

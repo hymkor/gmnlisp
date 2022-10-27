@@ -46,23 +46,13 @@ func (nt _NullType) Equals(n Node, m EqlMode) bool {
 
 var Null Node = _NullType{}
 
-type UTF8String string
+type String string
 
-type String = UTF8String
-type StringBuilder = UTF8StringBuilder
-
-type StringTypes interface {
-	Node
-	String() string
-	firstRuneAndRestString() (Rune, StringTypes, bool)
-	EachRune(func(Rune) error) error
-}
-
-func (s UTF8String) String() string {
+func (s String) String() string {
 	return string(s)
 }
 
-func (s UTF8String) PrintTo(w io.Writer, m PrintMode) (int, error) {
+func (s String) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	if m == PRINC {
 		return io.WriteString(w, string(s))
 	} else {
@@ -70,12 +60,12 @@ func (s UTF8String) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	}
 }
 
-func (s UTF8String) Eval(context.Context, *World) (Node, error) {
+func (s String) Eval(context.Context, *World) (Node, error) {
 	return s, nil
 }
 
-func (s UTF8String) Equals(n Node, m EqlMode) bool {
-	ns, ok := n.(UTF8String)
+func (s String) Equals(n Node, m EqlMode) bool {
+	ns, ok := n.(String)
 	if !ok {
 		_ns, ok := n.(String)
 		if !ok {
@@ -84,7 +74,7 @@ func (s UTF8String) Equals(n Node, m EqlMode) bool {
 		if m == STRICT {
 			return false
 		}
-		ns = UTF8String(string(_ns))
+		ns = String(string(_ns))
 	}
 	if m == EQUALP {
 		return strings.EqualFold(string(s), string(ns))
@@ -92,15 +82,15 @@ func (s UTF8String) Equals(n Node, m EqlMode) bool {
 	return string(s) == string(ns)
 }
 
-func (s UTF8String) firstRuneAndRestString() (Rune, StringTypes, bool) {
+func (s String) firstRuneAndRestString() (Rune, String, bool) {
 	if len(s) <= 0 {
-		return Rune(utf8.RuneError), nil, false
+		return Rune(utf8.RuneError), "", false
 	}
 	r, siz := utf8.DecodeRuneInString(string(s))
-	return Rune(r), UTF8String(s[siz:]), true
+	return Rune(r), String(s[siz:]), true
 }
 
-func (s UTF8String) EachRune(f func(Rune) error) error {
+func (s String) EachRune(f func(Rune) error) error {
 	for _, r := range s {
 		if err := f(Rune(r)); err != nil {
 			return err
@@ -109,28 +99,28 @@ func (s UTF8String) EachRune(f func(Rune) error) error {
 	return nil
 }
 
-func (s UTF8String) FirstAndRest() (Node, Node, bool, func(Node) error) {
+func (s String) FirstAndRest() (Node, Node, bool, func(Node) error) {
 	if len(s) <= 0 {
 		return nil, Null, false, nil
 	}
 	r, siz := utf8.DecodeRuneInString(string(s))
-	return Rune(r), UTF8String(s[siz:]), true, func(value Node) error {
+	return Rune(r), String(s[siz:]), true, func(value Node) error {
 		return ErrNotSupportType
 	}
 }
 
-func (s UTF8String) Add(n Node) (Node, error) {
-	if value, ok := n.(UTF8String); ok {
+func (s String) Add(n Node) (Node, error) {
+	if value, ok := n.(String); ok {
 		news := make([]byte, 0, len(s)+len(value)+1)
 		news = append(news, s...)
 		news = append(news, value...)
-		return UTF8String(news), nil
+		return String(news), nil
 	}
 	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, ToString(n, PRINT))
 }
 
-func (s UTF8String) LessThan(n Node) (bool, error) {
-	ns, ok := n.(UTF8String)
+func (s String) LessThan(n Node) (bool, error) {
+	ns, ok := n.(String)
 	if !ok {
 		return false, fmt.Errorf("%w: `%s`", ErrNotSupportType, ToString(n, PRINT))
 	}

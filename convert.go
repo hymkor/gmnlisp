@@ -40,7 +40,7 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 		case classSymbol:
 			return NewSymbol(fmt.Sprintf("%c", val)), nil
 		}
-	case UTF8String:
+	case String:
 		switch class {
 		case classInteger:
 			i, err := strconv.ParseInt(val.String(), 10, 64)
@@ -82,7 +82,7 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 		case classString:
 			fallthrough
 		case classUTF8String:
-			return UTF8String(fmt.Sprintf("%f", float64(val))), nil
+			return String(fmt.Sprintf("%f", float64(val))), nil
 		}
 	case Integer:
 		switch class {
@@ -95,7 +95,7 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 		case classString:
 			fallthrough
 		case classUTF8String:
-			return UTF8String(fmt.Sprintf("%d", int(val))), nil
+			return String(fmt.Sprintf("%d", int(val))), nil
 		}
 	case *Cons:
 		switch class {

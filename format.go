@@ -112,7 +112,7 @@ func printSpaces(n int, w io.Writer) {
 	}
 }
 
-func formatSub(_w io.Writer, format StringTypes, argv []Node) (Node, error) {
+func formatSub(_w io.Writer, format String, argv []Node) (Node, error) {
 	w := bufio.NewWriter(_w)
 	defer w.Flush()
 
@@ -251,7 +251,7 @@ func formatSub(_w io.Writer, format StringTypes, argv []Node) (Node, error) {
 var defFormat = &Function{Min: 2, F: funFormat}
 
 func funFormat(ctx context.Context, w *World, argv []Node) (Node, error) {
-	format, ok := argv[1].(StringTypes)
+	format, ok := argv[1].(String)
 	if !ok {
 		return nil, ErrExpectedString
 	}

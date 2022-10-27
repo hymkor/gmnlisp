@@ -133,7 +133,7 @@ func funClose(_ context.Context, _ *World, argv []Node) (Node, error) {
 }
 
 func funCreateStringInputStream(ctx context.Context, w *World, list []Node) (Node, error) {
-	s, ok := list[0].(StringTypes)
+	s, ok := list[0].(String)
 	if !ok {
 		return nil, ErrExpectedString
 	}
@@ -163,7 +163,7 @@ type inputStream struct {
 }
 
 func openInputFile(fname Node) (*inputStream, error) {
-	filename, ok := fname.(StringTypes)
+	filename, ok := fname.(String)
 	if !ok {
 		return nil, ErrExpectedString
 	}
@@ -217,7 +217,7 @@ func (o *_OutputFileStream) Close() error {
 }
 
 func openOutputFile(fnameNode Node) (*_OutputFileStream, error) {
-	filename, ok := fnameNode.(StringTypes)
+	filename, ok := fnameNode.(String)
 	if !ok {
 		return nil, ErrExpectedString
 	}
@@ -260,7 +260,7 @@ func cmdWithOpenOutputFile(ctx context.Context, w *World, list Node) (Node, erro
 }
 
 func funProbeFile(ctx context.Context, w *World, list []Node) (Node, error) {
-	_fname, ok := list[0].(StringTypes)
+	_fname, ok := list[0].(String)
 	if !ok {
 		return nil, ErrExpectedString
 	}
@@ -273,7 +273,7 @@ func funProbeFile(ctx context.Context, w *World, list []Node) (Node, error) {
 }
 
 func funFileLength(ctx context.Context, w *World, list []Node) (Node, error) {
-	_fname, ok := list[0].(StringTypes)
+	_fname, ok := list[0].(String)
 	if !ok {
 		return nil, ErrExpectedString
 	}
