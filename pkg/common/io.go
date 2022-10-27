@@ -56,7 +56,7 @@ func cmdWithOpenFile(ctx context.Context, w *World, list Node) (Node, error) {
 		return nil, ErrTooManyArguments
 	}
 
-	fname, ok := args[0].(StringTypes)
+	fname, ok := args[0].(String)
 	if !ok {
 		return nil, ErrExpectedString
 	}

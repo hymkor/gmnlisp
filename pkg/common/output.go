@@ -8,14 +8,14 @@ import (
 	. "github.com/hymkor/gmnlisp"
 )
 
-var emptyString UTF8String
+var emptyString String
 
-func getWriterAndString(ctx context.Context, w *World, n Node) (io.Writer, StringTypes, error) {
+func getWriterAndString(ctx context.Context, w *World, n Node) (io.Writer, String, error) {
 	_s, n, err := w.ShiftAndEvalCar(ctx, n)
 	if err != nil {
 		return nil, emptyString, err
 	}
-	s, ok := _s.(StringTypes)
+	s, ok := _s.(String)
 	if !ok {
 		return nil, emptyString, fmt.Errorf("%w `%s`", ErrExpectedString, ToString(_s, PRINT))
 	}

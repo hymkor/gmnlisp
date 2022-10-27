@@ -140,10 +140,8 @@ func funCoerce(_ context.Context, _ *World, argv []Node) (Node, error) {
 }
 
 var sequenceBuilderTable = map[Symbol](func() SeqBuilder){
-	symbolForList:        func() SeqBuilder { return &ListBuilder{} },
-	symbolForString:      func() SeqBuilder { return &StringBuilder{} },
-	symbolForUTF8String:  func() SeqBuilder { return &UTF8StringBuilder{} },
-	symbolForUTF32String: func() SeqBuilder { return &UTF32StringBuilder{} },
+	symbolForList:   func() SeqBuilder { return &ListBuilder{} },
+	symbolForString: func() SeqBuilder { return &StringBuilder{} },
 }
 
 func NewSeqBuilder(symbolNode Node) (SeqBuilder, error) {
@@ -199,11 +197,9 @@ func funTypep(_ context.Context, _ *World, args []Node) (Node, error) {
 	case symbolForFloat:
 		_, ok = args[0].(Float)
 	case symbolForString:
-		_, ok = args[0].(StringTypes)
+		_, ok = args[0].(String)
 	case symbolForUTF8String:
-		_, ok = args[0].(UTF8String)
-	case symbolForUTF32String:
-		_, ok = args[0].(UTF32String)
+		_, ok = args[0].(String)
 	case symbolForSymbol:
 		_, ok = args[0].(Symbol)
 	case symbolForCons:
