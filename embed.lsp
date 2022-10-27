@@ -17,6 +17,16 @@
       )
     )
   )
+(defun swap-nthcdr (source z newvalue)
+  (let ((s source))
+    (while s
+      (setq z (1- z))
+      (if (zerop z)
+        (replacd s newvalue))
+      (setq s (cdr s))
+      )
+    source)
+  )
 (defun swap-subseq (seq start end newvalue)
   (cond
     ((stringp seq)
@@ -49,6 +59,14 @@
        (let ((seq (elt expr 1)) (z (elt expr 2)))
          `(setf ,seq (swap-elt ,seq ,z ,newvalue))
          ))
+      (('nth) ; for pkg/common
+       (let ((seq (elt expr 2)) (z (elt expr 1)))
+         `(setf ,seq (swap-elt ,seq ,z ,newvalue))
+         ))
+      (('nthcdr) ; for pkg/common
+       (let ((seq (elt expr 2)) (z (elt expr 1)))
+         `(setf ,seq (swap-nthcdr ,seq ,z ,newvalue))
+       ))
       (('dynamic)
        (let ((name (elt expr 1)))
          `(defdynamic ,name ,newvalue))
