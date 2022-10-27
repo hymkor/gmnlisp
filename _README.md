@@ -50,7 +50,7 @@ The text before proprocessed is [here](https://github.com/hymkor/gmnlisp/blob/ma
 Support Types
 -------------
 
-integer , float , string(utf8string or utf32string) , symbol , cons , list , character , t/nil
+integer , float , string , symbol , cons , list , character , t/nil
 
 Support functions
 -----------------
@@ -153,7 +153,6 @@ Support functions
 - (convert OBJ &lt;list&gt;)
 - (convert OBJ &lt;string&gt;)
 - (convert OBJ &lt;symbol&gt;)
-- (convert OBJ &lt;utf32string&gt;)
 - (convert OBJ &lt;utf8string&gt;)
 - (parse-number STRING)
 - (truncate X)
