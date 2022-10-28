@@ -16,3 +16,5 @@
   (set-car newvalue (cdr (cdr (cdr L)))))
 (defun set-cddr (newvalue L)
   (set-cdr newvalue (cdr L)))
+(defun set-cdddr (newvalue L)
+  (set-cdr newvalue (cdr (cdr L))))
