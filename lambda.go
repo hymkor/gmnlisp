@@ -482,3 +482,40 @@ func cmdLabels(ctx context.Context, w *World, list Node) (Node, error) {
 	}
 	return Progn(ctx, nw, list)
 }
+
+type LispString struct {
+	S       string
+	compile Node
+}
+
+func (L *LispString) Eval(ctx context.Context, w *World) (Node, error) {
+	if L.compile == nil {
+		c, err := w.Interpret(ctx, L.S)
+		if err != nil {
+			return nil, err
+		}
+		L.compile = c
+	}
+	return L.compile, nil
+}
+
+func (L *LispString) PrintTo(w io.Writer, m PrintMode) (int, error) {
+	return io.WriteString(w, L.S)
+}
+
+func (L *LispString) Equals(_other Node, m EqlMode) bool {
+	other, ok := _other.(*LispString)
+	return ok && L.S == other.S
+}
+
+func (L *LispString) Call(ctx context.Context, w *World, n Node) (Node, error) {
+	compile, err := L.Eval(ctx, w)
+	if err != nil {
+		return nil, err
+	}
+	f, ok := compile.(Callable)
+	if !ok {
+		return nil, ErrExpectedFunction
+	}
+	return f.Call(ctx, w, n)
+}
