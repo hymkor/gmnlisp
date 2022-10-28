@@ -39,6 +39,8 @@ var Functions = Variables{
 	NewSymbol("map"):            &Function{C: -1, F: funMap},
 	NewSymbol("typep"):          &Function{C: 2, F: funTypep},
 	NewSymbol("subst"):          &Function{C: 3, F: funSubst},
+	NewSymbol("incf"):                        SpecialF(cmdIncf),
+	NewSymbol("decf"):                        SpecialF(cmdDecf),
 }
 
 //go:embed embed.lsp
