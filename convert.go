@@ -124,5 +124,6 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 			return String(val.String()), nil
 		}
 	}
-	return nil, ErrNotSupportType
+	return nil, fmt.Errorf("%w: %s to %s",
+		ErrNotSupportType, ToString(source, PRINT), ToString(class, PRINT))
 }
