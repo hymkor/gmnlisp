@@ -2,6 +2,7 @@ package common
 
 import (
 	"context"
+	_ "embed"
 
 	. "github.com/hymkor/gmnlisp"
 )
@@ -38,6 +39,18 @@ var Functions = Variables{
 	NewSymbol("map"):            &Function{C: -1, F: funMap},
 	NewSymbol("typep"):          &Function{C: 2, F: funTypep},
 	NewSymbol("subst"):          &Function{C: 3, F: funSubst},
+}
+
+//go:embed embed.lsp
+var embededLsp string
+
+func Setup(ctx context.Context, w *World) *World {
+	w = w.Let(Functions)
+	_, err := w.Interpret(ctx, embededLsp)
+	if err != nil {
+		panic(err.Error())
+	}
+	return w
 }
 
 var defparameter Callable

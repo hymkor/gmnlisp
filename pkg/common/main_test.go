@@ -1,13 +1,14 @@
 package common
 
 import (
+	"context"
 	"testing"
 
 	. "github.com/hymkor/gmnlisp"
 )
 
 func assertEqual(t *testing.T, equation string, expect Node) {
-	w := New().Let(Functions)
+	w := Setup(context.TODO(), New())
 	if e := w.Assert(equation, expect); e != "" {
 		t.Helper()
 		t.Fatal(e)
