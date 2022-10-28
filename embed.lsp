@@ -1,19 +1,17 @@
 (defun swap-elt (source z newvalue)
-  (cond
-    ((stringp source)
-     (string-append
-       (subseq source 0 z)
-       (create-string 1 newvalue)
-       (subseq source (1+ z) (length source))))
-    (t
-      (let ((s source))
-        (while s
-          (if (zerop z)
-            (set-car newvalue s))
-          (setq z (1- z))
-          (setq s (cdr s))
-          )
-        source))))
+  (if (stringp source)
+    (string-append
+      (subseq source 0 z)
+      (create-string 1 newvalue)
+      (subseq source (1+ z) (length source)))
+    (let ((s source))
+      (while s
+        (if (zerop z)
+          (set-car newvalue s))
+        (setq z (1- z))
+        (setq s (cdr s))
+        )
+      source)))
 (defun swap-nthcdr (source z newvalue)
   (let ((s source))
     (while s
@@ -24,25 +22,20 @@
       )
     source))
 (defun swap-subseq (seq start end newvalue)
-  (cond
-    ((stringp seq)
-     (string-append (subseq seq 0 start)
-                    newvalue
-                    (subseq seq end (length seq))))
-    (t
-      (let ((orig seq))
-        (while seq
-          (if (and (<= start 0) (> end 0) newvalue)
-            (progn
-              (set-car (car newvalue) seq)
-              (setq newvalue (cdr newvalue))))
-          (setq start (1- start))
-          (setq end (1- end))
-          (setq seq (cdr seq)))
-        orig)
-      )
-    )
-  )
+  (if (stringp seq)
+    (string-append (subseq seq 0 start)
+                   newvalue
+                   (subseq seq end (length seq)))
+    (let ((orig seq))
+      (while seq
+        (if (and (<= start 0) (> end 0) newvalue)
+          (progn
+            (set-car (car newvalue) seq)
+            (setq newvalue (cdr newvalue))))
+        (setq start (1- start))
+        (setq end (1- end))
+        (setq seq (cdr seq)))
+      orig)))
 (let ((setf-table
         '((car . set-car)
           (cdr . set-cdr)
