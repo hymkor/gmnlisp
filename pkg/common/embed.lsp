@@ -10,3 +10,5 @@
     source))
 (defun set-cadr (newvalue L)
   (set-car newvalue (cdr L)))
+(defun set-caddr (newvalue L)
+  (set-car newvalue (cdr (cdr L))))
