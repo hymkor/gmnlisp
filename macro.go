@@ -128,6 +128,19 @@ func (m *_Macro) Call(ctx context.Context, w *World, n Node) (Node, error) {
 	return newCode.Eval(ctx, w)
 }
 
+func cmdLambaMacro(ctx context.Context, w *World, n Node) (Node, error) {
+	p, err := getParameterList(n)
+	if err != nil {
+		return nil, err
+	}
+	return &_Macro{
+		param:   p.param,
+		code:    p.code,
+		rest:    p.rest,
+		lexical: w,
+	}, nil
+}
+
 func cmdDefMacro(ctx context.Context, w *World, n Node) (Node, error) {
 	cons, ok := n.(*Cons)
 	if !ok {
@@ -137,15 +150,9 @@ func cmdDefMacro(ctx context.Context, w *World, n Node) (Node, error) {
 	if !ok {
 		return nil, ErrExpectedSymbol
 	}
-	p, err := getParameterList(cons.Cdr)
+	value, err := cmdLambaMacro(ctx, w, cons.Cdr)
 	if err != nil {
 		return nil, err
-	}
-	value := &_Macro{
-		param:   p.param,
-		code:    p.code,
-		rest:    p.rest,
-		lexical: w,
 	}
 	w.SetOrDefineParameter(macroName, value)
 	return value, nil
