@@ -43,14 +43,6 @@
       )
     )
   )
-(defun subst (newitem olditem L)
-  (let ((result nil))
-    (while L
-      (if (equal olditem (car L))
-        (setq result (cons newitem result))
-        (setq result (cons (car L) result)))
-      (setq L (cdr L)))
-    (nreverse result)))
 (let ((setf-table
         '((car . set-car)
           (cdr . set-cdr)
@@ -84,6 +76,11 @@
   (let ((name (elt expr 1)) (value (elt expr 2)))
     `(progn (setq ,name ,value) (setf ,name ,newvalue))))
 (defmacro set-assoc (newvalue key m)
-  `(let ((_m ,m))
-     (setf ,m (subst ,newvalue (assoc ,key _m) _m))))
+  `(let* ((L ,m)
+          (K ,key)
+          (tmp nil))
+     (while L
+       (if (and (setq tmp (car L)) (consp tmp) (equal K (car tmp)))
+         (set-car ,newvalue L))
+       (setq L (cdr L)))))
 ; vim:set lispwords+=while,defglobal:
