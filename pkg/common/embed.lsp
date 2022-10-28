@@ -8,3 +8,5 @@
              (set-cdr newvalue s))
            (setq s (cdr s)))
     source))
+(defun set-cadr (newvalue L)
+  (set-car newvalue (cdr L)))
