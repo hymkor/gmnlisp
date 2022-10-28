@@ -12,3 +12,5 @@
   (set-car newvalue (cdr L)))
 (defun set-caddr (newvalue L)
   (set-car newvalue (cdr (cdr L))))
+(defun set-cadddr (newvalue L)
+  (set-car newvalue (cdr (cdr (cdr L)))))
