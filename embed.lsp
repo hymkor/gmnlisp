@@ -1,3 +1,7 @@
+(defmacro incf (s)
+  `(setq ,s (+ ,s 1)))
+(defmacro decf (s)
+  `(setq ,s (- ,s 1)))
 (defun swap-elt (source z newvalue)
   (if (stringp source)
     (string-append
@@ -8,7 +12,7 @@
       (while s
         (if (zerop z)
           (set-car newvalue s))
-        (setq z (1- z))
+        (decf z)
         (setq s (cdr s))
         )
       source)))
@@ -23,8 +27,8 @@
           (progn
             (set-car (car newvalue) seq)
             (setq newvalue (cdr newvalue))))
-        (setq start (1- start))
-        (setq end (1- end))
+        (decf start)
+        (decf end)
         (setq seq (cdr seq)))
       orig)))
 (let ((setf-table
