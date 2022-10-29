@@ -13,7 +13,7 @@ else
     D=/
 endif
 
-$(NAME)$(EXE): $(wildcard *.go) embed.lsp
+$(NAME)$(EXE): $(wildcard *.go) embed.lsp embed.go
 	go fmt
 	go build
 	go fmt cmd/gmnlisp/main.go
@@ -43,6 +43,9 @@ sort-world:
 	gmnlisp gosort.lsp < world.go > world.go_
 	-cmp world.go world.go_ || copy world.go_ world.go
 	del world.go_
+
+embed.go: lsp2go.lsp embed.lsp
+	gmnlisp lsp2go.lsp gmnlisp < embed.lsp > embed.go
 
 _package:
 	$(SET) "CGO_ENABLED=0" && $(MAKE) clean && $(MAKE) all

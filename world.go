@@ -4,16 +4,12 @@ import (
 	"bufio"
 	"bytes"
 	"context"
-	_ "embed"
 	"fmt"
 	"io"
 	"math"
 	"os"
 	"strings"
 )
-
-//go:embed embed.lsp
-var embededLsp string
 
 type Scope interface {
 	Get(Symbol) (Node, bool)
@@ -289,13 +285,19 @@ func New() *World {
 			NewSymbol("read"):                        defRead,
 			NewSymbol("read-line"):                   defReadLine,
 			NewSymbol("rem"):                         &Function{C: 2, F: funRem},
-			NewSymbol("set-car"):                     &Function{C: 2, F: funSetCar},
-			NewSymbol("set-cdr"):                     &Function{C: 2, F: funSetCdr},
 			NewSymbol("rest"):                        &Function{C: 1, F: funGetCdr},
 			NewSymbol("return"):                      &Function{C: 1, F: funReturn},
 			NewSymbol("return-from"):                 SpecialF(cmdReturnFrom),
 			NewSymbol("reverse"):                     &Function{C: 1, F: funReverse},
 			NewSymbol("round"):                       &Function{C: 1, F: funRound},
+			NewSymbol("set-assoc"):                   embed_set_assoc,
+			NewSymbol("set-car"):                     &Function{C: 2, F: funSetCar},
+			NewSymbol("set-cdr"):                     &Function{C: 2, F: funSetCdr},
+			NewSymbol("set-dynamic"):                 embed_set_dynamic,
+			NewSymbol("set-elt"):                     embed_set_elt,
+			NewSymbol("set-setq"):                    embed_set_setq,
+			NewSymbol("set-subseq"):                  embed_set_subseq,
+			NewSymbol("setf"):                        embed_setf,
 			NewSymbol("setq"):                        SpecialF(cmdSetq),
 			NewSymbol("standard-input"):              SpecialF(cmdStandardInput),
 			NewSymbol("standard-output"):             SpecialF(cmdStandardOutput),
@@ -309,6 +311,8 @@ func New() *World {
 			NewSymbol("string>="):                    &Function{C: 2, F: funStringGe},
 			NewSymbol("stringp"):                     &Function{C: 1, F: funAnyTypep[String]},
 			NewSymbol("subseq"):                      &Function{C: 3, F: funSubSeq},
+			NewSymbol("swap-elt"):                    embed_swap_elt,
+			NewSymbol("swap-subseq"):                 embed_swap_subseq,
 			NewSymbol("symbolp"):                     &Function{C: 1, F: funAnyTypep[Symbol]},
 			NewSymbol("t"):                           True,
 			NewSymbol("throw"):                       &Function{C: 2, F: funThrow},
@@ -323,10 +327,6 @@ func New() *World {
 			NewSymbol("zerop"):                       &Function{C: 1, F: funZerop},
 			// *sort*end*
 		},
-	}
-	_, err := w.Interpret(context.Background(), embededLsp)
-	if err != nil {
-		panic(err.Error())
 	}
 	return w
 }
