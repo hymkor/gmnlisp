@@ -242,6 +242,7 @@ func New() *World {
 			NewSymbol("funcall"):                     SpecialF(cmdFunCall),
 			NewSymbol("function"):                    &Function{C: 1, F: funFunction},
 			NewSymbol("functionp"):                   &Function{C: 1, F: funAnyTypep[Callable]},
+			NewSymbol("gensym"):                      SpecialF(cmdGensym),
 			NewSymbol("get-output-stream-string"):    &Function{C: 1, F: funGetOutputStreamString},
 			NewSymbol("if"):                          SpecialF(cmdIf),
 			NewSymbol("integerp"):                    &Function{C: 1, F: funAnyTypep[Integer]},

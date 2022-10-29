@@ -151,6 +151,10 @@ func NewSymbol(s string) Symbol {
 	return value
 }
 
+func cmdGensym(ctx context.Context, w *World, node Node) (Node, error) {
+	return NewSymbol(fmt.Sprintf("-gensym-%d-", len(symbolMap))), nil
+}
+
 func (s Symbol) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	return io.WriteString(w, symbols[s])
 }
