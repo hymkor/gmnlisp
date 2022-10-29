@@ -83,6 +83,14 @@ func (cons *Cons) writeToWithoutKakko(w io.Writer, m PrintMode) (int, error) {
 }
 
 func (cons *Cons) PrintTo(w io.Writer, m PrintMode) (int, error) {
+	if cons.Car == NewSymbol("quote") {
+		if cdr, ok := cons.Cdr.(*Cons); ok && HasValue(cdr.Car) && IsNull(cdr.Cdr) {
+			siz, _ := w.Write([]byte{'\''})
+			_siz, _ := cdr.Car.PrintTo(w, m)
+			siz += _siz
+			return siz, nil
+		}
+	}
 	siz, _ := io.WriteString(w, "(")
 	_siz, _ := cons.writeToWithoutKakko(w, m)
 	siz += _siz
