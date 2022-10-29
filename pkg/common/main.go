@@ -7,6 +7,12 @@ import (
 	. "github.com/hymkor/gmnlisp"
 )
 
+func init() {
+	for key, val := range embedFunctions {
+		Functions.Set(key, val)
+	}
+}
+
 var Functions = Variables{
 	NewSymbol("member"):       &KWFunction{C: 2, F: funMember},
 	NewSymbol("find"):         &KWFunction{C: 2, F: funFind},
@@ -39,13 +45,6 @@ var Functions = Variables{
 	NewSymbol("map"):            &Function{C: -1, F: funMap},
 	NewSymbol("typep"):          &Function{C: 2, F: funTypep},
 	NewSymbol("subst"):          &Function{C: 3, F: funSubst},
-	NewSymbol("set-nth"):        embed_set_nth,
-	NewSymbol("set-nthcdr"):     embed_set_nthcdr,
-	NewSymbol("set-cadr"):       embed_set_cadr,
-	NewSymbol("set-caddr"):      embed_set_caddr,
-	NewSymbol("set-cadddr"):     embed_set_cadddr,
-	NewSymbol("set-cddr"):       embed_set_cddr,
-	NewSymbol("set-cdddr"):      embed_set_cdddr,
 }
 
 var defparameter Callable

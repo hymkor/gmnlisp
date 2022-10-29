@@ -13,13 +13,13 @@
        (set-car 'lambda node)
        (let ((name (elt node 1)))
          (set-cdr (cdr (cdr node)) node)
-         name)
+         (convert name <string>))
        )
       (('defmacro)
        (set-car 'lambda-macro node)
        (let ((name (elt node 1)))
          (set-cdr (cdr (cdr node)) node)
-         name)
+         (convert name <string>))
        )
       (t
         (or (defun2lambda (car node))
@@ -28,9 +28,7 @@
     )
   )
 
-(let ((node nil)
-      (name nil)
-      (packagename (car *posix-argv*))
+(let ((packagename (car *posix-argv*))
       (arguments (cdr *posix-argv*)))
   (format t "package ~a~%" packagename)
   (or (equal packagename "gmnlisp")
@@ -40,16 +38,32 @@
     (format t " ~a" (car arguments))
     (setq arguments (cdr arguments))
     )
-  (format t "~%")
-  (format t "var embedFunctions = map[Symbol]Node{~%")
+  )
+(format t "~%")
+(format t "var embedFunctions = map[Symbol]Node{~%")
+(let ((node nil)(name nil)(funcs nil)(max 0))
   (while (setq node (read (standard-input) nil nil))
     (if (setq name (defun2lambda node))
-      (format t "~aNewSymbol(\"~s\"): &LispString{S: `~s`},~%"
-              #\tab
-              name
-              node)
+      (progn
+        (setq funcs (cons (cons name node) funcs))
+        (let ((L (length name)))
+          (if (> L max)
+            (setq max L)))
+        )
       )
     )
-  (format t "}~%")
+  (setq funcs (nreverse funcs))
+  (while funcs
+    (setq name (car (car funcs)))
+    (setq node (cdr (car funcs)))
+    (setq funcs (cdr funcs))
+
+    (format t "~aNewSymbol(~s):~a &LispString{S: `~s`},~%"
+            #\tab
+            name
+            (create-string (- max (length name)) #\space)
+            node)
+    )
   )
+(format t "}~%")
 ; vim:set lispwords+=while:
