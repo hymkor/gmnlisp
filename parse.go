@@ -298,5 +298,4 @@ func ReadAll(rs io.RuneScanner) ([]Node, error) {
 		}
 		result = append(result, token)
 	}
-	return result, nil
 }
