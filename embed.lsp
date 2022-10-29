@@ -1,7 +1,9 @@
-(defmacro incf (s)
-  `(setq ,s (+ ,s 1)))
-(defmacro decf (s)
-  `(setq ,s (- ,s 1)))
+(defmacro incf (place &rest args)
+  (let ((delta (if args (car args) 1)))
+    `(setf ,place (+ ,place ,delta))))
+(defmacro decf (place &rest args)
+  (let ((delta (if args (car args) 1)))
+    `(setf ,place (- ,place ,delta))))
 (defun swap-elt (source z newvalue)
   (if (stringp source)
     (string-append
