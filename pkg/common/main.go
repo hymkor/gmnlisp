@@ -39,20 +39,15 @@ var Functions = Variables{
 	NewSymbol("map"):            &Function{C: -1, F: funMap},
 	NewSymbol("typep"):          &Function{C: 2, F: funTypep},
 	NewSymbol("subst"):          &Function{C: 3, F: funSubst},
-	NewSymbol("incf"):                        SpecialF(cmdIncf),
-	NewSymbol("decf"):                        SpecialF(cmdDecf),
-}
-
-//go:embed embed.lsp
-var embededLsp string
-
-func Setup(ctx context.Context, w *World) *World {
-	w = w.Let(Functions)
-	_, err := w.Interpret(ctx, embededLsp)
-	if err != nil {
-		panic(err.Error())
-	}
-	return w
+	NewSymbol("incf"):           SpecialF(cmdIncf),
+	NewSymbol("decf"):           SpecialF(cmdDecf),
+	NewSymbol("set-nth"):        embed_set_nth,
+	NewSymbol("set-nthcdr"):     embed_set_nthcdr,
+	NewSymbol("set-cadr"):       embed_set_cadr,
+	NewSymbol("set-caddr"):      embed_set_caddr,
+	NewSymbol("set-cadddr"):     embed_set_cadddr,
+	NewSymbol("set-cddr"):       embed_set_cddr,
+	NewSymbol("set-cdddr"):      embed_set_cdddr,
 }
 
 var defparameter Callable
