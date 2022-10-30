@@ -83,11 +83,9 @@ Support functions
 - (dynamic VAR)
 - (dynamic-let ((VAR FORM)...) BODY-FORM...)
 - (let ((VAR FORM)... ) BODY-FORM...)
-- (let (VAR...) BODY-FORM...)
 - (let\* ((VAR FORM)...) BODY-FORM...)
-- (let\* (VAR...) BODY-FORM...)
-- (replaca CONS-EXP CAR-NEWVALUE)
-- (replacd CONS-EXP CDR-NEWVALUE)
+- (set-car NEW-CAR CONS)
+- (set-cdr NEW-CDR CONS)
 - (setf PLACE FORM)
 - (setq VAR FORM)
 
@@ -111,10 +109,8 @@ Support functions
 - (rem EXP1 EXP2)
 - (1+ EXP)
 - (1- EXP)
-- (incf VAR)
-- (incf VAR VALUE)
-- (decf VAR)
-- (decf VAR VALUE)
+- (incf VAR [VALUE]) [MACRO]
+- (decf VAR [VALUE]) [MACRO]
 - (and EXP1 EXP2..)
 - (or EXP1 EXP2..)
 - (not EXP)
@@ -153,7 +149,6 @@ Support functions
 - (convert OBJ &lt;list&gt;)
 - (convert OBJ &lt;string&gt;)
 - (convert OBJ &lt;symbol&gt;)
-- (convert OBJ &lt;utf8string&gt;)
 - (parse-number STRING)
 - (truncate X)
 - (floor X)
@@ -168,6 +163,7 @@ Support functions
 - (if TEST-FORM THEN-FORM ELSE-FORM)
 - (progn FORM...)
 - (while TEST-FORM BODY-FORM...)
+- (dolist (VAR '(VALUES..)) FORM...) [MACRO]
 
 #### Functions
 
@@ -189,9 +185,7 @@ Support functions
 
 #### Macro
 
-- (defmacro NAME (PARAMS...) EXP1...)
-
-Backquotations and &amp;body are not supported.
+- (defmacro NAME (IDENTIFIER... [&amp;rest IDENTIFIER]) FORM...)
 
 #### Mapping
 
@@ -229,8 +223,9 @@ Backquotations and &amp;body are not supported.
 
 #### Exceptions
 
-- (block NAME FORM...)
-    - (return-from NAME RESULT-FORM)
+- (block SYMBOL\_OR\_NIL FORM...)
+    - (return RESULT-FORM)
+    - (return-from SYMBOL RESULT-FORM)
 - (catch TAG-FORM FORM...)
     - (throw TAG-FORM RESULT-FORM)
 - (unwind-protect FORM CLEANUP-FORM...)
