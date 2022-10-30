@@ -62,9 +62,16 @@ func cmdBlock(ctx context.Context, w *World, node Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	nameSymbol, ok := nameNode.(Symbol)
-	if !ok {
-		return nil, ErrExpectedSymbol
+	var nameSymbol Symbol
+
+	if HasValue(nameNode) {
+		var ok bool
+		nameSymbol, ok = nameNode.(Symbol)
+		if !ok {
+			return nil, ErrExpectedSymbol
+		}
+	} else {
+		nameSymbol = nulSymbol
 	}
 
 	var errEarlyReturns *ErrEarlyReturns
