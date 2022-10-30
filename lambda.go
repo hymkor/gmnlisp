@@ -361,66 +361,6 @@ func (f *Function) Call(ctx context.Context, w *World, list Node) (Node, error) 
 	return f.F(ctx, w, args)
 }
 
-type KWFunction struct {
-	C int
-	F func(context.Context, *World, []Node, map[Keyword]Node) (Node, error)
-}
-
-func (*KWFunction) PrintTo(w io.Writer, m PrintMode) (int, error) {
-	return io.WriteString(w, "buildin function")
-}
-
-func (f *KWFunction) Eval(context.Context, *World) (Node, error) {
-	return f, nil
-}
-
-func (f *KWFunction) Equals(n Node, m EqlMode) bool {
-	return false
-}
-
-func ListToKwargs(ctx context.Context, w *World, list Node) ([]Node, map[Keyword]Node, error) {
-	args := []Node{}
-	kwargs := map[Keyword]Node{}
-	for HasValue(list) {
-		var tmp Node
-		var err error
-
-		tmp, list, err = w.ShiftAndEvalCar(ctx, list)
-		if err != nil {
-			return nil, nil, err
-		}
-		if keyword, ok := tmp.(Keyword); ok {
-			tmp, list, err = w.ShiftAndEvalCar(ctx, list)
-			if err != nil {
-				return nil, nil, err
-			}
-			kwargs[keyword] = tmp
-		} else {
-			args = append(args, tmp)
-		}
-	}
-	return args, kwargs, nil
-}
-
-func (f *KWFunction) Call(ctx context.Context, w *World, list Node) (Node, error) {
-	if err := CheckContext(ctx); err != nil {
-		return nil, err
-	}
-	args, kwargs, err := ListToKwargs(ctx, w, list)
-	if err != nil {
-		return nil, err
-	}
-	if f.C >= 0 {
-		if len(args) < f.C {
-			return nil, ErrTooFewArguments
-		}
-		if len(args) > f.C {
-			return nil, ErrTooManyArguments
-		}
-	}
-	return f.F(ctx, w, args, kwargs)
-}
-
 func cmdFlet(ctx context.Context, w *World, list Node) (Node, error) {
 	flist, list, err := Shift(list)
 	if err != nil {
