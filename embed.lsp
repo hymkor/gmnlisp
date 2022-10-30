@@ -75,4 +75,15 @@
            (set-car ,newvalue ,L))
          (setq ,L (cdr ,L)))))
   )
+(defmacro dolist (vars &rest body)
+  (let ((var (car vars))
+        (values (elt vars 1))
+        (rest (gensym)))
+    `(block
+       nil
+       (let ((,var nil)(,rest ,values))
+         (while ,rest
+           (setq ,var (car ,rest))
+           (setq ,rest (cdr ,rest))
+           ,@body)))))
 ; vim:set lispwords+=while,defglobal:
