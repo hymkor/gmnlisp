@@ -248,8 +248,6 @@ func formatSub(_w io.Writer, format String, argv []Node) (Node, error) {
 	return Null, nil
 }
 
-var defFormat = &Function{Min: 2, F: funFormat}
-
 func funFormat(ctx context.Context, w *World, argv []Node) (Node, error) {
 	format, ok := argv[1].(String)
 	if !ok {

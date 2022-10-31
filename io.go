@@ -82,8 +82,6 @@ func readString(r io.ByteReader, delim byte) (string, error) {
 	}
 }
 
-var defReadLine = &Function{Max: 3, F: funReadLine}
-
 func funReadLine(_ context.Context, w *World, argv []Node) (Node, error) {
 	stream, err := newStreamInput(w, argv)
 	if err != nil {
@@ -109,8 +107,6 @@ func funReadLine(_ context.Context, w *World, argv []Node) (Node, error) {
 	}
 	return String(chomp(s)), err
 }
-
-var defRead = &Function{Max: 3, F: funRead}
 
 func funRead(_ context.Context, w *World, argv []Node) (Node, error) {
 	stream, err := newStreamInput(w, argv)
