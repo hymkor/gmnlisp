@@ -155,5 +155,5 @@ func cmdDefMacro(ctx context.Context, w *World, n Node) (Node, error) {
 		return nil, err
 	}
 	w.SetOrDefineParameter(macroName, value)
-	return value, nil
+	return macroName, nil
 }
