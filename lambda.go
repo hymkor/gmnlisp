@@ -17,8 +17,6 @@ type _Lambda struct {
 	lexical *World
 }
 
-var nulSymbol = NewSymbol("")
-
 func cmdLambda(_ context.Context, w *World, node Node) (Node, error) {
 	return newLambda(w, node, nulSymbol)
 }
@@ -28,8 +26,6 @@ type _Parameters struct {
 	rest  Symbol
 	code  Node
 }
-
-var ampRest = NewSymbol("&rest")
 
 func getParameterList(node Node) (*_Parameters, error) {
 	list, code, err := Shift(node)
@@ -107,8 +103,6 @@ func (L *_Lambda) PrintTo(w io.Writer, m PrintMode) (int, error) {
 }
 
 var trace = map[Symbol]int{}
-
-var slashSymbol = NewSymbol("/")
 
 func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
 	if err := CheckContext(ctx); err != nil {

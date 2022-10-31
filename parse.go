@@ -17,11 +17,16 @@ var (
 )
 
 var (
+	ampRest          = NewSymbol("&rest")
+	commaSymbol      = NewSymbol(",")
 	dotSymbol        = NewSymbol(".")
-	parenCloseSymbol = NewSymbol(")")
-	quoteSymbol      = NewSymbol("quote")
 	functionSymbol   = NewSymbol("function")
 	listSymbol       = NewSymbol("list")
+	nulSymbol        = NewSymbol("")
+	parenCloseSymbol = NewSymbol(")")
+	quoteSymbol      = NewSymbol("quote")
+	slashSymbol      = NewSymbol("/")
+	tSymbol          = NewSymbol("t")
 )
 
 func nodes2cons(nodes []Node) Node {
@@ -92,7 +97,7 @@ func newBackQuote(value Node) Node {
 		if comma {
 			list = append(list, cons.Car)
 			comma = false
-		} else if cons.Car == NewSymbol(",") {
+		} else if cons.Car == commaSymbol {
 			comma = true
 		} else {
 			list = append(list, newBackQuote(cons.Car))
