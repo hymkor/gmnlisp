@@ -305,7 +305,6 @@ type Function struct {
 	F   func(context.Context, *World, []Node) (Node, error)
 	Min int
 	Max int
-	Kw  []string
 }
 
 func (*Function) PrintTo(w io.Writer, m PrintMode) (int, error) {
