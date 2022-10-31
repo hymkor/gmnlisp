@@ -2,8 +2,8 @@ package common
 
 import (
 	"context"
-	"io"
 	_ "embed"
+	"io"
 
 	. "github.com/hymkor/gmnlisp"
 )
@@ -39,8 +39,6 @@ var Functions = Variables{
 	NewSymbol("second"):         &Function{C: 1, F: funCadr},
 	NewSymbol("third"):          &Function{C: 1, F: funCaddr},
 	NewSymbol("concatenate"):    defConcatenate,
-	NewSymbol("dolist"):         SpecialF(cmdDoList),
-	NewSymbol("dotimes"):        SpecialF(cmdDoTimes),
 	NewSymbol("with-open-file"): SpecialF(cmdWithOpenFile),
 	NewSymbol("coerce"):         &Function{C: 2, F: funCoerce},
 	NewSymbol("map"):            &Function{C: -1, F: funMap},
