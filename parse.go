@@ -27,6 +27,7 @@ var (
 	quoteSymbol      = NewSymbol("quote")
 	slashSymbol      = NewSymbol("/")
 	tSymbol          = NewSymbol("t")
+	colonRest        = Keyword(":rest")
 )
 
 func nodes2cons(nodes []Node) Node {

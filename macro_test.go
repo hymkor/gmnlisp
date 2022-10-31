@@ -20,14 +20,26 @@ func TestMacro(t *testing.T) {
 	assertEqual(t, `(list ''foo)`, List(List(NewSymbol("quote"), NewSymbol("foo"))))
 
 	assertEqual(t, `
-		(defmacro dolist (pair &rest commands)
+		(defmacro dolist1 (pair &rest commands)
 		  (let ((key (car pair))
 				(values (car (cdr pair))))
 			`+"`"+`(mapc (lambda (,key) ,@commands) ,values)
 			)
 		  )
 		(let ((result nil))
-		  (dolist (x '(1 2 3)) (setq result (cons x result)))
+		  (dolist1 (x '(1 2 3)) (setq result (cons x result)))
+		  result
+		  )`, List(Integer(3), Integer(2), Integer(1)))
+
+	assertEqual(t, `
+		(defmacro dolist2 (pair :rest commands)
+		  (let ((key (car pair))
+				(values (car (cdr pair))))
+			`+"`"+`(mapc (lambda (,key) ,@commands) ,values)
+			)
+		  )
+		(let ((result nil))
+		  (dolist2 (x '(1 2 3)) (setq result (cons x result)))
 		  result
 		  )`, List(Integer(3), Integer(2), Integer(1)))
 }

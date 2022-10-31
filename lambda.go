@@ -41,22 +41,25 @@ func getParameterList(node Node) (*_Parameters, error) {
 		if err != nil {
 			return nil, err
 		}
-		nameSymbol, ok := nameNode.(Symbol)
-		if !ok {
-			return nil, ErrExpectedSymbol
-		}
-		if nameSymbol == ampRest {
+		if nameNode == ampRest || nameNode == colonRest {
 			nameNode, list, err = Shift(list)
 			if err != nil {
 				return nil, err
 			}
+			var ok bool
 			rest, ok = nameNode.(Symbol)
 			if !ok {
 				return nil, ErrExpectedSymbol
 			}
-			continue
+		} else {
+			nameSymbol, ok := nameNode.(Symbol)
+			if !ok {
+				return nil, fmt.Errorf("%w: %s", ErrExpectedSymbol,
+					ToString(nameNode, PRINT))
+			}
+			params = append(params, nameSymbol)
 		}
-		params = append(params, nameSymbol)
+
 	}
 	return &_Parameters{
 		param: params,
