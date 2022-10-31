@@ -164,6 +164,7 @@ Support functions
 - (progn FORM...)
 - (while TEST-FORM BODY-FORM...)
 - (dolist (VAR '(VALUES..)) FORM...) [MACRO]
+- (dotimes (VAR N) FORM...) [MACRO]
 
 #### Functions
 

@@ -4,6 +4,7 @@
 - Support (setf (subseq UTF8STRING START END) NEWVALUE).
 - Implement
     - (dolist) by (defmacro)
+    - (dotimes) by (defmacro)
     - (lambda-macro)
     - (gensym)
     - (convert SYMBOL &lt;string&gt;)
@@ -12,9 +13,10 @@
 - Fix
     - gmnlisp.exe: \*posix-argv\* was not be defined
     - (defmacro) did not support lexical namespace
-    - (block) now accepts nil as the first parameter
+- (block) now accepts nil as the first parameter
 - (replica) -&gt; (set-car) and (replid) -&gt; (set-cdr)
 - (quote X) is displayed as `'X`
+- (defun) and (defmacro) can now use :rest same as &amp;rest
 
 v0.1.2
 ======
