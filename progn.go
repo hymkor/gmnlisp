@@ -362,24 +362,6 @@ func (e *ErrorNode) Equals(n Node, m EqlMode) bool {
 	return errors.Is(e.Value, f.Value) || errors.Is(f.Value, e.Value)
 }
 
-func matchError(ctx context.Context, w *World, casedSymbol Node, happenError error) (bool, error) {
-	if happenError == nil {
-		return false, nil
-	}
-	if casedSymbol == NewSymbol("error") {
-		return true, nil
-	}
-	casedNode, err := casedSymbol.Eval(ctx, w)
-	if err != nil {
-		return false, err
-	}
-	errNode, ok := casedNode.(*ErrorNode)
-	if !ok {
-		return false, fmt.Errorf("not an error object in hander-case: %s", ToString(casedSymbol, PRINT))
-	}
-	return errors.Is(happenError, errNode.Value), nil
-}
-
 func cmdWithHandler(ctx context.Context, w *World, list Node) (Node, error) {
 	// ISLisp
 	handlerNode, list, err := w.ShiftAndEvalCar(ctx, list)
