@@ -293,7 +293,7 @@ func New() *World {
 			NewSymbol("return-from"):                 SpecialF(cmdReturnFrom),
 			NewSymbol("reverse"):                     &Function{C: 1, F: funReverse},
 			NewSymbol("round"):                       &Function{C: 1, F: funRound},
-			NewSymbol("set-array-elt"):               &Function{Min: 3, F: funSetArrayElt},
+			NewSymbol("set-aref"):                    &Function{Min: 3, F: funSetAref},
 			NewSymbol("set-car"):                     &Function{C: 2, F: funSetCar},
 			NewSymbol("set-cdr"):                     &Function{C: 2, F: funSetCdr},
 			NewSymbol("setq"):                        SpecialF(cmdSetq),

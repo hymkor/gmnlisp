@@ -209,7 +209,7 @@ func (A *Array) Elt(n int) (Node, error) {
 	}, nil
 }
 
-func funSetArrayElt(ctx context.Context, w *World, args []Node) (Node, error) {
+func funSetAref(ctx context.Context, w *World, args []Node) (Node, error) {
 	newValue := args[0]
 
 	array, ok := args[1].(*Array)

@@ -58,7 +58,7 @@
         (cons setter (cons newvalue arguments))))))
 (defmacro set-elt (newvalue seq &rest z)
   `(if (arrayp ,seq)
-     (set-array-elt ,newvalue ,seq ,@z)
+     (set-aref ,newvalue ,seq ,@z)
      (setf ,seq (swap-elt ,newvalue ,seq ,@z))
      ))
 (defmacro set-dynamic (newvalue name)

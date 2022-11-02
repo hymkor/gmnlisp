@@ -9,8 +9,8 @@
 
 (let ((A (create-array '(3 2) 1)))
   (assert (arrayp A) t)
-  (set-array-elt 2 A 1 1)
-  (set-array-elt (create-array '(2) 4) A 0)
+  (set-aref 2 A 1 1)
+  (set-aref (create-array '(2) 4) A 0)
   (setf (elt A 2 1) "SETF")
   (assert (elt A 0 0) 4)
   (assert (elt A 0 1) 4)
