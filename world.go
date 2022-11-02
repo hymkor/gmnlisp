@@ -222,7 +222,7 @@ func New() *World {
 			NewSymbol("defun"):                       SpecialF(cmdDefun),
 			NewSymbol("dynamic"):                     SpecialF(cmdDynamic),
 			NewSymbol("dynamic-let"):                 SpecialF(cmdDynamicLet),
-			NewSymbol("elt"):                         &Function{C: 2, F: funElt},
+			NewSymbol("elt"):                         &Function{Min: 2, F: funElt},
 			NewSymbol("eq"):                          SpecialF(cmdEq),
 			NewSymbol("eql"):                         SpecialF(cmdEql),
 			NewSymbol("equal"):                       SpecialF(cmdEqual),

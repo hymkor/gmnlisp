@@ -191,3 +191,20 @@ func funCreateArray(ctx context.Context, w *World, args []Node) (Node, error) {
 		dim:  _dim,
 	}, nil
 }
+
+func (A *Array) Elt(n int) (Node, error) {
+	if n < 0 || n >= A.dim[0] {
+		return nil, ErrIndexOutOfRange
+	}
+	if len(A.dim) == 1 {
+		return A.list[n], nil
+	}
+	size := 1
+	for _, v := range A.dim[1:] {
+		size *= v
+	}
+	return &Array{
+		list: A.list[size*n : size*(n+1)],
+		dim:  A.dim[1:],
+	}, nil
+}

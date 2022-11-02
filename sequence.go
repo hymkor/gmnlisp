@@ -73,25 +73,28 @@ func funElt(_ context.Context, _ *World, args []Node) (Node, error) {
 	type canElt interface {
 		Elt(int) (Node, error)
 	}
-
-	index, ok := args[1].(Integer)
-	if !ok {
-		return nil, ErrExpectedNumber
-	}
-	list := args[0]
-	var value Node = Null
-
-	if aref, ok := list.(canElt); ok {
-		return aref.Elt(int(index))
-	}
-
-	for index >= 0 {
-		seq, ok := list.(Sequence)
+	var value Node = args[0]
+	for _, indexArg := range args[1:] {
+		index, ok := indexArg.(Integer)
 		if !ok {
-			return Null, nil
+			return nil, ErrExpectedNumber
 		}
-		value, list, _, _ = seq.FirstAndRest()
-		index--
+		if aref, ok := value.(canElt); ok {
+			var err error
+			value, err = aref.Elt(int(index))
+			if err != nil {
+				return nil, err
+			}
+			continue
+		}
+		for list := value; index >= 0; {
+			seq, ok := list.(Sequence)
+			if !ok {
+				return Null, nil
+			}
+			value, list, _, _ = seq.FirstAndRest()
+			index--
+		}
 	}
 	return value, nil
 }
