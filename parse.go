@@ -38,18 +38,12 @@ func nodes2cons(nodes []Node) Node {
 	if len(nodes) >= 3 && nodes[len(nodes)-2] == dotSymbol {
 		// dot pairs
 		cons = nodes[len(nodes)-1]
-		for i := len(nodes) - 3; i >= 0; i-- {
-			cons = &Cons{
-				Car: nodes[i],
-				Cdr: cons,
-			}
-		}
-	} else {
-		for i := len(nodes) - 1; i >= 0; i-- {
-			cons = &Cons{
-				Car: nodes[i],
-				Cdr: cons,
-			}
+		nodes = nodes[:len(nodes)-2]
+	}
+	for i := len(nodes) - 1; i >= 0; i-- {
+		cons = &Cons{
+			Car: nodes[i],
+			Cdr: cons,
 		}
 	}
 	return cons
