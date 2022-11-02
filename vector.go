@@ -2,6 +2,7 @@ package gmnlisp
 
 import (
 	"context"
+	"fmt"
 	"io"
 )
 
@@ -88,4 +89,105 @@ func NewVector(args ...Node) Node {
 		v.Add(value)
 	}
 	return v.Sequence()
+}
+
+type Array struct {
+	list []Node
+	dim  []int
+}
+
+func (A *Array) printTo(w io.Writer, mode PrintMode, list []Node, dim []int) ([]Node, int, error) {
+	dem := byte('(')
+	n := 0
+	for i := 0; i < dim[0]; i++ {
+		_n, err := w.Write([]byte{dem})
+		n += _n
+		if err != nil {
+			return nil, n, err
+		}
+		dem = ' '
+
+		if len(dim) >= 2 {
+			list, _n, err = A.printTo(w, mode, list, dim[1:])
+			n += _n
+		} else {
+			_n, err = list[0].PrintTo(w, mode)
+			n += _n
+			list = list[1:]
+		}
+		if err != nil {
+			return nil, n, err
+		}
+	}
+	_n, err := w.Write([]byte{')'})
+	n += _n
+	return list, n, err
+}
+
+func (A *Array) PrintTo(w io.Writer, mode PrintMode) (int, error) {
+	n, err := fmt.Fprintf(w, "#%dA", len(A.dim))
+	if err != nil {
+		return n, err
+	}
+	_, n, err = A.printTo(w, mode, A.list, A.dim)
+	return n, err
+}
+
+func (A *Array) Equals(_B Node, mode EqlMode) bool {
+	B, ok := _B.(*Array)
+	if !ok {
+		return false
+	}
+	if len(A.dim) != len(B.dim) {
+		return false
+	}
+	for i, v := range A.dim {
+		if v != B.dim[i] {
+			return false
+		}
+	}
+	if len(A.list) != len(B.list) {
+		return false
+	}
+	for i, v := range A.list {
+		if v != B.list[i] {
+			return false
+		}
+	}
+	return true
+}
+
+func (A *Array) Eval(_ context.Context, W *World) (Node, error) {
+	return A, nil
+}
+
+func funCreateArray(ctx context.Context, w *World, args []Node) (Node, error) {
+	dim := args[0]
+	ini := args[1]
+
+	_dim := make([]int, 0, 2)
+	size := 1
+	for HasValue(dim) {
+		var _n Node
+		var err error
+
+		_n, dim, err = Shift(dim)
+		if err != nil {
+			return nil, err
+		}
+		n, ok := _n.(Integer)
+		if !ok {
+			return nil, fmt.Errorf("%w: %s", ErrExpectedNumber, ToString(_n, PRINT))
+		}
+		_dim = append(_dim, int(n))
+		size *= int(n)
+	}
+	_list := make([]Node, size)
+	for i := range _list {
+		_list[i] = ini
+	}
+	return &Array{
+		list: _list,
+		dim:  _dim,
+	}, nil
 }
