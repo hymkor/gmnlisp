@@ -8,6 +8,7 @@
            (quit))))))
 
 (let ((A (create-array '(3 2) 1)))
+  (assert (arrayp A) t)
   (set-array-elt 2 A 1 1)
   (set-array-elt (create-array '(2) 4) A 0)
   (assert (elt A 0 0) 4)

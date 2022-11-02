@@ -199,6 +199,7 @@ func New() *World {
 			NewSymbol("and"):                         SpecialF(cmdAnd),
 			NewSymbol("append"):                      &Function{F: funAppend},
 			NewSymbol("apply"):                       SpecialF(cmdApply),
+			NewSymbol("arrayp"):                      &Function{C: 1, F: funAnyTypep[*Array]},
 			NewSymbol("assoc"):                       &Function{C: 2, F: funAssoc},
 			NewSymbol("atom"):                        &Function{C: 1, F: funAtom},
 			NewSymbol("block"):                       SpecialF(cmdBlock),
