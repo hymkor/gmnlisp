@@ -29,6 +29,7 @@ var (
 	ErrTooShortTokens       = errors.New("too short tokens")
 	ErrVariableUnbound      = errors.New("Unbound variable")
 	ErrCanNotParseNumber    = errors.New("Can not parse number")
+	ErrExpectedArray        = errors.New("Expected array")
 )
 
 type EqlMode int

@@ -208,3 +208,41 @@ func (A *Array) Elt(n int) (Node, error) {
 		dim:  A.dim[1:],
 	}, nil
 }
+
+func funSetArrayElt(ctx context.Context, w *World, args []Node) (Node, error) {
+	newValue := args[0]
+
+	array, ok := args[1].(*Array)
+	if !ok {
+		return nil, fmt.Errorf("%w: %s", ErrExpectedArray, ToString(args[0], PRINT))
+	}
+
+	if len(args)-2 > len(array.dim) {
+		return nil, ErrTooManyArguments
+	}
+
+	for _, _index := range args[2:] {
+		index, ok := _index.(Integer)
+		if !ok {
+			return nil, fmt.Errorf("%w: %s", ErrExpectedNumber, ToString(_index, PRINT))
+		}
+		if len(array.dim) == 1 {
+			array.list[index] = newValue
+			return newValue, nil
+		}
+		elementSize := 1
+		for _, d := range array.dim[1:] {
+			elementSize *= d
+		}
+		array = &Array{
+			list: array.list[int(index)*elementSize:],
+			dim:  array.dim[1:],
+		}
+	}
+	_newValue, ok := newValue.(*Array)
+	if !ok {
+		return nil, ErrExpectedArray
+	}
+	copy(array.list, _newValue.list)
+	return _newValue, nil
+}
