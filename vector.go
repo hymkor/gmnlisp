@@ -215,3 +215,18 @@ func funSetAref(ctx context.Context, w *World, args []Node) (Node, error) {
 	copy(array.list, _newValue.list)
 	return _newValue, nil
 }
+
+func funArrayDimensions(ctx context.Context, w *World, args []Node) (Node, error) {
+	array, ok := args[0].(*Array)
+	if !ok {
+		return nil, ErrExpectedArray
+	}
+	var cons Node
+	for i := len(array.dim) - 1; i >= 0; i-- {
+		cons = &Cons{
+			Car: Integer(array.dim[i]),
+			Cdr: cons,
+		}
+	}
+	return cons, nil
+}

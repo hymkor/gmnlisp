@@ -15,6 +15,7 @@
   )
 
 (let ((A (create-array '(3 2) 1)))
+  (assert (array-dimensions A) '(3 2))
   (assert (arrayp A) t)
   (set-aref 2 A 1 1)
   (set-aref (create-array '(2) 4) A 0)
@@ -28,6 +29,7 @@
   )
 
 (let ((A #2a( (1 2 3) (4 5 6) )))
+  (assert (array-dimensions A) '(2 3))
   (assert (aref A 0 0) 1)
   (assert (aref A 0 1) 2)
   (assert (aref A 0 2) 3)
