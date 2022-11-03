@@ -80,7 +80,10 @@ func (v *VectorBuilder) Add(value Node) error {
 }
 
 func (v *VectorBuilder) Sequence() Node {
-	return Vector(v.list)
+	return &Array{
+		list: v.list,
+		dim:  []int{len(v.list)},
+	}
 }
 
 func NewVector(args ...Node) Node {
