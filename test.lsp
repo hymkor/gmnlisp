@@ -34,4 +34,9 @@
   (assert (aref A 1 0) 4)
   (assert (aref A 1 1) 5)
   (assert (aref A 1 2) 6)
+
+  (setf (aref A 1 0) 44)
+  (assert (aref A 1 0) 44)
+  (setf (elt A 1 0) 77)
+  (assert (elt A 1 0) 77)
   )
