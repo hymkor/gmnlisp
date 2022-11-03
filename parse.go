@@ -242,11 +242,7 @@ func ReadNode(rs io.RuneScanner) (Node, error) {
 		return &Cons{Car: functionSymbol, Cdr: &Cons{Car: function, Cdr: Null}}, nil
 	}
 	if token == "#(" {
-		nodes, err := readUntilCloseParen(rs)
-		if err != nil {
-			return nil, err
-		}
-		return Vector(nodes), nil
+		return readArray(1, rs)
 	}
 	if m := rxArray.FindStringSubmatch(token); m != nil {
 		dim, err := strconv.Atoi(m[1])

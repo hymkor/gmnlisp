@@ -106,6 +106,22 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 			}
 			return buffer.Sequence(), nil
 		}
+	case *Array:
+		if len(val.dim) != 1 {
+			return nil, fmt.Errorf("%w: dimension is not 1: %s",
+				ErrNotSupportType, ToString(val, PRINT))
+		}
+		switch class {
+		case classList:
+			var cons Node = nil
+			for i := len(val.list) - 1; i >= 0; i-- {
+				cons = &Cons{
+					Car: val.list[i],
+					Cdr: cons,
+				}
+			}
+			return cons, nil
+		}
 	case Vector:
 		switch class {
 		case classVector:
