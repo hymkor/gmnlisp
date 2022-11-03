@@ -50,7 +50,7 @@ The text before proprocessed is [here](https://github.com/hymkor/gmnlisp/blob/ma
 Support Types
 -------------
 
-integer , float , string , symbol , cons , list , character , t/nil
+integer , float , string , symbol , cons , list , array , character , t/nil
 
 Support functions
 -----------------
@@ -73,8 +73,16 @@ Support functions
 - (subseq SEQUENCE Z1 Z2)
 - (elt SEQUENCE INDEX)
 - (member ATOM LIST)
-- (vector OBJ...)
-- #(OBJ...)
+
+#### array
+
+- #(...) , #2a((...) (...)) , #3a(((.. ..))) ...
+- (create-array '(DIM...) INITIAL-VALUE)
+- (array-dimensions ARRAY)
+- (aref ARRAY INDEX...)
+- (setf (aref ARAY INDEX) NEWVALUE)
+- (set-aref NEWVALUE ARRAY INDEX...)
+- (arrayp OBJ)
 
 #### Variables
 
@@ -236,3 +244,4 @@ Support functions
 
 - (exit)
 - (quit)
+- (abort)
