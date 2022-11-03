@@ -26,6 +26,7 @@ test:
 	go test
 	cd pkg/common && go test
 	cd pkg/auto && go test
+	.$(D)gmnlisp test.lsp
 
 readme.md: _readme.md gmnlpp$(EXE)
 	.$(D)gmnlpp$(EXE) _README.md > README.md

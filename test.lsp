@@ -5,7 +5,7 @@
          (progn
            (format t "Failed: ~s~%" (quote ,func))
            (format t "  expect: ~s but ~s~%" ,expect ,result)
-           (quit))))))
+           (abort))))))
 
 (let ((A (create-array '(3 2) 1)))
   (assert (arrayp A) t)

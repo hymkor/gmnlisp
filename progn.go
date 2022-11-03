@@ -226,6 +226,10 @@ func cmdQuit(context.Context, *World, Node) (Node, error) {
 	return Null, ErrQuit
 }
 
+func cmdAbort(context.Context, *World, Node) (Node, error) {
+	return Null, ErrAbort
+}
+
 func cmdFor(ctx context.Context, w *World, list Node) (Node, error) {
 	// CommonLisp's DO and ISLisp's FOR
 	var vars Node

@@ -24,6 +24,7 @@ var (
 	ErrNotSupportBySetf     = errors.New("Not supported by setf")
 	ErrNotSupportType       = errors.New("Not support type")
 	ErrQuit                 = errors.New("Bye")
+	ErrAbort                = errors.New("Abort")
 	ErrTooFewArguments      = errors.New("Too few arguments")
 	ErrTooManyArguments     = errors.New("Too many arguments")
 	ErrTooShortTokens       = errors.New("too short tokens")

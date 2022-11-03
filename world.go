@@ -196,6 +196,7 @@ func New() *World {
 			NewSymbol("="):                           SpecialF(cmdEqualOp),
 			NewSymbol(">"):                           SpecialF(cmdGreaterThan),
 			NewSymbol(">="):                          SpecialF(cmdGreaterOrEqual),
+			NewSymbol("abort"):                       SpecialF(cmdAbort),
 			NewSymbol("and"):                         SpecialF(cmdAnd),
 			NewSymbol("append"):                      &Function{F: funAppend},
 			NewSymbol("apply"):                       SpecialF(cmdApply),
