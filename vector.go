@@ -192,6 +192,14 @@ func funCreateArray(ctx context.Context, w *World, args []Node) (Node, error) {
 	}, nil
 }
 
+func dim2size(dim []int) int {
+	size := 1
+	for _, v := range dim {
+		size *= v
+	}
+	return size
+}
+
 func (A *Array) Elt(n int) (Node, error) {
 	if n < 0 || n >= A.dim[0] {
 		return nil, ErrIndexOutOfRange
@@ -199,14 +207,39 @@ func (A *Array) Elt(n int) (Node, error) {
 	if len(A.dim) == 1 {
 		return A.list[n], nil
 	}
-	size := 1
-	for _, v := range A.dim[1:] {
-		size *= v
-	}
+	size := dim2size(A.dim[1:])
 	return &Array{
 		list: A.list[size*n : size*(n+1)],
 		dim:  A.dim[1:],
 	}, nil
+}
+
+func funAref(ctx context.Context, w *World, args []Node) (Node, error) {
+	array, ok := args[0].(*Array)
+	if !ok {
+		return nil, fmt.Errorf("%w: %s", ErrExpectedArray, ToString(args[0], PRINT))
+	}
+	if len(args)-1 > len(array.dim) {
+		return nil, ErrTooManyArguments
+	}
+	for _, _nth := range args[1:] {
+		nth, ok := _nth.(Integer)
+		if !ok {
+			return nil, fmt.Errorf("%w: %s", ErrExpectedNumber, ToString(args[1], PRINT))
+		}
+		if nth < 0 || int(nth) >= array.dim[0] {
+			return nil, fmt.Errorf("%w: %s", ErrIndexOutOfRange, ToString(args[1], PRINT))
+		}
+		if len(array.dim) == 1 {
+			return array.list[nth], nil
+		}
+		elementSize := dim2size(array.dim[1:])
+		array = &Array{
+			list: array.list[int(nth)*elementSize : int(nth+1)*elementSize],
+			dim:  array.dim[1:],
+		}
+	}
+	return array, nil
 }
 
 func funSetAref(ctx context.Context, w *World, args []Node) (Node, error) {
@@ -230,12 +263,9 @@ func funSetAref(ctx context.Context, w *World, args []Node) (Node, error) {
 			array.list[index] = newValue
 			return newValue, nil
 		}
-		elementSize := 1
-		for _, d := range array.dim[1:] {
-			elementSize *= d
-		}
+		elementSize := dim2size(array.dim[1:])
 		array = &Array{
-			list: array.list[int(index)*elementSize:],
+			list: array.list[int(index)*elementSize : int(index+1)*elementSize],
 			dim:  array.dim[1:],
 		}
 	}

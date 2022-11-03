@@ -6,6 +6,12 @@
            (format t "Failed: ~s~%" (quote ,func))
            (format t "  expect: ~s but ~s~%" ,expect ,result)
            (abort))))))
+(let ((A (create-array '(3 3) 0)))
+  (assert (aref A 1 1) 0)
+  (set-aref 2 A 1 1)
+  (assert (aref A 1 1) 2)
+  ;(format t "~s~%" (aref A 1))
+  )
 
 (let ((A (create-array '(3 2) 1)))
   (assert (arrayp A) t)
