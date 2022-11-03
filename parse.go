@@ -1,7 +1,6 @@
 package gmnlisp
 
 import (
-	"errors"
 	"fmt"
 	"io"
 	"regexp"
@@ -13,7 +12,7 @@ import (
 var (
 	rxFloat   = regexp.MustCompile(`^-?[0-9]+\.[0-9]*$`)
 	rxInteger = regexp.MustCompile(`^-?[0-9]+$`)
-	rxArray   = regexp.MustCompile(`^#(\d*)a\(`)
+	rxArray   = regexp.MustCompile(`^#(\d*)[aA]\(`)
 )
 
 var (
@@ -49,31 +48,63 @@ func nodes2cons(nodes []Node) Node {
 	return cons
 }
 
-func readArrayDimN(dim int, rs io.RuneScanner) (Node, error) {
-	if dim <= 1 {
-		nodes, err := readUntilCloseParen(rs)
-		if err != nil {
-			return nil, err
-		}
-		return Vector(nodes), nil
-	}
+func readArray(lenDim int, rs io.RuneScanner) (Node, error) {
 	nodes := []Node{}
+	dim := make([]int, lenDim)
+	countDim := 0
+	fix := make([]bool, lenDim)
 	for {
-		token, err := readToken(rs)
-		if err != nil {
-			return nil, err
-		}
-		if token == "(" {
-			tmp, err := readArrayDimN(dim-1, rs)
+		if countDim == lenDim-1 {
+			newNode, err := ReadNode(rs)
 			if err != nil {
 				return nil, err
 			}
-			nodes = append(nodes, tmp)
-		} else if token == ")" {
-			return Vector(nodes), nil
+			if newNode == parenCloseSymbol {
+				fix[countDim] = true
+				countDim--
+				if countDim < 0 {
+					break
+				}
+			} else {
+				nodes = append(nodes, newNode)
+				if !fix[countDim] {
+					dim[countDim]++
+				}
+			}
 		} else {
-			return nil, errors.New("Expected array")
+			token, err := readToken(rs)
+			if err != nil {
+				return nil, err
+			}
+			if token == "(" {
+				if !fix[countDim] {
+					dim[countDim]++
+				}
+				countDim++
+			} else if token == ")" {
+				fix[countDim] = true
+				countDim--
+				if countDim < 0 {
+					break
+				}
+			} else {
+				return nil, fmt.Errorf("array syntax error: %s", token)
+			}
 		}
+	}
+	size := 1
+	for _, v := range dim {
+		size *= v
+	}
+	if len(nodes) < size {
+		return nil, ErrTooFewArguments
+	} else if len(nodes) > size {
+		return nil, ErrTooManyArguments
+	} else {
+		return &Array{
+			list: nodes,
+			dim:  dim,
+		}, nil
 	}
 }
 
@@ -222,7 +253,7 @@ func ReadNode(rs io.RuneScanner) (Node, error) {
 		if err != nil {
 			panic(err.Error())
 		}
-		return readArrayDimN(dim, rs)
+		return readArray(dim, rs)
 	}
 	if token == "(" {
 		nodes, err := readUntilCloseParen(rs)
