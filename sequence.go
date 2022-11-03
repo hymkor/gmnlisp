@@ -308,8 +308,6 @@ func funSubSeq(ctx context.Context, w *World, args []Node) (Node, error) {
 	var buffer SeqBuilder
 	if _, ok := args[0].(String); ok {
 		buffer = &StringBuilder{}
-	} else if _, ok := args[0].(Vector); ok {
-		buffer = &VectorBuilder{}
 	} else {
 		buffer = &ListBuilder{}
 	}

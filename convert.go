@@ -122,18 +122,6 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 			}
 			return cons, nil
 		}
-	case Vector:
-		switch class {
-		case classVector:
-			return val, nil
-		case classList:
-			var buffer ListBuilder
-			err := SeqEach(val, func(value Node) error {
-				buffer.Add(value)
-				return nil
-			})
-			return buffer.Sequence(), err
-		}
 	case Symbol:
 		switch class {
 		case classString:
