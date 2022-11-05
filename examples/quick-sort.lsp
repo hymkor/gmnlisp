@@ -1,0 +1,16 @@
+(defun quick-sort (lessThan source)
+  (if source
+    (let ((center (car source))
+          (less nil)
+          (more nil)
+          (tmp nil))
+      (while (setq source (cdr source))
+        (setq tmp (car source))
+        (if (funcall lessThan tmp center)
+          (setq less (cons tmp less))
+          (setq more (cons tmp more))))
+      (setq less (quick-sort lessThan less))
+      (setq more (quick-sort lessThan more))
+      (append less (list center) more))))
+
+(format (standard-output) "~s~%" (quick-sort #'< '(15 3 32 9 10)))
