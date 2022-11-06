@@ -205,6 +205,7 @@ func New() *World {
 			NewSymbol("arrayp"):                      &Function{C: 1, F: funAnyTypep[*Array]},
 			NewSymbol("assoc"):                       &Function{C: 2, F: funAssoc},
 			NewSymbol("atom"):                        &Function{C: 1, F: funAtom},
+			NewSymbol("backquote"):                   SpecialF(cmdBackQuote),
 			NewSymbol("block"):                       SpecialF(cmdBlock),
 			NewSymbol("car"):                         &Function{C: 1, F: funGetCar},
 			NewSymbol("case"):                        SpecialF(cmdCase),

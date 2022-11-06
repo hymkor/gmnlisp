@@ -13,6 +13,43 @@ func cmdQuote(_ context.Context, _ *World, n Node) (Node, error) {
 	return argv[0], nil
 }
 
+func backQuote(ctx context.Context, w *World, n Node) (Node, error) {
+	if cons, ok := n.(*Cons); ok {
+		if cons.Car == commaSymbol {
+			if cdrCons, ok := cons.Cdr.(*Cons); ok {
+				newCar, err := cdrCons.Car.Eval(ctx, w)
+				if err != nil {
+					return nil, err
+				}
+				newCdr, err := backQuote(ctx, w, cdrCons.Cdr)
+				if err != nil {
+					return nil, err
+				}
+				return &Cons{Car: newCar, Cdr: newCdr}, nil
+			}
+			return cons.Cdr.Eval(ctx, w)
+		}
+		newCar, err := backQuote(ctx, w, cons.Car)
+		if err != nil {
+			return nil, err
+		}
+		newCdr, err := backQuote(ctx, w, cons.Cdr)
+		if err != nil {
+			return nil, err
+		}
+		return &Cons{Car: newCar, Cdr: newCdr}, nil
+	}
+	return n, nil
+}
+
+func cmdBackQuote(ctx context.Context, w *World, n Node) (Node, error) {
+	value, _, err := Shift(n)
+	if err != nil {
+		return nil, err
+	}
+	return backQuote(ctx, w, value)
+}
+
 func funAtom(_ context.Context, _ *World, argv []Node) (Node, error) {
 	if _, ok := argv[0].(*Cons); ok {
 		return Null, nil
