@@ -28,6 +28,18 @@
     )
   )
 
+(defun escapebackquote (s)
+  (let ((str (format nil "~s" s))
+        (index nil)
+        (result ""))
+    (while (setq index (string-index "`" str))
+      (setq result (string-append result (subseq str 0 index) "` + \"`\" + `"))
+      (setq str (subseq str (1+ index) (length str)))
+      )
+    (string-append result str)
+    )
+  )
+
 (let ((packagename (car *posix-argv*))
       (arguments (cdr *posix-argv*)))
   (format t "package ~a~%" packagename)
@@ -58,11 +70,11 @@
     (setq node (cdr (car funcs)))
     (setq funcs (cdr funcs))
 
-    (format t "~aNewSymbol(~s):~a &LispString{S: `~s`},~%"
+    (format t "~aNewSymbol(~s):~a &LispString{S: `~a`},~%"
             #\tab
             name
             (create-string (- max (length name)) #\space)
-            node)
+            (escapebackquote node))
     )
   )
 (format t "}~%")
