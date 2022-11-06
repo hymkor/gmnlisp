@@ -24,6 +24,7 @@ var (
 	nulSymbol        = NewSymbol("")
 	parenCloseSymbol = NewSymbol(")")
 	quoteSymbol      = NewSymbol("quote")
+	backQuoteSymbol  = NewSymbol("backquote")
 	slashSymbol      = NewSymbol("/")
 	tSymbol          = NewSymbol("t")
 	colonRest        = Keyword(":rest")
@@ -113,34 +114,7 @@ func newQuote(value Node) Node {
 }
 
 func newBackQuote(value Node) Node {
-	cons, ok := value.(*Cons)
-	if !ok {
-		return &Cons{Car: quoteSymbol, Cdr: &Cons{Car: value, Cdr: Null}}
-	}
-	list := []Node{listSymbol}
-	comma := false
-	for {
-		if comma {
-			list = append(list, cons.Car)
-			comma = false
-		} else if cons.Car == commaSymbol {
-			comma = true
-		} else {
-			list = append(list, newBackQuote(cons.Car))
-		}
-		if IsNull(cons.Cdr) {
-			return List(list...)
-		}
-		if _cons, ok := cons.Cdr.(*Cons); ok {
-			cons = _cons
-		} else {
-			var result Node = cons.Cdr
-			for i := len(list) - 1; i >= 0; i-- {
-				result = &Cons{Car: list[i], Cdr: result}
-			}
-			return result
-		}
-	}
+	return &Cons{Car: backQuoteSymbol, Cdr: &Cons{Car: value, Cdr: Null}}
 }
 
 func tryParseAsFloat(token string) (Node, bool, error) {
