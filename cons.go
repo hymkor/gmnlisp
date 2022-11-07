@@ -52,6 +52,7 @@ func (cons *Cons) isTailNull() bool {
 
 func (cons *Cons) writeToWithoutKakko(w io.Writer, m PrintMode) (int, error) {
 	siz := 0
+	var lastCar Node = cons.Car
 	if IsNull(cons.Car) {
 		_siz, _ := io.WriteString(w, "()")
 		siz += _siz
@@ -65,10 +66,13 @@ func (cons *Cons) writeToWithoutKakko(w io.Writer, m PrintMode) (int, error) {
 			// output as ( X Y Z ...)
 
 			for p, ok := cons.Cdr.(*Cons); ok && HasValue(p); p, ok = p.Cdr.(*Cons) {
-				_siz, _ := io.WriteString(w, " ")
+				if lastCar != commaSymbol {
+					_siz, _ := io.WriteString(w, " ")
+					siz += _siz
+				}
+				_siz, _ := p.Car.PrintTo(w, m)
 				siz += _siz
-				_siz, _ = p.Car.PrintTo(w, m)
-				siz += _siz
+				lastCar = p.Car
 			}
 		} else {
 			// output as ( X . Y )
