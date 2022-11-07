@@ -1,6 +1,7 @@
 package gmnlisp
 
 import (
+	"fmt"
 	"io"
 	"regexp"
 	"strings"
@@ -67,6 +68,22 @@ func readtokenWord(r io.RuneScanner) (string, error) {
 			return buffer.String(), err
 		}
 
+		if lastRune == '\\' {
+			nextRune, _, err := r.ReadRune()
+			if err != nil {
+				return "", fmt.Errorf("Too near EOF: %w", err)
+			}
+			if nextRune == '\\' {
+				buffer.WriteString(`\\`)
+				continue
+			} else if nextRune == '"' {
+				buffer.WriteString(`\"`)
+				continue
+			} else {
+				r.UnreadRune()
+			}
+		}
+
 		if !quote {
 			if lastRune == '#' {
 				done, err := skipComment(r)
@@ -86,7 +103,7 @@ func readtokenWord(r io.RuneScanner) (string, error) {
 				return buffer.String(), nil
 			}
 		}
-		if lastLastRune != '\\' && lastRune == '"' {
+		if lastRune == '"' {
 			quote = !quote
 		}
 		buffer.WriteRune(lastRune)
