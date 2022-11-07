@@ -1,11 +1,25 @@
+(defun string-replace (source from to)
+  (let ((index nil) (buffer (create-string-output-stream)))
+    (while (setq index (string-index from source))
+      (format-object buffer (subseq source 0 index) nil)
+      (format-object buffer to nil)
+      (setq source (subseq source (+ index (length from)) (length source))))
+    (format-object buffer source nil)
+    (get-output-stream-string buffer)))
+
 (defun to-safe (s)
-  (let ((index nil))
-    (while (and s (setq index (string-index "-" s)))
-      (setq s (string-append (subseq s 0 index)
-                             "_"
-                             (subseq s (+ index 1) (length s))))
-      )
-    s))
+  (string-replace (s "-" "_")))
+
+(defun to-s (s)
+  (let ((buffer (create-string-output-stream)))
+    (format-object buffer s t)
+    (get-output-stream-string buffer)))
+
+(defun to-go-string (source)
+  (setq source (to-s source))
+  (setq source (string-replace source "\\" "\\\\"))
+  (setq source (string-replace source "\"" "\\\"")))
+
 (defun defun2lambda (node)
   (if (consp node)
     (case (car node)
@@ -28,17 +42,6 @@
     )
   )
 
-(defun escapebackquote (s)
-  (let ((str (format nil "~s" s))
-        (index nil)
-        (result ""))
-    (while (setq index (string-index "`" str))
-      (setq result (string-append result (subseq str 0 index) "` + \"`\" + `"))
-      (setq str (subseq str (1+ index) (length str)))
-      )
-    (string-append result str)
-    )
-  )
 
 (let ((packagename (car *posix-argv*))
       (arguments (cdr *posix-argv*)))
@@ -70,11 +73,11 @@
     (setq node (cdr (car funcs)))
     (setq funcs (cdr funcs))
 
-    (format t "~aNewSymbol(~s):~a &LispString{S: `~a`},~%"
+    (format t "~aNewSymbol(~s):~a &LispString{S: \"~a\"},~%"
             #\tab
             name
             (create-string (- max (length name)) #\space)
-            (escapebackquote node))
+            (to-go-string node))
     )
   )
 (format t "}~%")
