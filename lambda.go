@@ -149,7 +149,25 @@ func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
 		return nil, fmt.Errorf("%s: %w", L.name, ErrTooManyArguments)
 	}
 	if L.rest != nulSymbol {
-		lexical[L.rest] = n
+		var values Node = nil
+		for HasValue(n) {
+			var value Node
+			var err error
+
+			value, n, err = w.ShiftAndEvalCar(ctx, n)
+			if err != nil {
+				return nil, err
+			}
+			values = &Cons{
+				Car: value,
+				Cdr: values,
+			}
+		}
+		var err error
+		lexical[L.rest], err = NReverse(values)
+		if err != nil {
+			return nil, err
+		}
 	}
 	newWorld := L.lexical.Let(lexical)
 
