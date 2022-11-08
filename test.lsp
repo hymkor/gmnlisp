@@ -42,3 +42,12 @@
   (setf (elt A 1 0) 77)
   (assert (elt A 1 0) 77)
   )
+
+(defun string-format (&rest args)
+  (let ((buffer (create-string-output-stream)))
+    (apply #'format buffer args)
+    (get-output-stream-string buffer)))
+
+(let ((ahaha "ahaha"))
+  (assert (string-format "[~s]" ahaha) "[\"ahaha\"]")
+  )
