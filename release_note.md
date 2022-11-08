@@ -10,9 +10,14 @@
     - (convert SYMBOL &lt;string&gt;)
     - (file-length)
     - (probe-file)
+    - (backquote)
+    - (create-array) (arrayp) (array-dimensions) (aref)
+    - (abort)
 - Fix
     - gmnlisp.exe: \*posix-argv\* was not be defined
     - (defmacro) did not support lexical namespace
+    - (defun): &rest were not evaluted.
+    - tokenizer: could not treat \" and \\
 - (block) now accepts nil as the first parameter
 - (replica) -&gt; (set-car) and (replid) -&gt; (set-cdr)
 - (quote X) is displayed as `'X`
