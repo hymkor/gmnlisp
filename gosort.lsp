@@ -1,48 +1,40 @@
-(flet ((sort-strings (source)
-        (let ((result nil)
-              (maximum nil)
-              (newsource nil))
-          (while source
-            (setq maximum nil)
-            (setq newsource nil)
-            (mapc (lambda (x)
-                      (cond
-                        ((null maximum)
-                         (setq maximum x))
-                        ((string> x maximum)
-                         (setq newsource (cons maximum newsource))
-                         (setq maximum x))
-                        (t
-                          (setq newsource (cons x newsource)))))
-                    source)
-            (setq result (cons maximum result))
-            (setq source newsource)
-          )
-          result
-        )
-      ))
-  (let
-    ((sorting nil)
-     (buffer nil)
-     (line nil)
-     (in (standard-input))
-     (out (standard-output)))
-    (while (setq line (read-line in nil nil))
-      (if sorting
-        (progn
-          (if (string-index "*sort*end*" line)
-            (progn
-              (mapc (lambda (x) (format out "~a~%" x nil))
-                    (sort-strings buffer))
-              (setq sorting nil)
-              (format out "~a~%" line))
-            (setq buffer (cons line buffer))))
-        (progn
-          (format out "~a~%" line)
-          (if (string-index "*sort*start*" line)
-            (setq sorting t
-                  buffer '())))
-      ) ; if
-    ) ; while
-  ) ; let
-) ; flet
+(defun min-index (source)
+  (let ((value (car source)) (min-index 0) (index 1))
+    (while (setq source (cdr source))
+      (if (string< (car source) value)
+        (setq value (car source)
+              min-index index))
+      (incf index))
+    min-index))
+
+(defmacro swapf (left right)
+  (let ((tmp (gensym)))
+    `(let ((,tmp ,left))
+       (setf ,left ,right)
+       (setf ,right ,tmp))))
+
+(defun sort-strings (source)
+  (let ((index nil))
+    (while (cdr source)
+      (setq index (min-index source))
+      (swapf (car source) (elt source index))
+      (setq source (cdr source)))))
+
+(let
+  ((sorting nil) (buffer nil) (line nil))
+  (while (setq line (read-line (standard-input) nil nil))
+    (if sorting
+      (progn
+        (if (string-index "*sort*end*" line)
+          (progn
+            (sort-strings buffer)
+            (dolist (x buffer)
+              (format t "~a~%" x nil))
+            (setq sorting nil)
+            (format t "~a~%" line))
+          (setq buffer (cons line buffer))))
+      (progn
+        (format t "~a~%" line)
+        (if (string-index "*sort*start*" line)
+          (setq sorting t
+                buffer '()))))))
