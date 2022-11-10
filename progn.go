@@ -399,3 +399,70 @@ func cmdUnwindProtect(ctx context.Context, w *World, list Node) (Node, error) {
 	}
 	return value, nil
 }
+
+type _TagBody struct {
+	tag Symbol
+}
+
+func (t *_TagBody) Error() string {
+	return fmt.Sprintf("tag: %s not found", t.tag)
+}
+
+func cmdGo(ctx context.Context, w *World, args Node) (Node, error) {
+	tag, _, err := Shift(args)
+	if err != nil {
+		return nil, err
+	}
+	symbol, ok := tag.(Symbol)
+	if !ok {
+		return nil, ErrExpectedSymbol
+	}
+	return Null, &_TagBody{tag: symbol}
+}
+
+func cmdTagBody(ctx context.Context, w *World, args Node) (Node, error) {
+	tag := map[Symbol]Node{}
+
+mainloop:
+	for HasValue(args) {
+		var current Node
+		var err error
+
+		current, args, err = Shift(args)
+		if err != nil {
+			return nil, err
+		}
+		if symbol, ok := current.(Symbol); ok {
+			tag[symbol] = args
+			continue
+		}
+		_, err = current.Eval(ctx, w)
+		if err == nil {
+			continue
+		}
+		var t *_TagBody
+		if !errors.As(err, &t) {
+			return nil, err
+		}
+		if next, ok := tag[t.tag]; ok {
+			args = next
+			continue
+		}
+		for HasValue(args) {
+			current, args, err = Shift(args)
+			if err != nil {
+				return nil, err
+			}
+			symbol, ok := current.(Symbol)
+			if !ok {
+				continue
+			}
+			tag[symbol] = args
+			if symbol == t.tag {
+				continue mainloop
+			}
+		}
+		return nil, err
+	}
+	return Null, nil
+}

@@ -51,3 +51,32 @@
 (let ((ahaha "ahaha"))
   (assert (string-format "[~s]" ahaha) "[\"ahaha\"]")
   )
+
+;;;; test for (tagbody) and (go) 
+; forward test
+(let ((step 0))
+  (tagbody
+    (setq step 1)
+    ;(format t "step-1~%")
+    (go skip)
+    ;(format t "step-2~%")
+    (setq step 2)
+    skip
+    )
+  (assert step 1))
+
+; backword test
+(let ((step 0))
+  (assert
+    (block
+      break1
+      (tagbody
+        loop-tag
+        ;(format t "step=~a~%" step)
+        (if (> step 4)
+          (return-from break1 step))
+        (incf step)
+        (go loop-tag)
+        )
+      )
+    5))
