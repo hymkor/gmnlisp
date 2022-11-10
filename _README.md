@@ -171,6 +171,8 @@ Support functions
 - (if TEST-FORM THEN-FORM ELSE-FORM)
 - (progn FORM...)
 - (while TEST-FORM BODY-FORM...)
+- (tagbody {TAG|FORM}...)
+- (go TAG)
 - (dolist (VAR '(VALUES..)) FORM...) [MACRO]
 - (dotimes (VAR N) FORM...) [MACRO]
 

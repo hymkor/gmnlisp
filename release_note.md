@@ -13,6 +13,7 @@
     - (backquote)
     - (create-array) (arrayp) (array-dimensions) (aref)
     - (abort)
+    - (tagbody) (go)
 - Fix
     - gmnlisp.exe: \*posix-argv\* was not be defined
     - (defmacro) did not support lexical namespace
