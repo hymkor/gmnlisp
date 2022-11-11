@@ -87,3 +87,15 @@
          y x)
   (assert x 2)
   (assert y 1))
+
+; when
+(assert (when t 1 2 3) 3)
+(assert (when nil 1 2 3) nil)
+
+; unless
+(assert (unless t 1 2 3) nil)
+(assert (unless nil 1 2 3) 3)
+
+;prog1
+(assert (prog1 1 2 3 4) 1)
+(assert (prog2 1 2 3 4) 2)
