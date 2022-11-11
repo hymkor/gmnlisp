@@ -80,3 +80,10 @@
         )
       )
     5))
+
+; psetq test
+(let ((x 1) (y 2))
+  (psetq x y
+         y x)
+  (assert x 2)
+  (assert y 1))

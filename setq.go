@@ -31,6 +31,40 @@ func cmdSetq(ctx context.Context, w *World, params Node) (Node, error) {
 	return value, nil
 }
 
+func cmdPSetq(ctx context.Context, w *World, params Node) (Node, error) {
+	type assignT struct {
+		symbol Symbol
+		value  Node
+	}
+	assignList := []*assignT{}
+
+	for HasValue(params) {
+		var nameNode Node
+		var err error
+		var value Node
+
+		nameNode, params, err = Shift(params)
+		if err != nil {
+			return nil, err
+		}
+		nameSymbol, ok := nameNode.(Symbol)
+		if !ok {
+			return nil, fmt.Errorf("%w: `%s`", ErrExpectedSymbol, ToString(nameSymbol, PRINT))
+		}
+		value, params, err = w.ShiftAndEvalCar(ctx, params)
+		if err != nil {
+			return nil, err
+		}
+		assignList = append(assignList, &assignT{symbol: nameSymbol, value: value})
+	}
+	for _, a := range assignList {
+		if err := w.Set(a.symbol, a.value); err != nil {
+			return nil, err
+		}
+	}
+	return Null, nil
+}
+
 func letValuesToVars(ctx context.Context, w *World, list Node, lexical map[Symbol]Node) error {
 	for HasValue(list) {
 		var item Node
