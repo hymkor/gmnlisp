@@ -96,6 +96,23 @@
 (assert (unless t 1 2 3) nil)
 (assert (unless nil 1 2 3) 3)
 
-;prog1
+; prog1
 (assert (prog1 1 2 3 4) 1)
 (assert (prog2 1 2 3 4) 2)
+
+;;;; for(1) ;;;
+(assert
+  (let (x y)
+    (for ((x 0 (1+ x)) (y 0 (+ y 10)))
+         ((= x 5) (+ x y))
+         ))
+  55)
+
+;;; for(2) ;;;
+(defun fibo2 (n)
+  (let (a b)
+    (for ((n n (- n 1))
+          (a 0 b)
+          (b 1 (+ a b)))
+         ((<= n 0) a))))
+(assert (fibo2 10) 55)
