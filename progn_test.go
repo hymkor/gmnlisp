@@ -56,27 +56,6 @@ func TestCase(t *testing.T) {
 		)`, String("C"))
 }
 
-func TestFor(t *testing.T) {
-	assertEqual(t, `
-		(let (x y)
-			(for ((x 0 (1+ x)) (y 0 (+ y 10)))
-				((= x 5) (+ x y))
-			))`, Integer(55))
-
-	assertEqual(t, `
-		(defun fibo2 (n)
-			(let (a b)
-				(for ((n n (- n 1))
-						(a 0 b)
-						(b 1 (+ a b))
-					)
-					((<= n 0) a)
-				)
-			)
-		)
-		(fibo2 10)`, Integer(55))
-}
-
 func TestWithHandler(t *testing.T) {
 	assertEqual(t, `
 		(catch 'hoge

@@ -239,7 +239,6 @@ func New() *World {
 			NewSymbol("flet"):                        SpecialF(cmdFlet),
 			NewSymbol("floatp"):                      &Function{C: 1, F: funAnyTypep[Float]},
 			NewSymbol("floor"):                       &Function{C: 1, F: funFloor},
-			NewSymbol("for"):                         SpecialF(cmdFor),
 			NewSymbol("format"):                      &Function{Min: 2, F: funFormat},
 			NewSymbol("format-char"):                 &Function{C: 2, F: funFormatChar},
 			NewSymbol("format-float"):                &Function{C: 2, F: funFormatFloat},
