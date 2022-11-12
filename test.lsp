@@ -7,6 +7,7 @@
            (format t "  expect: ~s but ~s~%" ,expect ,result)
            (abort))))))
 
+;;; test for create-array ;;;
 (let ((A (create-array '(3 3) 0)))
   (assert (aref A 1 1) 0)
   (set-aref 2 A 1 1)
@@ -28,6 +29,7 @@
   (assert (elt A 2 1) "SETF")
   )
 
+;;; test for the constructor for array ;;;
 (let ((A #2a( (1 2 3) (4 5 6) )))
   (assert (array-dimensions A) '(2 3))
   (assert (aref A 0 0) 1)
@@ -43,16 +45,7 @@
   (assert (elt A 1 0) 77)
   )
 
-(defun string-format (&rest args)
-  (let ((buffer (create-string-output-stream)))
-    (apply #'format buffer args)
-    (get-output-stream-string buffer)))
-
-(let ((ahaha "ahaha"))
-  (assert (string-format "[~s]" ahaha) "[\"ahaha\"]")
-  )
-
-;;;; test for (tagbody) and (go) 
+;;; test for (tagbody) and (go)
 ; forward test
 (let ((step 0))
   (tagbody
@@ -81,26 +74,26 @@
       )
     5))
 
-; psetq test
+;;; test for (psetq) ;;;
 (let ((x 1) (y 2))
   (psetq x y
          y x)
   (assert x 2)
   (assert y 1))
 
-; when
+;;; test for (when) ;;;
 (assert (when t 1 2 3) 3)
 (assert (when nil 1 2 3) nil)
 
-; unless
+;;; test for (unless) ;;;
 (assert (unless t 1 2 3) nil)
 (assert (unless nil 1 2 3) 3)
 
-; prog1
+;;; test for (prog1) ;;;
 (assert (prog1 1 2 3 4) 1)
 (assert (prog2 1 2 3 4) 2)
 
-;;;; for(1) ;;;
+;;;; test for (for) ;;;
 (assert
   (let (x y)
     (for ((x 0 (1+ x)) (y 0 (+ y 10)))
@@ -108,7 +101,6 @@
          ))
   55)
 
-;;; for(2) ;;;
 (defun fibo2 (n)
   (let (a b)
     (for ((n n (- n 1))
