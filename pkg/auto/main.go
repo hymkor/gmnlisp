@@ -43,6 +43,14 @@ func (d _Dummy) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	return io.WriteString(w, "(binary)")
 }
 
+func (d _Dummy) String() string {
+	return "(binary)"
+}
+
+func (d _Dummy) GoString() string {
+	return "(binary)"
+}
+
 func openAsRead(fname string) (Node, error) {
 	type Reader struct {
 		_Dummy
