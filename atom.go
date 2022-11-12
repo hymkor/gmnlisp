@@ -52,6 +52,10 @@ func (s String) String() string {
 	return string(s)
 }
 
+func (s String) GoString() string {
+	return "\"" + string(s) + "\""
+}
+
 func (s String) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	if m == PRINC {
 		return io.WriteString(w, string(s))
@@ -169,6 +173,10 @@ func (s Symbol) Equals(n Node, m EqlMode) bool {
 }
 
 func (s Symbol) String() string {
+	return symbols[s]
+}
+
+func (s Symbol) GoString() string {
 	return symbols[s]
 }
 

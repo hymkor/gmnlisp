@@ -69,6 +69,10 @@ func (S *StringBuilder) Sequence() Node {
 	return String(S.String())
 }
 
+func (S StringBuilder) GoString() string {
+	return "\"" + S.String() + "\""
+}
+
 func funElt(_ context.Context, _ *World, args []Node) (Node, error) {
 	type canElt interface {
 		Elt(int) (Node, error)
