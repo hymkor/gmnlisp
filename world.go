@@ -65,14 +65,12 @@ type _Reader interface {
 }
 
 type _ReaderNode struct {
-	_Dummy
 	_Reader
 }
 
 type _Writer = io.Writer
 
 type _WriterNode struct {
-	_Dummy
 	_Writer
 }
 

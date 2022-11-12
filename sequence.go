@@ -53,7 +53,7 @@ func (L *ListBuilder) Sequence() Node {
 }
 
 type StringBuilder struct {
-	buffer strings.Builder
+	strings.Builder
 }
 
 func (S *StringBuilder) Add(n Node) error {
@@ -61,12 +61,12 @@ func (S *StringBuilder) Add(n Node) error {
 	if !ok {
 		return ErrExpectedCharacter
 	}
-	S.buffer.WriteRune(rune(r))
+	S.WriteRune(rune(r))
 	return nil
 }
 
 func (S *StringBuilder) Sequence() Node {
-	return String(S.buffer.String())
+	return String(S.String())
 }
 
 func funElt(_ context.Context, _ *World, args []Node) (Node, error) {

@@ -19,7 +19,7 @@ $(NAME)$(EXE): $(wildcard *.go)
 	go fmt cmd/gmnlisp/main.go
 	cd cmd/gmnlisp && go build -o ../../gmnlisp$(EXE) -ldflags "-s -w -X main.version=$(VERSION)"
 
-generate: embed.go sort-world
+generate: embed.go sort-world newtypes.go
 
 all: $(NAME)$(EXE) gmnlpp$(EXE)
 
@@ -49,6 +49,9 @@ sort-world:
 
 embed.go: lsp2go.lsp embed.lsp
 	gmnlisp lsp2go.lsp gmnlisp < embed.lsp > embed.go
+
+newtypes.go : newtypes.lsp Makefile
+	gmnlisp $< gmnlisp "*StringBuilder" "*inputStream" "*_OutputFileStream" "*_Macro" "_ReaderNode" "_WriterNode" > $@
 
 _package:
 	$(SET) "CGO_ENABLED=0" && $(MAKE) clean && $(MAKE) all

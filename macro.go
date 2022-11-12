@@ -11,7 +11,6 @@ import (
 const macro_trace = false
 
 type _Macro struct {
-	_Dummy
 	param   []Symbol
 	code    Node
 	rest    Symbol

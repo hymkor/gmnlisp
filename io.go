@@ -9,20 +9,6 @@ import (
 	"strings"
 )
 
-type _Dummy struct{}
-
-func (d _Dummy) Eval(context.Context, *World) (Node, error) {
-	return d, nil
-}
-
-func (d _Dummy) Equals(Node, EqlMode) bool {
-	return false
-}
-
-func (d _Dummy) PrintTo(w io.Writer, m PrintMode) (int, error) {
-	return io.WriteString(w, "(binary)")
-}
-
 func chomp(s string) string {
 	L := len(s)
 	if L > 0 && s[L-1] == '\n' {
@@ -137,11 +123,7 @@ func funCreateStringInputStream(ctx context.Context, w *World, list []Node) (Nod
 }
 
 func cmdCreateStringOutputStream(ctx context.Context, w *World, list Node) (Node, error) {
-	type StringBuilder struct {
-		_Dummy
-		*strings.Builder
-	}
-	return &StringBuilder{Builder: &strings.Builder{}}, nil
+	return &StringBuilder{}, nil
 }
 
 func funGetOutputStreamString(ctx context.Context, w *World, list []Node) (Node, error) {
@@ -153,7 +135,6 @@ func funGetOutputStreamString(ctx context.Context, w *World, list []Node) (Node,
 }
 
 type inputStream struct {
-	_Dummy
 	_Reader
 	io.Closer
 }
@@ -202,7 +183,6 @@ func cmdWithOpenInputFile(ctx context.Context, w *World, list Node) (Node, error
 }
 
 type _OutputFileStream struct {
-	_Dummy
 	*bufio.Writer
 	closer io.Closer
 }
