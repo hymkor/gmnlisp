@@ -52,6 +52,8 @@ type Node interface {
 	Eval(context.Context, *World) (Node, error)
 	Equals(Node, EqlMode) bool
 	PrintTo(io.Writer, PrintMode) (int, error)
+	String() string
+	GoString() string
 }
 
 func ToString(node Node, m PrintMode) string {

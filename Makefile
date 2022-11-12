@@ -19,7 +19,7 @@ $(NAME)$(EXE): $(wildcard *.go)
 	go fmt cmd/gmnlisp/main.go
 	cd cmd/gmnlisp && go build -o ../../gmnlisp$(EXE) -ldflags "-s -w -X main.version=$(VERSION)"
 
-generate: embed.go sort-world newtypes.go
+generate: embed.go sort-world newtypes.go stringer.go
 
 all: $(NAME)$(EXE) gmnlpp$(EXE)
 
@@ -52,6 +52,9 @@ embed.go: lsp2go.lsp embed.lsp
 
 newtypes.go : newtypes.lsp Makefile
 	gmnlisp $< gmnlisp "*StringBuilder" "*inputStream" "*_OutputFileStream" "*_Macro" "_ReaderNode" "_WriterNode" > $@
+
+stringer.go : stringer.lsp Makefile
+	gmnlisp $< gmnlisp ErrorNode Float Integer _WriterNode _ReaderNode _Macro _OutputFileStream inputStream _JoinedForm LispString SpecialF _Lambda _TrueType Cons Keyword Rune _NullType Array Function > $@
 
 _package:
 	$(SET) "CGO_ENABLED=0" && $(MAKE) clean && $(MAKE) all
