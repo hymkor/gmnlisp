@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"strconv"
 	"strings"
 	"unicode"
 	"unicode/utf8"
@@ -53,14 +54,14 @@ func (s String) String() string {
 }
 
 func (s String) GoString() string {
-	return "\"" + string(s) + "\""
+	return strconv.Quote(string(s))
 }
 
 func (s String) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	if m == PRINC {
 		return io.WriteString(w, string(s))
 	} else {
-		return fmt.Fprintf(w, `"%s"`, unescapeSequenceReplacer.Replace(string(s)))
+		return fmt.Fprintf(w, "%#v", string(s))
 	}
 }
 
@@ -130,14 +131,6 @@ func (s String) LessThan(n Node) (bool, error) {
 	}
 	return string(s) < string(ns), nil
 }
-
-var unescapeSequenceReplacer = strings.NewReplacer(
-	"\n", "\\n",
-	"\r", "\\r",
-	"\t", "\\t",
-	"\b", "\\b",
-	"\"", "\\\"",
-)
 
 type Symbol int
 
