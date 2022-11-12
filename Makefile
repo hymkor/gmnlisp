@@ -13,11 +13,13 @@ else
     D=/
 endif
 
-$(NAME)$(EXE): $(wildcard *.go) embed.lsp embed.go
+$(NAME)$(EXE): $(wildcard *.go)
 	go fmt
 	go build
 	go fmt cmd/gmnlisp/main.go
 	cd cmd/gmnlisp && go build -o ../../gmnlisp$(EXE) -ldflags "-s -w -X main.version=$(VERSION)"
+
+generate: embed.go sort-world
 
 all: $(NAME)$(EXE) gmnlpp$(EXE)
 
