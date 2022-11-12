@@ -24,6 +24,14 @@ func (d _Dummy) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	return io.WriteString(w, "(binary)")
 }
 
+func (d _Dummy) String() string {
+	return "(binary)"
+}
+
+func (d _Dummy) GoString() string {
+	return "(binary)"
+}
+
 func cmdWithOpenFile(ctx context.Context, w *World, list Node) (Node, error) {
 	var param Node
 	var err error

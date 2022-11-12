@@ -100,6 +100,14 @@ func (f *KWFunction) Equals(n Node, m EqlMode) bool {
 	return false
 }
 
+func (f KWFunction) String() string {
+	return "KWFunction"
+}
+
+func (f KWFunction) GoString() string {
+	return "\"KWFunction\""
+}
+
 func ListToKwargs(ctx context.Context, w *World, list Node) ([]Node, map[Keyword]Node, error) {
 	args := []Node{}
 	kwargs := map[Keyword]Node{}
