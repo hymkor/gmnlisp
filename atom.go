@@ -120,13 +120,13 @@ func (s String) Add(n Node) (Node, error) {
 		news = append(news, value...)
 		return String(news), nil
 	}
-	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, ToString(n, PRINT))
+	return nil, fmt.Errorf("%w: %#v", ErrNotSupportType, n)
 }
 
 func (s String) LessThan(n Node) (bool, error) {
 	ns, ok := n.(String)
 	if !ok {
-		return false, fmt.Errorf("%w: `%s`", ErrNotSupportType, ToString(n, PRINT))
+		return false, fmt.Errorf("%w: %#v", ErrNotSupportType, n)
 	}
 	return string(s) < string(ns), nil
 }
@@ -232,7 +232,7 @@ func (r Rune) Add(n Node) (Node, error) {
 	if value, ok := n.(Rune); ok {
 		return r + value, nil
 	}
-	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, ToString(n, PRINT))
+	return nil, fmt.Errorf("%w: %#v", ErrNotSupportType, n)
 }
 
 func (r Rune) Sub(n Node) (Node, error) {
@@ -242,7 +242,7 @@ func (r Rune) Sub(n Node) (Node, error) {
 	if value, ok := n.(Rune); ok {
 		return r - value, nil
 	}
-	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, ToString(n, PRINT))
+	return nil, fmt.Errorf("%w: %#v", ErrNotSupportType, n)
 }
 
 type Keyword string

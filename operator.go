@@ -26,7 +26,7 @@ func cmdAdd(ctx context.Context, w *World, param Node) (Node, error) {
 		if _left, ok := left.(canPlus); ok {
 			return _left.Add(right)
 		}
-		return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, ToString(left, PRINT))
+		return nil, fmt.Errorf("%w: %#v", ErrNotSupportType, left)
 	})
 }
 
@@ -40,7 +40,7 @@ func cmdSub(ctx context.Context, w *World, param Node) (Node, error) {
 		if _left, ok := left.(canMinus); ok {
 			return _left.Sub(right)
 		}
-		return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, ToString(left, PRINT))
+		return nil, fmt.Errorf("%w: %#v", ErrNotSupportType, left)
 	})
 }
 
@@ -53,7 +53,7 @@ func cmdMulti(ctx context.Context, w *World, param Node) (Node, error) {
 		if _left, ok := left.(CanMulti); ok {
 			return _left.Multi(right)
 		}
-		return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, ToString(left, PRINT))
+		return nil, fmt.Errorf("%w: %#v", ErrNotSupportType, left)
 	})
 }
 
@@ -66,7 +66,7 @@ func cmdDevide(ctx context.Context, w *World, param Node) (Node, error) {
 		if _left, ok := left.(CanDevide); ok {
 			return _left.Divide(right)
 		}
-		return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, ToString(left, PRINT))
+		return nil, fmt.Errorf("%w: %#v", ErrNotSupportType, left)
 	})
 }
 
@@ -86,7 +86,7 @@ func cmdLessThan(ctx context.Context, w *World, param Node) (Node, error) {
 			}
 			return Null, nil
 		}
-		return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, ToString(left, PRINT))
+		return nil, fmt.Errorf("%w: %#v", ErrNotSupportType, left)
 	}))
 }
 
@@ -102,7 +102,7 @@ func cmdGreaterThan(ctx context.Context, w *World, param Node) (Node, error) {
 			}
 			return Null, nil
 		}
-		return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, ToString(right, PRINT))
+		return nil, fmt.Errorf("%w: %#v", ErrNotSupportType, right)
 	}))
 }
 
@@ -129,7 +129,7 @@ func cmdGreaterOrEqual(ctx context.Context, w *World, param Node) (Node, error) 
 			}
 			return right, nil
 		}
-		return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, ToString(right, PRINT))
+		return nil, fmt.Errorf("%w: %#v", ErrNotSupportType, right)
 	}))
 }
 
@@ -147,7 +147,7 @@ func cmdLessOrEqual(ctx context.Context, w *World, param Node) (Node, error) {
 			}
 			return right, nil
 		}
-		return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, ToString(right, PRINT))
+		return nil, fmt.Errorf("%w: %#v", ErrNotSupportType, right)
 	}))
 }
 
@@ -194,7 +194,7 @@ func floatToInteger(argv []Node, f func(float64) float64) (Node, error) {
 	if value, ok := argv[0].(Float); ok {
 		return Integer(int(f(float64(value)))), nil
 	}
-	return nil, fmt.Errorf("%w: `%s`", ErrNotSupportType, ToString(argv[0], PRINT))
+	return nil, fmt.Errorf("%w: %#v", ErrNotSupportType, argv[0])
 }
 
 // funTruncate implements (truncte X). It returns the integer value of X.

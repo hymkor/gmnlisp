@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"io"
-	"strings"
 )
 
 var (
@@ -54,15 +53,6 @@ type Node interface {
 	PrintTo(io.Writer, PrintMode) (int, error)
 	String() string
 	GoString() string
-}
-
-func ToString(node Node, m PrintMode) string {
-	if node == nil {
-		return "()"
-	}
-	var buffer strings.Builder
-	node.PrintTo(&buffer, m)
-	return buffer.String()
 }
 
 func IsNull(node Node) bool {

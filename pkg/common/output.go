@@ -17,7 +17,7 @@ func getWriterAndString(ctx context.Context, w *World, n Node) (io.Writer, Strin
 	}
 	s, ok := _s.(String)
 	if !ok {
-		return nil, emptyString, fmt.Errorf("%w `%s`", ErrExpectedString, ToString(_s, PRINT))
+		return nil, emptyString, fmt.Errorf("%w: %#v", ErrExpectedString, _s)
 	}
 	var writer io.Writer
 	if HasValue(n) {
@@ -27,7 +27,7 @@ func getWriterAndString(ctx context.Context, w *World, n Node) (io.Writer, Strin
 		}
 		writer, ok = _writer.(io.Writer)
 		if !ok {
-			return nil, emptyString, fmt.Errorf("Expected Writer `%s`", ToString(_writer, PRINT))
+			return nil, emptyString, fmt.Errorf("Expected Writer: %#v", _writer)
 		}
 		if HasValue(n) {
 			return nil, emptyString, ErrTooManyArguments

@@ -88,7 +88,7 @@ func cmdOpen(ctx context.Context, w *World, n Node) (Node, error) {
 	}
 	fnameString, ok := fnameNode.(String)
 	if !ok {
-		return nil, fmt.Errorf("%w `%s`", ErrExpectedString, ToString(fnameString, PRINT))
+		return nil, fmt.Errorf("%w: %#v", ErrExpectedString, fnameString)
 	}
 	fname := fnameString.String()
 	if IsNull(n) {
@@ -101,7 +101,7 @@ func cmdOpen(ctx context.Context, w *World, n Node) (Node, error) {
 	}
 	modeString, ok := modeNode.(String)
 	if !ok {
-		return nil, fmt.Errorf("%w `%s`", ErrExpectedString, ToString(modeNode, PRINT))
+		return nil, fmt.Errorf("%w: %#v", ErrExpectedString, modeNode)
 	}
 	mode := modeString.String()
 

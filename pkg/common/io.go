@@ -97,7 +97,7 @@ func cmdWithOpenFile(ctx context.Context, w *World, list Node) (Node, error) {
 		fdNode = &Writer{Writer: fd}
 		defer fd.Close()
 	} else {
-		return nil, fmt.Errorf("invalid :direction %s", ToString(direction, PRINT))
+		return nil, fmt.Errorf("invalid :direction %#v", direction)
 	}
 	newWorld := w.Let(&Pair{Key: symbol, Value: fdNode})
 	return Progn(ctx, newWorld, list)

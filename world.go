@@ -414,10 +414,10 @@ func (w *World) Let(scope Scope) *World {
 func (w *World) Assert(equation string, expect Node) string {
 	result, err := w.Interpret(context.TODO(), equation)
 	if err != nil {
-		return fmt.Sprintf("%s: %s", equation, err.Error())
+		return fmt.Sprintf("%#v: %#v", equation, err.Error())
 	}
 	if !result.Equals(expect, EQUAL) {
-		return fmt.Sprintf("%s != %s (was %s)", equation, ToString(expect, PRINT), ToString(result, PRINT))
+		return fmt.Sprintf("%#v != %#v (was %#v)", equation, expect, result)
 	}
 	return ""
 }

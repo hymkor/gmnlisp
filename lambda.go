@@ -54,8 +54,7 @@ func getParameterList(node Node) (*_Parameters, error) {
 		} else {
 			nameSymbol, ok := nameNode.(Symbol)
 			if !ok {
-				return nil, fmt.Errorf("%w: %s", ErrExpectedSymbol,
-					ToString(nameNode, PRINT))
+				return nil, fmt.Errorf("%w: %#v", ErrExpectedSymbol, nameNode)
 			}
 			params = append(params, nameSymbol)
 		}
@@ -109,7 +108,7 @@ var trace = map[Symbol]int{}
 
 func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
 	if err := CheckContext(ctx); err != nil {
-		return nil, fmt.Errorf("%s: %w", L.name, err)
+		return nil, fmt.Errorf("%#v: %w", L.name, err)
 	}
 	lexical := Variables{}
 	foundSlash := false
@@ -138,7 +137,7 @@ func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
 		}
 		lexical[name] = value
 		if traceDo {
-			fmt.Fprintf(os.Stderr, " %s", ToString(value, PRINT))
+			fmt.Fprintf(os.Stderr, " %#v", value)
 		}
 	}
 	if traceDo {
@@ -178,10 +177,10 @@ func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
 		return errEarlyReturns.Value, nil
 	}
 	if traceDo {
-		fmt.Fprintf(os.Stderr, "[%d: %s returned %s]\n",
+		fmt.Fprintf(os.Stderr, "[%d: %s returned %#v]\n",
 			traceCount,
 			L.name,
-			ToString(result, PRINT))
+			result)
 	}
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", L.name, err)

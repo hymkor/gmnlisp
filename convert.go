@@ -108,8 +108,7 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 		}
 	case *Array:
 		if len(val.dim) != 1 {
-			return nil, fmt.Errorf("%w: dimension is not 1: %s",
-				ErrNotSupportType, ToString(val, PRINT))
+			return nil, fmt.Errorf("%w: dimension is not 1: %#v", ErrNotSupportType, val)
 		}
 		switch class {
 		case classList:
@@ -128,6 +127,5 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 			return String(val.String()), nil
 		}
 	}
-	return nil, fmt.Errorf("%w: %s to %s",
-		ErrNotSupportType, ToString(source, PRINT), ToString(class, PRINT))
+	return nil, fmt.Errorf("%w: %#v to %#v", ErrNotSupportType, source, class)
 }
