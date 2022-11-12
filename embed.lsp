@@ -1,20 +1,26 @@
 (defmacro when (test &rest args)
   `(if ,test (progn ,@args)))
+
 (defmacro unless (test &rest args)
   `(if ,test nil (progn ,@args)))
+
 (defmacro prog1 (expr &rest args)
   (let ((x (gensym)))
     `(let ((,x ,expr))
        (progn ,@args)
        ,x)))
+
 (defmacro prog2 (expr1 expr2 &rest args)
   `(progn ,expr1 (prog1 ,expr2 ,@args)))
+
 (defmacro incf (place &rest args)
   (let ((delta (if args (car args) 1)))
     `(setf ,place (+ ,place ,delta))))
+
 (defmacro decf (place &rest args)
   (let ((delta (if args (car args) 1)))
     `(setf ,place (- ,place ,delta))))
+
 (defun swap-elt (newvalue source z)
   (if (stringp source)
     (string-append
@@ -29,6 +35,7 @@
         (setq s (cdr s))
         )
       source)))
+
 (defun swap-subseq (seq start end newvalue)
   (if (stringp seq)
     (string-append (subseq seq 0 start)
@@ -44,6 +51,7 @@
         (decf end)
         (setq seq (cdr seq)))
       orig)))
+
 (let ((setf-table
         '((car . set-car)
           (cdr . set-cdr)
@@ -68,18 +76,22 @@
                    tmp)))
              (arguments (cdr expr)))
         (cons setter (cons newvalue arguments))))))
+
 (defmacro set-elt (newvalue seq &rest z)
   `(if (arrayp ,seq)
      (set-aref ,newvalue ,seq ,@z)
-     (setf ,seq (swap-elt ,newvalue ,seq ,@z))
-     ))
+     (setf ,seq (swap-elt ,newvalue ,seq ,@z))))
+
 (defmacro set-dynamic (newvalue name)
   `(defdynamic ,name ,newvalue))
+
 (defmacro set-subseq (newvalue seq start end)
   `(setf ,seq (swap-subseq ,seq ,start ,end ,newvalue)))
+
 (defmacro set-setq (newvalue name avlue)
   (let ((name (elt expr 1)) (value (elt expr 2)))
     `(progn (setq ,name ,value) (setf ,name ,newvalue))))
+
 (defmacro set-assoc (newvalue key m)
   (let ((L (gensym)) (K (gensym)) (tmp (gensym)))
     `(let* ((,L ,m)
@@ -88,8 +100,8 @@
        (while ,L
          (if (and (setq ,tmp (car ,L)) (consp ,tmp) (equal ,K (car ,tmp)))
            (set-car ,newvalue ,L))
-         (setq ,L (cdr ,L)))))
-  )
+         (setq ,L (cdr ,L))))))
+
 (defmacro dolist (vars &rest body)
   (let ((var (car vars))
         (values (elt vars 1))
@@ -101,6 +113,7 @@
            (setq ,var (car ,rest))
            (setq ,rest (cdr ,rest))
            ,@body)))))
+
 (defmacro dotimes (vars &rest commands)
   (let ((var (car vars))
         (count (elt vars 1))
@@ -109,4 +122,3 @@
        (while (< ,var ,end)
          (progn ,@commands)
          (setq ,var (+ 1 ,var))))))
-; vim:set lispwords+=while,defglobal:
