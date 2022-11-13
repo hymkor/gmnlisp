@@ -114,3 +114,6 @@
 
 ;;; test for (format-integer) ;;;
 (assert (format-integer nil 100 10) "100")
+
+;;; test for (format-object) ;;;
+(assert (format-object nil "ahaha" t) "\"ahaha\"")

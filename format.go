@@ -44,16 +44,15 @@ func printInt(w io.Writer, base, width, padding int, value Node) error {
 }
 
 func funFormatObject(_ context.Context, _ *World, list []Node) (Node, error) {
-	writer, ok := list[0].(io.Writer)
-	if !ok {
-		return nil, ErrExpectedWriter
-	}
-	if IsNull(list[2]) { // ~a (AS-IS)
-		list[1].PrintTo(writer, PRINC)
-	} else { // ~s (S expression)
-		list[1].PrintTo(writer, PRINT)
-	}
-	return Null, nil
+	return tAndNilToWriter(list, func(writer runeWriter, list []Node) error {
+		var err error
+		if IsNull(list[1]) { // ~a (AS-IS)
+			_, err = list[0].PrintTo(writer, PRINC)
+		} else { // ~s (S expression)
+			_, err = list[0].PrintTo(writer, PRINT)
+		}
+		return err
+	})
 }
 
 func funFormatChar(_ context.Context, _ *World, list []Node) (Node, error) {
