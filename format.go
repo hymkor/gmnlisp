@@ -11,6 +11,11 @@ import (
 	"unicode/utf8"
 )
 
+type runeWriter interface {
+	io.Writer
+	WriteRune(r rune) (int, error)
+}
+
 func writeRune(r rune, w io.Writer) {
 	var buffer [utf8.UTFMax]byte
 	size := utf8.EncodeRune(buffer[:], r)
@@ -112,11 +117,13 @@ func printSpaces(n int, w io.Writer) {
 	}
 }
 
-func formatSub(_w io.Writer, format String, argv []Node) (Node, error) {
-	w := bufio.NewWriter(_w)
-	defer w.Flush()
+func formatSub(w runeWriter, argv []Node) error {
+	format, ok := argv[0].(String)
+	if !ok {
+		return fmt.Errorf("%w: %#v", ErrExpectedString, argv[0])
+	}
+	argv = argv[1:]
 
-	var ok bool = true
 	for ok && HasValue(format) {
 		var c Rune
 
@@ -148,11 +155,11 @@ func formatSub(_w io.Writer, format String, argv []Node) (Node, error) {
 			if decimal := strings.IndexByte("0123456789", byte(c)); decimal >= 0 {
 				for {
 					if IsNull(format) {
-						return Null, ErrInvalidFormat
+						return ErrInvalidFormat
 					}
 					c, format, ok = format.firstRuneAndRestString()
 					if !ok {
-						return Null, ErrInvalidFormat
+						return ErrInvalidFormat
 					}
 					d := strings.IndexByte("0123456789", byte(c))
 					if d < 0 {
@@ -163,24 +170,24 @@ func formatSub(_w io.Writer, format String, argv []Node) (Node, error) {
 				}
 			} else if c == '\'' {
 				if IsNull(format) {
-					return Null, ErrInvalidFormat
+					return ErrInvalidFormat
 				}
 				c, format, ok = format.firstRuneAndRestString()
 				if !ok {
-					return Null, ErrInvalidFormat
+					return ErrInvalidFormat
 				}
 				parameter = append(parameter, int(c))
 				if IsNull(format) {
-					return Null, ErrInvalidFormat
+					return ErrInvalidFormat
 				}
 				c, format, ok = format.firstRuneAndRestString()
 			} else if c == 'v' || c == 'V' {
 				if len(argv) < 1 {
-					return nil, ErrTooFewArguments
+					return ErrTooFewArguments
 				}
 				decimal, ok := argv[0].(Integer)
 				if !ok {
-					return nil, ErrExpectedNumber
+					return ErrExpectedNumber
 				}
 				parameter = append(parameter, int(decimal))
 			} else if c == '#' {
@@ -192,7 +199,7 @@ func formatSub(_w io.Writer, format String, argv []Node) (Node, error) {
 				break
 			}
 			if IsNull(format) {
-				return nil, ErrInvalidFormat
+				return ErrInvalidFormat
 			}
 			c, format, ok = format.firstRuneAndRestString()
 			if !ok {
@@ -210,7 +217,7 @@ func formatSub(_w io.Writer, format String, argv []Node) (Node, error) {
 		}
 
 		if len(argv) <= 0 {
-			return nil, ErrTooFewArguments
+			return ErrTooFewArguments
 		}
 
 		value := argv[0]
@@ -242,33 +249,33 @@ func formatSub(_w io.Writer, format String, argv []Node) (Node, error) {
 			err = fmt.Errorf("Not support code '%c'", c)
 		}
 		if err != nil {
-			return nil, err
+			return err
 		}
 	}
-	return Null, nil
+	return nil
 }
 
-func funFormat(ctx context.Context, w *World, argv []Node) (Node, error) {
-	format, ok := argv[1].(String)
-	if !ok {
-		return nil, fmt.Errorf("%w: %#v", ErrExpectedString, argv[1])
-	}
+func tAndNilToWriter(argv []Node, f func(runeWriter, []Node) error) (Node, error) {
 	if output, ok := argv[0].(io.Writer); ok {
 		w := bufio.NewWriter(output)
-		_, err := formatSub(w, format, argv[2:])
+		err := f(w, argv[1:])
 		w.Flush()
 		return Null, err
 	}
 	if IsNull(argv[0]) {
 		var buffer strings.Builder
-		_, err := formatSub(&buffer, format, argv[2:])
+		err := f(&buffer, argv[1:])
 		return String(buffer.String()), err
 	}
 	if True.Equals(argv[0], STRICT) {
 		w := bufio.NewWriter(os.Stdout)
-		_, err := formatSub(w, format, argv[2:])
+		err := f(w, argv[1:])
 		w.Flush()
 		return Null, err
 	}
-	return nil, fmt.Errorf("%w: %#v", ErrNotSupportType, argv[0])
+	return nil, fmt.Errorf("%w: %#v", ErrExpectedWriter, argv[0])
+}
+
+func funFormat(ctx context.Context, w *World, argv []Node) (Node, error) {
+	return tAndNilToWriter(argv, formatSub)
 }
