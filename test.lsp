@@ -150,3 +150,30 @@
 
 ;;; test for (nth) ;;;
 (assert (nth 2 '(a b c d)) 'c)
+
+;;; test for (setf cadr)
+(assert (let ((L '(a b c d))) (setf (cadr L) 'x) L) '(a x c d))
+
+;;; test for (setf caddr)
+(assert (let ((L '(a b c d))) (setf (caddr L) 'x) L) '(a b x d))
+
+;;; test for (setf cadddr)
+(assert (let ((L '(a b c d))) (setf (cadddr L) 'x) L) '(a b c x))
+
+;;; test for (setf first)
+(assert (let ((L '(a b c d))) (setf (first L) 'x) L) '(x b c d))
+
+;;; test for (setf second)
+(assert (let ((L '(a b c d))) (setf (second L) 'x) L) '(a x c d))
+
+;;; test for (setf third)
+(assert (let ((L '(a b c d))) (setf (third L) 'x) L) '(a b x d))
+
+;;; test for (setf nth)
+(assert (let ((L '(a b c d))) (setf (nth 3 L) 'x) L) '(a b c x))
+
+;;; test for (setf cddr)
+(assert (let ((L '(a b c d))) (setf (cddr L) 'x) L) '(a b . x))
+
+;;; test for (setf cdddr)
+(assert (let ((L '(a b c d))) (setf (cdddr L) 'x) L) '(a b c . x))
