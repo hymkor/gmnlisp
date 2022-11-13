@@ -24,11 +24,11 @@ generate: embed.go sort-world newtypes.go stringer.go
 all: $(NAME)$(EXE) gmnlpp$(EXE)
 
 test:
+	.$(D)gmnlisp test.lsp
 	go fmt
 	go test
 	cd pkg/common && go test
 	cd pkg/auto && go test
-	.$(D)gmnlisp test.lsp
 
 readme.md: _readme.md gmnlpp$(EXE)
 	.$(D)gmnlpp$(EXE) _README.md > README.md
