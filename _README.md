@@ -10,29 +10,22 @@ Gmnlisp is a small Lisp implementation in Go.
 
 ```go
 <%
-(defun detab (src)
-    (let ((buffer (create-string-output-stream)))
-        (mapc
-            (lambda (c)
-                (if (equal c #\tab)
-                    (format buffer "    ")
-                    (format-char buffer c)
-                )
-            )
-            src
-        )
-        (get-output-stream-string buffer)
-    )
-)
-(let (line (count 0))
-    (with-open-input-file (fd "examples/example1.go")
-        (while (setq line (read-line fd nil))
-            (if (>= count 3)
-                (format (standard-output) "~a~%" (detab line)))
-            (incf count)
-        )
-    )
-)
+(defun string-replace (source from to)
+  (let ((index nil) (buffer (create-string-output-stream)))
+    (while (setq index (string-index from source))
+      (format-object buffer (subseq source 0 index) nil)
+      (format-object buffer to nil)
+      (setq source (subseq source (+ index (length from)) (length source))))
+    (format-object buffer source nil)
+    (get-output-stream-string buffer)))
+
+(let ((line nil) (count 0))
+  (with-open-input-file (fd "examples/example1.go")
+    (while (setq line (read-line fd nil))
+      (when (>= count 3)
+        (setq line (string-replace line (create-string 1 #\tab) "    "))
+        (format (standard-output) "~a~%" line))
+      (incf count))))
 %>
 ```
 
