@@ -8,18 +8,11 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"unicode/utf8"
 )
 
 type runeWriter interface {
 	io.Writer
 	WriteRune(r rune) (int, error)
-}
-
-func writeRune(r rune, w io.Writer) {
-	var buffer [utf8.UTFMax]byte
-	size := utf8.EncodeRune(buffer[:], r)
-	w.Write(buffer[:size])
 }
 
 func printInt(w io.Writer, base, width, padding int, value Node) error {
@@ -56,16 +49,14 @@ func funFormatObject(_ context.Context, _ *World, list []Node) (Node, error) {
 }
 
 func funFormatChar(_ context.Context, _ *World, list []Node) (Node, error) {
-	writer, ok := list[0].(io.Writer)
-	if !ok {
-		return nil, ErrExpectedWriter
-	}
-	r, ok := list[1].(Rune)
-	if !ok {
-		return nil, ErrExpectedCharacter
-	}
-	writeRune(rune(r), writer)
-	return Null, nil
+	return tAndNilToWriter(list, func(writer runeWriter, list []Node) error {
+		r, ok := list[0].(Rune)
+		if !ok {
+			return fmt.Errorf("%w: %#v", ErrExpectedCharacter, list[0])
+		}
+		_, err := writer.WriteRune(rune(r))
+		return err
+	})
 }
 
 func funFormatInteger(_ context.Context, _ *World, _args []Node) (Node, error) {
