@@ -81,7 +81,7 @@ func funFormatInteger(_ context.Context, _ *World, list []Node) (Node, error) {
 	return Null, printInt(writer, int(radix), 0, 0, list[1])
 }
 
-func printFloat(w io.Writer, mark, width, prec int, value Node) error {
+func printFloat(w runeWriter, mark, width, prec int, value Node) error {
 	if prec <= 0 {
 		prec = -1
 	}
@@ -95,19 +95,17 @@ func printFloat(w io.Writer, mark, width, prec int, value Node) error {
 	}
 	if len(body) < width {
 		for i := len(body); i < width; i++ {
-			w.Write([]byte{' '})
+			w.WriteRune(' ')
 		}
 	}
 	io.WriteString(w, body)
 	return nil
 }
 
-func funFormatFloat(_ context.Context, w *World, list []Node) (Node, error) {
-	writer, ok := list[0].(io.Writer)
-	if !ok {
-		return nil, ErrExpectedWriter
-	}
-	return Null, printFloat(writer, 'f', 0, 0, list[1])
+func funFormatFloat(_ context.Context, w *World, args []Node) (Node, error) {
+	return tAndNilToWriter(args, func(_writer runeWriter, args []Node) error {
+		return printFloat(_writer, 'f', 0, 0, args[0])
+	})
 }
 
 func printSpaces(n int, w io.Writer) {

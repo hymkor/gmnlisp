@@ -108,3 +108,6 @@
           (b 1 (+ a b)))
          ((<= n 0) a))))
 (assert (fibo2 10) 55)
+
+;;; test for (format-float) ;;;
+(assert (format-float nil 3.2) "3.2")
