@@ -8,12 +8,6 @@ import (
 	. "github.com/hymkor/gmnlisp"
 )
 
-func init() {
-	for key, val := range embedFunctions {
-		Functions.Set(key, val)
-	}
-}
-
 var Functions = Variables{
 	NewSymbol("member"):         &KWFunction{C: 2, F: funMember},
 	NewSymbol("find"):           &KWFunction{C: 2, F: funFind},
