@@ -139,3 +139,32 @@
          ,@body
          ,steps)
        ,result)))
+
+(defun nthcdr (n x)
+  (block
+    nil
+    (while (and (>= (decf n) 0) x)
+      (unless (consp x)
+        (return nil))
+      (setq x (cdr x)))
+    x))
+
+(defun cddr (x) (nthcdr 2 x))
+
+(defun cdddr (x) (nthcdr 3 x))
+
+(defun cadr (x) (elt x 1))
+
+(defun caddr (x) (elt x 2))
+
+(defun cadddr (x) (elt x 3))
+
+(defun first (x) (car x))
+
+(defun second (x) (elt x 1))
+
+(defun third (x) (elt x 2))
+
+(defun rest (x) (cdr x))
+
+(defun nth (n x) (elt x n))

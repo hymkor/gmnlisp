@@ -120,3 +120,33 @@
 
 ;;; test for (format-char) ;;;
 (assert (format-char nil #\a) "a")
+
+;;; test for cdr ;;;
+(assert (cadr '(a b c d)) 'b)
+
+;;; test for (caddr) ;;;
+(assert (caddr '(a b c d)) 'c)
+
+;;; test for (cadddr) ;;;
+(assert (cadddr '(a b c d)) 'd)
+
+;;; test for (cddr) ;;;
+(assert (cddr '(a b c d e)) '(c d e))
+
+;;; test for (cdddr) ;;;
+(assert (cdddr '(a b c d e)) '(d e))
+
+;;; test for (first) ;;;
+(assert (first '(a b c d)) 'a)
+
+;;; test for (second) ;;;
+(assert (second '(a b c d)) 'b)
+
+;;; test for (third) ;;;
+(assert (third '(a b c d)) 'c)
+
+;;; test for (rest) ;;;
+(assert (rest '(a b c d)) '(b c d))
+
+;;; test for (nth) ;;;
+(assert (nth 2 '(a b c d)) 'c)
