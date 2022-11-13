@@ -163,11 +163,15 @@ Support functions
 - (for ((VAR INIT [STEP])...) (END-TEST RESULT...) FORM... )
 - (if TEST-FORM THEN-FORM ELSE-FORM)
 - (progn FORM...)
+- (prog1 FORM...)
+- (prog2 FORM...)
 - (while TEST-FORM BODY-FORM...)
 - (tagbody {TAG|FORM}...)
-- (go TAG)
+    - (go TAG)
 - (dolist (VAR '(VALUES..)) FORM...) [MACRO]
 - (dotimes (VAR N) FORM...) [MACRO]
+- (when TEST-FORM THEN-FORM...)
+- (unless TEST-FORM ELSE-FORM...)
 
 #### Functions
 
@@ -207,14 +211,16 @@ Support functions
 - (close STREAM)
 - (create-string-input-stream STRING)
 - (create-string-output-stream)
+    - (get-output-stream-string STRSTREAM)
 - (error-output)
 - (file-length FILENAME ELEMENT-CLASS)
-- (format [OUTPUT-STREAM|t|nil] FORMAT-STRING OBJ..)
-- (format-char OUTPUT-STREAM CHAR)
-- (format-float OUTPUT-STREAM FLOAT)
-- (format-integer OUTPUT-STREAM INTEGER RADIX)
-- (format-object OUTPUT-STREAM OBJ ESCAPE-P)
-- (get-output-stream-string STRSTREAM)
+- (format {OUTPUT-STREAM|t|nil} FORMAT-STRING OBJ..)
+    - (format t "..") is same as (format (standard-output) "..")
+    - (format nil "..") is same as (let ((B create-string-output-stream)) (format B "..") (get-output-stream-string B))
+- (format-char {OUTPUT-STREAM|t|nil} CHAR)
+- (format-float {OUTPUT-STREAM|t|nil} FLOAT)
+- (format-integer {OUTPUT-STREAM|t|nil} INTEGER RADIX)
+- (format-object {OUTPUT-STREAM|t|nil} OBJ ESCAPE-P)
 - (open-input-file FILENAME)
 - (open-output-file FILENAME)
 - (probe-file FILENAME)
@@ -227,7 +233,7 @@ Support functions
 
 #### Exceptions
 
-- (block SYMBOL\_OR\_NIL FORM...)
+- (block {SYMBOL|nil} FORM...)
     - (return RESULT-FORM)
     - (return-from SYMBOL RESULT-FORM)
 - (catch TAG-FORM FORM...)
