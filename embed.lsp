@@ -13,9 +13,13 @@
 (defmacro prog2 (expr1 expr2 &rest args)
   `(progn ,expr1 (prog1 ,expr2 ,@args)))
 
+(defun 1+ (x) (+ x 1))
+
 (defmacro incf (place &rest args)
   (let ((delta (if args (car args) 1)))
     `(setf ,place (+ ,place ,delta))))
+
+(defun 1- (x) (- x 1))
 
 (defmacro decf (place &rest args)
   (let ((delta (if args (car args) 1)))

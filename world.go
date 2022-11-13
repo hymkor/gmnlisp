@@ -187,8 +187,6 @@ func New() *World {
 			NewSymbol("-"):                           SpecialF(cmdSub),
 			NewSymbol("/"):                           SpecialF(cmdDevide),
 			NewSymbol("/="):                          &Function{C: 2, F: funNotEqual},
-			NewSymbol("1+"):                          &Function{C: 1, F: funOnePlus},
-			NewSymbol("1-"):                          &Function{C: 1, F: funOneMinus},
 			NewSymbol("<"):                           SpecialF(cmdLessThan),
 			NewSymbol("<="):                          SpecialF(cmdLessOrEqual),
 			NewSymbol("="):                           SpecialF(cmdEqualOp),

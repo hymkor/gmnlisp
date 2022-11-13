@@ -216,32 +216,6 @@ func funRound(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return floatToInteger(argv, math.Round)
 }
 
-func funOnePlus(ctx context.Context, w *World, argv []Node) (Node, error) {
-	if value, ok := argv[0].(Rune); ok {
-		return value + 1, nil
-	}
-	if value, ok := argv[0].(Integer); ok {
-		return value + 1, nil
-	}
-	if value, ok := argv[0].(Float); ok {
-		return value + 1, nil
-	}
-	return nil, ErrExpectedNumber
-}
-
-func funOneMinus(ctx context.Context, w *World, argv []Node) (Node, error) {
-	if value, ok := argv[0].(Rune); ok {
-		return value - 1, nil
-	}
-	if value, ok := argv[0].(Integer); ok {
-		return value - 1, nil
-	}
-	if value, ok := argv[0].(Float); ok {
-		return value - 1, nil
-	}
-	return nil, ErrExpectedNumber
-}
-
 func funMod(ctx context.Context, w *World, list []Node) (Node, error) {
 	var left float64
 	var right float64
