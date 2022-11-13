@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"os"
 	"strconv"
 	"strings"
 )
@@ -36,8 +35,8 @@ func printInt(w io.Writer, base, width, padding int, value Node) error {
 	return nil
 }
 
-func funFormatObject(_ context.Context, _ *World, list []Node) (Node, error) {
-	return tAndNilToWriter(list, func(writer runeWriter, list []Node) error {
+func funFormatObject(_ context.Context, w *World, list []Node) (Node, error) {
+	return tAndNilToWriter(w, list, func(writer runeWriter, list []Node) error {
 		var err error
 		if IsNull(list[1]) { // ~a (AS-IS)
 			_, err = list[0].PrintTo(writer, PRINC)
@@ -48,8 +47,8 @@ func funFormatObject(_ context.Context, _ *World, list []Node) (Node, error) {
 	})
 }
 
-func funFormatChar(_ context.Context, _ *World, list []Node) (Node, error) {
-	return tAndNilToWriter(list, func(writer runeWriter, list []Node) error {
+func funFormatChar(_ context.Context, w *World, list []Node) (Node, error) {
+	return tAndNilToWriter(w, list, func(writer runeWriter, list []Node) error {
 		r, ok := list[0].(Rune)
 		if !ok {
 			return fmt.Errorf("%w: %#v", ErrExpectedCharacter, list[0])
@@ -59,8 +58,8 @@ func funFormatChar(_ context.Context, _ *World, list []Node) (Node, error) {
 	})
 }
 
-func funFormatInteger(_ context.Context, _ *World, _args []Node) (Node, error) {
-	return tAndNilToWriter(_args, func(writer runeWriter, args []Node) error {
+func funFormatInteger(_ context.Context, w *World, _args []Node) (Node, error) {
+	return tAndNilToWriter(w, _args, func(writer runeWriter, args []Node) error {
 		radix, ok := args[1].(Integer)
 		if !ok {
 			return fmt.Errorf("%w: %#v", ErrExpectedNumber, args[1])
@@ -91,7 +90,7 @@ func printFloat(w runeWriter, mark, width, prec int, value Node) error {
 }
 
 func funFormatFloat(_ context.Context, w *World, args []Node) (Node, error) {
-	return tAndNilToWriter(args, func(_writer runeWriter, args []Node) error {
+	return tAndNilToWriter(w, args, func(_writer runeWriter, args []Node) error {
 		return printFloat(_writer, 'f', 0, 0, args[0])
 	})
 }
@@ -241,14 +240,15 @@ func formatSub(w runeWriter, argv []Node) error {
 	return nil
 }
 
-func tAndNilToWriter(argv []Node, f func(runeWriter, []Node) error) (Node, error) {
+func tAndNilToWriter(w *World, argv []Node, f func(runeWriter, []Node) error) (Node, error) {
 	if output, ok := argv[0].(io.Writer); ok {
-		w, ok := output.(*bufio.Writer)
+		rw, ok := output.(runeWriter)
 		if !ok {
-			w = bufio.NewWriter(output)
+			bw := bufio.NewWriter(output)
+			defer bw.Flush()
+			rw = bw
 		}
-		err := f(w, argv[1:])
-		w.Flush()
+		err := f(rw, argv[1:])
 		return Null, err
 	}
 	if IsNull(argv[0]) {
@@ -257,14 +257,18 @@ func tAndNilToWriter(argv []Node, f func(runeWriter, []Node) error) (Node, error
 		return String(buffer.String()), err
 	}
 	if True.Equals(argv[0], STRICT) {
-		w := bufio.NewWriter(os.Stdout)
-		err := f(w, argv[1:])
-		w.Flush()
+		rw, ok := w.shared.stdout._Writer.(runeWriter)
+		if !ok {
+			bw := bufio.NewWriter(w.shared.stdout._Writer)
+			defer bw.Flush()
+			rw = bw
+		}
+		err := f(rw, argv[1:])
 		return Null, err
 	}
 	return nil, fmt.Errorf("%w: %#v", ErrExpectedWriter, argv[0])
 }
 
 func funFormat(ctx context.Context, w *World, argv []Node) (Node, error) {
-	return tAndNilToWriter(argv, formatSub)
+	return tAndNilToWriter(w, argv, formatSub)
 }
