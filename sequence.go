@@ -3,6 +3,7 @@ package gmnlisp
 import (
 	"context"
 	"io"
+	"strconv"
 	"strings"
 )
 
@@ -70,7 +71,7 @@ func (S *StringBuilder) Sequence() Node {
 }
 
 func (S StringBuilder) GoString() string {
-	return "\"" + S.String() + "\""
+	return strconv.Quote(S.String())
 }
 
 func funElt(_ context.Context, _ *World, args []Node) (Node, error) {

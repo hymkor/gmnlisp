@@ -2,7 +2,6 @@ package gmnlisp
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -42,7 +41,7 @@ func (j _JoinedForm) PrintTo(w io.Writer, m PrintMode) (int, error) {
 }
 
 func (j _JoinedForm) Eval(ctx context.Context, w *World) (Node, error) {
-	return Null, errors.New("not supported")
+	return j, nil
 }
 
 func (j _JoinedForm) Equals(_other Node, m EqlMode) bool {

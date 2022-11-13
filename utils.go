@@ -20,7 +20,6 @@ var (
 	ErrExpectedWriter       = errors.New("Expected Writer")
 	ErrIndexOutOfRange      = errors.New("Index out of range")
 	ErrInvalidFormat        = errors.New("Invalid format")
-	ErrNotSupportBySetf     = errors.New("Not supported by setf")
 	ErrNotSupportType       = errors.New("Not support type")
 	ErrQuit                 = errors.New("Bye")
 	ErrAbort                = errors.New("Abort")

@@ -42,7 +42,7 @@ func lastOfList(node Node) (*Cons, error) {
 		}
 		cons, ok := node.(*Cons)
 		if !ok {
-			return nil, fmt.Errorf("%w `%s`", ErrExpectedCons, node)
+			return nil, fmt.Errorf("%w: %#v", ErrExpectedCons, node)
 		}
 		if IsNull(cons.Cdr) {
 			return cons, nil

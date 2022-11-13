@@ -2,6 +2,7 @@ package gmnlisp
 
 import (
 	"context"
+	"fmt"
 	"strings"
 	"unicode/utf8"
 )
@@ -10,33 +11,25 @@ func funStringAppend(ctx context.Context, w *World, list []Node) (Node, error) {
 	if len(list) <= 0 {
 		return Null, nil
 	}
-	var buffer SeqBuilder
-	if _, ok := list[0].(String); ok {
-		buffer = &StringBuilder{}
-	} else {
-		return nil, ErrNotSupportType
-	}
+	var buffer strings.Builder
 	for _, s := range list {
 		str, ok := s.(String)
 		if !ok {
-			return nil, ErrNotSupportType
+			return nil, fmt.Errorf("%w: %#v", ErrExpectedString, s)
 		}
-		str.EachRune(func(r Rune) error {
-			buffer.Add(r)
-			return nil
-		})
+		buffer.WriteString(str.String())
 	}
-	return buffer.Sequence(), nil
+	return String(buffer.String()), nil
 }
 
 func compareString(argv []Node, f func(int) bool) (Node, error) {
 	left, ok := argv[0].(String)
 	if !ok {
-		return nil, ErrExpectedString
+		return nil, fmt.Errorf("%w: %#v", ErrExpectedString, argv[0])
 	}
 	right, ok := argv[1].(String)
 	if !ok {
-		return nil, ErrExpectedString
+		return nil, fmt.Errorf("%w: %#v", ErrExpectedString, argv[1])
 	}
 	cmp := strings.Compare(left.String(), right.String())
 	if f(cmp) {
@@ -77,7 +70,7 @@ func funStringIndex(ctx context.Context, w *World, argv []Node) (Node, error) {
 	if len(argv) >= 3 {
 		_start, ok := argv[2].(Integer)
 		if !ok {
-			return nil, ErrExpectedNumber
+			return nil, fmt.Errorf("%w: %#v", ErrExpectedNumber, argv[2])
 		}
 		if len(argv) >= 4 {
 			return nil, ErrTooManyArguments
@@ -86,7 +79,7 @@ func funStringIndex(ctx context.Context, w *World, argv []Node) (Node, error) {
 	}
 	_str, ok := argv[1].(String)
 	if !ok {
-		return nil, ErrExpectedString
+		return nil, fmt.Errorf("%w: %#v", ErrExpectedString, argv[1])
 	}
 	str := _str.String()
 
@@ -108,7 +101,7 @@ func funCreateString(ctx context.Context, w *World, list []Node) (Node, error) {
 	}
 	length, ok := list[0].(Integer)
 	if !ok {
-		return nil, ErrExpectedNumber
+		return nil, fmt.Errorf("%w: %#v", ErrExpectedNumber, list[0])
 	}
 	if len(list) > 2 {
 		return nil, ErrTooManyArguments
@@ -118,7 +111,7 @@ func funCreateString(ctx context.Context, w *World, list []Node) (Node, error) {
 		var ok bool
 		ch, ok = list[1].(Rune)
 		if !ok {
-			return nil, ErrExpectedCharacter
+			return nil, fmt.Errorf("%w: %#v", ErrExpectedCharacter, list[1])
 		}
 	}
 	return String(strings.Repeat(string(ch), int(length))), nil

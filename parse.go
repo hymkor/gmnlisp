@@ -89,7 +89,7 @@ func readArray(lenDim int, rs io.RuneScanner) (Node, error) {
 					break
 				}
 			} else {
-				return nil, fmt.Errorf("array syntax error: %s", token)
+				return nil, fmt.Errorf("array syntax error: %#v", token)
 			}
 		}
 	}
@@ -142,7 +142,7 @@ func tryParseAsInt(token string) (Node, bool, error) {
 func tryParseAsNumber(token string) (Node, bool, error) {
 	if val, ok, err := tryParseAsFloat(token); ok {
 		if err != nil {
-			return nil, true, fmt.Errorf("%w (%s)", ErrCanNotParseNumber, err.Error())
+			return nil, true, fmt.Errorf("%w: (%s)", ErrCanNotParseNumber, err.Error())
 		}
 		return val, true, nil
 	}

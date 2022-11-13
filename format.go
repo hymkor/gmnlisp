@@ -251,7 +251,7 @@ func formatSub(_w io.Writer, format String, argv []Node) (Node, error) {
 func funFormat(ctx context.Context, w *World, argv []Node) (Node, error) {
 	format, ok := argv[1].(String)
 	if !ok {
-		return nil, ErrExpectedString
+		return nil, fmt.Errorf("%w: %#v", ErrExpectedString, argv[1])
 	}
 	if output, ok := argv[0].(io.Writer); ok {
 		w := bufio.NewWriter(output)
@@ -270,5 +270,5 @@ func funFormat(ctx context.Context, w *World, argv []Node) (Node, error) {
 		w.Flush()
 		return Null, err
 	}
-	return nil, ErrNotSupportType
+	return nil, fmt.Errorf("%w: %#v", ErrNotSupportType, argv[0])
 }
