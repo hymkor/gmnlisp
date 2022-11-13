@@ -69,16 +69,14 @@ func funFormatChar(_ context.Context, _ *World, list []Node) (Node, error) {
 	return Null, nil
 }
 
-func funFormatInteger(_ context.Context, _ *World, list []Node) (Node, error) {
-	writer, ok := list[0].(io.Writer)
-	if !ok {
-		return nil, ErrExpectedWriter
-	}
-	radix, ok := list[2].(Integer)
-	if !ok {
-		return nil, ErrExpectedNumber
-	}
-	return Null, printInt(writer, int(radix), 0, 0, list[1])
+func funFormatInteger(_ context.Context, _ *World, _args []Node) (Node, error) {
+	return tAndNilToWriter(_args, func(writer runeWriter, args []Node) error {
+		radix, ok := args[1].(Integer)
+		if !ok {
+			return fmt.Errorf("%w: %#v", ErrExpectedNumber, args[1])
+		}
+		return printInt(writer, int(radix), 0, 0, args[0])
+	})
 }
 
 func printFloat(w runeWriter, mark, width, prec int, value Node) error {

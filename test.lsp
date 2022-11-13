@@ -111,3 +111,6 @@
 
 ;;; test for (format-float) ;;;
 (assert (format-float nil 3.2) "3.2")
+
+;;; test for (format-integer) ;;;
+(assert (format-integer nil 100 10) "100")
