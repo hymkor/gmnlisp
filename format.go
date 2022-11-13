@@ -243,7 +243,10 @@ func formatSub(w runeWriter, argv []Node) error {
 
 func tAndNilToWriter(argv []Node, f func(runeWriter, []Node) error) (Node, error) {
 	if output, ok := argv[0].(io.Writer); ok {
-		w := bufio.NewWriter(output)
+		w, ok := output.(*bufio.Writer)
+		if !ok {
+			w = bufio.NewWriter(output)
+		}
 		err := f(w, argv[1:])
 		w.Flush()
 		return Null, err
