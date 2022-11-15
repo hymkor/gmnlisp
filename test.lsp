@@ -177,3 +177,17 @@
 
 ;;; test for (setf cdddr)
 (assert (let ((L '(a b c d))) (setf (cdddr L) 'x) L) '(a b c . x))
+
+;; test for (find-all-string-submatch)
+(assert (=~ "a(x*)b" "-ab-") '(("ab" "")))
+(assert (=~ "a(x*)b" "-axxb-") '(("axxb" "xx")))
+(assert (=~ "a(x*)b" "-ab-axb-") '(("ab" "")("axb" "x")))
+(assert (=~ "a(x*)b" "-axxb-ab-") '(("axxb" "xx") ("ab" "")))
+
+;; test for (find-all-string-submatch-index)
+(assert (=~i "a(x*)b" "-ab-") '((1 3 2 2)))
+(assert (=~i "a(x*)b" "-axxb-") '((1 5 2 4)))
+(assert (=~i "a(x*)b" "-ab-axb-") '((1 3 2 2)(4 7 5 6)))
+(assert (=~i "a(x*)b" "-axxb-ab-") '((1 5 2 4)(6 8 7 7)))
+
+
