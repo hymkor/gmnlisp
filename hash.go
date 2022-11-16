@@ -59,3 +59,31 @@ func funSetHash(ctx context.Context, w *World, args []Node) (Node, error) {
 	hash[args[1]] = args[0]
 	return args[0], nil
 }
+
+func funHashTableCount(ctx context.Context, w *World, args []Node) (Node, error) {
+	hash, ok := args[0].(_Hash)
+	if !ok {
+		return nil, ErrExpectedHash
+	}
+	return Integer(len(hash)), nil
+}
+
+func funRemoveHash(ctx context.Context, w *World, args []Node) (Node, error) {
+	hash, ok := args[1].(_Hash)
+	if !ok {
+		return nil, ErrExpectedHash
+	}
+	delete(hash, args[0])
+	return Null, nil
+}
+
+func funClearHash(ctx context.Context, w *World, args []Node) (Node, error) {
+	hash, ok := args[0].(_Hash)
+	if !ok {
+		return nil, ErrExpectedHash
+	}
+	for key := range hash {
+		delete(hash, key)
+	}
+	return Null, nil
+}
