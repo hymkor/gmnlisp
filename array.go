@@ -64,7 +64,13 @@ func (A *Array) printTo(w io.Writer, mode PrintMode, list []Node, dim []int) ([]
 }
 
 func (A *Array) PrintTo(w io.Writer, mode PrintMode) (int, error) {
-	n, err := fmt.Fprintf(w, "#%dA", len(A.dim))
+	var n int
+	var err error
+	if len(A.dim) == 1 {
+		n, err = w.Write([]byte{'#'})
+	} else {
+		n, err = fmt.Fprintf(w, "#%dA", len(A.dim))
+	}
 	if err != nil {
 		return n, err
 	}
