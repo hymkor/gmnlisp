@@ -39,10 +39,31 @@ func cmdMakeHashTable(ctx context.Context, w *World, _ Node) (Node, error) {
 
 var ErrExpectedHash = errors.New("Expected Hash-table")
 
+func canUseHashKey(value Node) bool {
+	switch value.(type) {
+	case String:
+		return true
+	case Symbol:
+		return true
+	case Integer:
+		return true
+	case Float:
+		return true
+	case Rune:
+		return true
+	case Keyword:
+		return true
+	}
+	return false
+}
+
 func funGetHash(ctx context.Context, w *World, args []Node) (Node, error) {
 	hash, ok := args[1].(_Hash)
 	if !ok {
 		return nil, ErrExpectedHash
+	}
+	if !canUseHashKey(args[0]) {
+		return nil, ErrNotSupportType
 	}
 	value, ok := hash[args[0]]
 	if !ok {
@@ -55,6 +76,9 @@ func funSetHash(ctx context.Context, w *World, args []Node) (Node, error) {
 	hash, ok := args[2].(_Hash)
 	if !ok {
 		return nil, ErrExpectedHash
+	}
+	if !canUseHashKey(args[1]) {
+		return nil, ErrNotSupportType
 	}
 	hash[args[1]] = args[0]
 	return args[0], nil
@@ -72,6 +96,9 @@ func funRemoveHash(ctx context.Context, w *World, args []Node) (Node, error) {
 	hash, ok := args[1].(_Hash)
 	if !ok {
 		return nil, ErrExpectedHash
+	}
+	if !canUseHashKey(args[0]) {
+		return nil, ErrNotSupportType
 	}
 	delete(hash, args[0])
 	return Null, nil
