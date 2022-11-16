@@ -225,10 +225,16 @@ func formatSub(w runeWriter, argv []Node) error {
 		case 'g':
 			err = printFloat(w, 'g', width, padding, value)
 		case 'a':
-			n, _ := value.PrintTo(w, PRINC)
+			n, err := value.PrintTo(w, PRINC)
+			if err != nil {
+				return err
+			}
 			printSpaces(width-n, w)
 		case 's':
-			n, _ := value.PrintTo(w, PRINT)
+			n, err := value.PrintTo(w, PRINT)
+			if err != nil {
+				return err
+			}
 			printSpaces(width-n, w)
 		default:
 			err = fmt.Errorf("Not support code '%c'", c)
