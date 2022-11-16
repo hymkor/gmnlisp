@@ -285,6 +285,18 @@ compatible with "regexp".Regexp.FindAllStringSubmatchIndex
 INDEXES=((1 5 2 4) (6 8 7 7))
 ```
 
+#### Hash-table
+
+```
+(let ((h1 (make-hash-table)))
+  (setf (gethash 'width h1) 600)
+  (gethash 'width h1)
+  (hash-table-count h1)
+  (remhash 'width h1)
+  (clrhash h1)
+  )
+```
+
 #### Quit
 
 - (exit)
