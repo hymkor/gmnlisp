@@ -231,3 +231,15 @@ func (t Function) GoString() string {
 	t.PrintTo(&buffer, PRINT)
 	return buffer.String()
 }
+
+func (t _Hash) String() string {
+	var buffer strings.Builder
+	t.PrintTo(&buffer, PRINC)
+	return buffer.String()
+}
+
+func (t _Hash) GoString() string {
+	var buffer strings.Builder
+	t.PrintTo(&buffer, PRINT)
+	return buffer.String()
+}
