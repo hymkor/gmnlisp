@@ -11,29 +11,29 @@ import (
 	"github.com/hymkor/gmnlisp"
 )
 
-func mains() error {
-	lisp := gmnlisp.New()
-	ctx := context.TODO()
-	f, err := lisp.Interpret(ctx, `(lambda (a b) (+ a b))`)
-	if err != nil {
-		return err
+func sum(ctx context.Context, w *gmnlisp.World, args []gmnlisp.Node) (gmnlisp.Node, error) {
+	a, ok := args[0].(gmnlisp.Integer)
+	if !ok {
+		return nil, fmt.Errorf("expect integer: %#v", args[0])
 	}
-	value, err := lisp.Call(
-		ctx,
-		f,
-		gmnlisp.Float(1.0),
-		gmnlisp.Float(2.0))
-	if err != nil {
-		return err
+	b, ok := args[1].(gmnlisp.Integer)
+	if !ok {
+		return nil, fmt.Errorf("expect integer: %#v", args[1])
 	}
-	value.PrintTo(os.Stdout, gmnlisp.PRINT)
-	fmt.Println()
-	return nil
+	return gmnlisp.Integer(a + b), nil
 }
 
 func main() {
-	if err := mains(); err != nil {
+	lisp := gmnlisp.New()
+	lisp = lisp.Let(
+		gmnlisp.Variables{
+			gmnlisp.NewSymbol("sum"): &gmnlisp.Function{C: 2, F: sum},
+		})
+
+	result, err := lisp.Interpret(context.Background(), `(sum 1 2)`)
+	if err != nil {
 		fmt.Fprintln(os.Stderr, err.Error())
-		os.Exit(1)
+		return
 	}
+	fmt.Printf("(sum 1 2)=%v\n", result)
 }

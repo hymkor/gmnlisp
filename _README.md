@@ -19,19 +19,32 @@ Gmnlisp is a small Lisp implementation in Go.
     (format-object buffer source nil)
     (get-output-stream-string buffer)))
 
-(let ((line nil) (count 0))
-  (with-open-input-file (fd "examples/example1.go")
-    (while (setq line (read-line fd nil))
-      (when (>= count 3)
-        (setq line (string-replace line (create-string 1 #\tab) "    "))
-        (format (standard-output) "~a~%" line))
-      (incf count))))
+(defun quote-source (filename)
+  (let ((line nil) (count 0))
+    (with-open-input-file
+      (fd filename)
+      (while (setq line (read-line fd nil))
+        (when (>= count 3)
+          (setq line (string-replace line (create-string 1 #\tab) "    "))
+          (format (standard-output) "~a~%" line))
+        (incf count)))))
+
+(quote-source "examples/example1.go")
 %>
 ```
 
 ```
 $ go run examples/example1.go
 <% (command "go" "run" "examples/example1.go") %>
+```
+
+```go
+<% (quote-source "examples/example2.go") %>
+```
+
+```
+$ go run examples/example2.go
+<% (command "go" "run" "examples/example2.go") %>
 ```
 
 gmnlpp - Text preprocessor by gmnlisp
