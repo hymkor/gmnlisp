@@ -29,6 +29,7 @@ var (
 	ErrVariableUnbound      = errors.New("Unbound variable")
 	ErrCanNotParseNumber    = errors.New("Can not parse number")
 	ErrExpectedArray        = errors.New("Expected array")
+	ErrExpectedMacro        = errors.New("Expected macro")
 )
 
 type EqlMode int

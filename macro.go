@@ -82,7 +82,7 @@ func expandJoinedForm(n Node) Node {
 	return n
 }
 
-func (m *_Macro) Call(ctx context.Context, w *World, n Node) (Node, error) {
+func (m *_Macro) expand(ctx context.Context, w *World, n Node) (Node, error) {
 	var err error
 
 	lexical := Variables{}
@@ -122,7 +122,14 @@ func (m *_Macro) Call(ctx context.Context, w *World, n Node) (Node, error) {
 		newCode.PrintTo(os.Stderr, PRINT)
 		fmt.Fprintln(os.Stderr, "\n----")
 	}
+	return newCode, nil
+}
 
+func (m *_Macro) Call(ctx context.Context, w *World, n Node) (Node, error) {
+	newCode, err := m.expand(ctx, w, n)
+	if err != nil {
+		return nil, err
+	}
 	return newCode.Eval(ctx, w)
 }
 
@@ -154,4 +161,26 @@ func cmdDefMacro(ctx context.Context, w *World, n Node) (Node, error) {
 	}
 	w.SetOrDefineParameter(macroName, value)
 	return macroName, nil
+}
+
+func funMacroExpand(ctx context.Context, w *World, args []Node) (Node, error) {
+	name, param, err := Shift(args[0])
+	if err != nil {
+		return nil, err
+	}
+	macro, err := name.Eval(ctx, w)
+	if err != nil {
+		return nil, fmt.Errorf("%w: %#v", err, name)
+	}
+	if L, ok := macro.(*LispString); ok {
+		macro, err = L.Eval(ctx, w)
+		if err != nil {
+			return nil, err
+		}
+	}
+	m, ok := macro.(*_Macro)
+	if !ok {
+		return nil, fmt.Errorf("%w: %#v", ErrExpectedMacro, macro)
+	}
+	return m.expand(ctx, w, param)
 }

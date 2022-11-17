@@ -263,6 +263,7 @@ func New() *World {
 			NewSymbol("list"):                        &Function{F: funList},
 			NewSymbol("listp"):                       &Function{C: 1, F: funListp},
 			NewSymbol("load"):                        &Function{C: 1, F: funLoad},
+			NewSymbol("macroexpand"):                 &Function{C: 1, F: funMacroExpand},
 			NewSymbol("make-hash-table"):             SpecialF(cmdMakeHashTable),
 			NewSymbol("mapc"):                        &Function{F: funMapC},
 			NewSymbol("mapcan"):                      &Function{F: funMapCan},
