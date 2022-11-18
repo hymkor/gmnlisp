@@ -201,3 +201,52 @@
   (assert (gethash 'width h1) nil)
   (clrhash h1)
   (assert (hash-table-count h1) 0))
+
+;; test for (format)
+(assert (format nil "~d" 123) "123")
+(assert (format nil "~x" 123) "7B")
+(assert (format nil "~o" 123) "173")
+(assert (format nil "~b" 123) "1111011")
+(assert (format nil "~f" 12.3) "12.3")
+(assert (format nil "~e" 12.3) "1.23e+01")
+(assert (format nil "~g" 12.3) "12.3")
+(assert (format nil "~a" "ABC") "ABC")
+(assert (format nil "~s" "ABC") "\"ABC\"")
+(assert (format nil "[~5d]" 123) "[  123]")
+(assert (format nil "[~5a]" "ABC") "[ABC  ]")
+
+;;; test for (format-integer)
+(assert
+  (let ((s (create-string-output-stream)))
+    (format-integer s 123 10)
+    (get-output-stream-string s)
+    ) "123")
+
+;;; test for (format-char)
+(assert
+  (let ((s (create-string-output-stream)))
+    (format-char s #\A)
+    (format-char s #\B)
+    (get-output-stream-string s)
+    ) "AB")
+
+;;; test for (format-object ... t)
+(assert
+  (let ((s (create-string-output-stream)))
+    (format-object s "ahaha" t)
+    (get-output-stream-string s)
+    ) "\"ahaha\"")
+
+;;; test for (format-object ... nil)
+(assert
+  (let ((s (create-string-output-stream)))
+    (format-object s "ahaha" nil)
+    (get-output-stream-string s)
+    ) "ahaha")
+
+;;; test for (format-float)
+(assert
+  (let ((s (create-string-output-stream)))
+    (format-float s 0.3)
+    (get-output-stream-string s)
+    ) "0.3")
