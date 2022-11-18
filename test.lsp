@@ -367,3 +367,14 @@
         '(1 2 3))
 (assert (mapcar #'cons '(a b c) '(1 2 3))
         '((a . 1) (b . 2) (c . 3)))
+
+;;; test for mapc
+(assert (let ((buffer (create-string-output-stream)) result)
+          (setq result (mapc (lambda (c) (format-char buffer (1+ c))) "ABC"))
+          (list result (get-output-stream-string buffer))
+          )
+        '("ABC" "BCD"))
+
+;;; test for mapcan
+(assert (mapcan (lambda (x) (if (> x 0) (list x))) '(-3 4 0 5 -2 7))
+        '(4 5 7))
