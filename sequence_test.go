@@ -4,13 +4,6 @@ import (
 	"testing"
 )
 
-func TestMapList(t *testing.T) {
-	assertEqual(t, `(maplist #'append '(1 2 3 4) '(1 2) '(1 2 3))`,
-		List(List(Integer(1), Integer(2), Integer(3), Integer(4),
-			Integer(1), Integer(2), Integer(1), Integer(2), Integer(3)),
-			List(Integer(2), Integer(3), Integer(4), Integer(2), Integer(2), Integer(3))))
-}
-
 func TestMapL(t *testing.T) {
 	assertEqual(t, `
 		(let ((k 0))

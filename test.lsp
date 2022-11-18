@@ -378,3 +378,7 @@
 ;;; test for mapcan
 (assert (mapcan (lambda (x) (if (> x 0) (list x))) '(-3 4 0 5 -2 7))
         '(4 5 7))
+
+;;; test for maplist
+(assert (maplist #'append '(1 2 3 4) '(1 2) '(1 2 3))
+        '((1 2 3 4 1 2 1 2 3) (2 3 4 2 2 3)))
