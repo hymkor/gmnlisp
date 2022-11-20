@@ -1,5 +1,9 @@
-(defmacro assert (func expect)
-  (let ((result (gensym)))
+(defmacro assert (&rest args)
+  (unless (equal (length args) 2)
+    (format t "Too few arguments: ~s~%" args)
+    (abort)
+    )
+  (let ((func (car args)) (expect (cadr args)) (result (gensym)))
     `(let ((,result ,func))
        (if (not (equal ,result ,expect))
          (progn
@@ -596,3 +600,64 @@
 (assert (not (= 1 1)) nil)
 (assert (/= 1 2) t)
 (assert (/= 1 1) nil)
+
+;;; test for (car)
+(assert (car '(1 2)) 1)
+(assert (car '(1 . 2)) 1)
+;;; test for (cdr)
+(assert (cdr '(1 . 2)) 2)
+(assert (cdr '(1 2)) '(2))
+;;; test for (list)
+(assert (list 1 2 3 4) '(1 2 3 4))
+;;; test for (cons)
+(assert (cons 1 2) '(1 . 2))
+
+;;; test for (listp)
+(assert (listp ()) t)
+(assert (listp 1) nil)
+(assert (listp '(1 2 3)) t)
+
+;;; test for (assoc)
+(assert (let ((collection '((a . 1) (b . 2) (c . 3))))
+          (assoc 'a collection))
+        '(a . 1))
+
+;;; test for (append)
+(assert (append '(1 2) '(3 4))
+        '(1 2 3 4))
+(assert (append '(1 2) '(3 4) '(5 6))
+        '(1 2 3 4 5 6))
+(assert (append '() '(1 2) '(3 4))
+        '(1 2 3 4))
+
+;append do not destruct original not last list.
+(assert (let ((x '(1 2 3)))
+          (append x '(4 5 6))
+          x)
+        '(1 2 3))
+
+;;; apend destruct the last list only
+(let* ((part1 (list 1 2 3))
+       (part2 (list 4 5 6))
+       (part3 (list 7 8 9))
+       (all (append part1 part2 part3)))
+  (setf (elt all 1) "aaa")
+  (setf (elt all 4) "bbb")
+  (setf (elt all 7) "ccc")
+  (assert part1 '(1 2 3))
+  (assert part2 '(4 5 6))
+  (assert part3 '(7 "ccc" 9)))
+
+(assert (append '() '(1)) '(1))
+
+;;; test for (last)
+(assert (last '(1 2 3 4)) 4)
+(assert (last '()) nil)
+
+;;; test for (set-car)
+(assert (let ((c '("A" . "D"))) (set-car "X" c) c)
+        '("X" . "D"))
+
+;;; test for (set-cdr)
+(assert (let ((c '("A" . "D"))) (set-cdr "X" c) c)
+        '("A" . "X"))
