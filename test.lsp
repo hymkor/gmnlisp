@@ -745,3 +745,51 @@
                (defun what-color () (dynamic *color*))
                (dynamic-let ((*color* 'green)) (what-color)))
         'green)
+
+;;; test macro
+
+(assert
+  (progn
+    (defmacro dbl (x) (list '* x 2))
+    (dbl 3)
+    )
+  6)
+
+(assert
+  (progn
+    (defmacro dbl  (x) (list '+ x x))
+    (defmacro incf (y) (list 'setq y (list '+ y 1)))
+    (let ((a1 2))
+      (dbl (incf a1)))
+    )
+  7)
+
+(assert (list ''foo) (list (list 'quote 'foo)))
+
+(assert
+  (progn
+    (defmacro dolist1 (pair &rest commands)
+      (let ((key (car pair))
+            (values (car (cdr pair))))
+        `(mapc (lambda (,key) ,@commands) ,values)
+        )
+      )
+    (let ((result nil))
+      (dolist1 (x '(1 2 3)) (setq result (cons x result)))
+      result
+      )
+    )
+  '(3 2 1))
+
+(assert (progn
+          (defmacro dolist2 (pair :rest commands)
+            (let ((key (car pair))
+                  (values (car (cdr pair))))
+              `(mapc (lambda (,key) ,@commands) ,values)
+              )
+            )
+          (let ((result nil))
+            (dolist2 (x '(1 2 3)) (setq result (cons x result)))
+            result
+            ))
+        '(3 2 1))
