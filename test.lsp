@@ -382,3 +382,56 @@
 ;;; test for maplist
 (assert (maplist #'append '(1 2 3 4) '(1 2) '(1 2 3))
         '((1 2 3 4 1 2 1 2 3) (2 3 4 2 2 3)))
+
+;;; test for mapL
+(assert (let ((k 0))
+          (mapl
+            (lambda (x)
+              (setq k (+ k (if (member (car x) (cdr x)) 0 1)))
+              )
+            '(a b a c d b c)
+            )
+          k)
+        4)
+
+;;; test for mapcon
+(assert (mapcon
+          (lambda (x)
+            (if (member (car x) (cdr x)) (list (car x)))
+            )
+          '(a b a c d b c b c)
+          )
+        '(a b c b c))
+
+;;; test for reverse
+(assert (reverse '(1 2 3 4))
+        '(4 3 2 1))
+
+;;; test for nreverse
+(assert (nreverse '(1 2 3 4))
+        '(4 3 2 1))
+
+;;; test for subseq
+(assert (subseq "12345" 2 4) "34")
+
+(assert (subseq '(1 2 3 4 5) 2 4)
+        '(3 4))
+
+;;; test for (setf (subseq...))
+(assert (let ((m "12345"))
+          (setf (subseq m 2 4) "xx")
+          m)
+        "12xx5")
+
+(assert (let ((m (list 1 2 3 4 5)))
+          (setf (subseq m 2 4) (list 0 0))
+          m)
+        '(1 2 0 0 5))
+
+;;; test for elt
+(assert (elt '(a b c) 2)
+        'c)
+;(assert (elt #('a 'b 'c) 1)
+;        'b)
+(assert (elt "abc" 0)
+        #\a)
