@@ -126,3 +126,16 @@ func TestContextLambda(t *testing.T) {
 		}
 	}
 }
+
+func TestIf(t *testing.T) {
+	w := New()
+	ctx := context.TODO()
+	_, err := w.Interpret(ctx, "(if t 1 2 3)")
+	if !errors.Is(err, ErrTooManyArguments) {
+		t.Fatal("ErrTooManyArguments have to be occured")
+	}
+	_, err = w.Interpret(ctx, "(if)")
+	if !errors.Is(err, ErrTooFewArguments) {
+		t.Fatal("ErrTooFewArguments have to be occured")
+	}
+}

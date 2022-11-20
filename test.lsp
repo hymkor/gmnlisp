@@ -435,3 +435,88 @@
         'b)
 (assert (elt "abc" 0)
         #\a)
+
+;;; test for if
+(assert (if t 1 2) 1)
+(assert (if nil 1 2) 2)
+(assert (if t 3) 3)
+(assert (if nil 3) nil)
+(assert (let (aa)
+          (cond
+            ((= (setq aa (string-append "a" "a")) "ab") "A")
+            ((= aa "aa") "B")
+            (T "fail")
+            )
+          ) "B")
+
+;;; test for (case)
+(assert (case 2
+          ((1) "a")
+          ((2) "b")
+          ((3) "c")
+          )
+        "b")
+
+(assert (case 4
+          ((1 2) "A")
+          ((3 4) "B")
+          ((5 6) "C")
+          )
+        "B")
+
+(assert (case 7
+          ((1 2) "A")
+          ((3 4) "B")
+          (t "C")
+          )
+        "C")
+
+;;; test for (with-handler)
+(assert (catch 'hoge
+               (with-handler
+                 (lambda (c)
+                   (if (eql c *err-variable-unbound*)
+                     (throw 'hoge "OK")))
+                 (not-exist-func)
+                 "NG"
+                 )
+               )
+        "OK")
+
+;;; test for (catch) (throw)
+(labels ((foo (x)
+              (catch 'block-sum (bar x))
+              )
+         (bar (x)
+              (let (sum L)
+                (for ((L x (cdr L))
+                      (sum 0 (+ sum (car L))))
+                     ((null L) sum)
+                     (cond
+                       ((not (numberp (car L))) (throw 'block-sum 0))
+                       )
+                     )
+                )
+              )
+         )
+  (assert 10 (foo '(1 2 3 4)))
+  (assert 0 (foo '(1 2 nil 4)))
+  )
+
+;;; test for (unwind-protect) and (throw)
+(labels ((foo ()
+              (throw 'hogehoge 10)
+              ))
+  (let ((x 0))
+    (assert
+      (catch 'hogehoge
+             (unwind-protect
+               (foo)
+               (setq x 1)
+               )
+             )
+      10
+      )
+    (assert x 1)
+    )
+  )
