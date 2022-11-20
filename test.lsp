@@ -793,3 +793,16 @@
             result
             ))
         '(3 2 1))
+
+;;; test for cond
+(assert
+  (cond (nil 1) (t 2))
+  2)
+
+(assert
+  (cond ((equal 1 1) "a") ((equal 1 2) "b"))
+  "a")
+
+;;; test for progn
+(assert (progn 1) 1)
+(assert (progn 1 2) 2)

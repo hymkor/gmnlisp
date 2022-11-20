@@ -15,16 +15,6 @@ func assertEqual(t *testing.T, equation string, expect Node) {
 	}
 }
 
-func TestCmdCond(t *testing.T) {
-	assertEqual(t, `(cond (nil 1) (t 2))`, Integer(2))
-	assertEqual(t, `(cond ((equal 1 1) "a") ((equal 1 2) "b"))`, String("a"))
-}
-
-func TestProgn(t *testing.T) {
-	assertEqual(t, `(progn 1)`, Integer(1))
-	assertEqual(t, `(progn 1 2)`, Integer(2))
-}
-
 func TestWorld(t *testing.T) {
 	w1 := New()
 	if _, err := w1.Interpret(context.TODO(), `(defglobal a "A")`); err != nil {
