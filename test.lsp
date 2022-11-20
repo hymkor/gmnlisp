@@ -661,3 +661,37 @@
 ;;; test for (set-cdr)
 (assert (let ((c '("A" . "D"))) (set-cdr "X" c) c)
         '("A" . "X"))
+
+;;; test create-string-output-stream
+(assert (let ((str (create-string-output-stream)))
+          (format str "hello")
+          (format str "world")
+          (get-output-stream-string str))
+        "helloworld")
+
+;;; test for (read)
+(let ((r (create-string-input-stream "1 \"ahaha\" 3")))
+  (assert (read r nil "EOF") 1)
+  (assert (read r nil "EOF") "ahaha")
+  (assert (read r nil "EOF") 3)
+  (assert (read r nil "EOF") "EOF"))
+
+;;; test for (read-line)
+(let*
+  ((lf (create-string 1 #\newline))
+   (s (string-append "1" lf "2" lf "3"))
+   (r (create-string-input-stream s)))
+  (assert (read-line r nil "EOF") "1")
+  (assert (read-line r nil "EOF") "2")
+  (assert (read-line r nil "EOF") "3")
+  (assert (read-line r nil "EOF") "EOF")
+  )
+
+;;; test for (with-open-input-file)
+(assert (with-open-input-file (fd "LICENSE")
+                              (read-line fd))
+        "MIT License")
+
+;;; test for (probe-file)
+(assert (probe-file ".") t)
+(assert (probe-file "notexist.lsp") nil)
