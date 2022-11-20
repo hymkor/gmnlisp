@@ -102,8 +102,20 @@ func (A *Array) Equals(_B Node, mode EqlMode) bool {
 	return true
 }
 
-func (A *Array) Eval(_ context.Context, W *World) (Node, error) {
-	return A, nil
+func (A *Array) Eval(ctx context.Context, w *World) (Node, error) {
+	result := &Array{
+		list: make([]Node, len(A.list)),
+		dim:  make([]int, len(A.dim)),
+	}
+	for i, eq := range A.list {
+		value, err := eq.Eval(ctx, w)
+		if err != nil {
+			return nil, err
+		}
+		result.list[i] = value
+	}
+	copy(result.dim, A.dim)
+	return result, nil
 }
 
 func funCreateArray(ctx context.Context, w *World, args []Node) (Node, error) {

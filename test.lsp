@@ -431,7 +431,7 @@
 ;;; test for elt
 (assert (elt '(a b c) 2)
         'c)
-;(assert (elt #('a 'b 'c) 1)
-;        'b)
+(assert (elt #('a 'b 'c) 1)
+        'b)
 (assert (elt "abc" 0)
         #\a)
