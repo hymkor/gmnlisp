@@ -695,3 +695,53 @@
 ;;; test for (probe-file)
 (assert (probe-file ".") t)
 (assert (probe-file "notexist.lsp") nil)
+
+;;; test for (let)
+(assert (let* ((x 2)(y x)) y) 2)
+(assert (let ((x 0)) (let ((x 2)(y x)) y)) 0)
+
+;;; test for (defglobal)
+(assert (defglobal a "ahaha") 'a)
+(assert (progn (defglobal a "ahaha")(defglobal a "ihihi") a) "ihihi")
+
+;;; test for (setf)
+(assert (let (x)
+          (setf (car (setq x (cons 1 2))) 3)
+          x)
+        '(3 . 2))
+
+(assert (progn (defglobal x (cons 1 2))
+               (setf (cdr x) 3)
+               x)
+        '(1 . 3))
+(assert (let ((m (list (cons 1 "A") (cons 2 "B") (cons 3 "C"))))
+          (setf (cdr (assoc 1 m)) "X")
+          m)
+        '((1 . "X")
+          (2 . "B")
+          (3 . "C")))
+
+(assert (let ((m '((1 . "A") (2 . "B") (3 . "C"))) pair )
+          (if (setq pair (assoc 1 m))
+            (setf (cdr pair) "X")
+            )
+          m)
+        '((1 . "X")
+          (2 . "B")
+          (3 . "C")))
+
+;;; test for dynamic
+(assert (progn (defdynamic *color* 'red)
+               (defun what-color () (dynamic *color*))
+               (what-color))
+        'red)
+
+(assert (progn (defdynamic hoge 1)
+               (setf (dynamic hoge) 3)
+               (dynamic hoge))
+        3)
+
+(assert (progn (defdynamic *color* 'red)
+               (defun what-color () (dynamic *color*))
+               (dynamic-let ((*color* 'green)) (what-color)))
+        'green)
