@@ -520,3 +520,79 @@
     (assert x 1)
     )
   )
+
+;;; test for (atom)
+(assert (atom 1) t)
+(assert (atom '(1 2)) nil)
+
+;;; parse-number
+(assert (parse-number "1") 1)
+(assert (parse-number "1.1") 1.1)
+
+;;; create-string-input-stream
+(assert
+  (let*
+    ((lf (create-string 1 #\newline))
+     (fd (create-string-input-stream (string-append "1" lf "2" lf "3"))))
+    (read-line fd)
+    (read-line fd)
+    )
+  "2")
+
+;;; test any types
+(assert (integerp 1) t)
+(assert (integerp "") nil)
+(assert (floatp 1.1) t)
+(assert (floatp 1) nil)
+(assert (symbolp 'a) t)
+(assert (symbolp 1) nil)
+(assert (stringp "1") t)
+(assert (stringp 1) nil)
+(assert (consp '(1) ) t)
+(assert (consp 1) nil)
+(assert (functionp consp) t)
+
+;;; test (evenp)
+(assert (evenp 0) t)
+(assert (evenp 1) nil)
+
+;;; test (oddp)
+(assert (oddp 1) t)
+(assert (oddp 0) nil)
+
+;;; test (null)
+(assert (null 1) nil)
+(assert (null "") nil)
+(assert (null nil) t)
+
+;;; test (minusp)
+(assert (minusp 1) nil)
+(assert (minusp 1.0) nil)
+(assert (minusp -1) t)
+(assert (minusp -1.0) t)
+(assert (minusp "") nil)
+
+;;; test (plusp)
+(assert (plusp 1) t)
+(assert (plusp 1.0) t)
+(assert (plusp -1) nil)
+(assert (plusp -1.0) nil)
+(assert (plusp "") nil)
+
+;;; test (numberp)
+(assert (numberp 1) t)
+(assert (numberp 1.0) t)
+(assert (numberp "") nil)
+
+;;; test (zerop)
+(assert (zerop 0) t)
+(assert (zerop 0.0) t)
+(assert (zerop 1) nil)
+(assert (zerop 0.1) nil)
+(assert (zerop "") nil)
+
+;;; test for (/=)
+(assert (not (/= 1 1)) t)
+(assert (not (= 1 1)) nil)
+(assert (/= 1 2) t)
+(assert (/= 1 1) nil)
