@@ -39,4 +39,6 @@ var embedFunctions = map[Symbol]Node{
 	NewSymbol("set-cadddr"):  &LispString{S: "(lambda (newvalue L) (set-car newvalue (cdr (cdr (cdr L)))))"},
 	NewSymbol("set-cddr"):    &LispString{S: "(lambda (newvalue L) (set-cdr newvalue (cdr L)))"},
 	NewSymbol("set-cdddr"):   &LispString{S: "(lambda (newvalue L) (set-cdr newvalue (cdr (cdr L))))"},
+	NewSymbol("flet"):        &LispString{S: "(lambda-macro (e &rest body) (let (result ee) (while e (setq ee (car e)) (setq result (cons (cons (car ee) (list (cons 'lambda (cdr ee)))) result)) (setq e (cdr e))) `(let ,result ,@body)))"},
+	NewSymbol("labels"):      &LispString{S: "(lambda-macro (e &rest body) (let (result ee) (while e (setq ee (car e)) (setq result (cons (cons (car ee) (list (cons 'lambda (cdr ee)))) result)) (setq e (cdr e))) (setq result (nreverse result)) `(let* ,result ,@body)))"},
 }
