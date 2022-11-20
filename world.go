@@ -326,6 +326,7 @@ func New() *World {
 			NewSymbol("trace"):                       SpecialF(cmdTrace),
 			NewSymbol("truncate"):                    &Function{C: 1, F: funTruncate},
 			NewSymbol("unwind-protect"):              SpecialF(cmdUnwindProtect),
+			NewSymbol("vector"):                      &Function{F: funVector},
 			NewSymbol("while"):                       SpecialF(cmdWhile),
 			NewSymbol("with-handler"):                SpecialF(cmdWithHandler),
 			NewSymbol("with-open-input-file"):        SpecialF(cmdWithOpenInputFile),

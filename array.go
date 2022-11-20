@@ -236,3 +236,10 @@ func funArrayDimensions(ctx context.Context, w *World, args []Node) (Node, error
 	}
 	return cons, nil
 }
+
+func funVector(_ context.Context, w *World, args []Node) (Node, error) {
+	return &Array{
+		list: args,
+		dim:  []int{len(args)},
+	}, nil
+}
