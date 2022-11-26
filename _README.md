@@ -3,10 +3,18 @@
 Gmnlisp
 =======
 
-Gmnlisp is a small Lisp implementation in Go.
+The Gmnlisp is a small Lisp implementation in Go.
+The functions are the subset of ISLisp's.
+It is developed to embbed to the applications for customizing.
+
 ( Now under constructing. Experimental implementing )
 
 ![Example image](factorial.png)
+
+Examples
+--------
+
+### 1. Execute Lisp code in string with parameters
 
 ```go
 <%
@@ -38,6 +46,22 @@ $ go run examples/example1.go
 <% (command "go" "run" "examples/example1.go") %>
 ```
 
+- `gmnlisp.New` returns the new Lisp interpretor instance (`*gmnlisp.World`).
+- `gmnlisp.NewSymbol` is the symbol constructor. `gmnlisp.NewSymbol("a")` always returns the same value no matter how many times you call it.
+- `gmnlisp.Variables` is the symbol-map type. It is the alias of `map[gmnlisp.Symbol]gmnlisp.Node`. `Node` is the interface-type that all objects in the Lisp have to implement.
+- `.Let` makes a new instance including the given namespace.
+
+```
+lisp.Let(gmnlisp.Variables{
+        gmnlisp.NewSymbol("a"): gmnlisp.Integer(1),
+        gmnlisp.NewSymbol("b"): gmnlisp.Integer(2),
+    }).Interpret(context.Background(),"(c)")
+```
+
+is same as `(let ((a 1) (b 1)) (c))`
+
+### 2. Execute Lisp-code and give call-back function written in Go
+
 ```go
 <% (quote-source "examples/example2.go") %>
 ```
@@ -46,6 +70,27 @@ $ go run examples/example1.go
 $ go run examples/example2.go
 <% (command "go" "run" "examples/example2.go") %>
 ```
+
+The user defined normal functions have to get the three parameters.
+
+- The 1st: context.Context that is given to the method .Interpret()
+- The 2nd: \*gmnlisp.World on which the instance runs.
+- The 3rd: []gmnlisp.Node the parameters given by caller. They are already evaluated.
+
+`gmnlisp.Function` wraps the normal function as Lisp object.
+
+- `F`: the function itself
+- `C`: when the number of the parameter is not same as this, the error will be raised.
+    If it does not have to be checked, omit it.
+
+To get unevaluted parameters, the function's definition should be as below.
+
+```
+func FUNCNAME(c context.Context,w *World,args Node)(Node,error){...}
+```
+
+- The parameters are given as a list not an array.
+- Use `gmnlisp.SpecialF(FUNCNAME)` instead of `gmnlisp.Function{F:FUNCNAME}`
 
 Support Types
 -------------
