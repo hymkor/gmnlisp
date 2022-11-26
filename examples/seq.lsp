@@ -1,9 +1,9 @@
 (defun seq (n)
-  (print n)
+  (format t "~s~%" n)
   (cond
     ((equal n 0)
       (return-from seq nil))
-    (T
+    (t
       (seq (- n 1)))
   )
 )
