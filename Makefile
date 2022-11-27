@@ -5,54 +5,78 @@ VERSION=$(shell git describe --tags)
 ifeq ($(OS),Windows_NT)
     SHELL=CMD.EXE
     SET=set
+    CP=copy
     RM=del
     D=$\\
 else
     SET=export
+    CP=cp
     RM=rm
     D=/
 endif
 
-$(NAME)$(EXE): $(wildcard *.go)
+TARGET=$(NAME)$(EXE)
+
+ifeq ($(RUNLISP),)
+    RUNLISP=.$(D)$(TARGET)
+endif
+
+all: $(TARGET)
+
+GENERATES=embed.go sort-world newtypes.go stringer.go
+generate: $(GENERATES)
+
+$(TARGET): $(wildcard *.go)
 	go fmt
 	go build
 	go fmt cmd/gmnlisp/main.go
-	cd cmd/gmnlisp && go build -o ../../gmnlisp$(EXE) -ldflags "-s -w -X main.version=$(VERSION)"
+	cd cmd/gmnlisp && go build -o ../../$(TARGET) -ldflags "-s -w -X main.version=$(VERSION)"
 
-generate: embed.go sort-world newtypes.go stringer.go
-
-all: $(NAME)$(EXE)
+### test ###
 
 test:
-	.$(D)gmnlisp test.lsp
+	$(RUNLISP) test.lsp
 	go fmt
 	go test
 	cd pkg/common && go test
 	cd pkg/auto && go test
 
-readme.md: _readme.md tools$(D)prepro.lsp
-	.$(D)gmnlisp tools$(D)prepro.lsp < _README.md > README.md
+### Updating documents
+
+README.md: tools/prepro.lsp _readme.md
+	$(RUNLISP) $< < _README.md > $@
+
+### Cleaning ###
 
 clean:
-	$(RM) gmnlisp$(EXE)
+	$(RM) $(TARGET)
+
+clean-gen:
+	$(RM) $(GENERATES)
+
+### Formating sources ###
 
 sort-world:
-	.$(D)gmnlisp tools$(D)gosort.lsp < world.go > world.go_
-	-cmp world.go world.go_ || copy world.go_ world.go
-	del world.go_
+	$(RUNLISP) tools/gosort.lsp < world.go > world.go_
+	-cmp world.go world.go_ || $(CP) world.go_ world.go
+	$(RM) world.go_
+
+### Generating sources ###
 
 embed.go: tools$(D)lsp2go.lsp tools$(D)embed.lsp
-	.$(D)gmnlisp tools$(D)lsp2go.lsp gmnlisp < tools$(D)embed.lsp > embed.go
+	$(RUNLISP) $< $(NAME) < tools$(D)embed.lsp > $@
 
-newtypes.go : tools$(D)newtypes.lsp Makefile
-	gmnlisp $< gmnlisp "*StringBuilder" "*inputStream" "*_OutputFileStream" "*_Macro" "_ReaderNode" "_WriterNode" > $@
+newtypes.go : tools/newtypes.lsp Makefile
+	$(RUNLISP) $< $(NAME) "*StringBuilder" "*inputStream" "*_OutputFileStream" "*_Macro" "_ReaderNode" "_WriterNode" > $@
 
-stringer.go : tools$(D)stringer.lsp Makefile
-	gmnlisp $< gmnlisp ErrorNode Float Integer _WriterNode _ReaderNode _Macro _OutputFileStream inputStream _JoinedForm LispString SpecialF _Lambda _TrueType Cons Keyword Rune _NullType Array Function _Hash > $@
+stringer.go : tools/stringer.lsp Makefile
+	$(RUNLISP) $< $(NAME) ErrorNode Float Integer _WriterNode _ReaderNode _Macro _OutputFileStream inputStream _JoinedForm LispString SpecialF _Lambda _TrueType Cons Keyword Rune _NullType Array Function _Hash > $@
+
+### Packaging ###
 
 _package:
 	$(SET) "CGO_ENABLED=0" && $(MAKE) clean && $(MAKE) all
-	zip -9 $(NAME)-$(VERSION)-$(GOOS)-$(GOARCH).zip $(NAME)$(EXE)
+	zip -9 $(NAME)-$(VERSION)-$(GOOS)-$(GOARCH).zip $(TARGET)
 
 package:
 	$(SET) "GOOS=linux" && $(SET) "GOARCH=386"   && $(MAKE) _package
