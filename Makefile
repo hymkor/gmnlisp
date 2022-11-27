@@ -21,7 +21,7 @@ $(NAME)$(EXE): $(wildcard *.go)
 
 generate: embed.go sort-world newtypes.go stringer.go
 
-all: $(NAME)$(EXE) gmnlpp$(EXE)
+all: $(NAME)$(EXE)
 
 test:
 	.$(D)gmnlisp test.lsp
@@ -34,7 +34,7 @@ readme.md: _readme.md tools$(D)prepro.lsp
 	.$(D)gmnlisp tools$(D)prepro.lsp < _README.md > README.md
 
 clean:
-	$(RM) gmnlpp$(EXE) gmnlisp$(EXE)
+	$(RM) gmnlisp$(EXE)
 
 sort-world:
 	.$(D)gmnlisp tools$(D)gosort.lsp < world.go > world.go_
@@ -52,7 +52,7 @@ stringer.go : tools$(D)stringer.lsp Makefile
 
 _package:
 	$(SET) "CGO_ENABLED=0" && $(MAKE) clean && $(MAKE) all
-	zip -9 $(NAME)-$(VERSION)-$(GOOS)-$(GOARCH).zip $(NAME)$(EXE) gmnlpp$(EXE)
+	zip -9 $(NAME)-$(VERSION)-$(GOOS)-$(GOARCH).zip $(NAME)$(EXE)
 
 package:
 	$(SET) "GOOS=linux" && $(SET) "GOARCH=386"   && $(MAKE) _package
