@@ -50,7 +50,7 @@ sort-world:
 embed.go: tools$(D)lsp2go.lsp embed.lsp
 	.$(D)gmnlisp tools$(D)lsp2go.lsp gmnlisp < embed.lsp > embed.go
 
-newtypes.go : newtypes.lsp Makefile
+newtypes.go : tools$(D)newtypes.lsp Makefile
 	gmnlisp $< gmnlisp "*StringBuilder" "*inputStream" "*_OutputFileStream" "*_Macro" "_ReaderNode" "_WriterNode" > $@
 
 stringer.go : tools$(D)stringer.lsp Makefile
