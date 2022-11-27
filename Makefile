@@ -33,12 +33,6 @@ test:
 readme.md: _readme.md tools$(D)prepro.lsp
 	.$(D)gmnlisp tools$(D)prepro.lsp < _README.md > README.md
 
-gmnlpp$(EXE): gmnlisp$(EXE)
-	go fmt
-	go build
-	go fmt cmd/gmnlpp/main.go
-	go build -o gmnlpp$(EXE) cmd/gmnlpp/main.go
-
 clean:
 	$(RM) gmnlpp$(EXE) gmnlisp$(EXE)
 
