@@ -30,8 +30,8 @@ test:
 	cd pkg/common && go test
 	cd pkg/auto && go test
 
-readme.md: _readme.md gmnlpp$(EXE)
-	.$(D)gmnlpp$(EXE) _README.md > README.md
+readme.md: _readme.md prepro.lsp
+	.$(D)gmnlisp prepro.lsp < _README.md > README.md
 
 gmnlpp$(EXE): gmnlisp$(EXE)
 	go fmt
