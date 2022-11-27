@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"os/exec"
 	"runtime"
 	"strings"
 
@@ -61,6 +62,19 @@ func (c *Coloring) Next(ch rune) int {
 	}
 	c.last = ch
 	return color
+}
+
+func funCommand(ctx context.Context, w *gmnlisp.World, list []gmnlisp.Node) (gmnlisp.Node, error) {
+	argv := make([]string, len(list))
+	for i, value := range list {
+		argv[i] = value.String()
+	}
+
+	cmd := exec.CommandContext(ctx, argv[0], argv[1:]...)
+	cmd.Stdout = w.Stdout()
+	cmd.Stderr = w.Errout()
+	cmd.Stdin = os.Stdin // w.Stdin()
+	return gmnlisp.Null, cmd.Run()
 }
 
 func interactive(lisp *gmnlisp.World) error {
@@ -129,6 +143,11 @@ func mains(args []string) error {
 
 	ctx := context.Background()
 	lisp := gmnlisp.New()
+
+	lisp = lisp.Let(&gmnlisp.Pair{
+		Key:   gmnlisp.NewSymbol("command"),
+		Value: &gmnlisp.Function{F: funCommand},
+	})
 
 	if *flagExecute != "" {
 		setArgv(lisp, args)
