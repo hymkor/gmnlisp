@@ -93,39 +93,3 @@ func TestFunCall(t *testing.T) {
 		(let ((f (lambda (a b) (+ a b))))
 			(funcall f 1 2))`, Integer(3))
 }
-
-func TestApply(t *testing.T) {
-	assertEqual(t, `(apply #'+ '(1 2 3))`, Integer(6))
-	assertEqual(t, `(apply #'+ 4 5 6 '(1 2 3))`, Integer(21))
-}
-
-func TestRest(t *testing.T) {
-	assertEqual(t, `
-		(defun cat (left &rest args)
-		  (apply #'string-append  left args)
-		)
-		(cat "1" "2" "3" "4" "5")`, String("12345"))
-}
-
-func TestFlet(t *testing.T) {
-	assertEqual(t, `
-		(flet ((f (x) (+ x 3)))
-			(flet ((f (x) (+ x (f x))))
-				(f 7)
-			)
-		)`, Integer(17))
-}
-
-func TestLabels(t *testing.T) {
-	assertEqual(t, `
-		(labels
-			((evenp (n)
-				(if (= n 0)
-					t
-					(oddp (- n 1))))
-			(oddp (n)
-				(if (= n 0)
-					nil
-					(evenp (- n 1)))))
-		(evenp 88))`, True)
-}
