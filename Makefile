@@ -47,8 +47,8 @@ sort-world:
 	-cmp world.go world.go_ || copy world.go_ world.go
 	del world.go_
 
-embed.go: lsp2go.lsp embed.lsp
-	gmnlisp lsp2go.lsp gmnlisp < embed.lsp > embed.go
+embed.go: tools$(D)lsp2go.lsp embed.lsp
+	.$(D)gmnlisp tools$(D)lsp2go.lsp gmnlisp < embed.lsp > embed.go
 
 newtypes.go : newtypes.lsp Makefile
 	gmnlisp $< gmnlisp "*StringBuilder" "*inputStream" "*_OutputFileStream" "*_Macro" "_ReaderNode" "_WriterNode" > $@
