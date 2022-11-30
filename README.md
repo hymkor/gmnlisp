@@ -134,13 +134,13 @@ Support Types
 
 | Type(Lisp)        | Type(Go)
 |-------------------|------------------------
-| t                 | gmnlisp.\_TrueTYpe
+| t                 | gmnlisp.\_TrueType
 | nil               | gmnlisp.\_NullType
 | &lt;integer&gt;   | gmnlisp.Integer == int64
 | &lt;float&gt;     | gmnlisp.Float == float64
 | &lt;string&gt;    | gmnlisp.String == string
 | &lt;symbol&gt;    | gmnlisp.Symbol == int
-| &lt;cons&gt;      | \*gmnlisp.Cons
+| &lt;cons&gt;      | \*gmnlisp.Cons == struct{ Car,Cdr: gmnlisp.Node }
 | &lt;character&gt; | gmnlisp.Rune == rune
 | (keyword)         | gmnlisp.Keyword
 | (array)           | \*gmnlisp.Array
@@ -148,15 +148,6 @@ Support Types
 
 `gmnlisp.Node` is the root interface.
 All objects used in Lisp code have to satisfy it.
-
-`gmnlisp.Cons` is defined as below:
-
-```
-type Cons struct {
-    Car gmnlisp.Node
-    Cdr gmnlisp.Node
-}
-```
 
 `gmnlisp.Symbol` is the unique number associated to string.
 
