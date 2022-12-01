@@ -26,14 +26,14 @@ func (cons *Cons) FirstAndRest() (Node, Node, bool, func(Node) error) {
 	}
 }
 
-func (cons *Cons) GetCar() Node {
+func (cons *Cons) getCar() Node {
 	if cons.Car == nil {
 		return Null
 	}
 	return cons.Car
 }
 
-func (cons *Cons) GetCdr() Node {
+func (cons *Cons) getCdr() Node {
 	if cons.Cdr == nil {
 		return Null
 	}
@@ -79,7 +79,7 @@ func (cons *Cons) writeToWithoutKakko(w io.Writer, m PrintMode) (int, error) {
 
 			_siz, _ := io.WriteString(w, " . ")
 			siz += _siz
-			_siz, _ = cons.GetCdr().PrintTo(w, m)
+			_siz, _ = cons.getCdr().PrintTo(w, m)
 			siz += _siz
 		}
 	}
@@ -119,8 +119,8 @@ func (cons *Cons) Equals(n Node, m EqlMode) bool {
 	if m == STRICT {
 		return cons == value
 	}
-	return cons.GetCar().Equals(value.Car, m) &&
-		cons.GetCdr().Equals(value.Cdr, m)
+	return cons.getCar().Equals(value.Car, m) &&
+		cons.getCdr().Equals(value.Cdr, m)
 }
 
 func (cons *Cons) Eval(ctx context.Context, w *World) (Node, error) {

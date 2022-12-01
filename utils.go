@@ -88,7 +88,7 @@ func Shift(list Node) (Node, Node, error) {
 	if !ok {
 		return nil, nil, ErrTooFewArguments
 	}
-	return cons.GetCar(), cons.Cdr, nil
+	return cons.getCar(), cons.Cdr, nil
 }
 
 func ListToArray(list Node, slice []Node) error {
