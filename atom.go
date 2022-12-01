@@ -104,14 +104,12 @@ func (s String) EachRune(f func(Rune) error) error {
 	return nil
 }
 
-func (s String) FirstAndRest() (Node, Node, bool, func(Node) error) {
+func (s String) FirstAndRest() (Node, Node, bool) {
 	if len(s) <= 0 {
-		return nil, Null, false, nil
+		return nil, Null, false
 	}
 	r, siz := utf8.DecodeRuneInString(string(s))
-	return Rune(r), String(s[siz:]), true, func(value Node) error {
-		return ErrNotSupportType
-	}
+	return Rune(r), String(s[siz:]), true
 }
 
 func (s String) Add(n Node) (Node, error) {

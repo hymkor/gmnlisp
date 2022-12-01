@@ -11,7 +11,7 @@ type Cons struct {
 	Cdr Node
 }
 
-func (cons *Cons) FirstAndRest() (Node, Node, bool, func(Node) error) {
+func (cons *Cons) FirstAndRest() (Node, Node, bool) {
 	car := cons.Car
 	if car == nil {
 		car = Null
@@ -20,10 +20,7 @@ func (cons *Cons) FirstAndRest() (Node, Node, bool, func(Node) error) {
 	if cdr == nil {
 		cdr = Null
 	}
-	return car, cdr, true, func(value Node) error {
-		cons.Car = value
-		return nil
-	}
+	return car, cdr, true
 }
 
 func (cons *Cons) getCar() Node {

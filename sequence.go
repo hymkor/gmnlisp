@@ -8,7 +8,7 @@ import (
 )
 
 type Sequence interface {
-	FirstAndRest() (Node, Node, bool, func(Node) error)
+	FirstAndRest() (Node, Node, bool)
 }
 
 func SeqEach(list Node, f func(Node) error) error {
@@ -19,7 +19,7 @@ func SeqEach(list Node, f func(Node) error) error {
 		}
 		var value Node
 
-		value, list, ok, _ = seq.FirstAndRest()
+		value, list, ok = seq.FirstAndRest()
 		if !ok {
 			break
 		}
@@ -97,7 +97,7 @@ func funElt(_ context.Context, _ *World, args []Node) (Node, error) {
 			if !ok {
 				return Null, nil
 			}
-			value, list, _, _ = seq.FirstAndRest()
+			value, list, _ = seq.FirstAndRest()
 			index--
 		}
 	}
@@ -134,7 +134,7 @@ func MapCar(ctx context.Context, w *World, funcNode Node, sourceSet []Node, stor
 			if !ok {
 				return ErrNotSupportType
 			}
-			paramSet[i], listSet[i], ok, _ = seq.FirstAndRest()
+			paramSet[i], listSet[i], ok = seq.FirstAndRest()
 			if !ok {
 				return nil
 			}
@@ -216,7 +216,7 @@ func mapList(ctx context.Context, w *World, funcNode Node, sourceSet []Node, sto
 			if !ok {
 				return ErrNotSupportType
 			}
-			_, listSet[i], ok, _ = seq.FirstAndRest()
+			_, listSet[i], ok = seq.FirstAndRest()
 			if !ok || IsNull(listSet[i]) {
 				return nil
 			}
@@ -339,7 +339,7 @@ func funMember(c context.Context, w *World, argv []Node) (Node, error) {
 		if !ok {
 			return nil, ErrExpectedSequence
 		}
-		value, rest, ok, _ := seq.FirstAndRest()
+		value, rest, ok := seq.FirstAndRest()
 		if !ok {
 			break
 		}

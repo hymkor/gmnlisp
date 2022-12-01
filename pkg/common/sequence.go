@@ -63,7 +63,7 @@ func funMember(c context.Context, w *World, argv []Node, kwargs map[Keyword]Node
 		if !ok {
 			return nil, ErrExpectedSequence
 		}
-		value, rest, ok, _ := seq.FirstAndRest()
+		value, rest, ok := seq.FirstAndRest()
 		if !ok {
 			break
 		}
