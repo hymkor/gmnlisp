@@ -401,14 +401,6 @@ func (w *World) InterpretBytes(ctx context.Context, code []byte) (Node, error) {
 	return w.InterpretNodes(ctx, compiled)
 }
 
-func (w *World) Call(ctx context.Context, f Node, params ...Node) (Node, error) {
-	_f, ok := f.(Callable)
-	if !ok {
-		return nil, ErrExpectedFunction
-	}
-	return _f.Call(ctx, w, List(params...))
-}
-
 func (w *World) Let(scope Scope) *World {
 	return &World{
 		parent:  w,
