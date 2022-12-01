@@ -883,3 +883,72 @@
         6)
 (assert (apply #'+ 4 5 6 '(1 2 3))
         21)
+
+;;; test for (funcall)
+(assert (let ((f (lambda (a b) (+ a b))))
+          (funcall f 1 2))
+        3)
+
+(assert (let ((f (function (lambda (a b) (+ a b)))))
+          (funcall f 1 2))
+        3)
+
+;;; test for lambda
+(assert (progn
+          (defun f (a b)
+            (+ a b))
+          (f 1 2))
+        3)
+
+(assert (progn
+          (defun f1 (a b)
+            (+ a b))
+          (f1 1.0 2.0))
+        3.0)
+
+(assert (let ((f2 (lambda (a b) (+ a b))))
+          (f2 4 5))
+        9)
+
+(assert (let (a)
+          (setq a 0)
+          (defun dummy (a b) (+ a b))
+          (dummy 7 8)
+          a)
+        0)
+
+(assert (progn (let ((x 1))
+                 (defun f ()
+                   (list x)))
+               (let ((x 2))
+                 (f)))
+        (list 1))
+
+(assert (let (c)(setq c "a") c)
+        "a")
+
+(assert (progn
+          (defglobal c "a")
+          (defun f (a)
+            (let ((c "b"))
+              (+ a 1)
+              )
+            )
+          (list (f 4) c))
+        (list 5 "a"))
+
+(assert (progn
+          (defglobal c "a")
+          (defun f (a / c)
+            (setq c "b")
+            (+ a 1)
+            )
+          (list (f 4) c)
+          )
+        (list 5 "a")
+        )
+
+(assert (let ((a 0)) (if t (setq a 1) (setq a 2)) a)
+        1)
+(assert (let ((x "1")) (if nil (setq x "2") (setq x "3")) x)
+        "3")
