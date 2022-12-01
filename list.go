@@ -2,14 +2,13 @@ package gmnlisp
 
 import (
 	"context"
-	"fmt"
 )
 
 // funGetCar implements (car X)
 func funGetCar(_ context.Context, _ *World, argv []Node) (Node, error) {
 	cons, ok := argv[0].(*Cons)
 	if !ok {
-		return nil, fmt.Errorf("%w: %#v", ErrExpectedCons, argv[0])
+		return nil, makeError(ErrExpectedCons, argv[0])
 	}
 	return cons.Car, nil
 }
@@ -42,7 +41,7 @@ func lastOfList(node Node) (*Cons, error) {
 		}
 		cons, ok := node.(*Cons)
 		if !ok {
-			return nil, fmt.Errorf("%w: %#v", ErrExpectedCons, node)
+			return nil, makeError(ErrExpectedCons, node)
 		}
 		if IsNull(cons.Cdr) {
 			return cons, nil

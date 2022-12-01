@@ -81,7 +81,7 @@ func (w *World) Get(name Symbol) (Node, error) {
 		}
 		w = w.parent
 	}
-	return Null, fmt.Errorf("%w: %#v", ErrVariableUnbound, name)
+	return Null, makeError(ErrVariableUnbound, name)
 }
 
 func (w *World) SetOrDefineParameter(name Symbol, value Node) {

@@ -3,6 +3,7 @@ package gmnlisp
 import (
 	"context"
 	"errors"
+	"fmt"
 	"io"
 )
 
@@ -119,4 +120,8 @@ func ignoreEOF(err error) error {
 		return nil
 	}
 	return err
+}
+
+func makeError(e error, s any) error {
+	return fmt.Errorf("%w: %#v", e, s)
 }

@@ -2,7 +2,6 @@ package gmnlisp
 
 import (
 	"context"
-	"fmt"
 	"regexp"
 	"strings"
 	"unicode/utf8"
@@ -16,7 +15,7 @@ func funStringAppend(ctx context.Context, w *World, list []Node) (Node, error) {
 	for _, s := range list {
 		str, ok := s.(String)
 		if !ok {
-			return nil, fmt.Errorf("%w: %#v", ErrExpectedString, s)
+			return nil, makeError(ErrExpectedString, s)
 		}
 		buffer.WriteString(str.String())
 	}
@@ -26,11 +25,11 @@ func funStringAppend(ctx context.Context, w *World, list []Node) (Node, error) {
 func compareString(argv []Node, f func(int) bool) (Node, error) {
 	left, ok := argv[0].(String)
 	if !ok {
-		return nil, fmt.Errorf("%w: %#v", ErrExpectedString, argv[0])
+		return nil, makeError(ErrExpectedString, argv[0])
 	}
 	right, ok := argv[1].(String)
 	if !ok {
-		return nil, fmt.Errorf("%w: %#v", ErrExpectedString, argv[1])
+		return nil, makeError(ErrExpectedString, argv[1])
 	}
 	cmp := strings.Compare(left.String(), right.String())
 	if f(cmp) {
@@ -71,7 +70,7 @@ func funStringIndex(ctx context.Context, w *World, argv []Node) (Node, error) {
 	if len(argv) >= 3 {
 		_start, ok := argv[2].(Integer)
 		if !ok {
-			return nil, fmt.Errorf("%w: %#v", ErrExpectedNumber, argv[2])
+			return nil, makeError(ErrExpectedNumber, argv[2])
 		}
 		if len(argv) >= 4 {
 			return nil, ErrTooManyArguments
@@ -80,7 +79,7 @@ func funStringIndex(ctx context.Context, w *World, argv []Node) (Node, error) {
 	}
 	_str, ok := argv[1].(String)
 	if !ok {
-		return nil, fmt.Errorf("%w: %#v", ErrExpectedString, argv[1])
+		return nil, makeError(ErrExpectedString, argv[1])
 	}
 	str := _str.String()
 
@@ -102,7 +101,7 @@ func funCreateString(ctx context.Context, w *World, list []Node) (Node, error) {
 	}
 	length, ok := list[0].(Integer)
 	if !ok {
-		return nil, fmt.Errorf("%w: %#v", ErrExpectedNumber, list[0])
+		return nil, makeError(ErrExpectedNumber, list[0])
 	}
 	if len(list) > 2 {
 		return nil, ErrTooManyArguments
@@ -112,7 +111,7 @@ func funCreateString(ctx context.Context, w *World, list []Node) (Node, error) {
 		var ok bool
 		ch, ok = list[1].(Rune)
 		if !ok {
-			return nil, fmt.Errorf("%w: %#v", ErrExpectedCharacter, list[1])
+			return nil, makeError(ErrExpectedCharacter, list[1])
 		}
 	}
 	return String(strings.Repeat(string(ch), int(length))), nil
@@ -123,7 +122,7 @@ var regexpCache = map[string]*regexp.Regexp{}
 func getRegexpParam(list []Node) (*regexp.Regexp, string, error) {
 	_pattern, ok := list[0].(String)
 	if !ok {
-		return nil, "", fmt.Errorf("%w: %#v", ErrExpectedString, list[0])
+		return nil, "", makeError(ErrExpectedString, list[0])
 	}
 	pattern := _pattern.String()
 	reg, ok := regexpCache[pattern]
@@ -131,12 +130,12 @@ func getRegexpParam(list []Node) (*regexp.Regexp, string, error) {
 		var err error
 		reg, err = regexp.Compile(pattern)
 		if err != nil {
-			return nil, "", fmt.Errorf("%w: %#v", err, pattern)
+			return nil, "", makeError(err, pattern)
 		}
 	}
 	str, ok := list[1].(String)
 	if !ok {
-		return nil, "", fmt.Errorf("%w: %#v", ErrExpectedString, list[1])
+		return nil, "", makeError(ErrExpectedString, list[1])
 	}
 	return reg, str.String(), nil
 }

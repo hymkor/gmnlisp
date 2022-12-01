@@ -170,7 +170,7 @@ func funMacroExpand(ctx context.Context, w *World, args []Node) (Node, error) {
 	}
 	macro, err := name.Eval(ctx, w)
 	if err != nil {
-		return nil, fmt.Errorf("%w: %#v", err, name)
+		return nil, makeError(err, name)
 	}
 	if L, ok := macro.(*LispString); ok {
 		macro, err = L.Eval(ctx, w)
@@ -180,7 +180,7 @@ func funMacroExpand(ctx context.Context, w *World, args []Node) (Node, error) {
 	}
 	m, ok := macro.(*_Macro)
 	if !ok {
-		return nil, fmt.Errorf("%w: %#v", ErrExpectedMacro, macro)
+		return nil, makeError(ErrExpectedMacro, macro)
 	}
 	return m.expand(ctx, w, param)
 }
