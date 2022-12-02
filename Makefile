@@ -26,7 +26,7 @@ all: $(TARGET)
 GENERATES=sort-world newtypes.go stringer.go
 generate: $(GENERATES)
 
-$(TARGET): $(wildcard *.go)
+$(TARGET): $(wildcard *.go) $(wildcard embed/*.lsp)
 	go fmt
 	go build
 	go fmt cmd/gmnlisp/main.go
