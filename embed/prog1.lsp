@@ -1,1 +1,5 @@
-(lambda-macro (expr &rest args) (let ((x (gensym))) `(let ((,x ,expr)) (progn ,@args) ,x)))
+(lambda-macro (expr &rest args)
+  (let ((x (gensym)))
+    `(let ((,x ,expr))
+       (progn ,@args)
+       ,x)))

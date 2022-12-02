@@ -1,1 +1,3 @@
-(lambda-macro (test &rest args) `(if ,test (progn ,@args)))
+(lambda-macro (test &rest args)
+  `(if ,test
+     (progn ,@args)))

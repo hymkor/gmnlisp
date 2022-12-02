@@ -1,1 +1,2 @@
-(lambda (newvalue L) (set-cdr newvalue (cdr (cdr L))))
+(lambda (newvalue L)
+  (set-cdr newvalue (cdr (cdr L))))

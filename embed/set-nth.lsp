@@ -1,1 +1,2 @@
-(lambda (newvalue Z L) (set-elt newvalue L Z))
+(lambda (newvalue Z L)
+  (set-elt newvalue L Z))

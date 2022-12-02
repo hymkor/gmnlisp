@@ -1,1 +1,12 @@
-(lambda-macro (iters test-result &rest body) (let ((inits nil) (steps nil) (test (car test-result)) (result (elt test-result 1))) (while iters (let ((e (car iters))) (setq inits (cons (list (car e) (elt e 1)) inits)) (setq steps (append steps (list (car e) (elt e 2))))) (setq iters (cdr iters))) (setq steps (cons 'psetq steps)) `(let ,inits (while (not ,test) ,@body ,steps) ,result)))
+(lambda-macro (iters test-result &rest body)
+  (let ((inits nil)
+        (steps nil)
+        (test (car test-result))
+        (result (elt test-result 1)))
+    (while iters
+      (let ((e (car iters)))
+        (setq inits (cons (list (car e) (elt e 1)) inits))
+        (setq steps (append steps (list (car e) (elt e 2)))))
+      (setq iters (cdr iters)))
+    (setq steps (cons 'psetq steps))
+    `(let ,inits (while (not ,test) ,@body ,steps) ,result)))
