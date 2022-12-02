@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"context"
+	"embed"
 	"fmt"
 	"io"
 	"math"
@@ -14,6 +15,30 @@ import (
 type Scope interface {
 	Get(Symbol) (Node, bool)
 	Set(Symbol, Node)
+}
+
+//go:embed embed/*
+var embedLisp embed.FS
+
+type embedWorld map[Symbol]Node
+
+func (e embedWorld) Get(symbol Symbol) (Node, bool) {
+	if value, ok := e[symbol]; ok {
+		return value, true
+	}
+	fname := "embed/" + symbol.String() + ".lsp"
+
+	script, err := embedLisp.ReadFile(fname)
+	if err != nil {
+		return Null, false
+	}
+	value := &LispString{S: string(script)}
+	e[symbol] = value
+	return value, true
+}
+
+func (e embedWorld) Set(symbol Symbol, value Node) {
+	e[symbol] = value
 }
 
 type Variables map[Symbol]Node
@@ -173,7 +198,7 @@ func New() *World {
 			stdout:  &_WriterNode{_Writer: os.Stdout},
 			errout:  &_WriterNode{_Writer: os.Stderr},
 		},
-		lexical: Variables{
+		lexical: embedWorld{
 			// *sort*start*
 			NewSymbol("*"):                           SpecialF(cmdMulti),
 			NewSymbol("*err-exist*"):                 &ErrorNode{Value: os.ErrExist},
@@ -332,9 +357,6 @@ func New() *World {
 			NewSymbol("zerop"):                       &Function{C: 1, F: funZerop},
 			// *sort*end*
 		},
-	}
-	for key, val := range embedFunctions {
-		w.SetOrDefineParameter(key, val)
 	}
 	return w
 }

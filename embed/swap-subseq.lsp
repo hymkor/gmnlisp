@@ -1,0 +1,1 @@
+(lambda (seq start end newvalue) (if (stringp seq) (string-append (subseq seq 0 start) newvalue (subseq seq end (length seq))) (let ((orig seq)) (while seq (if (and (<= start 0) (> end 0) newvalue) (progn (set-car (car newvalue) seq) (setq newvalue (cdr newvalue)))) (decf start) (decf end) (setq seq (cdr seq))) orig)))

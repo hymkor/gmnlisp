@@ -23,7 +23,7 @@ endif
 
 all: $(TARGET)
 
-GENERATES=embed.go sort-world newtypes.go stringer.go
+GENERATES=sort-world newtypes.go stringer.go
 generate: $(GENERATES)
 
 $(TARGET): $(wildcard *.go)
@@ -62,9 +62,6 @@ sort-world:
 	$(RM) world.go_
 
 ### Generating sources ###
-
-embed.go: tools$(D)lsp2go.lsp tools$(D)embed.lsp
-	$(RUNLISP) $< $(NAME) < tools$(D)embed.lsp > $@
 
 newtypes.go : tools/newtypes.lsp Makefile
 	$(RUNLISP) $< $(NAME) "*StringBuilder" "*inputStream" "*_OutputFileStream" "*_Macro" "_ReaderNode" "_WriterNode" > $@
