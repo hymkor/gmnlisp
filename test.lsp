@@ -453,28 +453,6 @@
           )
         ) "B")
 
-;;; test for (case)
-(test (case 2
-        ((1) "a")
-        ((2) "b")
-        ((3) "c")
-        )
-      "b")
-
-(test (case 4
-        ((1 2) "A")
-        ((3 4) "B")
-        ((5 6) "C")
-        )
-      "B")
-
-(test (case 7
-        ((1 2) "A")
-        ((3 4) "B")
-        (t "C")
-        )
-      "C")
-
 ;;; test for (with-handler)
 (test (catch 'hoge
              (with-handler
@@ -954,4 +932,5 @@
       "3")
 
 (dolist (testcode (wildcard "tests/*.lsp"))
+  (format t "test ~s~%" testcode)
   (load testcode))
