@@ -272,6 +272,7 @@ Gmnlisp's functions are subset of ISLisp.
 #### Branch and Loop
 
 - (case KEYFORM ((KEY...) FORM...)... [(t FORM...)])
+- (case-using PREDFORM KEYFORM ((KEY) FORM...)... [(t FORM...)])
 - (cond (TEST FORM...)...)
 - (for ((VAR INIT [STEP])...) (END-TEST RESULT...) FORM... )
 - (if TEST-FORM THEN-FORM ELSE-FORM)
