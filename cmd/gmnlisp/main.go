@@ -9,6 +9,7 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"runtime"
 	"strings"
 
@@ -75,6 +76,25 @@ func funCommand(ctx context.Context, w *gmnlisp.World, list []gmnlisp.Node) (gmn
 	cmd.Stderr = w.Errout()
 	cmd.Stdin = os.Stdin // w.Stdin()
 	return gmnlisp.Null, cmd.Run()
+}
+
+func funWildcard(_ context.Context, w *gmnlisp.World, list []gmnlisp.Node) (gmnlisp.Node, error) {
+	pattern, ok := list[0].(gmnlisp.String)
+	if !ok {
+		return nil, fmt.Errorf("%w: %#v", gmnlisp.ErrExpectedString, list[0])
+	}
+	files, err := filepath.Glob(pattern.String())
+	if err != nil {
+		return nil, fmt.Errorf("%w: %#v", err, pattern)
+	}
+	var result gmnlisp.Node
+	for i := len(files) - 1; i >= 0; i-- {
+		result = &gmnlisp.Cons{
+			Car: gmnlisp.String(files[i]),
+			Cdr: result,
+		}
+	}
+	return result, nil
 }
 
 func interactive(lisp *gmnlisp.World) error {
@@ -144,9 +164,9 @@ func mains(args []string) error {
 	ctx := context.Background()
 	lisp := gmnlisp.New()
 
-	lisp = lisp.Let(&gmnlisp.Pair{
-		Key:   gmnlisp.NewSymbol("command"),
-		Value: &gmnlisp.Function{F: funCommand},
+	lisp = lisp.Let(gmnlisp.Variables{
+		gmnlisp.NewSymbol("command"):  &gmnlisp.Function{F: funCommand},
+		gmnlisp.NewSymbol("wildcard"): &gmnlisp.Function{F: funWildcard},
 	})
 
 	if *flagExecute != "" {
