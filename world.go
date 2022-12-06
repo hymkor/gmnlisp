@@ -317,6 +317,7 @@ func New() *World {
 			NewSymbol("quit"):                        SpecialF(cmdQuit),
 			NewSymbol("quote"):                       SpecialF(cmdQuote),
 			NewSymbol("read"):                        &Function{Max: 3, F: funRead},
+			NewSymbol("read-char"):                   &Function{Max: 3, F: funReadChar},
 			NewSymbol("read-line"):                   &Function{Max: 3, F: funReadLine},
 			NewSymbol("rem"):                         &Function{C: 2, F: funRem},
 			NewSymbol("remhash"):                     &Function{C: 2, F: funRemoveHash},

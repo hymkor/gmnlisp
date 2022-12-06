@@ -106,6 +106,21 @@ func funRead(_ context.Context, w *World, argv []Node) (Node, error) {
 	return value, err
 }
 
+func funReadChar(_ context.Context, w *World, argv []Node) (Node, error) {
+	stream, err := newStreamInput(w, argv)
+	if err != nil {
+		return nil, err
+	}
+	ch, _, err := stream.reader.ReadRune()
+	if err == io.EOF {
+		if stream.eofFlag {
+			return Null, io.EOF
+		}
+		return stream.eofValue, nil
+	}
+	return Rune(ch), err
+}
+
 func funClose(_ context.Context, _ *World, argv []Node) (Node, error) {
 	c, ok := argv[0].(io.Closer)
 	if !ok {
