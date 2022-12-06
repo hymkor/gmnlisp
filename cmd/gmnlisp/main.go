@@ -8,12 +8,12 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"os/exec"
-	"path/filepath"
 	"runtime"
 	"strings"
 
 	"github.com/hymkor/gmnlisp"
+	"github.com/hymkor/gmnlisp/pkg/command"
+	"github.com/hymkor/gmnlisp/pkg/wildcard"
 	"github.com/mattn/go-colorable"
 	"github.com/nyaosorg/go-readline-ny"
 	"github.com/nyaosorg/go-readline-ny/simplehistory"
@@ -63,38 +63,6 @@ func (c *Coloring) Next(ch rune) int {
 	}
 	c.last = ch
 	return color
-}
-
-func funCommand(ctx context.Context, w *gmnlisp.World, list []gmnlisp.Node) (gmnlisp.Node, error) {
-	argv := make([]string, len(list))
-	for i, value := range list {
-		argv[i] = value.String()
-	}
-
-	cmd := exec.CommandContext(ctx, argv[0], argv[1:]...)
-	cmd.Stdout = w.Stdout()
-	cmd.Stderr = w.Errout()
-	cmd.Stdin = os.Stdin // w.Stdin()
-	return gmnlisp.Null, cmd.Run()
-}
-
-func funWildcard(_ context.Context, w *gmnlisp.World, list []gmnlisp.Node) (gmnlisp.Node, error) {
-	pattern, ok := list[0].(gmnlisp.String)
-	if !ok {
-		return nil, fmt.Errorf("%w: %#v", gmnlisp.ErrExpectedString, list[0])
-	}
-	files, err := filepath.Glob(pattern.String())
-	if err != nil {
-		return nil, fmt.Errorf("%w: %#v", err, pattern)
-	}
-	var result gmnlisp.Node
-	for i := len(files) - 1; i >= 0; i-- {
-		result = &gmnlisp.Cons{
-			Car: gmnlisp.String(files[i]),
-			Cdr: result,
-		}
-	}
-	return result, nil
 }
 
 func interactive(lisp *gmnlisp.World) error {
@@ -165,8 +133,8 @@ func mains(args []string) error {
 	lisp := gmnlisp.New()
 
 	lisp = lisp.Let(gmnlisp.Variables{
-		gmnlisp.NewSymbol("command"):  &gmnlisp.Function{F: funCommand},
-		gmnlisp.NewSymbol("wildcard"): &gmnlisp.Function{F: funWildcard},
+		gmnlisp.NewSymbol("command"):  command.Declare,
+		gmnlisp.NewSymbol("wildcard"): wildcard.Declare,
 	})
 
 	if *flagExecute != "" {
