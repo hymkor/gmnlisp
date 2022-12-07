@@ -182,18 +182,6 @@
 ;;; test for (setf cdddr)
 (test (let ((L '(a b c d))) (setf (cdddr L) 'x) L) '(a b c . x))
 
-;; test for (find-all-string-submatch)
-(test (=~ "a(x*)b" "-ab-") '(("ab" "")))
-(test (=~ "a(x*)b" "-axxb-") '(("axxb" "xx")))
-(test (=~ "a(x*)b" "-ab-axb-") '(("ab" "")("axb" "x")))
-(test (=~ "a(x*)b" "-axxb-ab-") '(("axxb" "xx") ("ab" "")))
-
-;; test for (find-all-string-submatch-index)
-(test (=~i "a(x*)b" "-ab-") '((1 3 2 2)))
-(test (=~i "a(x*)b" "-axxb-") '((1 5 2 4)))
-(test (=~i "a(x*)b" "-ab-axb-") '((1 3 2 2)(4 7 5 6)))
-(test (=~i "a(x*)b" "-axxb-ab-") '((1 5 2 4)(6 8 7 7)))
-
 ;; test for hash-tables
 (let ((h1 (make-hash-table)))
   (setf (gethash 'width h1) 600)

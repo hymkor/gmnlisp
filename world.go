@@ -207,8 +207,6 @@ var autoLoad = Variables{
 	NewSymbol("<"):                           SpecialF(cmdLessThan),
 	NewSymbol("<="):                          SpecialF(cmdLessOrEqual),
 	NewSymbol("="):                           SpecialF(cmdEqualOp),
-	NewSymbol("=~"):                          &Function{C: 2, F: funFindAllStringSubmatch},
-	NewSymbol("=~i"):                         &Function{C: 2, F: funFindAllStringSubmatchIndex},
 	NewSymbol(">"):                           SpecialF(cmdGreaterThan),
 	NewSymbol(">="):                          SpecialF(cmdGreaterOrEqual),
 	NewSymbol("abort"):                       SpecialF(cmdAbort),

@@ -13,6 +13,7 @@ import (
 
 	"github.com/hymkor/gmnlisp"
 	_ "github.com/hymkor/gmnlisp/pkg/command"
+	_ "github.com/hymkor/gmnlisp/pkg/regexp"
 	_ "github.com/hymkor/gmnlisp/pkg/wildcard"
 	"github.com/mattn/go-colorable"
 	"github.com/nyaosorg/go-readline-ny"
