@@ -36,7 +36,7 @@ func (i Integer) Add(n Node) (Node, error) {
 	if _n, ok := n.(Float); ok {
 		return Float(i) + _n, nil
 	}
-	return nil, makeError(ErrNotSupportType, n)
+	return nil, MakeError(ErrNotSupportType, n)
 }
 
 func (i Integer) Sub(n Node) (Node, error) {
@@ -46,7 +46,7 @@ func (i Integer) Sub(n Node) (Node, error) {
 	if _n, ok := n.(Float); ok {
 		return Float(i) - _n, nil
 	}
-	return nil, makeError(ErrNotSupportType, n)
+	return nil, MakeError(ErrNotSupportType, n)
 }
 
 func (i Integer) Multi(n Node) (Node, error) {
@@ -56,7 +56,7 @@ func (i Integer) Multi(n Node) (Node, error) {
 	if _n, ok := n.(Float); ok {
 		return Float(i) * _n, nil
 	}
-	return nil, makeError(ErrNotSupportType, n)
+	return nil, MakeError(ErrNotSupportType, n)
 }
 
 func (i Integer) Divide(n Node) (Node, error) {
@@ -72,7 +72,7 @@ func (i Integer) Divide(n Node) (Node, error) {
 		}
 		return Float(i) / _n, nil
 	}
-	return nil, makeError(ErrNotSupportType, n)
+	return nil, MakeError(ErrNotSupportType, n)
 }
 
 func (i Integer) LessThan(n Node) (bool, error) {
@@ -82,7 +82,7 @@ func (i Integer) LessThan(n Node) (bool, error) {
 	if _n, ok := n.(Float); ok {
 		return Float(i) < _n, nil
 	}
-	return false, makeError(ErrNotSupportType, n)
+	return false, MakeError(ErrNotSupportType, n)
 }
 
 type Float float64
@@ -115,7 +115,7 @@ func (f Float) Add(n Node) (Node, error) {
 	if _n, ok := n.(Integer); ok {
 		return f + Float(_n), nil
 	}
-	return nil, makeError(ErrNotSupportType, n)
+	return nil, MakeError(ErrNotSupportType, n)
 }
 
 func (f Float) Sub(n Node) (Node, error) {
@@ -125,7 +125,7 @@ func (f Float) Sub(n Node) (Node, error) {
 	if _n, ok := n.(Integer); ok {
 		return f - Float(_n), nil
 	}
-	return nil, makeError(ErrNotSupportType, n)
+	return nil, MakeError(ErrNotSupportType, n)
 }
 
 func (f Float) Multi(n Node) (Node, error) {
@@ -135,7 +135,7 @@ func (f Float) Multi(n Node) (Node, error) {
 	if _n, ok := n.(Integer); ok {
 		return f * Float(_n), nil
 	}
-	return nil, makeError(ErrNotSupportType, n)
+	return nil, MakeError(ErrNotSupportType, n)
 }
 
 func (f Float) Divide(n Node) (Node, error) {
@@ -151,7 +151,7 @@ func (f Float) Divide(n Node) (Node, error) {
 		}
 		return f / Float(_n), nil
 	}
-	return nil, makeError(ErrNotSupportType, n)
+	return nil, MakeError(ErrNotSupportType, n)
 }
 
 func (f Float) LessThan(n Node) (bool, error) {
@@ -161,5 +161,5 @@ func (f Float) LessThan(n Node) (bool, error) {
 	if _n, ok := n.(Integer); ok {
 		return f < Float(_n), nil
 	}
-	return false, makeError(ErrNotSupportType, n)
+	return false, MakeError(ErrNotSupportType, n)
 }

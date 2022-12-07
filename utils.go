@@ -122,6 +122,6 @@ func ignoreEOF(err error) error {
 	return err
 }
 
-func makeError(e error, s any) error {
+func MakeError(e error, s any) error {
 	return fmt.Errorf("%w: %#v", e, s)
 }

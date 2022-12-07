@@ -54,7 +54,7 @@ func getParameterList(node Node) (*_Parameters, error) {
 		} else {
 			nameSymbol, ok := nameNode.(Symbol)
 			if !ok {
-				return nil, makeError(ErrExpectedSymbol, nameNode)
+				return nil, MakeError(ErrExpectedSymbol, nameNode)
 			}
 			params = append(params, nameSymbol)
 		}

@@ -17,7 +17,7 @@ func cmdSetq(ctx context.Context, w *World, params Node) (Node, error) {
 		}
 		nameSymbol, ok := nameNode.(Symbol)
 		if !ok {
-			return nil, makeError(ErrExpectedSymbol, nameSymbol)
+			return nil, MakeError(ErrExpectedSymbol, nameSymbol)
 		}
 		value, params, err = w.ShiftAndEvalCar(ctx, params)
 		if err != nil {
@@ -48,7 +48,7 @@ func cmdPSetq(ctx context.Context, w *World, params Node) (Node, error) {
 		}
 		nameSymbol, ok := nameNode.(Symbol)
 		if !ok {
-			return nil, makeError(ErrExpectedSymbol, nameSymbol)
+			return nil, MakeError(ErrExpectedSymbol, nameSymbol)
 		}
 		value, params, err = w.ShiftAndEvalCar(ctx, params)
 		if err != nil {
@@ -81,7 +81,7 @@ func letValuesToVars(ctx context.Context, w *World, list Node, lexical map[Symbo
 		}
 		symbol, ok := argv[0].(Symbol)
 		if !ok {
-			return makeError(ErrExpectedSymbol, argv[0])
+			return MakeError(ErrExpectedSymbol, argv[0])
 		}
 		value, err := argv[1].Eval(ctx, w)
 		if err != nil {

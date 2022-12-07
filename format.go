@@ -51,7 +51,7 @@ func funFormatChar(_ context.Context, w *World, list []Node) (Node, error) {
 	return tAndNilToWriter(w, list, func(writer runeWriter, list []Node) error {
 		r, ok := list[0].(Rune)
 		if !ok {
-			return makeError(ErrExpectedCharacter, list[0])
+			return MakeError(ErrExpectedCharacter, list[0])
 		}
 		_, err := writer.WriteRune(rune(r))
 		return err
@@ -62,7 +62,7 @@ func funFormatInteger(_ context.Context, w *World, _args []Node) (Node, error) {
 	return tAndNilToWriter(w, _args, func(writer runeWriter, args []Node) error {
 		radix, ok := args[1].(Integer)
 		if !ok {
-			return makeError(ErrExpectedNumber, args[1])
+			return MakeError(ErrExpectedNumber, args[1])
 		}
 		return printInt(writer, int(radix), 0, 0, args[0])
 	})
@@ -105,7 +105,7 @@ func printSpaces(n int, w io.Writer) {
 func formatSub(w runeWriter, argv []Node) error {
 	format, ok := argv[0].(String)
 	if !ok {
-		return makeError(ErrExpectedString, argv[0])
+		return MakeError(ErrExpectedString, argv[0])
 	}
 	argv = argv[1:]
 
@@ -272,7 +272,7 @@ func tAndNilToWriter(w *World, argv []Node, f func(runeWriter, []Node) error) (N
 		err := f(rw, argv[1:])
 		return Null, err
 	}
-	return nil, makeError(ErrExpectedWriter, argv[0])
+	return nil, MakeError(ErrExpectedWriter, argv[0])
 }
 
 func funFormat(ctx context.Context, w *World, argv []Node) (Node, error) {

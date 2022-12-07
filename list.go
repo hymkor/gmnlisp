@@ -8,7 +8,7 @@ import (
 func funGetCar(_ context.Context, _ *World, argv []Node) (Node, error) {
 	cons, ok := argv[0].(*Cons)
 	if !ok {
-		return nil, makeError(ErrExpectedCons, argv[0])
+		return nil, MakeError(ErrExpectedCons, argv[0])
 	}
 	return cons.Car, nil
 }
@@ -41,7 +41,7 @@ func lastOfList(node Node) (*Cons, error) {
 		}
 		cons, ok := node.(*Cons)
 		if !ok {
-			return nil, makeError(ErrExpectedCons, node)
+			return nil, MakeError(ErrExpectedCons, node)
 		}
 		if IsNull(cons.Cdr) {
 			return cons, nil

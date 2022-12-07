@@ -134,7 +134,7 @@ func funCreateArray(ctx context.Context, w *World, args []Node) (Node, error) {
 		}
 		n, ok := _n.(Integer)
 		if !ok {
-			return nil, makeError(ErrExpectedNumber, _n)
+			return nil, MakeError(ErrExpectedNumber, _n)
 		}
 		_dim = append(_dim, int(n))
 		size *= int(n)
@@ -174,7 +174,7 @@ func (A *Array) Elt(n int) (Node, error) {
 func funAref(ctx context.Context, w *World, args []Node) (Node, error) {
 	array, ok := args[0].(*Array)
 	if !ok {
-		return nil, makeError(ErrExpectedArray, args[0])
+		return nil, MakeError(ErrExpectedArray, args[0])
 	}
 	if len(args)-1 > len(array.dim) {
 		return nil, ErrTooManyArguments
@@ -182,10 +182,10 @@ func funAref(ctx context.Context, w *World, args []Node) (Node, error) {
 	for _, _nth := range args[1:] {
 		nth, ok := _nth.(Integer)
 		if !ok {
-			return nil, makeError(ErrExpectedNumber, args[1])
+			return nil, MakeError(ErrExpectedNumber, args[1])
 		}
 		if nth < 0 || int(nth) >= array.dim[0] {
-			return nil, makeError(ErrIndexOutOfRange, args[1])
+			return nil, MakeError(ErrIndexOutOfRange, args[1])
 		}
 		if len(array.dim) == 1 {
 			return array.list[nth], nil
@@ -204,7 +204,7 @@ func funSetAref(ctx context.Context, w *World, args []Node) (Node, error) {
 
 	array, ok := args[1].(*Array)
 	if !ok {
-		return nil, makeError(ErrExpectedArray, args[0])
+		return nil, MakeError(ErrExpectedArray, args[0])
 	}
 
 	if len(args)-2 > len(array.dim) {
@@ -214,7 +214,7 @@ func funSetAref(ctx context.Context, w *World, args []Node) (Node, error) {
 	for _, _index := range args[2:] {
 		index, ok := _index.(Integer)
 		if !ok {
-			return nil, makeError(ErrExpectedNumber, _index)
+			return nil, MakeError(ErrExpectedNumber, _index)
 		}
 		if len(array.dim) == 1 {
 			array.list[index] = newValue
