@@ -272,7 +272,7 @@ Gmnlisp's functions are subset of ISLisp.
 #### Branch and Loop
 
 - (case KEYFORM ((KEY...) FORM...)... [(t FORM...)])
-- (case-using PREDFORM KEYFORM ((KEY) FORM...)... [(t FORM...)])
+- (case-using PREDFORM KEYFORM ((KEY...) FORM...)... [(t FORM...)])
 - (cond (TEST FORM...)...)
 - (for ((VAR INIT [STEP])...) (END-TEST RESULT...) FORM... )
 - (if TEST-FORM THEN-FORM ELSE-FORM)
@@ -356,6 +356,14 @@ Gmnlisp's functions are subset of ISLisp.
 - (with-handler HANDLER FORM...)
 
 #### Regular Expression
+
+```
+import (
+    _ "github.com/hymkor/gmnlisp/regexp"
+)
+```
+
+is required.
 
 - (=~ REGEXP STRING)
 

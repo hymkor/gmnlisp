@@ -320,6 +320,14 @@ Gmnlisp's functions are subset of ISLisp.
 
 #### Regular Expression
 
+```
+import (
+    _ "github.com/hymkor/gmnlisp/regexp"
+)
+```
+
+is required.
+
 - (=~ REGEXP STRING)
 
 compatible with "regexp".Regexp.FindAllStringSubmatch
