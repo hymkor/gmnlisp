@@ -8,24 +8,26 @@ import (
 	. "github.com/hymkor/gmnlisp"
 )
 
-var Functions = Variables{
-	NewSymbol("member"):         &KWFunction{C: 2, F: funMember},
-	NewSymbol("find"):           &KWFunction{C: 2, F: funFind},
-	NewSymbol("position"):       &KWFunction{C: 2, F: funPosition},
-	NewSymbol("defparameter"):   SpecialF(cmdDefparameter),
-	NewSymbol("defvar"):         SpecialF(cmdDefvar),
-	NewSymbol("prin1"):          &Function{C: 1, F: funPrin1},
-	NewSymbol("princ"):          &Function{C: 1, F: funPrinc},
-	NewSymbol("print"):          &Function{C: 1, F: funPrint},
-	NewSymbol("terpri"):         &Function{C: -1, F: funTerpri},
-	NewSymbol("write"):          &KWFunction{C: 1, F: funWrite},
-	NewSymbol("write-line"):     SpecialF(cmdWriteLine),
-	NewSymbol("concatenate"):    defConcatenate,
-	NewSymbol("with-open-file"): SpecialF(cmdWithOpenFile),
-	NewSymbol("coerce"):         &Function{C: 2, F: funCoerce},
-	NewSymbol("map"):            &Function{C: -1, F: funMap},
-	NewSymbol("typep"):          &Function{C: 2, F: funTypep},
-	NewSymbol("subst"):          &Function{C: 3, F: funSubst},
+func init() {
+	AutoLoadRange(Variables{
+		NewSymbol("member"):         &KWFunction{C: 2, F: funMember},
+		NewSymbol("find"):           &KWFunction{C: 2, F: funFind},
+		NewSymbol("position"):       &KWFunction{C: 2, F: funPosition},
+		NewSymbol("defparameter"):   SpecialF(cmdDefparameter),
+		NewSymbol("defvar"):         SpecialF(cmdDefvar),
+		NewSymbol("prin1"):          &Function{C: 1, F: funPrin1},
+		NewSymbol("princ"):          &Function{C: 1, F: funPrinc},
+		NewSymbol("print"):          &Function{C: 1, F: funPrint},
+		NewSymbol("terpri"):         &Function{C: -1, F: funTerpri},
+		NewSymbol("write"):          &KWFunction{C: 1, F: funWrite},
+		NewSymbol("write-line"):     SpecialF(cmdWriteLine),
+		NewSymbol("concatenate"):    defConcatenate,
+		NewSymbol("with-open-file"): SpecialF(cmdWithOpenFile),
+		NewSymbol("coerce"):         &Function{C: 2, F: funCoerce},
+		NewSymbol("map"):            &Function{C: -1, F: funMap},
+		NewSymbol("typep"):          &Function{C: 2, F: funTypep},
+		NewSymbol("subst"):          &Function{C: 3, F: funSubst},
+	})
 }
 
 var defparameter Callable

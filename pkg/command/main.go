@@ -8,7 +8,9 @@ import (
 	"github.com/hymkor/gmnlisp"
 )
 
-var Declare = &gmnlisp.Function{F: funCommand}
+func init() {
+	gmnlisp.AutoLoad(gmnlisp.NewSymbol("command"), &gmnlisp.Function{F: funCommand})
+}
 
 func funCommand(ctx context.Context, w *gmnlisp.World, list []gmnlisp.Node) (gmnlisp.Node, error) {
 	argv := make([]string, len(list))

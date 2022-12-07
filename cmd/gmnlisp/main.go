@@ -12,8 +12,8 @@ import (
 	"strings"
 
 	"github.com/hymkor/gmnlisp"
-	"github.com/hymkor/gmnlisp/pkg/command"
-	"github.com/hymkor/gmnlisp/pkg/wildcard"
+	_ "github.com/hymkor/gmnlisp/pkg/command"
+	_ "github.com/hymkor/gmnlisp/pkg/wildcard"
 	"github.com/mattn/go-colorable"
 	"github.com/nyaosorg/go-readline-ny"
 	"github.com/nyaosorg/go-readline-ny/simplehistory"
@@ -131,11 +131,6 @@ func mains(args []string) error {
 
 	ctx := context.Background()
 	lisp := gmnlisp.New()
-
-	lisp = lisp.Let(gmnlisp.Variables{
-		gmnlisp.NewSymbol("command"):  command.Declare,
-		gmnlisp.NewSymbol("wildcard"): wildcard.Declare,
-	})
 
 	if *flagExecute != "" {
 		setArgv(lisp, args)

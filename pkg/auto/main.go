@@ -13,12 +13,14 @@ import (
 	. "github.com/hymkor/gmnlisp"
 )
 
-var Functions = Variables{
-	NewSymbol("foreach"):          SpecialF(cmdForeach),
-	NewSymbol("command"):          defCommand,
-	NewSymbol("open"):             SpecialF(cmdOpen),
-	NewSymbol("read-from-string"): &Function{C: 1, F: funReadFromString},
-	NewSymbol("strcase"):          &Function{C: 1, F: funStrCase},
+func init() {
+	AutoLoadRange(Variables{
+		NewSymbol("foreach"):          SpecialF(cmdForeach),
+		NewSymbol("command"):          defCommand,
+		NewSymbol("open"):             SpecialF(cmdOpen),
+		NewSymbol("read-from-string"): &Function{C: 1, F: funReadFromString},
+		NewSymbol("strcase"):          &Function{C: 1, F: funStrCase},
+	})
 }
 
 func funStrCase(ctx context.Context, w *World, argv []Node) (Node, error) {

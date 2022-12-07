@@ -8,7 +8,9 @@ import (
 	"github.com/hymkor/gmnlisp"
 )
 
-var Declare = &gmnlisp.Function{F: funWildcard}
+func init() {
+	gmnlisp.AutoLoad(gmnlisp.NewSymbol("wildcard"), &gmnlisp.Function{F: funWildcard})
+}
 
 func funWildcard(_ context.Context, w *gmnlisp.World, list []gmnlisp.Node) (gmnlisp.Node, error) {
 	pattern, ok := list[0].(gmnlisp.String)

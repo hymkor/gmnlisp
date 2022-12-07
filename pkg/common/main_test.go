@@ -7,7 +7,7 @@ import (
 )
 
 func assertEqual(t *testing.T, equation string, expect Node) {
-	w := New().Let(Functions)
+	w := New()
 	if e := w.Assert(equation, expect); e != "" {
 		t.Helper()
 		t.Fatal(e)
