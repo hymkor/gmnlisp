@@ -9,7 +9,7 @@ import (
 )
 
 func init() {
-	gmnlisp.AutoLoad(gmnlisp.NewSymbol("wildcard"), &gmnlisp.Function{F: funWildcard})
+	gmnlisp.Export(gmnlisp.NewSymbol("wildcard"), &gmnlisp.Function{F: funWildcard})
 }
 
 func funWildcard(_ context.Context, w *gmnlisp.World, list []gmnlisp.Node) (gmnlisp.Node, error) {

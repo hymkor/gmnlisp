@@ -14,7 +14,7 @@ import (
 )
 
 func init() {
-	AutoLoadRange(Variables{
+	ExportRange(Variables{
 		NewSymbol("foreach"):          SpecialF(cmdForeach),
 		NewSymbol("command"):          defCommand,
 		NewSymbol("open"):             SpecialF(cmdOpen),

@@ -9,7 +9,7 @@ import (
 )
 
 func init() {
-	gmnlisp.AutoLoad(gmnlisp.NewSymbol("command"), &gmnlisp.Function{F: funCommand})
+	gmnlisp.Export(gmnlisp.NewSymbol("command"), &gmnlisp.Function{F: funCommand})
 }
 
 func funCommand(ctx context.Context, w *gmnlisp.World, list []gmnlisp.Node) (gmnlisp.Node, error) {

@@ -9,7 +9,7 @@ import (
 )
 
 func init() {
-	AutoLoadRange(Variables{
+	ExportRange(Variables{
 		NewSymbol("member"):         &KWFunction{C: 2, F: funMember},
 		NewSymbol("find"):           &KWFunction{C: 2, F: funFind},
 		NewSymbol("position"):       &KWFunction{C: 2, F: funPosition},

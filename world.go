@@ -349,11 +349,11 @@ var autoLoad = Variables{
 	// *sort*end*
 }
 
-func AutoLoad(name Symbol, value Node) {
+func Export(name Symbol, value Node) {
 	autoLoad[name] = value
 }
 
-func AutoLoadRange(v Variables) {
+func ExportRange(v Variables) {
 	for key, val := range v {
 		autoLoad[key] = val
 	}

@@ -8,8 +8,8 @@ import (
 )
 
 func init() {
-	AutoLoad(NewSymbol("=~"), &Function{C: 2, F: funFindAllStringSubmatch})
-	AutoLoad(NewSymbol("=~i"), &Function{C: 2, F: funFindAllStringSubmatchIndex})
+	Export(NewSymbol("=~"), &Function{C: 2, F: funFindAllStringSubmatch})
+	Export(NewSymbol("=~i"), &Function{C: 2, F: funFindAllStringSubmatchIndex})
 }
 
 var regexpCache = map[string]*regexp.Regexp{}
