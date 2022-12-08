@@ -1,10 +1,14 @@
-package common
+package subst
 
 import (
 	"context"
 
 	. "github.com/hymkor/gmnlisp"
 )
+
+func init() {
+	Export(NewSymbol("subst"), &Function{C: 3, F: funSubst})
+}
 
 func subst(newItem, oldItem, list Node) Node {
 	if list.Equals(oldItem, STRICT) {

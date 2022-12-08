@@ -1,10 +1,18 @@
-package common
+package subst
 
 import (
 	"testing"
 
 	. "github.com/hymkor/gmnlisp"
 )
+
+func assertEqual(t *testing.T, equation string, expect Node) {
+	w := New()
+	if e := w.Assert(equation, expect); e != "" {
+		t.Helper()
+		t.Fatal(e)
+	}
+}
 
 func TestList(t *testing.T) {
 	assertEqual(t, `(nthcdr 2 '(10 20 30 40))`, List(Integer(30), Integer(40)))
