@@ -17,30 +17,6 @@ type Scope interface {
 	Set(Symbol, Node)
 }
 
-//go:embed embed/*
-var embedLisp embed.FS
-
-type embedWorld map[Symbol]Node
-
-func (e embedWorld) Get(symbol Symbol) (Node, bool) {
-	if value, ok := e[symbol]; ok {
-		return value, true
-	}
-	fname := "embed/" + symbol.String() + ".lsp"
-
-	script, err := embedLisp.ReadFile(fname)
-	if err != nil {
-		return Null, false
-	}
-	value := &LispString{S: string(script)}
-	e[symbol] = value
-	return value, true
-}
-
-func (e embedWorld) Set(symbol Symbol, value Node) {
-	e[symbol] = value
-}
-
 type Variables map[Symbol]Node
 
 func (m Variables) Get(key Symbol) (Node, bool) {
@@ -359,6 +335,33 @@ func ExportRange(v Variables) {
 	}
 }
 
+//go:embed embed/*
+var embedLisp embed.FS
+
+type _RootWorld map[Symbol]Node
+
+func (rw _RootWorld) Get(symbol Symbol) (Node, bool) {
+	if value, ok := rw[symbol]; ok {
+		return value, true
+	}
+	if value, ok := autoLoad[symbol]; ok {
+		return value, true
+	}
+	fname := "embed/" + symbol.String() + ".lsp"
+
+	script, err := embedLisp.ReadFile(fname)
+	if err == nil {
+		value := &LispString{S: string(script)}
+		autoLoad[symbol] = value
+		return value, true
+	}
+	return Null, false
+}
+
+func (rw _RootWorld) Set(symbol Symbol, value Node) {
+	rw[symbol] = value
+}
+
 func New() *World {
 	w := &World{
 		shared: &_Shared{
@@ -367,12 +370,8 @@ func New() *World {
 			stdout:  &_WriterNode{_Writer: os.Stdout},
 			errout:  &_WriterNode{_Writer: os.Stderr},
 		},
+		lexical: _RootWorld{},
 	}
-	ew := embedWorld{}
-	for key, val := range autoLoad {
-		ew[key] = val
-	}
-	w.lexical = ew
 	return w
 }
 
