@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"os/exec"
 	"strings"
 
 	. "github.com/hymkor/gmnlisp"
@@ -16,7 +15,6 @@ import (
 func init() {
 	ExportRange(Variables{
 		NewSymbol("foreach"):          SpecialF(cmdForeach),
-		NewSymbol("command"):          defCommand,
 		NewSymbol("open"):             SpecialF(cmdOpen),
 		NewSymbol("read-from-string"): &Function{C: 1, F: funReadFromString},
 		NewSymbol("strcase"):          &Function{C: 1, F: funStrCase},
@@ -120,24 +118,6 @@ func cmdOpen(ctx context.Context, w *World, n Node) (Node, error) {
 		return Null, nil
 	}
 	return result, err
-}
-
-var defCommand = &Function{Min: 1, F: funCommand}
-
-func funCommand(ctx context.Context, w *World, list []Node) (Node, error) {
-	// from autolisp
-	argv := make([]string, len(list))
-	for i, value := range list {
-		var buffer strings.Builder
-		value.PrintTo(&buffer, PRINC)
-		argv[i] = buffer.String()
-	}
-
-	cmd := exec.CommandContext(ctx, argv[0], argv[1:]...)
-	cmd.Stdout = w.Stdout()
-	cmd.Stderr = w.Errout()
-	cmd.Stdin = os.Stdin // w.Stdin()
-	return Null, cmd.Run()
 }
 
 func funReadFromString(_ context.Context, _ *World, args []Node) (Node, error) {
