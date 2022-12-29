@@ -11,8 +11,8 @@ It is developed to embbed to the applications for customizing.
 
 ![Example image](factorial.png)
 
-Install
--------
+Executable install
+------------------
 
 Go [Releases](https://github.com/hymkor/gmnlisp/releases) and download zip-files for your OS and CPU-architecture.
 
