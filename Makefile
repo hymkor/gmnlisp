@@ -80,3 +80,6 @@ package:
 	$(SET) "GOOS=linux" && $(SET) "GOARCH=amd64" && $(MAKE) _package
 	$(SET) "GOOS=windows" && $(SET) "GOARCH=386"   && $(MAKE) _package
 	$(SET) "GOOS=windows" && $(SET) "GOARCH=amd64" && $(MAKE) _package
+
+manifest:
+	go run mkmanifest.go *-windows-*.zip > gmnlisp.json
