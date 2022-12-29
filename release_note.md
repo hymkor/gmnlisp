@@ -1,3 +1,7 @@
+v0.2.0
+======
+(Dec.29, 2022)
+
 - Some functions and macros are defined by embeded Lisp (embed.lsp and lsp2go.lsp)
 - Re-implement (setf) and (set-..) by (defmacro)
 - Remove &lt;utf\*string&gt;. &lt;string&gt; is same as &lt;utf8string&gt;
