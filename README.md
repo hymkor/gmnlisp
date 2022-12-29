@@ -11,6 +11,17 @@ It is developed to embbed to the applications for customizing.
 
 ![Example image](factorial.png)
 
+Install
+-------
+
+Go [Releases](https://github.com/hymkor/gmnlisp/releases) and download zip-files for your OS and CPU-architecture.
+
+Or, if you uses Windows and Scoop-installer, you can install with
+
+```
+scoop install https://raw.githubusercontent.com/hymkor/gmnlisp/master/gmnlisp.json
+```
+
 Examples
 --------
 
