@@ -208,7 +208,7 @@ func formatSub(w runeWriter, argv []Node) error {
 			}
 		}
 
-		if c == '%' {
+		if c == '%' || c == '&' {
 			if len(parameter) >= 1 {
 				for n := parameter[0]; n >= 1; n-- {
 					w.Write([]byte{'\n'})
