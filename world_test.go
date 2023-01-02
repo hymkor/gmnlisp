@@ -129,3 +129,5 @@ func TestIf(t *testing.T) {
 		t.Fatal("ErrTooFewArguments have to be occured")
 	}
 }
+
+var _ CanKnowLastOutput = &_WriterNode{}

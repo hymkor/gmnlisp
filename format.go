@@ -1,7 +1,6 @@
 package gmnlisp
 
 import (
-	"bufio"
 	"context"
 	"fmt"
 	"io"
@@ -48,7 +47,7 @@ func printInt(w io.Writer, value Node, base int, args ...int) error {
 }
 
 func funFormatObject(_ context.Context, w *World, list []Node) (Node, error) {
-	return tAndNilToWriter(w, list, func(writer runeWriter, list []Node) error {
+	return tAndNilToWriter(w, list, func(writer *_WriterNode, list []Node) error {
 		var err error
 		if IsNull(list[1]) { // ~a (AS-IS)
 			_, err = list[0].PrintTo(writer, PRINC)
@@ -60,7 +59,7 @@ func funFormatObject(_ context.Context, w *World, list []Node) (Node, error) {
 }
 
 func funFormatChar(_ context.Context, w *World, list []Node) (Node, error) {
-	return tAndNilToWriter(w, list, func(writer runeWriter, list []Node) error {
+	return tAndNilToWriter(w, list, func(writer *_WriterNode, list []Node) error {
 		r, ok := list[0].(Rune)
 		if !ok {
 			return MakeError(ErrExpectedCharacter, list[0])
@@ -71,7 +70,7 @@ func funFormatChar(_ context.Context, w *World, list []Node) (Node, error) {
 }
 
 func funFormatInteger(_ context.Context, w *World, _args []Node) (Node, error) {
-	return tAndNilToWriter(w, _args, func(writer runeWriter, args []Node) error {
+	return tAndNilToWriter(w, _args, func(writer *_WriterNode, args []Node) error {
 		radix, ok := args[1].(Integer)
 		if !ok {
 			return MakeError(ErrExpectedNumber, args[1])
@@ -109,7 +108,7 @@ func printFloat(w runeWriter, value Node, mark byte, args ...int) error {
 }
 
 func funFormatFloat(_ context.Context, w *World, args []Node) (Node, error) {
-	return tAndNilToWriter(w, args, func(_writer runeWriter, args []Node) error {
+	return tAndNilToWriter(w, args, func(_writer *_WriterNode, args []Node) error {
 		return printFloat(_writer, args[0], 'f')
 	})
 }
@@ -121,7 +120,7 @@ func printSpaces(n int, w io.Writer) {
 	}
 }
 
-func formatSub(w runeWriter, argv []Node) error {
+func formatSub(w *_WriterNode, argv []Node) error {
 	format, ok := argv[0].(String)
 	if !ok {
 		return MakeError(ErrExpectedString, argv[0])
@@ -208,7 +207,23 @@ func formatSub(w runeWriter, argv []Node) error {
 			}
 		}
 
-		if c == '%' || c == '&' {
+		if c == '&' {
+			n := 1
+			if len(parameter) >= 1 {
+				n = parameter[0]
+			}
+			if w.IsLastOutputLf() {
+				n--
+			}
+			if n <= 0 {
+				continue
+			}
+			for ; n >= 1; n-- {
+				w.Write([]byte{'\n'})
+			}
+			continue
+		}
+		if c == '%' {
 			if len(parameter) >= 1 {
 				for n := parameter[0]; n >= 1; n-- {
 					w.Write([]byte{'\n'})
@@ -218,6 +233,7 @@ func formatSub(w runeWriter, argv []Node) error {
 			}
 			continue
 		}
+
 		if len(argv) <= 0 {
 			return ErrTooFewArguments
 		}
@@ -267,31 +283,26 @@ func formatSub(w runeWriter, argv []Node) error {
 	return nil
 }
 
-func tAndNilToWriter(w *World, argv []Node, f func(runeWriter, []Node) error) (Node, error) {
+func tAndNilToWriter(w *World, argv []Node, f func(*_WriterNode, []Node) error) (Node, error) {
 	if output, ok := argv[0].(io.Writer); ok {
-		rw, ok := output.(runeWriter)
+		rw, ok := output.(*_WriterNode)
 		if !ok {
-			bw := bufio.NewWriter(output)
-			defer bw.Flush()
-			rw = bw
+			rw = &_WriterNode{_Writer: output}
 		}
 		err := f(rw, argv[1:])
 		return Null, err
 	}
 	if IsNull(argv[0]) {
 		var buffer strings.Builder
-		err := f(&buffer, argv[1:])
+		err := f(&_WriterNode{_Writer: &buffer}, argv[1:])
 		return String(buffer.String()), err
 	}
 	if True.Equals(argv[0], STRICT) {
-		rw, ok := w.shared.stdout._Writer.(runeWriter)
+		W, ok := w.shared.stdout._Writer.(*_WriterNode)
 		if !ok {
-			bw := bufio.NewWriter(w.shared.stdout._Writer)
-			defer bw.Flush()
-			rw = bw
+			W = &_WriterNode{_Writer: w.shared.stdout._Writer}
 		}
-		err := f(rw, argv[1:])
-		return Null, err
+		return Null, f(W, argv[1:])
 	}
 	return nil, MakeError(ErrExpectedWriter, argv[0])
 }

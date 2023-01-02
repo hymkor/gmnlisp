@@ -61,3 +61,7 @@
 
 ;;; test for (format-char) ;;;
 (test (format-char nil #\a) "a")
+
+(test (format nil "~&ahaha") "ahaha")
+(test (format nil "~2&ahaha") (format nil "~%ahaha"))
+(test (format nil "ahaha~&ahaha") (format nil "ahaha~%ahaha"))
