@@ -14,7 +14,19 @@ type runeWriter interface {
 	WriteRune(r rune) (int, error)
 }
 
-func printInt(w io.Writer, base, width, padding int, value Node) error {
+func printInt(w io.Writer, value Node, base int, args ...int) error {
+	width := -1
+	padding := -1
+	if argc := len(args); argc >= 3 {
+		return MakeError(ErrTooManyArguments, "printInt")
+	} else if argc == 2 {
+		width = args[0]
+		padding = args[1]
+	} else if argc == 1 {
+		width = args[0]
+		padding = ' '
+	}
+
 	var body string
 	if d, ok := value.(Integer); ok {
 		body = strconv.FormatInt(int64(d), base)
@@ -64,7 +76,7 @@ func funFormatInteger(_ context.Context, w *World, _args []Node) (Node, error) {
 		if !ok {
 			return MakeError(ErrExpectedNumber, args[1])
 		}
-		return printInt(writer, int(radix), 0, 0, args[0])
+		return printInt(writer, args[0], int(radix))
 	})
 }
 
@@ -211,13 +223,13 @@ func formatSub(w runeWriter, argv []Node) error {
 		var err error
 		switch c {
 		case 'd':
-			err = printInt(w, 10, width, padding, value)
+			err = printInt(w, value, 10, parameter...)
 		case 'x':
-			err = printInt(w, 16, width, padding, value)
+			err = printInt(w, value, 16, parameter...)
 		case 'o':
-			err = printInt(w, 8, width, padding, value)
+			err = printInt(w, value, 8, parameter...)
 		case 'b':
-			err = printInt(w, 2, width, padding, value)
+			err = printInt(w, value, 2, parameter...)
 		case 'f':
 			err = printFloat(w, 'f', width, padding, value)
 		case 'e':
