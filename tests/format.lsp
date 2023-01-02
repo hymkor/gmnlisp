@@ -10,6 +10,8 @@
 (test (format nil "~s" "ABC") "\"ABC\"")
 (test (format nil "[~5d]" 123) "[  123]")
 (test (format nil "[~5a]" "ABC") "[ABC  ]")
+(test (format nil "[~5f]" 1.3) "[  1.3]")
+(test (format nil "[~5,2f]" 1.3) "[ 1.30]")
 
 ;;; test for (format-integer)
 (test
