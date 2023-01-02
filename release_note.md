@@ -1,3 +1,5 @@
+- Support (format FD "~N%")
+
 v0.2.0
 ======
 (Dec.29, 2022)
