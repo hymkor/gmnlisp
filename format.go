@@ -150,9 +150,6 @@ func formatSub(w runeWriter, argv []Node) error {
 		if c == '~' {
 			w.Write([]byte{'~'})
 			continue
-		} else if c == '%' {
-			w.Write([]byte{'\n'})
-			continue
 		}
 		parameter := []int{}
 		for {
@@ -211,6 +208,16 @@ func formatSub(w runeWriter, argv []Node) error {
 			}
 		}
 
+		if c == '%' {
+			if len(parameter) >= 1 {
+				for n := parameter[0]; n >= 1; n-- {
+					w.Write([]byte{'\n'})
+				}
+			} else {
+				w.Write([]byte{'\n'})
+			}
+			continue
+		}
 		if len(argv) <= 0 {
 			return ErrTooFewArguments
 		}

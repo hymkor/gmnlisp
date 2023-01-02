@@ -12,6 +12,7 @@
 (test (format nil "[~5a]" "ABC") "[ABC  ]")
 (test (format nil "[~5f]" 1.3) "[  1.3]")
 (test (format nil "[~5,2f]" 1.3) "[ 1.30]")
+(test (format nil "~5%") (create-string 5 #\newline))
 
 ;;; test for (format-integer)
 (test
