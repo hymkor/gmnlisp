@@ -80,15 +80,22 @@ func funFormatInteger(_ context.Context, w *World, _args []Node) (Node, error) {
 	})
 }
 
-func printFloat(w runeWriter, mark, width, prec int, value Node) error {
-	if prec <= 0 {
-		prec = -1
+func printFloat(w runeWriter, value Node, mark byte, args ...int) error {
+	width := -1
+	prec := -1
+	if argc := len(args); argc >= 3 {
+		return MakeError(ErrTooManyArguments, "printFloat")
+	} else if argc == 2 {
+		width = args[0]
+		prec = args[1]
+	} else if argc == 1 {
+		width = args[0]
 	}
 	var body string
 	if d, ok := value.(Integer); ok {
-		body = strconv.FormatFloat(float64(d), byte(mark), prec, 64)
+		body = strconv.FormatFloat(float64(d), mark, prec, 64)
 	} else if f, ok := value.(Float); ok {
-		body = strconv.FormatFloat(float64(f), byte(mark), prec, 64)
+		body = strconv.FormatFloat(float64(f), mark, prec, 64)
 	} else {
 		return ErrNotSupportType
 	}
@@ -103,7 +110,7 @@ func printFloat(w runeWriter, mark, width, prec int, value Node) error {
 
 func funFormatFloat(_ context.Context, w *World, args []Node) (Node, error) {
 	return tAndNilToWriter(w, args, func(_writer runeWriter, args []Node) error {
-		return printFloat(_writer, 'f', 0, 0, args[0])
+		return printFloat(_writer, args[0], 'f')
 	})
 }
 
@@ -204,15 +211,6 @@ func formatSub(w runeWriter, argv []Node) error {
 			}
 		}
 
-		padding := -1
-		width := -1
-		if len(parameter) >= 1 {
-			width = parameter[0]
-			if len(parameter) >= 2 && parameter[1] == '0' {
-				padding = '0'
-			}
-		}
-
 		if len(argv) <= 0 {
 			return ErrTooFewArguments
 		}
@@ -231,23 +229,27 @@ func formatSub(w runeWriter, argv []Node) error {
 		case 'b':
 			err = printInt(w, value, 2, parameter...)
 		case 'f':
-			err = printFloat(w, 'f', width, padding, value)
+			err = printFloat(w, value, 'f', parameter...)
 		case 'e':
-			err = printFloat(w, 'e', width, padding, value)
+			err = printFloat(w, value, 'e', parameter...)
 		case 'g':
-			err = printFloat(w, 'g', width, padding, value)
+			err = printFloat(w, value, 'g', parameter...)
 		case 'a':
 			n, err := value.PrintTo(w, PRINC)
 			if err != nil {
 				return err
 			}
-			printSpaces(width-n, w)
+			if len(parameter) >= 1 {
+				printSpaces(parameter[0]-n, w)
+			}
 		case 's':
 			n, err := value.PrintTo(w, PRINT)
 			if err != nil {
 				return err
 			}
-			printSpaces(width-n, w)
+			if len(parameter) >= 1 {
+				printSpaces(parameter[0]-n, w)
+			}
 		default:
 			err = fmt.Errorf("Not support code '%c'", c)
 		}
