@@ -1,6 +1,6 @@
 {
     "version": "0.2.0",
-    "description": "gmnlisp",
+    "description": "gmnlisp - the subset of ISLisp",
     "homepage": "https://github.com/hymkor/gmnlisp",
     "license": "MIT License",
     "architecture": {
