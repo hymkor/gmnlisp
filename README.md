@@ -11,15 +11,22 @@ It is developed to embbed to the applications for customizing.
 
 ![Example image](factorial.png)
 
-Executable install
-------------------
+Install
+-------
 
-Go [Releases](https://github.com/hymkor/gmnlisp/releases) and download zip-files for your OS and CPU-architecture.
+Download the binary package from [Releases](https://github.com/hymkor/gmnlisp/releases) and extract the executable.
 
-Or, if you uses Windows and Scoop-installer, you can install with
+### for scoop-installer
 
 ```
 scoop install https://raw.githubusercontent.com/hymkor/gmnlisp/master/gmnlisp.json
+```
+
+or
+
+```
+scoop bucket add hymkor https://github.com/hymkor/scoop-bucket
+scoop install gmnlisp
 ```
 
 Examples
