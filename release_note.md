@@ -2,7 +2,7 @@
 
 v0.2.0
 ======
-(Dec.29, 2022)
+(Dec 29, 2022)
 
 - Some functions and macros are defined by embeded Lisp (embed.lsp and lsp2go.lsp)
 - Re-implement (setf) and (set-..) by (defmacro)
@@ -32,19 +32,19 @@ v0.2.0
 
 v0.1.2
 ======
- (Oct.22, 2022)
+(Oct 22, 2022)
 
 - Fix: (defmacro)'s bugs and support &rest of (defmacro) and ,@
 - Remove (macroexpand)
 
 v0.1.1
 ======
-(Oct.16, 2022)
+(Oct 16, 2022)
 
 Fix: gmnlpp: forgot replacing `\` to `\\`
 
 v0.1.0
 ======
-(Oct.15, 2022)
+(Oct 15, 2022)
 
 - The first release
