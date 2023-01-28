@@ -15,7 +15,7 @@ func getTestParameter(kwargs map[Keyword]Node) (func(context.Context, *World, No
 		}
 		return func(c context.Context, w *World, left, right Node) (bool, error) {
 			result, err := caller.Call(c, w, List(left, right))
-			return HasValue(result), err
+			return IsSome(result), err
 		}, nil
 	} else {
 		return func(_ context.Context, _ *World, left, right Node) (bool, error) {
@@ -58,7 +58,7 @@ func funMember(c context.Context, w *World, argv []Node, kwargs map[Keyword]Node
 		return nil, err
 	}
 
-	for HasValue(list) {
+	for IsSome(list) {
 		seq, ok := list.(Sequence)
 		if !ok {
 			return nil, ErrExpectedSequence

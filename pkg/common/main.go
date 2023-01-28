@@ -61,7 +61,7 @@ func cmdDefvar(ctx context.Context, w *World, list Node) (Node, error) {
 	}
 	w.DefineVariable(symbol, func() Node {
 		var value Node = Null
-		if HasValue(list) {
+		if IsSome(list) {
 			value, _, err = w.ShiftAndEvalCar(ctx, list)
 		}
 		return value
@@ -97,7 +97,7 @@ func (f KWFunction) GoString() string {
 func ListToKwargs(ctx context.Context, w *World, list Node) ([]Node, map[Keyword]Node, error) {
 	args := []Node{}
 	kwargs := map[Keyword]Node{}
-	for HasValue(list) {
+	for IsSome(list) {
 		var tmp Node
 		var err error
 

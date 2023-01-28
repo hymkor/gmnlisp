@@ -127,7 +127,7 @@ func formatSub(w *_WriterNode, argv []Node) error {
 	}
 	argv = argv[1:]
 
-	for ok && HasValue(format) {
+	for ok && IsSome(format) {
 		var c Rune
 
 		c, format, ok = format.firstRuneAndRestString()

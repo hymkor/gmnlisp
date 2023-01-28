@@ -12,7 +12,7 @@ type Sequence interface {
 }
 
 func SeqEach(list Node, f func(Node) error) error {
-	for HasValue(list) {
+	for IsSome(list) {
 		seq, ok := list.(Sequence)
 		if !ok {
 			return ErrExpectedSequence
@@ -258,7 +258,7 @@ func funMapCon(ctx context.Context, w *World, argv []Node) (Node, error) {
 
 func Reverse(list Node) (Node, error) {
 	var result Node = Null
-	for HasValue(list) {
+	for IsSome(list) {
 		var car Node
 		var err error
 
@@ -276,7 +276,7 @@ func Reverse(list Node) (Node, error) {
 
 func NReverse(list Node) (Node, error) {
 	var result Node = Null
-	for HasValue(list) {
+	for IsSome(list) {
 		cons, ok := list.(*Cons)
 		if !ok {
 			return nil, ErrExpectedCons
@@ -334,7 +334,7 @@ func funMember(c context.Context, w *World, argv []Node) (Node, error) {
 	expr := argv[0]
 	list := argv[1]
 
-	for HasValue(list) {
+	for IsSome(list) {
 		seq, ok := list.(Sequence)
 		if !ok {
 			return nil, ErrExpectedSequence

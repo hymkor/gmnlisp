@@ -78,7 +78,7 @@ func funAppend(_ context.Context, _ *World, list []Node) (Node, error) {
 		return list[0], nil
 	}
 	for _, list1 := range list[:len(list)-1] {
-		for HasValue(list1) {
+		for IsSome(list1) {
 			value, list1, err = Shift(list1)
 			if err != nil {
 				return nil, err
@@ -117,7 +117,7 @@ func funListp(_ context.Context, _ *World, argv []Node) (Node, error) {
 // funAssoc implements (assoc KEY LIST)
 
 func Assoc(key Node, list Node) (Node, error) {
-	for HasValue(list) {
+	for IsSome(list) {
 		var element Node
 		var err error
 

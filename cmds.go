@@ -62,7 +62,7 @@ func equalSub(ctx context.Context, w *World, list Node, eq func(Node, Node) bool
 	if err != nil {
 		return nil, err
 	}
-	for HasValue(rest) {
+	for IsSome(rest) {
 		var next Node
 
 		next, rest, err = w.ShiftAndEvalCar(ctx, rest)

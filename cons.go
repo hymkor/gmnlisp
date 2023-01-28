@@ -58,11 +58,11 @@ func (cons *Cons) writeToWithoutKakko(w io.Writer, m PrintMode) (int, error) {
 		siz += _siz
 	}
 
-	if HasValue(cons.Cdr) {
+	if IsSome(cons.Cdr) {
 		if cons.isTailNull() {
 			// output as ( X Y Z ...)
 
-			for p, ok := cons.Cdr.(*Cons); ok && HasValue(p); p, ok = p.Cdr.(*Cons) {
+			for p, ok := cons.Cdr.(*Cons); ok && IsSome(p); p, ok = p.Cdr.(*Cons) {
 				if lastCar != commaSymbol {
 					_siz, _ := io.WriteString(w, " ")
 					siz += _siz
@@ -85,7 +85,7 @@ func (cons *Cons) writeToWithoutKakko(w io.Writer, m PrintMode) (int, error) {
 
 func (cons *Cons) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	if cons.Car == quoteSymbol {
-		if cdr, ok := cons.Cdr.(*Cons); ok && HasValue(cdr.Car) && IsNull(cdr.Cdr) {
+		if cdr, ok := cons.Cdr.(*Cons); ok && IsSome(cdr.Car) && IsNull(cdr.Cdr) {
 			siz, _ := w.Write([]byte{'\''})
 			_siz, _ := cdr.Car.PrintTo(w, m)
 			siz += _siz
@@ -93,7 +93,7 @@ func (cons *Cons) PrintTo(w io.Writer, m PrintMode) (int, error) {
 		}
 	}
 	if cons.Car == backQuoteSymbol {
-		if cdr, ok := cons.Cdr.(*Cons); ok && HasValue(cdr.Car) && IsNull(cdr.Cdr) {
+		if cdr, ok := cons.Cdr.(*Cons); ok && IsSome(cdr.Car) && IsNull(cdr.Cdr) {
 			siz, _ := w.Write([]byte{'`'})
 			_siz, _ := cdr.Car.PrintTo(w, m)
 			siz += _siz

@@ -169,7 +169,7 @@ func (w *World) Set(name Symbol, value Node) error {
 }
 
 func cmdStandardOutput(ctx context.Context, w *World, list Node) (Node, error) {
-	if HasValue(list) {
+	if IsSome(list) {
 		return nil, ErrTooManyArguments
 	}
 	return w.shared.stdout, nil
@@ -184,7 +184,7 @@ func (w *World) SetStdout(writer io.Writer) {
 }
 
 func cmdErrorOutput(ctx context.Context, w *World, list Node) (Node, error) {
-	if HasValue(list) {
+	if IsSome(list) {
 		return nil, ErrTooManyArguments
 	}
 	return w.shared.errout, nil
@@ -431,7 +431,7 @@ func (w *World) inject(ctx context.Context, list Node, f func(left, right Node) 
 	if err != nil {
 		return nil, err
 	}
-	for HasValue(list) {
+	for IsSome(list) {
 		var next Node
 		var err error
 

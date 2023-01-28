@@ -96,7 +96,7 @@ func cmdOpen(ctx context.Context, w *World, n Node) (Node, error) {
 	}
 
 	modeNode, n, err := w.ShiftAndEvalCar(ctx, n)
-	if HasValue(n) {
+	if IsSome(n) {
 		return nil, ErrTooManyArguments
 	}
 	modeString, ok := modeNode.(String)
@@ -158,7 +158,7 @@ func cmdForeach(ctx context.Context, w *World, args Node) (Node, error) {
 	}
 
 	var last Node
-	for HasValue(list) {
+	for IsSome(list) {
 		var value Node
 
 		value, list, err = Shift(list)

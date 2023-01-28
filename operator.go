@@ -177,7 +177,7 @@ func cmdOr(ctx context.Context, w *World, param Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		if HasValue(value) {
+		if IsSome(value) {
 			return value, nil
 		}
 		if IsNull(param) {

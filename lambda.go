@@ -34,7 +34,7 @@ func getParameterList(node Node) (*_Parameters, error) {
 	}
 	params := []Symbol{}
 	rest := nulSymbol
-	for HasValue(list) {
+	for IsSome(list) {
 		var nameNode Node
 
 		nameNode, list, err = Shift(list)
@@ -144,12 +144,12 @@ func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
 		fmt.Fprintln(os.Stderr, ")]")
 	}
 
-	if HasValue(n) && L.rest == nulSymbol {
+	if IsSome(n) && L.rest == nulSymbol {
 		return nil, fmt.Errorf("%s: %w", L.name, ErrTooManyArguments)
 	}
 	if L.rest != nulSymbol {
 		var values Node = nil
-		for HasValue(n) {
+		for IsSome(n) {
 			var value Node
 			var err error
 
@@ -297,7 +297,7 @@ func cmdTrace(_ context.Context, _ *World, list Node) (Node, error) {
 	if len(trace) > 0 {
 		trace = map[Symbol]int{}
 	}
-	for HasValue(list) {
+	for IsSome(list) {
 		var symbolNode Node
 		var err error
 
@@ -354,7 +354,7 @@ func (f *Function) Call(ctx context.Context, w *World, list Node) (Node, error) 
 	}
 
 	args := []Node{}
-	for HasValue(list) {
+	for IsSome(list) {
 		var tmp Node
 		var err error
 

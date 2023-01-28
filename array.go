@@ -124,7 +124,7 @@ func funCreateArray(ctx context.Context, w *World, args []Node) (Node, error) {
 
 	_dim := make([]int, 0, 2)
 	size := 1
-	for HasValue(dim) {
+	for IsSome(dim) {
 		var _n Node
 		var err error
 

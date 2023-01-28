@@ -94,7 +94,7 @@ func (m *_Macro) expand(ctx context.Context, w *World, n Node) (Node, error) {
 	}
 	lexical[m.rest] = n
 	joinedForm := _JoinedForm{}
-	for cons, ok := n.(*Cons); ok && HasValue(cons); cons, ok = cons.Cdr.(*Cons) {
+	for cons, ok := n.(*Cons); ok && IsSome(cons); cons, ok = cons.Cdr.(*Cons) {
 		joinedForm = append(joinedForm, cons.Car)
 	}
 	lexical[NewSymbol("@"+m.rest.String())] = joinedForm

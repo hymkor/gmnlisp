@@ -20,7 +20,7 @@ func getWriterAndString(ctx context.Context, w *World, n Node) (io.Writer, Strin
 		return nil, emptyString, fmt.Errorf("%w: %#v", ErrExpectedString, _s)
 	}
 	var writer io.Writer
-	if HasValue(n) {
+	if IsSome(n) {
 		_writer, n, err := w.ShiftAndEvalCar(ctx, n)
 		if err != nil {
 			return nil, emptyString, err
@@ -29,7 +29,7 @@ func getWriterAndString(ctx context.Context, w *World, n Node) (io.Writer, Strin
 		if !ok {
 			return nil, emptyString, fmt.Errorf("Expected Writer: %#v", _writer)
 		}
-		if HasValue(n) {
+		if IsSome(n) {
 			return nil, emptyString, ErrTooManyArguments
 		}
 	} else {

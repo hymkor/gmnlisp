@@ -64,12 +64,18 @@ func IsNull(node Node) bool {
 	return ok
 }
 
-func HasValue(node Node) bool {
+// IsSome returns whether `node` has a value or not
+func IsSome(node Node) bool {
 	if node == nil {
 		return false
 	}
 	_, ok := node.(_NullType)
 	return !ok
+}
+
+// Deprecated: use IsSome
+func HasValue(node Node) bool {
+	return IsSome(node)
 }
 
 func List(nodes ...Node) Node {
@@ -100,7 +106,7 @@ func ListToArray(list Node, slice []Node) error {
 			return err
 		}
 	}
-	if HasValue(list) {
+	if IsSome(list) {
 		return ErrTooManyArguments
 	}
 	return nil

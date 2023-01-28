@@ -7,7 +7,7 @@ import (
 func cmdSetq(ctx context.Context, w *World, params Node) (Node, error) {
 	var value Node = Null
 
-	for HasValue(params) {
+	for IsSome(params) {
 		var nameNode Node
 		var err error
 
@@ -37,7 +37,7 @@ func cmdPSetq(ctx context.Context, w *World, params Node) (Node, error) {
 	}
 	assignList := []*assignT{}
 
-	for HasValue(params) {
+	for IsSome(params) {
 		var nameNode Node
 		var err error
 		var value Node
@@ -65,7 +65,7 @@ func cmdPSetq(ctx context.Context, w *World, params Node) (Node, error) {
 }
 
 func letValuesToVars(ctx context.Context, w *World, list Node, lexical map[Symbol]Node) error {
-	for HasValue(list) {
+	for IsSome(list) {
 		var item Node
 		var err error
 
@@ -144,7 +144,7 @@ func cmdDefglobal(ctx context.Context, w *World, list Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	if HasValue(list) {
+	if IsSome(list) {
 		return nil, ErrTooManyArguments
 	}
 	w.DefineGlobal(symbol, value)
@@ -168,7 +168,7 @@ func cmdDefDynamic(ctx context.Context, w *World, list Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	if HasValue(list) {
+	if IsSome(list) {
 		return nil, ErrTooManyArguments
 	}
 
@@ -214,7 +214,7 @@ func cmdDynamicLet(ctx context.Context, w *World, list Node) (Node, error) {
 		}
 	}()
 
-	for HasValue(vars) {
+	for IsSome(vars) {
 		var varAndValue Node
 		varAndValue, vars, err = Shift(vars)
 		if err != nil {
@@ -243,7 +243,7 @@ func cmdDynamicLet(ctx context.Context, w *World, list Node) (Node, error) {
 			if err != nil {
 				return nil, err
 			}
-			if HasValue(varAndValue) {
+			if IsSome(varAndValue) {
 				return nil, ErrTooManyArguments
 			}
 			if orig, ok := w.shared.dynamic.Get(symbol); ok {

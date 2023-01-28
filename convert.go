@@ -26,7 +26,7 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	if HasValue(list) {
+	if IsSome(list) {
 		return nil, ErrTooManyArguments
 	}
 	switch val := source.(type) {
@@ -96,7 +96,7 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 			return val, nil
 		case classVector:
 			var buffer VectorBuilder
-			for HasValue(val) {
+			for IsSome(val) {
 				buffer.Add(val.Car)
 				var ok bool
 				val, ok = val.Cdr.(*Cons)

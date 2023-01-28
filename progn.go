@@ -43,7 +43,7 @@ func cmdReturnFrom(ctx context.Context, w *World, n Node) (Node, error) {
 
 func Progn(ctx context.Context, w *World, n Node) (value Node, err error) {
 	value = Null
-	for HasValue(n) {
+	for IsSome(n) {
 		value, n, err = w.ShiftAndEvalCar(ctx, n)
 		if err != nil {
 			return nil, err
@@ -64,7 +64,7 @@ func cmdBlock(ctx context.Context, w *World, node Node) (Node, error) {
 	}
 	var nameSymbol Symbol
 
-	if HasValue(nameNode) {
+	if IsSome(nameNode) {
 		var ok bool
 		nameSymbol, ok = nameNode.(Symbol)
 		if !ok {
@@ -111,7 +111,7 @@ func funThrow(ctx context.Context, w *World, list []Node) (Node, error) {
 }
 
 func cmdCond(ctx context.Context, w *World, list Node) (Node, error) {
-	for HasValue(list) {
+	for IsSome(list) {
 		var condAndAct Node
 		var err error
 
@@ -123,7 +123,7 @@ func cmdCond(ctx context.Context, w *World, list Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		if HasValue(cond) {
+		if IsSome(cond) {
 			return Progn(ctx, w, act)
 		}
 	}
@@ -138,7 +138,7 @@ func cmdCase(ctx context.Context, w *World, list Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	for HasValue(list) {
+	for IsSome(list) {
 		var caseAndAct Node
 		var err error
 
@@ -152,7 +152,7 @@ func cmdCase(ctx context.Context, w *World, list Node) (Node, error) {
 		}
 		if cons, ok := caseValue.(*Cons); ok {
 			var list Node = cons
-			for HasValue(list) {
+			for IsSome(list) {
 				var _caseValue Node
 				_caseValue, list, err = w.ShiftAndEvalCar(ctx, list)
 				if err != nil {
@@ -179,18 +179,18 @@ func cmdIf(ctx context.Context, w *World, params Node) (Node, error) {
 		return nil, err
 	}
 	var elseClause Node = Null
-	if HasValue(params) {
+	if IsSome(params) {
 		elseClause, params, err = Shift(params)
 		if err != nil {
 			return nil, err
 		}
-		if HasValue(params) {
+		if IsSome(params) {
 			return nil, ErrTooManyArguments
 		}
 	}
-	if HasValue(cond) {
+	if IsSome(cond) {
 		return thenClause.Eval(ctx, w)
-	} else if HasValue(elseClause) {
+	} else if IsSome(elseClause) {
 		return elseClause.Eval(ctx, w)
 	} else {
 		return Null, nil
@@ -243,7 +243,7 @@ func handlerCaseSub(ctx context.Context, w *World, caseBlock Node, c Node) (Node
 	if err != nil {
 		return nil, err
 	}
-	if HasValue(paramList) {
+	if IsSome(paramList) {
 		return nil, ErrTooManyArguments
 	}
 	symbol, ok := conditionVarName.(Symbol)
@@ -334,7 +334,7 @@ func cmdTagBody(ctx context.Context, w *World, args Node) (Node, error) {
 	tag := map[Symbol]Node{}
 
 mainloop:
-	for HasValue(args) {
+	for IsSome(args) {
 		var current Node
 		var err error
 
@@ -358,7 +358,7 @@ mainloop:
 			args = next
 			continue
 		}
-		for HasValue(args) {
+		for IsSome(args) {
 			current, args, err = Shift(args)
 			if err != nil {
 				return nil, err

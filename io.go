@@ -40,7 +40,7 @@ func newStreamInput(w *World, argv []Node) (*_StreamInput, error) {
 		this.eofValue = argv[2]
 		fallthrough
 	case 2:
-		this.eofFlag = HasValue(argv[1])
+		this.eofFlag = IsSome(argv[1])
 		fallthrough
 	case 1:
 		var ok bool
