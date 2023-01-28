@@ -212,7 +212,7 @@ func cmdWhile(ctx context.Context, w *World, n Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		if IsNull(cont) {
+		if IsNone(cont) {
 			return last, nil
 		}
 		last, err = Progn(ctx, w, statements)
@@ -235,7 +235,7 @@ func handlerCaseSub(ctx context.Context, w *World, caseBlock Node, c Node) (Node
 	if err != nil {
 		return nil, err
 	}
-	if IsNull(paramList) { // (error () ... )
+	if IsNone(paramList) { // (error () ... )
 		return Progn(ctx, w, caseBlock)
 	}
 	// (error (c) ... )

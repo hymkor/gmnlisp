@@ -56,12 +56,18 @@ type Node interface {
 	GoString() string
 }
 
-func IsNull(node Node) bool {
+// IsNone returns whether `node` does not have a value or not
+func IsNone(node Node) bool {
 	if node == nil {
 		return true
 	}
 	_, ok := node.(_NullType)
 	return ok
+}
+
+// Deprecated: use IsNone
+func IsNull(node Node) bool {
+	return IsNone(node)
 }
 
 // IsSome returns whether `node` has a value or not

@@ -127,7 +127,7 @@ func MapCar(ctx context.Context, w *World, funcNode Node, sourceSet []Node, stor
 	for {
 		paramSet := make([]Node, len(listSet))
 		for i := 0; i < len(listSet); i++ {
-			if IsNull(listSet[i]) {
+			if IsNone(listSet[i]) {
 				return nil
 			}
 			seq, ok := listSet[i].(Sequence)
@@ -209,7 +209,7 @@ func mapList(ctx context.Context, w *World, funcNode Node, sourceSet []Node, sto
 		store(result)
 
 		for i := 0; i < len(listSet); i++ {
-			if IsNull(listSet[i]) {
+			if IsNone(listSet[i]) {
 				return nil
 			}
 			seq, ok := listSet[i].(Sequence)
@@ -217,7 +217,7 @@ func mapList(ctx context.Context, w *World, funcNode Node, sourceSet []Node, sto
 				return ErrNotSupportType
 			}
 			_, listSet[i], ok = seq.FirstAndRest()
-			if !ok || IsNull(listSet[i]) {
+			if !ok || IsNone(listSet[i]) {
 				return nil
 			}
 		}

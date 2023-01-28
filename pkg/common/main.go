@@ -32,7 +32,7 @@ func init() {
 var defparameter Callable
 
 func cmdDefparameter(ctx context.Context, w *World, list Node) (Node, error) {
-	if IsNull(defparameter) {
+	if IsNone(defparameter) {
 		_defparameter, err := w.Get(NewSymbol("defglobal"))
 		if err != nil {
 			return nil, err

@@ -49,7 +49,7 @@ func printInt(w io.Writer, value Node, base int, args ...int) error {
 func funFormatObject(_ context.Context, w *World, list []Node) (Node, error) {
 	return tAndNilToWriter(w, list, func(writer *_WriterNode, list []Node) error {
 		var err error
-		if IsNull(list[1]) { // ~a (AS-IS)
+		if IsNone(list[1]) { // ~a (AS-IS)
 			_, err = list[0].PrintTo(writer, PRINC)
 		} else { // ~s (S expression)
 			_, err = list[0].PrintTo(writer, PRINT)
@@ -138,7 +138,7 @@ func formatSub(w *_WriterNode, argv []Node) error {
 			c.PrintTo(w, PRINC)
 			continue
 		}
-		if IsNull(format) {
+		if IsNone(format) {
 			w.WriteRune('~')
 			break
 		}
@@ -154,7 +154,7 @@ func formatSub(w *_WriterNode, argv []Node) error {
 		for {
 			if decimal := strings.IndexByte("0123456789", byte(c)); decimal >= 0 {
 				for {
-					if IsNull(format) {
+					if IsNone(format) {
 						return ErrInvalidFormat
 					}
 					c, format, ok = format.firstRuneAndRestString()
@@ -169,7 +169,7 @@ func formatSub(w *_WriterNode, argv []Node) error {
 					decimal = decimal*10 + d
 				}
 			} else if c == '\'' {
-				if IsNull(format) {
+				if IsNone(format) {
 					return ErrInvalidFormat
 				}
 				c, format, ok = format.firstRuneAndRestString()
@@ -177,7 +177,7 @@ func formatSub(w *_WriterNode, argv []Node) error {
 					return ErrInvalidFormat
 				}
 				parameter = append(parameter, int(c))
-				if IsNull(format) {
+				if IsNone(format) {
 					return ErrInvalidFormat
 				}
 				c, format, ok = format.firstRuneAndRestString()
@@ -198,7 +198,7 @@ func formatSub(w *_WriterNode, argv []Node) error {
 			if c != ',' {
 				break
 			}
-			if IsNull(format) {
+			if IsNone(format) {
 				return ErrInvalidFormat
 			}
 			c, format, ok = format.firstRuneAndRestString()
@@ -292,7 +292,7 @@ func tAndNilToWriter(w *World, argv []Node, f func(*_WriterNode, []Node) error) 
 		err := f(rw, argv[1:])
 		return Null, err
 	}
-	if IsNull(argv[0]) {
+	if IsNone(argv[0]) {
 		var buffer strings.Builder
 		err := f(&_WriterNode{_Writer: &buffer}, argv[1:])
 		return String(buffer.String()), err

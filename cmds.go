@@ -96,7 +96,7 @@ func cmdEqual(ctx context.Context, w *World, list Node) (Node, error) {
 }
 
 func funNot(_ context.Context, w *World, argv []Node) (Node, error) {
-	if IsNull(argv[0]) {
+	if IsNone(argv[0]) {
 		return True, nil
 	}
 	return Null, nil
@@ -173,7 +173,7 @@ func funEvenp(_ context.Context, _ *World, args []Node) (Node, error) {
 }
 
 func funNullp(_ context.Context, _ *World, args []Node) (Node, error) {
-	if IsNull(args[0]) {
+	if IsNone(args[0]) {
 		return True, nil
 	}
 	return Null, nil

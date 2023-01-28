@@ -205,7 +205,7 @@ func funTypep(_ context.Context, _ *World, args []Node) (Node, error) {
 	case symbolForCons:
 		_, ok = args[0].(*Cons)
 	case symbolForList:
-		ok = IsNull(args[0])
+		ok = IsNone(args[0])
 		if !ok {
 			_, ok = args[0].(*Cons)
 		}

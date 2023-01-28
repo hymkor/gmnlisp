@@ -242,7 +242,7 @@ func cmdApply(ctx context.Context, w *World, list Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		if IsNull(list) {
+		if IsNone(list) {
 			// value is the last argument = array
 			value, err = value.Eval(ctx, w)
 			if err != nil {

@@ -36,14 +36,14 @@ func funList(_ context.Context, _ *World, list []Node) (Node, error) {
 
 func lastOfList(node Node) (*Cons, error) {
 	for {
-		if IsNull(node) {
+		if IsNone(node) {
 			return nil, nil
 		}
 		cons, ok := node.(*Cons)
 		if !ok {
 			return nil, MakeError(ErrExpectedCons, node)
 		}
-		if IsNull(cons.Cdr) {
+		if IsNone(cons.Cdr) {
 			return cons, nil
 		}
 		node = cons.Cdr
@@ -52,7 +52,7 @@ func lastOfList(node Node) (*Cons, error) {
 
 // funLast implements (last LIST)
 func funLast(_ context.Context, _ *World, list []Node) (Node, error) {
-	if IsNull(list[0]) {
+	if IsNone(list[0]) {
 		return Null, nil
 	}
 	tail, err := lastOfList(list[0])
@@ -105,7 +105,7 @@ func funCons(_ context.Context, _ *World, argv []Node) (Node, error) {
 
 // funLispp implements (listp VALUE)
 func funListp(_ context.Context, _ *World, argv []Node) (Node, error) {
-	if IsNull(argv[0]) {
+	if IsNone(argv[0]) {
 		return True, nil
 	}
 	if _, ok := argv[0].(*Cons); ok {

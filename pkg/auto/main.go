@@ -91,7 +91,7 @@ func cmdOpen(ctx context.Context, w *World, n Node) (Node, error) {
 		return nil, fmt.Errorf("%w: %#v", ErrExpectedString, fnameString)
 	}
 	fname := fnameString.String()
-	if IsNull(n) {
+	if IsNone(n) {
 		return openAsRead(fname)
 	}
 

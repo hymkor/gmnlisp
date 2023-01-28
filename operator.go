@@ -159,10 +159,10 @@ func cmdAnd(ctx context.Context, w *World, param Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		if IsNull(value) {
+		if IsNone(value) {
 			return Null, nil
 		}
-		if IsNull(param) {
+		if IsNone(param) {
 			return value, nil
 		}
 	}
@@ -180,7 +180,7 @@ func cmdOr(ctx context.Context, w *World, param Node) (Node, error) {
 		if IsSome(value) {
 			return value, nil
 		}
-		if IsNull(param) {
+		if IsNone(param) {
 			return Null, nil
 		}
 	}
