@@ -1,4 +1,6 @@
 - Support (format FD "~N%")
+- Rename HasValue to IsSome
+- Rename IsNull to IsNone
 
 v0.2.0
 ======
