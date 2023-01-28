@@ -205,7 +205,7 @@ func cmdWhile(ctx context.Context, w *World, n Node) (Node, error) {
 	}
 	var last Node = Null
 	for {
-		if err := CheckContext(ctx); err != nil {
+		if err := checkContext(ctx); err != nil {
 			return nil, err
 		}
 		cont, err := cond.Eval(ctx, w)

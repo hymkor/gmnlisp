@@ -107,7 +107,7 @@ func (L *_Lambda) PrintTo(w io.Writer, m PrintMode) (int, error) {
 var trace = map[Symbol]int{}
 
 func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
-	if err := CheckContext(ctx); err != nil {
+	if err := checkContext(ctx); err != nil {
 		return nil, fmt.Errorf("%#v: %w", L.name, err)
 	}
 	lexical := Variables{}
@@ -278,7 +278,7 @@ func (f SpecialF) Equals(n Node, m EqlMode) bool {
 }
 
 func (f SpecialF) Call(ctx context.Context, w *World, n Node) (Node, error) {
-	if err := CheckContext(ctx); err != nil {
+	if err := checkContext(ctx); err != nil {
 		return nil, err
 	}
 	return f(ctx, w, n)
@@ -336,7 +336,7 @@ func (f *Function) Equals(n Node, m EqlMode) bool {
 const maxParameterOfEasyFunc = 8
 
 func (f *Function) Call(ctx context.Context, w *World, list Node) (Node, error) {
-	if err := CheckContext(ctx); err != nil {
+	if err := checkContext(ctx); err != nil {
 		return nil, err
 	}
 	max := math.MaxInt

@@ -119,8 +119,12 @@ func ListToKwargs(ctx context.Context, w *World, list Node) ([]Node, map[Keyword
 }
 
 func (f *KWFunction) Call(ctx context.Context, w *World, list Node) (Node, error) {
-	if err := CheckContext(ctx); err != nil {
-		return nil, err
+	if ctx != nil {
+		select {
+		case <-ctx.Done():
+			return nil, ctx.Err()
+		default:
+		}
 	}
 	args, kwargs, err := ListToKwargs(ctx, w, list)
 	if err != nil {

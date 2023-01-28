@@ -118,7 +118,7 @@ func ListToArray(list Node, slice []Node) error {
 	return nil
 }
 
-func CheckContext(ctx context.Context) error {
+func checkContext(ctx context.Context) error {
 	select {
 	case <-ctx.Done():
 		return ctx.Err()
