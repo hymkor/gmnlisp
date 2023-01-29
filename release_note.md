@@ -1,3 +1,7 @@
+V0.2.1
+======
+Jan 29, 2023
+
 - Support (format FD "~N%")
 - Rename HasValue to IsSome
 - Rename IsNull to IsNone
