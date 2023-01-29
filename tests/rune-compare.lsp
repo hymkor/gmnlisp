@@ -1,0 +1,7 @@
+;;; test for (rune)
+(test (char< #\a #\b) t)
+(test (char> #\a #\b) nil)
+(test (char<= #\a #\b) t)
+(test (char>= #\a #\b) nil)
+(test (char= #\a #\b) nil)
+(test (char/= #\a #\b) t)

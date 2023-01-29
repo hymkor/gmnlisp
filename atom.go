@@ -151,6 +151,41 @@ func (r Rune) Sub(n Node) (Node, error) {
 	return nil, MakeError(ErrNotSupportType, n)
 }
 
+func compareRune(argv []Node, f func(rune) bool) (Node, error) {
+	left, ok := argv[0].(Rune)
+	if !ok {
+		return nil, MakeError(ErrExpectedString, argv[0])
+	}
+	right, ok := argv[1].(Rune)
+	if !ok {
+		return nil, MakeError(ErrExpectedString, argv[1])
+	}
+	cmp := rune(left) - rune(right)
+	if f(cmp) {
+		return True, nil
+	}
+	return Null, nil
+}
+
+func funRuneLt(ctx context.Context, w *World, argv []Node) (Node, error) {
+	return compareRune(argv, func(cmp rune) bool { return cmp < 0 })
+}
+func funRuneLe(ctx context.Context, w *World, argv []Node) (Node, error) {
+	return compareRune(argv, func(cmp rune) bool { return cmp <= 0 })
+}
+func funRuneEq(ctx context.Context, w *World, argv []Node) (Node, error) {
+	return compareRune(argv, func(cmp rune) bool { return cmp == 0 })
+}
+func funRuneGt(ctx context.Context, w *World, argv []Node) (Node, error) {
+	return compareRune(argv, func(cmp rune) bool { return cmp > 0 })
+}
+func funRuneGe(ctx context.Context, w *World, argv []Node) (Node, error) {
+	return compareRune(argv, func(cmp rune) bool { return cmp >= 0 })
+}
+func funRuneNe(ctx context.Context, w *World, argv []Node) (Node, error) {
+	return compareRune(argv, func(cmp rune) bool { return cmp != 0 })
+}
+
 type Keyword string
 
 func (k Keyword) PrintTo(w io.Writer, m PrintMode) (int, error) {
