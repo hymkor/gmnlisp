@@ -2,9 +2,95 @@ package gmnlisp
 
 import (
 	"context"
+	"fmt"
+	"io"
+	"strconv"
 	"strings"
 	"unicode/utf8"
 )
+
+type String string
+
+func (s String) String() string {
+	return string(s)
+}
+
+func (s String) GoString() string {
+	return strconv.Quote(string(s))
+}
+
+func (s String) PrintTo(w io.Writer, m PrintMode) (int, error) {
+	if m == PRINC {
+		return io.WriteString(w, string(s))
+	} else {
+		return fmt.Fprintf(w, "%#v", string(s))
+	}
+}
+
+func (s String) Eval(context.Context, *World) (Node, error) {
+	return s, nil
+}
+
+func (s String) Equals(n Node, m EqlMode) bool {
+	ns, ok := n.(String)
+	if !ok {
+		_ns, ok := n.(String)
+		if !ok {
+			return false
+		}
+		if m == STRICT {
+			return false
+		}
+		ns = String(string(_ns))
+	}
+	if m == EQUALP {
+		return strings.EqualFold(string(s), string(ns))
+	}
+	return string(s) == string(ns)
+}
+
+func (s String) firstRuneAndRestString() (Rune, String, bool) {
+	if len(s) <= 0 {
+		return Rune(utf8.RuneError), "", false
+	}
+	r, siz := utf8.DecodeRuneInString(string(s))
+	return Rune(r), String(s[siz:]), true
+}
+
+func (s String) EachRune(f func(Rune) error) error {
+	for _, r := range s {
+		if err := f(Rune(r)); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (s String) FirstAndRest() (Node, Node, bool) {
+	if len(s) <= 0 {
+		return nil, Null, false
+	}
+	r, siz := utf8.DecodeRuneInString(string(s))
+	return Rune(r), String(s[siz:]), true
+}
+
+func (s String) Add(n Node) (Node, error) {
+	if value, ok := n.(String); ok {
+		news := make([]byte, 0, len(s)+len(value)+1)
+		news = append(news, s...)
+		news = append(news, value...)
+		return String(news), nil
+	}
+	return nil, MakeError(ErrNotSupportType, n)
+}
+
+func (s String) LessThan(n Node) (bool, error) {
+	ns, ok := n.(String)
+	if !ok {
+		return false, MakeError(ErrNotSupportType, n)
+	}
+	return string(s) < string(ns), nil
+}
 
 func funStringAppend(ctx context.Context, w *World, list []Node) (Node, error) {
 	if len(list) <= 0 {
