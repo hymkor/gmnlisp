@@ -1,0 +1,7 @@
+;;; test for (string<=>)
+(test (string< "a" "b") t)
+(test (string> "a" "b") nil)
+(test (string<= "a" "b") t)
+(test (string>= "a" "b") nil)
+(test (string= "a" "b") nil)
+(test (string/= "a" "b") t)

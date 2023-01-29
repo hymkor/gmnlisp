@@ -182,14 +182,6 @@
   (clrhash h1)
   (test (hash-table-count h1) 0))
 
-;;; test for (string<=>)
-(test (string< "a" "b") t)
-(test (string> "a" "b") nil)
-(test (string<= "a" "b") t)
-(test (string>= "a" "b") nil)
-(test (string= "a" "b") nil)
-(test (string/= "a" "b") t)
-
 ;;; test for (string-index)
 (test (string-index "foo" "foobar") 0)
 (test (string-index "bar" "foobar") 3)
