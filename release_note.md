@@ -1,6 +1,8 @@
 - Support (format FD "~N%")
 - Rename HasValue to IsSome
 - Rename IsNull to IsNone
+- Implement
+    - (char&lt;) (char&gt;) (char=) (char&lt;=) (char&gt;=) (char/=)
 
 v0.2.0
 ======

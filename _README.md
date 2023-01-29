@@ -217,7 +217,13 @@ Gmnlisp's functions are subset of ISLisp.
 - (string&lt;= STRING1 STRING2)
 - (string-index SUBSTRING STRING [START])
 - (string-append STRING...)
-- (create-String I [INITIAL-CHARACTER])
+- (create-string I [INITIAL-CHARACTER])
+- (char= CHAR1 CHAR2)
+- (char/= CHAR1 CHAR2)
+- (char&lt; CHAR1 CHAR2)
+- (char&gt; CHAR1 CHAR2)
+- (char&gt;= CHAR1 CHAR2)
+- (char&lt;= CHAR1 CHAR2)
 
 #### test
 
