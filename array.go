@@ -255,3 +255,20 @@ func funVector(_ context.Context, w *World, args []Node) (Node, error) {
 		dim:  []int{len(args)},
 	}, nil
 }
+
+func funBasicArray(_ context.Context, w *World, args []Node) (Node, error) {
+	if _, ok := args[0].(*Array); ok {
+		return True, nil
+	}
+	if _, ok := args[0].(String); ok {
+		return True, nil
+	}
+	return Null, nil
+}
+
+func funGeneralArray(_ context.Context, w *World, args []Node) (Node, error) {
+	if array, ok := args[0].(*Array); ok && len(array.dim) >= 2 {
+		return True, nil
+	}
+	return Null, nil
+}

@@ -50,6 +50,9 @@ func (L *ListBuilder) Add(n Node) error {
 }
 
 func (L *ListBuilder) Sequence() Node {
+	if L.last == nil {
+		return Null
+	}
 	return L.first.Cdr
 }
 

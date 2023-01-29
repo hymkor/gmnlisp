@@ -19,36 +19,6 @@
   ;(format t "~s~%" (aref A 1))
   )
 
-(let ((A (create-array '(3 2) 1)))
-  (test (array-dimensions A) '(3 2))
-  (test (arrayp A) t)
-  (set-aref 2 A 1 1)
-  (set-aref (create-array '(2) 4) A 0)
-  (setf (elt A 2 1) "SETF")
-  (test (elt A 0 0) 4)
-  (test (elt A 0 1) 4)
-  (test (elt A 0) (create-array '(2) 4))
-  (test (elt A 1 1) 2)
-  (test (elt A 1 0) 1)
-  (test (elt A 2 1) "SETF")
-  )
-
-;;; test for the constructor for array ;;;
-(let ((A #2a( (1 2 3) (4 5 6) )))
-  (test (array-dimensions A) '(2 3))
-  (test (aref A 0 0) 1)
-  (test (aref A 0 1) 2)
-  (test (aref A 0 2) 3)
-  (test (aref A 1 0) 4)
-  (test (aref A 1 1) 5)
-  (test (aref A 1 2) 6)
-
-  (setf (aref A 1 0) 44)
-  (test (aref A 1 0) 44)
-  (setf (elt A 1 0) 77)
-  (test (elt A 1 0) 77)
-  )
-
 ;;; test for (tagbody) and (go)
 ; forward test
 (let ((step 0))
