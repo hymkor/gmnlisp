@@ -3,6 +3,7 @@
 - Rename IsNull to IsNone
 - Implement
     - (char&lt;) (char&gt;) (char=) (char&lt;=) (char&gt;=) (char/=)
+    - (characterp)
 
 v0.2.0
 ======
