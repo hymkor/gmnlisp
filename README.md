@@ -263,6 +263,7 @@ Gmnlisp's functions are subset of ISLisp.
 - (char&gt;= CHAR1 CHAR2)
 - (char&lt;= CHAR1 CHAR2)
 - (characterp CHARACTER)
+- (char-index CHAR STRING [START-POSITION])
 
 #### test
 

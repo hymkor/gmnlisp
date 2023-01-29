@@ -5,6 +5,7 @@
     - (char&lt;) (char&gt;) (char=) (char&lt;=) (char&gt;=) (char/=)
     - (characterp)
     - (create-list)
+    - (char-index)
 
 v0.2.0
 ======
