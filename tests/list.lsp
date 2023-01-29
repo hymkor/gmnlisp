@@ -42,3 +42,6 @@
 
 (test (append '() '(1)) '(1))
 
+;;; (create-list)
+(test (create-list 3 17) '(17 17 17))
+(test (create-list 2 #\a) '(#\a #\a))

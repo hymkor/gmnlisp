@@ -159,3 +159,18 @@ func funSetCdr(_ context.Context, _ *World, argv []Node) (Node, error) {
 	cons.Cdr = argv[0]
 	return cons, nil
 }
+
+func funCreateList(_ context.Context, _ *World, argv []Node) (Node, error) {
+	n, ok := argv[0].(Integer)
+	if !ok {
+		return nil, MakeError(ErrExpectedNumber, argv[0])
+	}
+	result := Null
+	for ; n > 0; n-- {
+		result = &Cons{
+			Car: argv[1],
+			Cdr: result,
+		}
+	}
+	return result, nil
+}
