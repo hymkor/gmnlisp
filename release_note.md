@@ -6,6 +6,8 @@
     - (characterp)
     - (create-list)
     - (char-index)
+    - (basic-array-p) (basic-array\*-p) (general-array\*-p)
+- Remove (arrayp)
 - Fix: the problem (equal (list t nil nil) '(t nil nil)) was nil
     - `t` was the symbol containing True. `t` is now the reserved word meaning True.
 

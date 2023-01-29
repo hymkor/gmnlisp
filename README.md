@@ -207,7 +207,9 @@ Gmnlisp's functions are subset of ISLisp.
 - (aref ARRAY INDEX...)
 - (setf (aref ARAY INDEX) NEWVALUE)
 - (set-aref NEWVALUE ARRAY INDEX...)
-- (arrayp OBJ)
+- (basic-array-p OBJ)
+- (basic-array\*-p OBJ)
+- (general-array\*-p OBJ)
 
 #### Variables
 
