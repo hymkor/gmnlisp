@@ -240,6 +240,7 @@ var autoLoad = Variables{
 	NewSymbol("catch"):                       SpecialF(cmdCatch),
 	NewSymbol("cdr"):                         &Function{C: 1, F: funGetCdr},
 	NewSymbol("ceiling"):                     &Function{C: 1, F: funCeiling},
+	NewSymbol("char-index"):                  &Function{Min: 2, Max: 3, F: funRuneIndex},
 	NewSymbol("char/="):                      &Function{C: 2, F: funRuneNe},
 	NewSymbol("char<"):                       &Function{C: 2, F: funRuneLt},
 	NewSymbol("char<="):                      &Function{C: 2, F: funRuneLe},

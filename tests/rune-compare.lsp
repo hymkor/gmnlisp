@@ -9,3 +9,8 @@
 (test (characterp #\a) t)
 (test (characterp 'a) nil)
 (test (characterp "2") nil)
+
+(test (char-index #\b "abcab"  ) 1)
+(test (char-index #\B "abcab"  ) nil)
+(test (char-index #\b "abcab" 2) 4)
+(test (char-index #\d "abcab"  ) nil)

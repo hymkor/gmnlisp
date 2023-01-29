@@ -185,6 +185,33 @@ func funRuneGe(ctx context.Context, w *World, argv []Node) (Node, error) {
 func funRuneNe(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return compareRune(argv, func(cmp rune) bool { return cmp != 0 })
 }
+func funRuneIndex(ctx context.Context, w *World, argv []Node) (Node, error) {
+	_char, ok := argv[0].(Rune)
+	if !ok {
+		return nil, ErrExpectedCharacter
+	}
+	char := rune(_char)
+	str, ok := argv[1].(String)
+	if !ok {
+		return nil, ErrExpectedString
+	}
+	var start int = 0
+	if len(argv) >= 3 {
+		_start, ok := argv[2].(Integer)
+		if !ok {
+			return nil, ErrExpectedNumber
+		}
+		start = int(_start)
+	}
+	i := 0
+	for _, c := range string(str) {
+		if i >= start && c == char {
+			return Integer(i), nil
+		}
+		i++
+	}
+	return Null, nil
+}
 
 type Keyword string
 
