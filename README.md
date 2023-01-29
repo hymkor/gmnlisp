@@ -197,6 +197,7 @@ Gmnlisp's functions are subset of ISLisp.
 - (subseq SEQUENCE Z1 Z2)
 - (elt SEQUENCE INDEX)
 - (member ATOM LIST)
+- (create-list I INITIAL-ELEMENT)
 
 #### array
 

@@ -4,6 +4,7 @@
 - Implement
     - (char&lt;) (char&gt;) (char=) (char&lt;=) (char&gt;=) (char/=)
     - (characterp)
+    - (create-list)
 
 v0.2.0
 ======
