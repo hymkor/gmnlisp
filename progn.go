@@ -162,7 +162,7 @@ func cmdCase(ctx context.Context, w *World, list Node) (Node, error) {
 					return Progn(ctx, w, act)
 				}
 			}
-		} else if caseValue.Equals(tSymbol, STRICT) {
+		} else if caseValue.Equals(True, STRICT) {
 			return Progn(ctx, w, act)
 		}
 	}

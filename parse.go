@@ -26,7 +26,6 @@ var (
 	quoteSymbol      = NewSymbol("quote")
 	backQuoteSymbol  = NewSymbol("backquote")
 	slashSymbol      = NewSymbol("/")
-	tSymbol          = NewSymbol("t")
 	colonRest        = Keyword(":rest")
 )
 
@@ -281,7 +280,10 @@ func ReadNode(rs io.RuneScanner) (Node, error) {
 		token = buffer.String()
 		return String(token), nil
 	}
-	if token == "nil" {
+	if strings.EqualFold(token, "t") {
+		return True, nil
+	}
+	if strings.EqualFold(token, "nil") {
 		return Null, nil
 	}
 	return NewSymbol(token), nil
