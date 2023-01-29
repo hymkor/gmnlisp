@@ -51,7 +51,7 @@ func (cons *Cons) writeToWithoutKakko(w io.Writer, m PrintMode) (int, error) {
 	siz := 0
 	var lastCar Node = cons.Car
 	if IsNone(cons.Car) {
-		_siz, _ := io.WriteString(w, "()")
+		_siz, _ := io.WriteString(w, "nil")
 		siz += _siz
 	} else {
 		_siz, _ := cons.Car.PrintTo(w, m)
