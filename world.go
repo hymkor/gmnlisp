@@ -246,6 +246,7 @@ var autoLoad = Variables{
 	NewSymbol("char="):                       &Function{C: 2, F: funRuneEq},
 	NewSymbol("char>"):                       &Function{C: 2, F: funRuneGt},
 	NewSymbol("char>="):                      &Function{C: 2, F: funRuneGe},
+	NewSymbol("characterp"):                  &Function{C: 1, F: funAnyTypep[Rune]},
 	NewSymbol("close"):                       &Function{C: 1, F: funClose},
 	NewSymbol("clrhash"):                     &Function{C: 1, F: funClearHash},
 	NewSymbol("cond"):                        SpecialF(cmdCond),
