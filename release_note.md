@@ -1,4 +1,5 @@
 - Support the symbol whose name is enclosed by vertical-bars
+- Shape output of stacktrace
 
 V0.2.1
 ======
