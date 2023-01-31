@@ -18,6 +18,7 @@ var (
 	ErrExpectedString       = errors.New("Expected string")
 	ErrExpectedSymbol       = errors.New("Expected symbol")
 	ErrExpectedSymbolOrList = errors.New("Expected symbol or list")
+	ErrExpectedKeyword      = errors.New("Expected keyword")
 	ErrExpectedWriter       = errors.New("Expected Writer")
 	ErrIndexOutOfRange      = errors.New("Index out of range")
 	ErrInvalidFormat        = errors.New("Invalid format")

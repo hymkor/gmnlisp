@@ -53,6 +53,7 @@ type _Shared struct {
 	stdout  *_WriterNode
 	errout  *_WriterNode
 	stdin   *_ReaderNode
+	classes map[Symbol]*_Class
 }
 
 type World struct {
@@ -262,6 +263,7 @@ var autoLoad = Variables{
 	NewSymbol("create-string"):               &Function{F: funCreateString},
 	NewSymbol("create-string-input-stream"):  &Function{C: 1, F: funCreateStringInputStream},
 	NewSymbol("create-string-output-stream"): SpecialF(cmdCreateStringOutputStream),
+	NewSymbol("defclass"):                    SpecialF(cmdDefClass),
 	NewSymbol("defdynamic"):                  SpecialF(cmdDefDynamic),
 	NewSymbol("defglobal"):                   SpecialF(cmdDefglobal),
 	NewSymbol("defmacro"):                    SpecialF(cmdDefMacro),
