@@ -1,3 +1,5 @@
+- Support the symbol whose name is enclosed by vertical-bars
+
 V0.2.1
 ======
 Jan 29, 2023
