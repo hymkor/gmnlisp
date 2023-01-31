@@ -130,11 +130,15 @@ func (cons *Cons) Eval(ctx context.Context, w *World) (Node, error) {
 		}
 	}
 	if f, ok := first.(Callable); ok {
-		return f.Call(ctx, w, cons.Cdr)
+		rc, err := f.Call(ctx, w, cons.Cdr)
+		if err != nil {
+			return nil, fmt.Errorf("%w\n\tat %v", first)
+		}
+		return rc, nil
 	}
 	symbol, ok := first.(Symbol)
 	if !ok {
-		return nil, fmt.Errorf("cons: %w", ErrExpectedFunction)
+		return nil, fmt.Errorf("%w: %#v", ErrExpectedSymbol, first)
 	}
 	value, err := symbol.Eval(ctx, w)
 	if err != nil {
@@ -144,9 +148,9 @@ func (cons *Cons) Eval(ctx context.Context, w *World) (Node, error) {
 	if !ok {
 		return nil, fmt.Errorf("%s: %w", symbol, ErrExpectedFunction)
 	}
-	rv, err := function.Call(ctx, w, cons.Cdr)
+	rc, err := function.Call(ctx, w, cons.Cdr)
 	if err != nil {
-		return rv, fmt.Errorf("%s: %w", symbol, err)
+		return nil, fmt.Errorf("%w\n\tat %v", err, first)
 	}
-	return rv, nil
+	return rc, nil
 }
