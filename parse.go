@@ -179,6 +179,10 @@ func readUntilCloseParen(rs io.RuneScanner) ([]Node, error) {
 	}
 }
 
+var symbol4barReplacer = strings.NewReplacer(
+	`\\`, `\`,
+	`\|`, `|`)
+
 func ReadNode(rs io.RuneScanner) (Node, error) {
 	token, err := readToken(rs)
 	if err != nil {
@@ -279,6 +283,9 @@ func ReadNode(rs io.RuneScanner) (Node, error) {
 		}
 		token = buffer.String()
 		return String(token), nil
+	}
+	if token[0] == '|' && token[len(token)-1] == '|' {
+		return NewSymbol(symbol4barReplacer.Replace(token[1 : len(token)-1])), nil
 	}
 	if strings.EqualFold(token, "t") {
 		return True, nil

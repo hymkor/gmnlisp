@@ -61,6 +61,7 @@ func readtokenWord(r io.RuneScanner) (string, error) {
 	var buffer strings.Builder
 
 	quote := false
+	bar4symbol := false
 	lastLastRune := '\u0000'
 	for {
 		lastRune, _, err := r.ReadRune()
@@ -84,7 +85,7 @@ func readtokenWord(r io.RuneScanner) (string, error) {
 			}
 		}
 
-		if !quote {
+		if !quote && !bar4symbol {
 			if lastRune == '#' {
 				done, err := skipComment(r)
 				if err != nil {
@@ -106,6 +107,10 @@ func readtokenWord(r io.RuneScanner) (string, error) {
 		if lastRune == '"' {
 			quote = !quote
 		}
+		if !quote && lastRune == '|' && lastLastRune != '\\' {
+			bar4symbol = !bar4symbol
+		}
+
 		buffer.WriteRune(lastRune)
 
 		if !quote && lastLastRune == '#' && lastRune == '\'' {
