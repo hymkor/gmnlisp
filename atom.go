@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"strings"
 	"unicode"
 )
 
@@ -231,10 +230,16 @@ func funRuneIndex(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return Null, nil
 }
 
-type Keyword string
+type Keyword int
+
+var keywordManager = idMap[Keyword]{}
+
+func NewKeyword(name string) Keyword {
+	return keywordManager.NameToId(name)
+}
 
 func (k Keyword) PrintTo(w io.Writer, m PrintMode) (int, error) {
-	return io.WriteString(w, string(k))
+	return io.WriteString(w, keywordManager.IdToName(k))
 }
 
 func (k Keyword) Eval(context.Context, *World) (Node, error) {
@@ -242,8 +247,6 @@ func (k Keyword) Eval(context.Context, *World) (Node, error) {
 }
 
 func (k Keyword) Equals(n Node, m EqlMode) bool {
-	if other, ok := n.(Keyword); ok {
-		return strings.EqualFold(string(k), string(other))
-	}
-	return false
+	ks, ok := n.(Keyword)
+	return ok && k == ks
 }

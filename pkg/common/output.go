@@ -40,7 +40,7 @@ func getWriterAndString(ctx context.Context, w *World, n Node) (io.Writer, Strin
 
 func funWrite(ctx context.Context, w *World, args []Node, kwargs map[Keyword]Node) (Node, error) {
 	var writer io.Writer
-	if writerNode, ok := kwargs[":stream"]; ok {
+	if writerNode, ok := kwargs[NewKeyword(":stream")]; ok {
 		if _writer, ok := writerNode.(io.Writer); ok {
 			writer = _writer
 		}

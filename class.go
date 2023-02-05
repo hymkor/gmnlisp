@@ -44,17 +44,17 @@ func readSlotSpec(ctx context.Context, w *World, list Node) (Symbol, *_SlotSpec,
 		var err error
 		value := valueCons.Car
 		switch keyword {
-		case Keyword(":reader"):
+		case NewKeyword(":reader"):
 			slotSpec.reader, ok = value.(Symbol)
-		case Keyword(":writer"):
+		case NewKeyword(":writer"):
 			slotSpec.writer, ok = value.(Symbol)
-		case Keyword(":accessor"):
+		case NewKeyword(":accessor"):
 			slotSpec.accessor, ok = value.(Symbol)
-		case Keyword(":boundp"):
+		case NewKeyword(":boundp"):
 			slotSpec.boundp, ok = value.(Symbol)
-		case Keyword(":initform"):
+		case NewKeyword(":initform"):
 			slotSpec.initform, err = value.Eval(ctx, w)
-		case Keyword(":initarg"):
+		case NewKeyword(":initarg"):
 			slotSpec.initarg, ok = value.(Symbol)
 		}
 		if err != nil {

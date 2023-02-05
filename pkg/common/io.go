@@ -69,11 +69,11 @@ func cmdWithOpenFile(ctx context.Context, w *World, list Node) (Node, error) {
 		return nil, ErrExpectedString
 	}
 	var fdNode Node
-	direction, ok := kwargs[":direction"]
-	if !ok || direction == Keyword(":input") {
+	direction, ok := kwargs[NewKeyword(":direction")]
+	if !ok || direction == NewKeyword(":input") {
 		fd, err := os.Open(fname.String())
 		if err != nil {
-			fdNode, ok = kwargs[":if-does-not-exist"]
+			fdNode, ok = kwargs[NewKeyword(":if-does-not-exist")]
 			if !ok {
 				return nil, err
 			}
@@ -85,7 +85,7 @@ func cmdWithOpenFile(ctx context.Context, w *World, list Node) (Node, error) {
 			fdNode = &Reader{Reader: bufio.NewReader(fd)}
 			defer fd.Close()
 		}
-	} else if direction == Keyword(":output") {
+	} else if direction == NewKeyword(":output") {
 		fd, err := os.Create(fname.String())
 		if err != nil {
 			return nil, err

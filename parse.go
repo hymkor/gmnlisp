@@ -26,7 +26,7 @@ var (
 	quoteSymbol      = NewSymbol("quote")
 	backQuoteSymbol  = NewSymbol("backquote")
 	slashSymbol      = NewSymbol("/")
-	colonRest        = Keyword(":rest")
+	colonRest        = NewKeyword(":rest")
 )
 
 func nodes2cons(nodes []Node) Node {
@@ -236,7 +236,7 @@ func ReadNode(rs io.RuneScanner) (Node, error) {
 		return nodes2cons(nodes), nil
 	}
 	if len(token) > 0 && token[0] == ':' {
-		return Keyword(token), nil
+		return NewKeyword(token), nil
 	}
 	if val, ok, err := tryParseAsNumber(token); ok {
 		return val, err
@@ -286,6 +286,9 @@ func ReadNode(rs io.RuneScanner) (Node, error) {
 	}
 	if token[0] == '|' && token[len(token)-1] == '|' {
 		return NewSymbol(symbol4barReplacer.Replace(token[1 : len(token)-1])), nil
+	}
+	if token[0] == ':' {
+		return NewKeyword(token), nil
 	}
 	if strings.EqualFold(token, "t") {
 		return True, nil

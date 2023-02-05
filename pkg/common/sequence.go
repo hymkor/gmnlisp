@@ -8,7 +8,7 @@ import (
 )
 
 func getTestParameter(kwargs map[Keyword]Node) (func(context.Context, *World, Node, Node) (bool, error), error) {
-	if test, ok := kwargs[":test"]; ok {
+	if test, ok := kwargs[NewKeyword(":test")]; ok {
 		caller, ok := test.(Callable)
 		if !ok {
 			return nil, ErrExpectedFunction
