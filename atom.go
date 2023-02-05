@@ -45,28 +45,46 @@ func (nt _NullType) Equals(n Node, m EqlMode) bool {
 
 var Null Node = _NullType{}
 
+type idMap[T ~int] struct {
+	id2name []string
+	name2id map[string]T
+}
+
+func (idm *idMap[T]) NameToId(name string) T {
+	if idm.name2id == nil {
+		idm.name2id = make(map[string]T)
+	}
+	if id, ok := idm.name2id[name]; ok {
+		return id
+	}
+	id := T(len(idm.name2id))
+	idm.name2id[name] = id
+	idm.id2name = append(idm.id2name, name)
+	return id
+}
+
+func (idm *idMap[T]) Count() int {
+	return len(idm.name2id)
+}
+
 type Symbol int
 
-var symbols = []string{}
+func (idm *idMap[T]) IdToName(id T) string {
+	return idm.id2name[id]
+}
 
-var symbolMap = map[string]Symbol{}
+var symbolManager = &idMap[Symbol]{}
 
 func NewSymbol(s string) Symbol {
-	if value, ok := symbolMap[s]; ok {
-		return value
-	}
-	value := Symbol(len(symbolMap))
-	symbolMap[s] = value
-	symbols = append(symbols, s)
-	return value
+	return symbolManager.NameToId(s)
 }
 
 func cmdGensym(ctx context.Context, w *World, node Node) (Node, error) {
-	return NewSymbol(fmt.Sprintf("-gensym-%d-", len(symbolMap))), nil
+	return NewSymbol(fmt.Sprintf("-gensym-%d-", symbolManager.Count())), nil
 }
 
 func (s Symbol) PrintTo(w io.Writer, m PrintMode) (int, error) {
-	return io.WriteString(w, symbols[s])
+	return io.WriteString(w, symbolManager.IdToName(s))
 }
 
 func (s Symbol) Eval(_ context.Context, w *World) (Node, error) {
@@ -79,11 +97,11 @@ func (s Symbol) Equals(n Node, m EqlMode) bool {
 }
 
 func (s Symbol) String() string {
-	return symbols[s]
+	return symbolManager.IdToName(s)
 }
 
 func (s Symbol) GoString() string {
-	return symbols[s]
+	return symbolManager.IdToName(s)
 }
 
 type Rune rune
