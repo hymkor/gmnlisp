@@ -132,7 +132,7 @@ func (cons *Cons) Eval(ctx context.Context, w *World) (Node, error) {
 	if f, ok := first.(Callable); ok {
 		rc, err := f.Call(ctx, w, cons.Cdr)
 		if err != nil {
-			return nil, fmt.Errorf("%w\n\tat %v", first)
+			return nil, fmt.Errorf("%w\n\tat %v", err, first)
 		}
 		return rc, nil
 	}
