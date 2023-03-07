@@ -16,6 +16,7 @@ import (
 type Scope interface {
 	Get(Symbol) (Node, bool)
 	Set(Symbol, Node)
+	Range(func(Symbol, Node) error) error
 }
 
 type Variables map[Symbol]Node
@@ -27,6 +28,15 @@ func (m Variables) Get(key Symbol) (Node, bool) {
 
 func (m Variables) Set(key Symbol, value Node) {
 	m[key] = value
+}
+
+func (m Variables) Range(f func(Symbol, Node) error) error {
+	for key, val := range m {
+		if err := f(key, val); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 type Pair struct {
@@ -46,6 +56,10 @@ func (m *Pair) Set(key Symbol, value Node) {
 		m.Value = value
 	}
 	panic("Pair can be set value")
+}
+
+func (m *Pair) Range(f func(Symbol, Node) error) error {
+	return f(m.Key, m.Value)
 }
 
 type _Shared struct {
@@ -414,6 +428,10 @@ func (rw _RootWorld) Set(symbol Symbol, value Node) {
 	rw[symbol] = value
 }
 
+func (rw _RootWorld) Range(f func(Symbol, Node) error) error {
+	return nil
+}
+
 func New() *World {
 	w := &World{
 		shared: &_Shared{
@@ -506,4 +524,23 @@ func (w *World) Assert(equation string, expect Node) string {
 		return fmt.Sprintf("%#v != %#v (was %#v)", equation, expect, result)
 	}
 	return ""
+}
+
+func (w *World) Range(f func(Symbol, Node) error) error {
+	marked := map[Symbol]struct{}{}
+	for ; w != nil; w = w.parent {
+		err := w.lexical.Range(func(key Symbol, val Node) error {
+			if _, ok := marked[key]; !ok {
+				if err := f(key, val); err != nil {
+					return err
+				}
+				marked[key] = struct{}{}
+			}
+			return nil
+		})
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
