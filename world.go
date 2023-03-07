@@ -307,6 +307,7 @@ var autoLoad = Variables{
 	NewSymbol("gensym"):                      SpecialF(cmdGensym),
 	NewSymbol("get-output-stream-string"):    &Function{C: 1, F: funGetOutputStreamString},
 	NewSymbol("gethash"):                     &Function{C: 2, F: funGetHash},
+	NewSymbol("gmn:dump-session"):            SpecialF(cmdDumpSession),
 	NewSymbol("go"):                          SpecialF(cmdGo),
 	NewSymbol("hash-table-count"):            &Function{C: 1, F: funHashTableCount},
 	NewSymbol("if"):                          SpecialF(cmdIf),
@@ -543,4 +544,20 @@ func (w *World) Range(f func(Symbol, Node) error) error {
 		}
 	}
 	return nil
+}
+
+func cmdDumpSession(_ context.Context, w *World, _ Node) (Node, error) {
+	out := w.shared.stdout
+	return Null, w.Range(func(key Symbol, val Node) error {
+		cons := &Cons{
+			Car: key,
+			Cdr: &Cons{
+				Car: val,
+				Cdr: Null,
+			},
+		}
+		_, err := cons.PrintTo(out, PRINT)
+		fmt.Fprintln(out)
+		return err
+	})
 }
