@@ -1,5 +1,7 @@
 - Support the symbol whose name is enclosed by vertical-bars
 - Shape output of stacktrace
+- Implement `(*World) Range(Symbol,Node)`
+- Implement `(gmn:dump-session)` and World.
 
 V0.2.1
 ======
