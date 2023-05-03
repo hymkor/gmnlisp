@@ -1,24 +1,22 @@
-NAME=$(lastword $(subst /, ,$(abspath .)))
-EXE=$(shell go env GOEXE)
-VERSION=$(shell git describe --tags)
-
 ifeq ($(OS),Windows_NT)
     SHELL=CMD.EXE
     SET=set
     CP=copy
     RM=del
-    D=$\\
 else
     SET=export
     CP=cp
     RM=rm
-    D=/
 endif
+
+NAME=$(notdir $(abspath .))
+EXE=$(shell go env GOEXE)
+VERSION=$(shell git describe --tags)
 
 TARGET=$(NAME)$(EXE)
 
 ifeq ($(RUNLISP),)
-    RUNLISP=.$(D)$(TARGET)
+    RUNLISP="./$(TARGET)"
 endif
 
 all: $(TARGET)
