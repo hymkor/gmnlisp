@@ -777,6 +777,6 @@
 (test (let ((x "1")) (if nil (setq x "2") (setq x "3")) x)
       "3")
 
-(dolist (testcode (wildcard "tests/*.lsp"))
+(dolist (testcode (wildcard "test/*.lsp"))
   (format t "test ~s~%" testcode)
   (load testcode))

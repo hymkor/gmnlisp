@@ -83,3 +83,5 @@ package:
 
 manifest:
 	go run mkmanifest.go *-windows-*.zip > gmnlisp.json
+
+.PHONY: generate test clean clean-gen sort-world _package package manifest
