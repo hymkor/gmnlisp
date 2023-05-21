@@ -47,15 +47,32 @@ func (cons *Cons) isTailNull() bool {
 	}
 }
 
+type writeCounter struct {
+	n   int
+	err error
+}
+
+func (w *writeCounter) Try(n int, err error) bool {
+	w.n += n
+	w.err = err
+	return err != nil
+}
+
+func (w *writeCounter) Result() (int, error) {
+	return w.n, w.err
+}
+
 func (cons *Cons) writeToWithoutKakko(w io.Writer, m PrintMode) (int, error) {
-	siz := 0
+	var wc writeCounter
 	var lastCar Node = cons.Car
 	if IsNone(cons.Car) {
-		_siz, _ := io.WriteString(w, "nil")
-		siz += _siz
+		if wc.Try(io.WriteString(w, "nil")) {
+			return wc.Result()
+		}
 	} else {
-		_siz, _ := cons.Car.PrintTo(w, m)
-		siz += _siz
+		if wc.Try(cons.Car.PrintTo(w, m)) {
+			return wc.Result()
+		}
 	}
 
 	if IsSome(cons.Cdr) {
@@ -64,48 +81,54 @@ func (cons *Cons) writeToWithoutKakko(w io.Writer, m PrintMode) (int, error) {
 
 			for p, ok := cons.Cdr.(*Cons); ok && IsSome(p); p, ok = p.Cdr.(*Cons) {
 				if lastCar != commaSymbol {
-					_siz, _ := io.WriteString(w, " ")
-					siz += _siz
+					if wc.Try(io.WriteString(w, " ")) {
+						return wc.Result()
+					}
 				}
-				_siz, _ := p.Car.PrintTo(w, m)
-				siz += _siz
+				if wc.Try(p.Car.PrintTo(w, m)) {
+					return wc.Result()
+				}
 				lastCar = p.Car
 			}
 		} else {
 			// output as ( X . Y )
-
-			_siz, _ := io.WriteString(w, " . ")
-			siz += _siz
-			_siz, _ = cons.getCdr().PrintTo(w, m)
-			siz += _siz
+			if wc.Try(io.WriteString(w, " . ")) {
+				return wc.Result()
+			}
+			if wc.Try(cons.getCdr().PrintTo(w, m)) {
+				return wc.Result()
+			}
 		}
 	}
-	return siz, nil
+	return wc.Result()
 }
 
 func (cons *Cons) PrintTo(w io.Writer, m PrintMode) (int, error) {
+	var wc writeCounter
 	if cons.Car == quoteSymbol {
 		if cdr, ok := cons.Cdr.(*Cons); ok && IsSome(cdr.Car) && IsNone(cdr.Cdr) {
-			siz, _ := w.Write([]byte{'\''})
-			_siz, _ := cdr.Car.PrintTo(w, m)
-			siz += _siz
-			return siz, nil
+			if wc.Try(w.Write([]byte{'\''})) {
+				return wc.Result()
+			}
+			wc.Try(cdr.Car.PrintTo(w, m))
+			return wc.Result()
 		}
 	}
 	if cons.Car == backQuoteSymbol {
 		if cdr, ok := cons.Cdr.(*Cons); ok && IsSome(cdr.Car) && IsNone(cdr.Cdr) {
-			siz, _ := w.Write([]byte{'`'})
-			_siz, _ := cdr.Car.PrintTo(w, m)
-			siz += _siz
-			return siz, nil
+			if wc.Try(w.Write([]byte{'`'})) {
+				return wc.Result()
+			}
+			wc.Try(cdr.Car.PrintTo(w, m))
+			return wc.Result()
 		}
 	}
-	siz, _ := io.WriteString(w, "(")
-	_siz, _ := cons.writeToWithoutKakko(w, m)
-	siz += _siz
-	_siz, _ = io.WriteString(w, ")")
-	siz += _siz
-	return siz, nil
+	if wc.Try(io.WriteString(w, "(")) ||
+		wc.Try(cons.writeToWithoutKakko(w, m)) {
+		return wc.Result()
+	}
+	wc.Try(io.WriteString(w, ")"))
+	return wc.Result()
 }
 
 func (cons *Cons) Equals(n Node, m EqlMode) bool {

@@ -82,26 +82,35 @@ func newLambda(w *World, node Node, blockName Symbol) (Node, error) {
 }
 
 func (L *_Lambda) PrintTo(w io.Writer, m PrintMode) (int, error) {
-	io.WriteString(w, "(lambda (")
+	var wc writeCounter
+	if wc.Try(io.WriteString(w, "(lambda (")) {
+		return wc.Result()
+	}
 	dem := ""
-	siz := 0
 	for _, name := range L.param {
-		io.WriteString(w, dem)
-		_siz, _ := name.PrintTo(w, PRINC)
-		siz += _siz
+		if wc.Try(io.WriteString(w, dem)) {
+			return wc.Result()
+		}
+		if wc.Try(name.PrintTo(w, PRINC)) {
+			return wc.Result()
+		}
 		dem = " "
 	}
-	io.WriteString(w, ") ")
-	if cons, ok := L.code.(*Cons); ok {
-		_siz, _ := cons.writeToWithoutKakko(w, m)
-		siz += _siz
-	} else {
-		_siz, _ := L.code.PrintTo(w, m)
-		siz += _siz
+	if wc.Try(io.WriteString(w, ") ")) {
+		return wc.Result()
 	}
-	_siz, _ := io.WriteString(w, ")")
-	siz += _siz
-	return siz, nil
+
+	if cons, ok := L.code.(*Cons); ok {
+		if wc.Try(cons.writeToWithoutKakko(w, m)) {
+			return wc.Result()
+		}
+	} else {
+		if wc.Try(L.code.PrintTo(w, m)) {
+			return wc.Result()
+		}
+	}
+	wc.Try(io.WriteString(w, ")"))
+	return wc.Result()
 }
 
 var trace = map[Symbol]int{}

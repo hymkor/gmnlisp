@@ -14,19 +14,16 @@ func (h _Hash) Equals(other Node, mode EqlMode) bool {
 }
 
 func (h _Hash) PrintTo(w io.Writer, mode PrintMode) (int, error) {
-	n := 0
+	var wc writeCounter
 	dem := '{'
 	for key, val := range h {
-		_n, err := fmt.Fprintf(w, "%c%#v:%#v", dem, key, val)
-		n += _n
-		if err != nil {
-			return n, err
+		if wc.Try(fmt.Fprintf(w, "%c%#v:%#v", dem, key, val)) {
+			return wc.Result()
 		}
 		dem = ','
 	}
-	_n, err := w.Write([]byte{'}'})
-	n += _n
-	return n, err
+	wc.Try(w.Write([]byte{'}'}))
+	return wc.Result()
 }
 
 func (h _Hash) Eval(ctx context.Context, w *World) (Node, error) {

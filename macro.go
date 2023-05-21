@@ -20,24 +20,19 @@ type _JoinedForm []Node
 
 func (j _JoinedForm) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	dem := "_JoinedForm("
-	n := 0
+	var wc writeCounter
 	for _, e := range j {
-		_n, err := io.WriteString(w, dem)
-		n += _n
-		if err != nil {
-			return n, err
+		if wc.Try(io.WriteString(w, dem)) {
+			return wc.Result()
 		}
 		dem = " "
 
-		_n, err = e.PrintTo(w, m)
-		n += _n
-		if err != nil {
-			return n, err
+		if wc.Try(e.PrintTo(w, m)) {
+			return wc.Result()
 		}
 	}
-	_n, err := w.Write([]byte{')'})
-	n += _n
-	return n, err
+	wc.Try(w.Write([]byte{')'}))
+	return wc.Result()
 }
 
 func (j _JoinedForm) Eval(ctx context.Context, w *World) (Node, error) {
