@@ -72,7 +72,7 @@ func readtokenWord(r io.RuneScanner) (string, error) {
 		if lastRune == '\\' {
 			nextRune, _, err := r.ReadRune()
 			if err != nil {
-				return "", fmt.Errorf("Too near EOF: %w", err)
+				return "", fmt.Errorf("too near EOF: %w", err)
 			}
 			if nextRune == '\\' {
 				buffer.WriteString(`\\`)

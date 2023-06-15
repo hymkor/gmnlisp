@@ -46,7 +46,7 @@ func newStreamInput(w *World, argv []Node) (*_StreamInput, error) {
 		var ok bool
 		this.reader, ok = argv[0].(_Reader)
 		if !ok {
-			return nil, fmt.Errorf("Expected Reader %#v", argv[0])
+			return nil, fmt.Errorf("expected Reader %#v", argv[0])
 		}
 	case 0:
 		this.reader = w.Stdin()
@@ -124,7 +124,7 @@ func funReadChar(_ context.Context, w *World, argv []Node) (Node, error) {
 func funClose(_ context.Context, _ *World, argv []Node) (Node, error) {
 	c, ok := argv[0].(io.Closer)
 	if !ok {
-		return nil, fmt.Errorf("Expected Closer %#v", argv[0])
+		return nil, fmt.Errorf("expected Closer %#v", argv[0])
 	}
 	return Null, c.Close()
 }

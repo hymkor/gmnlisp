@@ -274,7 +274,7 @@ func formatSub(w *_WriterNode, argv []Node) error {
 				printSpaces(parameter[0]-n, w)
 			}
 		default:
-			err = fmt.Errorf("Not support code '%c'", c)
+			err = fmt.Errorf("not support code '%c'", c)
 		}
 		if err != nil {
 			return err
