@@ -20,7 +20,6 @@ var (
 	commaSymbol      = NewSymbol(",")
 	dotSymbol        = NewSymbol(".")
 	functionSymbol   = NewSymbol("function")
-	listSymbol       = NewSymbol("list")
 	nulSymbol        = NewSymbol("")
 	parenCloseSymbol = NewSymbol(")")
 	quoteSymbol      = NewSymbol("quote")

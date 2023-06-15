@@ -346,8 +346,6 @@ func (f *Function) Equals(n Node, m EqlMode) bool {
 	return false
 }
 
-const maxParameterOfEasyFunc = 8
-
 func (f *Function) Call(ctx context.Context, w *World, list Node) (Node, error) {
 	if err := checkContext(ctx); err != nil {
 		return nil, err

@@ -37,7 +37,7 @@ func TestWorld(t *testing.T) {
 	}
 
 	w2 := New()
-	value, err = w2.Interpret(context.TODO(), `a`)
+	_, err = w2.Interpret(context.TODO(), `a`)
 
 	if !errors.Is(err, ErrVariableUnbound) {
 		if err == nil {

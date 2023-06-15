@@ -15,23 +15,23 @@ func TestTokenizer1(t *testing.T) {
 	if token != "2" || err != nil {
 		t.Fatal("2")
 	}
-	token, err = readToken(rs)
+	_, err = readToken(rs)
 	if err == nil {
 		t.Fatal("3")
 	}
-	token, err = readToken(rs)
+	_, err = readToken(rs)
 	if err == nil {
 		t.Fatal("4")
 	}
 
 	rs = strings.NewReader("")
-	token, err = readToken(rs)
+	_, err = readToken(rs)
 	if err == nil {
 		t.Fatal("empty string")
 	}
 
 	rs = strings.NewReader(" ")
-	token, err = readToken(rs)
+	_, err = readToken(rs)
 	if err == nil {
 		t.Fatal("empty string")
 	}
