@@ -230,30 +230,6 @@ func cmdAbort(context.Context, *World, Node) (Node, error) {
 	return Null, ErrAbort
 }
 
-func handlerCaseSub(ctx context.Context, w *World, caseBlock Node, c Node) (Node, error) {
-	paramList, caseBlock, err := Shift(caseBlock)
-	if err != nil {
-		return nil, err
-	}
-	if IsNone(paramList) { // (error () ... )
-		return Progn(ctx, w, caseBlock)
-	}
-	// (error (c) ... )
-	conditionVarName, paramList, err := Shift(paramList)
-	if err != nil {
-		return nil, err
-	}
-	if IsSome(paramList) {
-		return nil, ErrTooManyArguments
-	}
-	symbol, ok := conditionVarName.(Symbol)
-	if !ok {
-		return nil, ErrExpectedSymbol
-	}
-	newWorld := w.Let(&Pair{Key: symbol, Value: c})
-	return Progn(ctx, newWorld, caseBlock)
-}
-
 type ErrorNode struct {
 	Value error
 }

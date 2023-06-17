@@ -70,6 +70,9 @@ func letValuesToVars(ctx context.Context, w *World, list Node, lexical map[Symbo
 		var err error
 
 		item, list, err = Shift(list)
+		if err != nil {
+			return err
+		}
 		if symbol, ok := item.(Symbol); ok {
 			lexical[symbol] = Null
 			continue
@@ -180,7 +183,7 @@ func cmdDynamic(ctx context.Context, w *World, list Node) (Node, error) {
 	var err error
 	var symbolNode Node
 
-	symbolNode, list, err = Shift(list)
+	symbolNode, _, err = Shift(list)
 	if err != nil {
 		return nil, err
 	}

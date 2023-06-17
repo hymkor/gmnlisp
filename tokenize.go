@@ -144,6 +144,9 @@ func readToken(r io.RuneScanner) (string, error) {
 		}
 		var token string
 		token, err = readtokenWord(r)
+		if err != nil {
+			return "", err
+		}
 		if token != "" {
 			return token, nil
 		}
