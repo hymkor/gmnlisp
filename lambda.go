@@ -115,6 +115,14 @@ func (L *_Lambda) PrintTo(w io.Writer, m PrintMode) (int, error) {
 
 var trace = map[Symbol]int{}
 
+type _ErrTailCallOpt struct {
+	params Node
+}
+
+func (*_ErrTailCallOpt) Error() string {
+	return "_ErrTailCallOpt was not catched."
+}
+
 func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
 	if err := checkContext(ctx); err != nil {
 		// return nil,fmt.Errorf("%w\n\t%s",err,L.name)
@@ -180,11 +188,39 @@ func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
 			return nil, err
 		}
 	}
-	newWorld := L.lexical.Let(lexical)
 
+	var result Node
+	var err error
+	for {
+		newWorld := L.lexical.Let(lexical)
+		result, err = prognWithTailCallOpt(ctx, newWorld, L.code, L.name)
+
+		var errTailCallOpt *_ErrTailCallOpt
+		if !errors.As(err, &errTailCallOpt) {
+			break
+		}
+		n = errTailCallOpt.params
+		foundSlash = false
+		for _, name := range L.param {
+			if name == slashSymbol {
+				foundSlash = true
+				continue
+			}
+			if foundSlash {
+				lexical[name] = Null
+				continue
+			}
+			var err error
+			var value Node
+			value, n, err = Shift(n)
+			if err != nil {
+				// return nil,fmt.Errorf("%w\n\t%s",err,L.name)
+				return nil, err
+			}
+			lexical[name] = value
+		}
+	}
 	var errEarlyReturns *ErrEarlyReturns
-
-	result, err := Progn(ctx, newWorld, L.code)
 	if errors.As(err, &errEarlyReturns) && errEarlyReturns.Name == L.name {
 		return errEarlyReturns.Value, nil
 	}
@@ -199,6 +235,56 @@ func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
 		return nil, err
 	}
 	return result, nil
+}
+
+func tryTailCallOpt(ctx context.Context, w *World, x Node, sym Symbol) (err error) {
+	if sym < 0 {
+		return nil
+	}
+	cons, ok := x.(*Cons)
+	if !ok || IsNone(cons.Car) || !cons.Car.Equals(sym, EQUAL) {
+		return nil
+	}
+
+	// Tail call optimization
+	var params Node = cons.Cdr
+	var evaled Node
+	for IsSome(params) {
+		var value Node
+		value, params, err = w.ShiftAndEvalCar(ctx, params)
+		if err != nil {
+			return err
+		}
+		evaled = &Cons{Car: value, Cdr: evaled}
+	}
+	evaled, err = NReverse(evaled)
+	if err != nil {
+		panic(err.Error())
+	}
+	return &_ErrTailCallOpt{params: evaled}
+}
+
+func prognWithTailCallOpt(ctx context.Context, w *World, n Node, sym Symbol) (value Node, err error) {
+	value = Null
+	for IsSome(n) {
+		var first Node
+
+		first, n, err = Shift(n)
+		if err != nil {
+			return nil, err
+		}
+		if sym >= 0 && IsNone(n) {
+			// last field
+			if err := tryTailCallOpt(ctx, w, first, sym); err != nil {
+				return nil, err
+			}
+		}
+		value, err = first.Eval(ctx, w)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return value, nil
 }
 
 func (L *_Lambda) Eval(context.Context, *World) (Node, error) {
