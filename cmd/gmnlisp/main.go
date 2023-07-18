@@ -41,18 +41,18 @@ type Coloring struct {
 	last rune
 }
 
-func (c *Coloring) Init() int {
+func (c *Coloring) Init() readline.ColorSequence {
 	c.bits = 0
 	c.last = 0
 	return readline.White
 }
 
-func (c *Coloring) Next(ch rune) int {
+func (c *Coloring) Next(ch rune) readline.ColorSequence {
 	prebits := c.bits
 	if c.last != '\\' && ch == '"' {
 		c.bits ^= 1
 	}
-	var color int
+	var color readline.ColorSequence
 	if (c.bits&1) != 0 || (prebits&1) != 0 {
 		color = readline.Magenta
 	} else if ch == '(' || ch == ')' {
