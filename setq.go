@@ -96,6 +96,10 @@ func letValuesToVars(ctx context.Context, w *World, list Node, lexical map[Symbo
 }
 
 func cmdLet(ctx context.Context, w *World, params Node) (Node, error) {
+	return cmdLetSym(ctx, w, params, -1)
+}
+
+func cmdLetSym(ctx context.Context, w *World, params Node, tailOptSym Symbol) (Node, error) {
 	// from CommonLisp
 	list, params, err := Shift(params)
 	if err != nil {
@@ -108,7 +112,7 @@ func cmdLet(ctx context.Context, w *World, params Node) (Node, error) {
 	}
 
 	newWorld := w.Let(lexical)
-	return Progn(ctx, newWorld, params)
+	return prognWithTailCallOpt(ctx, newWorld, params, tailOptSym)
 }
 
 func cmdLetX(ctx context.Context, w *World, params Node) (Node, error) {
