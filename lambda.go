@@ -264,6 +264,8 @@ func tryTailCallOpt(ctx context.Context, w *World, x Node, sym Symbol) (err erro
 	return &_ErrTailCallOpt{params: evaled}
 }
 
+var symIf = NewSymbol("if")
+
 func prognWithTailCallOpt(ctx context.Context, w *World, n Node, sym Symbol) (value Node, err error) {
 	value = Null
 	for IsSome(n) {
@@ -278,6 +280,9 @@ func prognWithTailCallOpt(ctx context.Context, w *World, n Node, sym Symbol) (va
 			if err := tryTailCallOpt(ctx, w, first, sym); err != nil {
 				return nil, err
 			}
+			if cons, ok := first.(*Cons); ok && symIf.Equals(cons.Car, EQUAL) {
+				return cmdIfSym(ctx, w, cons.Cdr, sym)
+			}
 		}
 		value, err = first.Eval(ctx, w)
 		if err != nil {
@@ -285,6 +290,20 @@ func prognWithTailCallOpt(ctx context.Context, w *World, n Node, sym Symbol) (va
 		}
 	}
 	return value, nil
+}
+
+var symProgn = NewSymbol("progn")
+
+func evalWithTailCallOpt(ctx context.Context, w *World, value Node, tailOptSym Symbol) (Node, error) {
+	if tailOptSym >= 0 {
+		if err := tryTailCallOpt(ctx, w, value, tailOptSym); err != nil {
+			return nil, err
+		}
+		if cons, ok := value.(*Cons); ok && symProgn.Equals(cons.Car, EQUAL) {
+			return prognWithTailCallOpt(ctx, w, value, tailOptSym)
+		}
+	}
+	return value.Eval(ctx, w)
 }
 
 func (L *_Lambda) Eval(context.Context, *World) (Node, error) {

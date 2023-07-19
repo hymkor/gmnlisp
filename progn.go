@@ -170,6 +170,10 @@ func cmdCase(ctx context.Context, w *World, list Node) (Node, error) {
 }
 
 func cmdIf(ctx context.Context, w *World, params Node) (Node, error) {
+	return cmdIfSym(ctx, w, params, -1)
+}
+
+func cmdIfSym(ctx context.Context, w *World, params Node, tailOptSym Symbol) (Node, error) {
 	cond, params, err := w.ShiftAndEvalCar(ctx, params)
 	if err != nil {
 		return nil, err
@@ -189,9 +193,9 @@ func cmdIf(ctx context.Context, w *World, params Node) (Node, error) {
 		}
 	}
 	if IsSome(cond) {
-		return thenClause.Eval(ctx, w)
+		return evalWithTailCallOpt(ctx, w, thenClause, tailOptSym)
 	} else if IsSome(elseClause) {
-		return elseClause.Eval(ctx, w)
+		return evalWithTailCallOpt(ctx, w, elseClause, tailOptSym)
 	} else {
 		return Null, nil
 	}
