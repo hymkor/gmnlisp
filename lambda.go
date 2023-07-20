@@ -237,12 +237,13 @@ func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
 	return result, nil
 }
 
-func tryTailCallOpt(ctx context.Context, w *World, x Node, sym Symbol) (err error) {
-	if sym < 0 {
+// If target.Car is current function symbol, then make and return an instance of _ErrTailCallOpt
+func testCarIsCurrFunc(ctx context.Context, w *World, target Node, currFunc Symbol) (err error) {
+	if currFunc < 0 {
 		return nil
 	}
-	cons, ok := x.(*Cons)
-	if !ok || IsNone(cons.Car) || !cons.Car.Equals(sym, EQUAL) {
+	cons, ok := target.(*Cons)
+	if !ok || IsNone(cons.Car) || !cons.Car.Equals(currFunc, EQUAL) {
 		return nil
 	}
 
@@ -265,9 +266,31 @@ func tryTailCallOpt(ctx context.Context, w *World, x Node, sym Symbol) (err erro
 }
 
 var (
-	symIf  = NewSymbol("if")
-	symLet = NewSymbol("let")
+	symIf    = NewSymbol("if")
+	symLet   = NewSymbol("let")
+	symProgn = NewSymbol("progn")
 )
+
+// Evaluate the target considering the tail call optimization.
+func evalWithTailCallOpt(ctx context.Context, w *World, target Node, currFunc Symbol) (Node, error) {
+	if currFunc >= 0 {
+		if err := testCarIsCurrFunc(ctx, w, target, currFunc); err != nil {
+			return nil, err
+		}
+		if cons, ok := target.(*Cons); ok {
+			if symIf.Equals(cons.Car, EQUAL) {
+				return cmdIfWithTailCallOpt(ctx, w, cons.Cdr, currFunc)
+			}
+			if symLet.Equals(cons.Car, EQUAL) {
+				return cmdLetWithTailCallOpt(ctx, w, cons.Cdr, currFunc)
+			}
+			if symProgn.Equals(cons.Car, EQUAL) {
+				return prognWithTailCallOpt(ctx, w, cons.Cdr, currFunc)
+			}
+		}
+	}
+	return target.Eval(ctx, w)
+}
 
 func prognWithTailCallOpt(ctx context.Context, w *World, n Node, sym Symbol) (value Node, err error) {
 	value = Null
@@ -279,39 +302,15 @@ func prognWithTailCallOpt(ctx context.Context, w *World, n Node, sym Symbol) (va
 			return nil, err
 		}
 		if sym >= 0 && IsNone(n) {
-			// last field
-			if err := tryTailCallOpt(ctx, w, first, sym); err != nil {
-				return nil, err
-			}
-			if cons, ok := first.(*Cons); ok {
-				if symIf.Equals(cons.Car, EQUAL) {
-					return cmdIfWithTailCallOpt(ctx, w, cons.Cdr, sym)
-				}
-				if symLet.Equals(cons.Car, EQUAL) {
-					return cmdLetWithTailCallOpt(ctx, w, cons.Cdr, sym)
-				}
-			}
+			value, err = evalWithTailCallOpt(ctx, w, first, sym)
+		} else {
+			value, err = first.Eval(ctx, w)
 		}
-		value, err = first.Eval(ctx, w)
 		if err != nil {
 			return nil, err
 		}
 	}
 	return value, nil
-}
-
-var symProgn = NewSymbol("progn")
-
-func evalWithTailCallOpt(ctx context.Context, w *World, value Node, tailOptSym Symbol) (Node, error) {
-	if tailOptSym >= 0 {
-		if err := tryTailCallOpt(ctx, w, value, tailOptSym); err != nil {
-			return nil, err
-		}
-		if cons, ok := value.(*Cons); ok && symProgn.Equals(cons.Car, EQUAL) {
-			return prognWithTailCallOpt(ctx, w, value, tailOptSym)
-		}
-	}
-	return value.Eval(ctx, w)
 }
 
 func (L *_Lambda) Eval(context.Context, *World) (Node, error) {
