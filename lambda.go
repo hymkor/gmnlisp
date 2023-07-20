@@ -285,10 +285,10 @@ func prognWithTailCallOpt(ctx context.Context, w *World, n Node, sym Symbol) (va
 			}
 			if cons, ok := first.(*Cons); ok {
 				if symIf.Equals(cons.Car, EQUAL) {
-					return cmdIfSym(ctx, w, cons.Cdr, sym)
+					return cmdIfWithTailCallOpt(ctx, w, cons.Cdr, sym)
 				}
 				if symLet.Equals(cons.Car, EQUAL) {
-					return cmdLetSym(ctx, w, cons.Cdr, sym)
+					return cmdLetWithTailCallOpt(ctx, w, cons.Cdr, sym)
 				}
 			}
 		}
