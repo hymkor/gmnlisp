@@ -116,6 +116,10 @@ func cmdLetWithTailCallOpt(ctx context.Context, w *World, params Node, tailOptSy
 }
 
 func cmdLetX(ctx context.Context, w *World, params Node) (Node, error) {
+	return cmdLetXWithTailCallOpt(ctx, w, params, -1)
+}
+
+func cmdLetXWithTailCallOpt(ctx context.Context, w *World, params Node, tailOptSym Symbol) (Node, error) {
 	// from CommonLisp
 	list, params, err := Shift(params)
 	if err != nil {
@@ -128,8 +132,7 @@ func cmdLetX(ctx context.Context, w *World, params Node) (Node, error) {
 	if err := letValuesToVars(ctx, newWorld, list, lexical); err != nil {
 		return nil, err
 	}
-
-	return Progn(ctx, newWorld, params)
+	return prognWithTailCallOpt(ctx, newWorld, params, tailOptSym)
 }
 
 // cmdDefglobal implements (defglobal) of ISLisp and (defparameter) of CommonLisp

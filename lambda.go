@@ -268,6 +268,7 @@ func testCarIsCurrFunc(ctx context.Context, w *World, target Node, currFunc Symb
 var (
 	symIf    = NewSymbol("if")
 	symLet   = NewSymbol("let")
+	symLetX  = NewSymbol("let*")
 	symProgn = NewSymbol("progn")
 )
 
@@ -283,6 +284,9 @@ func evalWithTailCallOpt(ctx context.Context, w *World, target Node, currFunc Sy
 			}
 			if symLet.Equals(cons.Car, EQUAL) {
 				return cmdLetWithTailCallOpt(ctx, w, cons.Cdr, currFunc)
+			}
+			if symLetX.Equals(cons.Car, EQUAL) {
+				return cmdLetXWithTailCallOpt(ctx, w, cons.Cdr, currFunc)
 			}
 			if symProgn.Equals(cons.Car, EQUAL) {
 				return prognWithTailCallOpt(ctx, w, cons.Cdr, currFunc)
