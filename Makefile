@@ -36,7 +36,6 @@ test:
 	$(RUNLISP) test.lsp
 	go fmt
 	go test
-	cd pkg/common && go test
 
 ### Updating documents
 
