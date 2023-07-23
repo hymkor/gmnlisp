@@ -115,12 +115,12 @@ func (L *_Lambda) PrintTo(w io.Writer, m PrintMode) (int, error) {
 
 var trace = map[Symbol]int{}
 
-type _ErrTailCallOpt struct {
+type _ErrTailRecOpt struct {
 	params Node
 }
 
-func (*_ErrTailCallOpt) Error() string {
-	return "_ErrTailCallOpt was not catched."
+func (*_ErrTailRecOpt) Error() string {
+	return "_ErrTailRecOpt was not catched."
 }
 
 func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
@@ -193,13 +193,13 @@ func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
 	var err error
 	for {
 		newWorld := L.lexical.Let(lexical)
-		result, err = prognWithTailCallOpt(ctx, newWorld, L.code, L.name)
+		result, err = prognWithTailRecOpt(ctx, newWorld, L.code, L.name)
 
-		var errTailCallOpt *_ErrTailCallOpt
-		if !errors.As(err, &errTailCallOpt) {
+		var errTailRecOpt *_ErrTailRecOpt
+		if !errors.As(err, &errTailRecOpt) {
 			break
 		}
-		n = errTailCallOpt.params
+		n = errTailRecOpt.params
 		foundSlash = false
 		for _, name := range L.param {
 			if name == slashSymbol {
@@ -237,7 +237,7 @@ func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
 	return result, nil
 }
 
-// If target.Car is current function symbol, then make and return an instance of _ErrTailCallOpt
+// If target.Car is current function symbol, then make and return an instance of _ErrTailRecOpt
 func testCarIsCurrFunc(ctx context.Context, w *World, target Node, currFunc Symbol) (err error) {
 	if currFunc < 0 {
 		return nil
@@ -262,7 +262,7 @@ func testCarIsCurrFunc(ctx context.Context, w *World, target Node, currFunc Symb
 	if err != nil {
 		panic(err.Error())
 	}
-	return &_ErrTailCallOpt{params: evaled}
+	return &_ErrTailRecOpt{params: evaled}
 }
 
 var (
@@ -273,30 +273,30 @@ var (
 )
 
 // Evaluate the target considering the tail call optimization.
-func evalWithTailCallOpt(ctx context.Context, w *World, target Node, currFunc Symbol) (Node, error) {
+func evalWithTailRecOpt(ctx context.Context, w *World, target Node, currFunc Symbol) (Node, error) {
 	if currFunc >= 0 {
 		if err := testCarIsCurrFunc(ctx, w, target, currFunc); err != nil {
 			return nil, err
 		}
 		if cons, ok := target.(*Cons); ok {
 			if symIf.Equals(cons.Car, EQUAL) {
-				return cmdIfWithTailCallOpt(ctx, w, cons.Cdr, currFunc)
+				return cmdIfWithTailRecOpt(ctx, w, cons.Cdr, currFunc)
 			}
 			if symLet.Equals(cons.Car, EQUAL) {
-				return cmdLetWithTailCallOpt(ctx, w, cons.Cdr, currFunc)
+				return cmdLetWithTailRecOpt(ctx, w, cons.Cdr, currFunc)
 			}
 			if symLetX.Equals(cons.Car, EQUAL) {
-				return cmdLetXWithTailCallOpt(ctx, w, cons.Cdr, currFunc)
+				return cmdLetXWithTailRecOpt(ctx, w, cons.Cdr, currFunc)
 			}
 			if symProgn.Equals(cons.Car, EQUAL) {
-				return prognWithTailCallOpt(ctx, w, cons.Cdr, currFunc)
+				return prognWithTailRecOpt(ctx, w, cons.Cdr, currFunc)
 			}
 		}
 	}
 	return target.Eval(ctx, w)
 }
 
-func prognWithTailCallOpt(ctx context.Context, w *World, n Node, sym Symbol) (value Node, err error) {
+func prognWithTailRecOpt(ctx context.Context, w *World, n Node, sym Symbol) (value Node, err error) {
 	value = Null
 	for IsSome(n) {
 		var first Node
@@ -306,7 +306,7 @@ func prognWithTailCallOpt(ctx context.Context, w *World, n Node, sym Symbol) (va
 			return nil, err
 		}
 		if sym >= 0 && IsNone(n) {
-			value, err = evalWithTailCallOpt(ctx, w, first, sym)
+			value, err = evalWithTailRecOpt(ctx, w, first, sym)
 		} else {
 			value, err = first.Eval(ctx, w)
 		}

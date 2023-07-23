@@ -96,10 +96,10 @@ func letValuesToVars(ctx context.Context, w *World, list Node, lexical map[Symbo
 }
 
 func cmdLet(ctx context.Context, w *World, params Node) (Node, error) {
-	return cmdLetWithTailCallOpt(ctx, w, params, -1)
+	return cmdLetWithTailRecOpt(ctx, w, params, -1)
 }
 
-func cmdLetWithTailCallOpt(ctx context.Context, w *World, params Node, tailOptSym Symbol) (Node, error) {
+func cmdLetWithTailRecOpt(ctx context.Context, w *World, params Node, tailOptSym Symbol) (Node, error) {
 	// from CommonLisp
 	list, params, err := Shift(params)
 	if err != nil {
@@ -112,14 +112,14 @@ func cmdLetWithTailCallOpt(ctx context.Context, w *World, params Node, tailOptSy
 	}
 
 	newWorld := w.Let(lexical)
-	return prognWithTailCallOpt(ctx, newWorld, params, tailOptSym)
+	return prognWithTailRecOpt(ctx, newWorld, params, tailOptSym)
 }
 
 func cmdLetX(ctx context.Context, w *World, params Node) (Node, error) {
-	return cmdLetXWithTailCallOpt(ctx, w, params, -1)
+	return cmdLetXWithTailRecOpt(ctx, w, params, -1)
 }
 
-func cmdLetXWithTailCallOpt(ctx context.Context, w *World, params Node, tailOptSym Symbol) (Node, error) {
+func cmdLetXWithTailRecOpt(ctx context.Context, w *World, params Node, tailOptSym Symbol) (Node, error) {
 	// from CommonLisp
 	list, params, err := Shift(params)
 	if err != nil {
@@ -132,7 +132,7 @@ func cmdLetXWithTailCallOpt(ctx context.Context, w *World, params Node, tailOptS
 	if err := letValuesToVars(ctx, newWorld, list, lexical); err != nil {
 		return nil, err
 	}
-	return prognWithTailCallOpt(ctx, newWorld, params, tailOptSym)
+	return prognWithTailRecOpt(ctx, newWorld, params, tailOptSym)
 }
 
 // cmdDefglobal implements (defglobal) of ISLisp and (defparameter) of CommonLisp
