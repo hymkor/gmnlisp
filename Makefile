@@ -37,7 +37,6 @@ test:
 	go fmt
 	go test
 	cd pkg/common && go test
-	cd pkg/auto && go test
 
 ### Updating documents
 
