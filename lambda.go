@@ -270,6 +270,7 @@ var (
 	symLet   = NewSymbol("let")
 	symLetX  = NewSymbol("let*")
 	symProgn = NewSymbol("progn")
+	symCond  = NewSymbol("cond")
 )
 
 // Evaluate the target considering the tail call optimization.
@@ -290,6 +291,9 @@ func evalWithTailRecOpt(ctx context.Context, w *World, target Node, currFunc Sym
 			}
 			if symProgn.Equals(cons.Car, EQUAL) {
 				return prognWithTailRecOpt(ctx, w, cons.Cdr, currFunc)
+			}
+			if symCond.Equals(cons.Car, EQUAL) {
+				return cmdCondWithTailRecOpt(ctx, w, cons.Cdr, currFunc)
 			}
 		}
 	}

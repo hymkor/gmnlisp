@@ -111,6 +111,10 @@ func funThrow(ctx context.Context, w *World, list []Node) (Node, error) {
 }
 
 func cmdCond(ctx context.Context, w *World, list Node) (Node, error) {
+	return cmdCondWithTailRecOpt(ctx, w, list, -1)
+}
+
+func cmdCondWithTailRecOpt(ctx context.Context, w *World, list Node, currFunc Symbol) (Node, error) {
 	for IsSome(list) {
 		var condAndAct Node
 		var err error
@@ -124,7 +128,7 @@ func cmdCond(ctx context.Context, w *World, list Node) (Node, error) {
 			return nil, err
 		}
 		if IsSome(cond) {
-			return Progn(ctx, w, act)
+			return prognWithTailRecOpt(ctx, w, act, currFunc)
 		}
 	}
 	return Null, nil
