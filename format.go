@@ -243,21 +243,21 @@ func formatSub(w *_WriterNode, argv []Node) error {
 
 		var err error
 		switch c {
-		case 'd':
+		case 'd', 'D':
 			err = printInt(w, value, 10, parameter...)
-		case 'x':
+		case 'x', 'X':
 			err = printInt(w, value, 16, parameter...)
-		case 'o':
+		case 'o', 'O':
 			err = printInt(w, value, 8, parameter...)
-		case 'b':
+		case 'b', 'B':
 			err = printInt(w, value, 2, parameter...)
-		case 'f':
+		case 'f', 'F':
 			err = printFloat(w, value, 'f', parameter...)
-		case 'e':
+		case 'e', 'E':
 			err = printFloat(w, value, 'e', parameter...)
-		case 'g':
+		case 'g', 'G':
 			err = printFloat(w, value, 'g', parameter...)
-		case 'a':
+		case 'a', 'A':
 			n, err := value.PrintTo(w, PRINC)
 			if err != nil {
 				return err
@@ -265,7 +265,7 @@ func formatSub(w *_WriterNode, argv []Node) error {
 			if len(parameter) >= 1 {
 				printSpaces(parameter[0]-n, w)
 			}
-		case 's':
+		case 's', 'S':
 			n, err := value.PrintTo(w, PRINT)
 			if err != nil {
 				return err
