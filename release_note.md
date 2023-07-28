@@ -2,6 +2,8 @@
 - Shape output of stacktrace
 - Implement `(*World) Range(Symbol,Node)`
 - Implement `(gmn:dump-session)` and World.
+- Fix: (format): the sequence "~X" (X is an upper case letter) did not work
+- Remove the sub packages: "pkg/auto" and "pkg/common"
 
 V0.2.1
 ======
