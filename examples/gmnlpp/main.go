@@ -12,7 +12,6 @@ import (
 	"strings"
 
 	"github.com/hymkor/gmnlisp"
-	"github.com/hymkor/gmnlisp/pkg/auto"
 	"github.com/nyaosorg/go-windows-mbcs"
 )
 
@@ -117,7 +116,7 @@ func replaceReader(lisp *gmnlisp.World, r io.Reader, w, sourceOut io.Writer) (er
 var flagAnsi = flag.Bool("ansi", false, "macro value is not UTF8 (ANSI)")
 
 func mains(args []string) error {
-	lisp := gmnlisp.New().Let(auto.Functions)
+	lisp := gmnlisp.New()
 	ctx := context.Background()
 
 	f1, err := lisp.Interpret(ctx, `(lambda (s) (format (standard-output) "~a~%" s))`)
