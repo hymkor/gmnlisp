@@ -1,3 +1,7 @@
+v0.3.0
+======
+Jul 29, 2023
+
 - Support the symbol whose name is enclosed by vertical-bars (Specification of ISLisp)
 - Changed display format of stack trace
 - Implement `(*World) Range(Symbol,Node)` to provide an iterator of each variable.
