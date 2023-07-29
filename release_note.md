@@ -1,7 +1,7 @@
-- Support the symbol whose name is enclosed by vertical-bars
-- Shape output of stacktrace
-- Implement `(*World) Range(Symbol,Node)`
-- Implement `(gmn:dump-session)` and World.
+- Support the symbol whose name is enclosed by vertical-bars (Specification of ISLisp)
+- Changed display format of stack trace
+- Implement `(*World) Range(Symbol,Node)` to provide an iterator of each variable.
+- Implement `(gmn:dump-session)` to print all variables' names and values.
 - Support following cases of tail recursion optimization:
     - `(defun X () .. (X) )`
     - `(defun X () .. (progn (X)) )`
