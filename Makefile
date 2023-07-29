@@ -9,7 +9,7 @@ else
     RM=rm
 endif
 
-NAME=$(notdir $(abspath .))
+NAME=$(notdir $(CURDIR))
 EXE=$(shell go env GOEXE)
 VERSION=$(shell git describe --tags)
 
