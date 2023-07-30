@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/mattn/go-colorable v0.1.12
 	github.com/nyaosorg/go-readline-ny v0.13.2
-	github.com/nyaosorg/go-windows-mbcs v0.0.0-20220625075624-7e48d6c9b323
+	github.com/nyaosorg/go-windows-mbcs v0.4.2
 )
 
 require (
@@ -15,4 +15,5 @@ require (
 	github.com/mattn/go-tty v0.0.5 // indirect
 	github.com/rivo/uniseg v0.4.4 // indirect
 	golang.org/x/sys v0.10.0 // indirect
+	golang.org/x/text v0.9.0 // indirect
 )
