@@ -1,4 +1,4 @@
-package gmnlisp
+package parser
 
 import (
 	"strings"
@@ -35,14 +35,4 @@ func TestTokenizer1(t *testing.T) {
 	if err == nil {
 		t.Fatal("empty string")
 	}
-
-	assertEqual(t, `"\""`, String(`"`))
-}
-
-func TestComment(t *testing.T) {
-	assertEqual(t, `(list 1 #|ahaha ihihi|# 2)`, List(Integer(1), Integer(2)))
-}
-
-func TestParser(t *testing.T) {
-	assertEqual(t, `"foo\\bar\\gar"`, String(`foo\bar\gar`))
 }

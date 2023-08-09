@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"io"
+
+	"github.com/hymkor/gmnlisp/pkg/parser"
 )
 
 var (
@@ -25,13 +27,14 @@ var (
 	ErrNotSupportType       = errors.New("not support type")
 	ErrQuit                 = errors.New("bye")
 	ErrAbort                = errors.New("abort")
-	ErrTooFewArguments      = errors.New("too few arguments")
-	ErrTooManyArguments     = errors.New("too many arguments")
-	ErrTooShortTokens       = errors.New("too short tokens")
 	ErrVariableUnbound      = errors.New("unbound variable")
-	ErrCanNotParseNumber    = errors.New("can not parse number")
 	ErrExpectedArray        = errors.New("expected array")
 	ErrExpectedMacro        = errors.New("expected macro")
+
+	ErrTooFewArguments   = parser.ErrTooFewArguments
+	ErrTooManyArguments  = parser.ErrTooManyArguments
+	ErrCanNotParseNumber = parser.ErrCanNotParseNumber
+	ErrTooShortTokens    = parser.ErrTooShortTokens
 )
 
 type EqlMode int

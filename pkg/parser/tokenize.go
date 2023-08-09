@@ -1,4 +1,4 @@
-package gmnlisp
+package parser
 
 import (
 	"fmt"
