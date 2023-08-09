@@ -1,6 +1,6 @@
 module github.com/hymkor/gmnlisp
 
-go 1.18
+go 1.20
 
 require (
 	github.com/mattn/go-colorable v0.1.12
