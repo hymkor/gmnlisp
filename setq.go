@@ -220,7 +220,7 @@ func (D *Dynamics) Close() {
 	}
 }
 
-func NewDynamics(w *World) *Dynamics {
+func (w *World) NewDynamics() *Dynamics {
 	return &Dynamics{
 		backups: make(map[Symbol]Node),
 		removes: make(map[Symbol]struct{}),
@@ -243,7 +243,7 @@ func cmdDynamicLet(ctx context.Context, w *World, list Node) (Node, error) {
 	var vars Node
 	var err error
 
-	D := NewDynamics(w)
+	D := w.NewDynamics()
 	defer D.Close()
 
 	vars, list, err = Shift(list)
