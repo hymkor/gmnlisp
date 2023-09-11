@@ -80,4 +80,7 @@ package:
 manifest:
 	go run mkmanifest.go *-windows-*.zip > gmnlisp.json
 
+release:
+	gh release create -d --notes "" -t $(VERSION) $(VERSION) $(wildcard $(NAME)-$(VERSION)-*.zip)
+
 .PHONY: generate test clean clean-gen sort-world _package package manifest
