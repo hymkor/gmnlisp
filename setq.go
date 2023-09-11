@@ -205,24 +205,51 @@ func cmdDynamic(ctx context.Context, w *World, list Node) (Node, error) {
 	return value, nil
 }
 
+type Dynamics struct {
+	backups map[Symbol]Node
+	removes map[Symbol]struct{}
+	world   *World
+}
+
+func (D *Dynamics) Close() {
+	for key := range D.removes {
+		delete(D.world.shared.dynamic, key)
+	}
+	for key, val := range D.backups {
+		D.world.shared.dynamic.Set(key, val)
+	}
+}
+
+func NewDynamics(w *World) *Dynamics {
+	return &Dynamics{
+		backups: make(map[Symbol]Node),
+		removes: make(map[Symbol]struct{}),
+		world:   w,
+	}
+}
+
+func (D *Dynamics) Add(symbol Symbol, newValue Node) {
+	if orig, ok := D.world.shared.dynamic.Get(symbol); ok {
+		D.backups[symbol] = orig
+	} else {
+		D.removes[symbol] = struct{}{}
+	}
+	if newValue != nil {
+		D.world.shared.dynamic.Set(symbol, newValue)
+	}
+}
+
 func cmdDynamicLet(ctx context.Context, w *World, list Node) (Node, error) {
 	var vars Node
 	var err error
+
+	D := NewDynamics(w)
+	defer D.Close()
 
 	vars, list, err = Shift(list)
 	if err != nil {
 		return nil, err
 	}
-	backups := make(map[Symbol]Node)
-	removes := make(map[Symbol]struct{})
-	defer func() {
-		for key := range removes {
-			delete(w.shared.dynamic, key)
-		}
-		for key, val := range backups {
-			w.shared.dynamic.Set(key, val)
-		}
-	}()
 
 	for IsSome(vars) {
 		var varAndValue Node
@@ -231,12 +258,7 @@ func cmdDynamicLet(ctx context.Context, w *World, list Node) (Node, error) {
 			return nil, err
 		}
 		if symbol, ok := varAndValue.(Symbol); ok {
-			if orig, ok := w.shared.dynamic.Get(symbol); ok {
-				backups[symbol] = orig
-			} else {
-				removes[symbol] = struct{}{}
-			}
-			w.shared.dynamic.Set(symbol, Null)
+			D.Add(symbol, Null)
 		} else {
 			var symbolNode Node
 			var value Node
@@ -256,12 +278,7 @@ func cmdDynamicLet(ctx context.Context, w *World, list Node) (Node, error) {
 			if IsSome(varAndValue) {
 				return nil, ErrTooManyArguments
 			}
-			if orig, ok := w.shared.dynamic.Get(symbol); ok {
-				backups[symbol] = orig
-			} else {
-				removes[symbol] = struct{}{}
-			}
-			w.shared.dynamic.Set(symbol, value)
+			D.Add(symbol, value)
 		}
 	}
 	return Progn(ctx, w, list)
