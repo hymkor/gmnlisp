@@ -1,3 +1,8 @@
+- Add tool type and functions for golang applications
+    - type `Dynamics` and its methods
+    - `(*World) NewDynamics` and `(*World) Dynamic`
+    - test code with `(dynamic...)`
+
 v0.3.0
 ======
 Jul 29, 2023
