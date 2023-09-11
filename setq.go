@@ -228,7 +228,7 @@ func (w *World) NewDynamics() *Dynamics {
 	}
 }
 
-func (D *Dynamics) Add(symbol Symbol, newValue Node) {
+func (D *Dynamics) Set(symbol Symbol, newValue Node) {
 	if orig, ok := D.world.shared.dynamic.Get(symbol); ok {
 		D.backups[symbol] = orig
 	} else {
@@ -258,7 +258,7 @@ func cmdDynamicLet(ctx context.Context, w *World, list Node) (Node, error) {
 			return nil, err
 		}
 		if symbol, ok := varAndValue.(Symbol); ok {
-			D.Add(symbol, Null)
+			D.Set(symbol, Null)
 		} else {
 			var symbolNode Node
 			var value Node
@@ -278,7 +278,7 @@ func cmdDynamicLet(ctx context.Context, w *World, list Node) (Node, error) {
 			if IsSome(varAndValue) {
 				return nil, ErrTooManyArguments
 			}
-			D.Add(symbol, value)
+			D.Set(symbol, value)
 		}
 	}
 	return Progn(ctx, w, list)
