@@ -228,6 +228,10 @@ func (w *World) NewDynamics() *Dynamics {
 	}
 }
 
+func (w *World) Dynamic(name Symbol) Node {
+	return w.shared.dynamic[name]
+}
+
 func (D *Dynamics) Set(symbol Symbol, newValue Node) {
 	if orig, ok := D.world.shared.dynamic.Get(symbol); ok {
 		D.backups[symbol] = orig
