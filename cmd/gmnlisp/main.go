@@ -19,6 +19,7 @@ import (
 	"github.com/mattn/go-colorable"
 	"github.com/nyaosorg/go-readline-ny"
 	"github.com/nyaosorg/go-readline-ny/simplehistory"
+	"github.com/nyaosorg/go-readline-skk"
 )
 
 var version string = "snapshot"
@@ -63,6 +64,25 @@ func (c *Coloring) Next(ch rune) readline.ColorSequence {
 	return color
 }
 
+type miniBuffer struct {
+	ed     *multiline.Editor
+	rewind func()
+}
+
+func (q *miniBuffer) Enter(w io.Writer, prompt string) (int, error) {
+	q.rewind = q.ed.GotoEndLine()
+	return io.WriteString(w, prompt)
+}
+
+func (q *miniBuffer) Leave(w io.Writer) (int, error) {
+	q.rewind()
+	return 0, nil
+}
+
+func (q *miniBuffer) Recurse() skk.MiniBuffer {
+	return skk.MiniBufferOnCurrentLine{}
+}
+
 func interactive(lisp *gmnlisp.World) error {
 	history := simplehistory.New()
 
@@ -97,6 +117,17 @@ func interactive(lisp *gmnlisp.World) error {
 		}
 		return count == 0
 	})
+
+	if env := os.Getenv("GOREADLINESKK"); env != "" {
+		_, err := skk.Config{
+			BindTo:         &editor.LineEditor,
+			MiniBuffer:     &miniBuffer{ed: &editor},
+			KeepModeOnExit: true,
+		}.SetupWithString(env)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err.Error())
+		}
+	}
 
 	fmt.Printf("gmnlisp %s-%s-%s by %s\n",
 		version,
