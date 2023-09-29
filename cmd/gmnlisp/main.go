@@ -32,8 +32,8 @@ func setArgv(w *gmnlisp.World, args []string) {
 	w.SetOrDefineParameter(gmnlisp.NewSymbol("*posix-argv*"), gmnlisp.List(posixArgv...))
 }
 
-func defaultPrompt() (int, error) {
-	return fmt.Print("gmnlisp> ")
+func defaultPrompt(w io.Writer) (int, error) {
+	return io.WriteString(w, "gmnlisp> ")
 }
 
 type Coloring struct {
@@ -69,7 +69,7 @@ func (c *Coloring) Next(ch rune) readline.ColorSequence {
 func interactive(lisp *gmnlisp.World) error {
 	history := simplehistory.New()
 	editor := readline.Editor{
-		Prompt:         defaultPrompt,
+		PromptWriter:   defaultPrompt,
 		Writer:         colorable.NewColorableStdout(),
 		History:        history,
 		Coloring:       &Coloring{},
@@ -91,7 +91,7 @@ func interactive(lisp *gmnlisp.World) error {
 			}
 			if err == readline.CtrlC {
 				buffer.Reset()
-				editor.Prompt = defaultPrompt
+				editor.PromptWriter = defaultPrompt
 				continue
 			}
 			fmt.Printf("ERR=%s\n", err.Error())
@@ -102,14 +102,14 @@ func interactive(lisp *gmnlisp.World) error {
 
 		nodes, err := gmnlisp.ReadAll(strings.NewReader(buffer.String()))
 		if err == gmnlisp.ErrTooShortTokens {
-			editor.Prompt = func() (int, error) {
-				return fmt.Print("> ")
+			editor.PromptWriter = func(w io.Writer) (int, error) {
+				return io.WriteString(w, "> ")
 			}
 			buffer.Write([]byte{'\n'})
 			continue
 		}
 		buffer.Reset()
-		editor.Prompt = defaultPrompt
+		editor.PromptWriter = defaultPrompt
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err.Error())
 			continue
