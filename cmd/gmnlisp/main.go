@@ -15,6 +15,7 @@ import (
 	_ "github.com/hymkor/gmnlisp/pkg/command"
 	_ "github.com/hymkor/gmnlisp/pkg/regexp"
 	_ "github.com/hymkor/gmnlisp/pkg/wildcard"
+	"github.com/hymkor/go-multiline-ny"
 	"github.com/mattn/go-colorable"
 	"github.com/nyaosorg/go-readline-ny"
 	"github.com/nyaosorg/go-readline-ny/simplehistory"
@@ -30,10 +31,6 @@ func setArgv(w *gmnlisp.World, args []string) {
 		posixArgv = append(posixArgv, gmnlisp.String(s))
 	}
 	w.SetOrDefineParameter(gmnlisp.NewSymbol("*posix-argv*"), gmnlisp.List(posixArgv...))
-}
-
-func defaultPrompt(w io.Writer) (int, error) {
-	return io.WriteString(w, "gmnlisp> ")
 }
 
 type Coloring struct {
@@ -68,13 +65,39 @@ func (c *Coloring) Next(ch rune) readline.ColorSequence {
 
 func interactive(lisp *gmnlisp.World) error {
 	history := simplehistory.New()
-	editor := readline.Editor{
-		PromptWriter:   defaultPrompt,
-		Writer:         colorable.NewColorableStdout(),
-		History:        history,
-		Coloring:       &Coloring{},
-		HistoryCycling: true,
-	}
+
+	var editor multiline.Editor
+
+	editor.SetHistory(history)
+	editor.SetWriter(colorable.NewColorableStdout())
+	editor.SetColoring(&Coloring{})
+	editor.SetPrompt(func(w io.Writer, i int) (int, error) {
+		if i == 0 {
+			return io.WriteString(w, "gmnlisp> ")
+		} else {
+			return fmt.Fprintf(w, "%7d> ", i+1)
+		}
+	})
+	editor.SubmitOnEnterWhen(func(lines []string, csrline int) bool {
+		quote := false
+		count := 0
+		for _, line := range lines {
+			for _, c := range line {
+				if c == '"' {
+					quote = !quote
+				}
+				if !quote {
+					if c == '(' {
+						count++
+					} else if c == ')' {
+						count--
+					}
+				}
+			}
+		}
+		return count == 0
+	})
+
 	fmt.Printf("gmnlisp %s-%s-%s by %s\n",
 		version,
 		runtime.GOOS,
@@ -82,39 +105,16 @@ func interactive(lisp *gmnlisp.World) error {
 		runtime.Version())
 
 	ctx := context.Background()
-	var buffer strings.Builder
 	for {
-		line, err := editor.ReadLine(ctx)
+		lines, err := editor.Read(ctx)
 		if err != nil {
-			if err == io.EOF { // Ctrl-D
-				return nil
-			}
-			if err == readline.CtrlC {
-				buffer.Reset()
-				editor.PromptWriter = defaultPrompt
-				continue
-			}
-			fmt.Printf("ERR=%s\n", err.Error())
-			return nil
+			return err
 		}
-		history.Add(line)
-		buffer.WriteString(line)
+		code := strings.Join(lines, "\n")
 
-		nodes, err := gmnlisp.ReadAll(strings.NewReader(buffer.String()))
-		if err == gmnlisp.ErrTooShortTokens {
-			editor.PromptWriter = func(w io.Writer) (int, error) {
-				return io.WriteString(w, "> ")
-			}
-			buffer.Write([]byte{'\n'})
-			continue
-		}
-		buffer.Reset()
-		editor.PromptWriter = defaultPrompt
-		if err != nil {
-			fmt.Fprintln(os.Stderr, err.Error())
-			continue
-		}
-		result, err := lisp.InterpretNodes(ctx, nodes)
+		history.Add(code)
+
+		result, err := lisp.Interpret(ctx, code)
 		if err != nil {
 			if errors.Is(err, gmnlisp.ErrQuit) {
 				return nil
@@ -122,8 +122,10 @@ func interactive(lisp *gmnlisp.World) error {
 			fmt.Fprintln(os.Stderr, err.Error())
 			continue
 		}
-		result.PrintTo(os.Stdout, gmnlisp.PRINT)
-		fmt.Println()
+		if gmnlisp.IsSome(result) {
+			result.PrintTo(os.Stdout, gmnlisp.PRINT)
+			fmt.Println()
+		}
 	}
 }
 
