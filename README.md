@@ -7,12 +7,10 @@ The Gmnlisp is a small Lisp implementation in Go.
 The functions are the subset of ISLisp's.
 It is developed to embbed to the applications for customizing.
 
-( Now under constructing. Experimental implementing )
-
 ![Example image](factorial.png)
 
-Install
--------
+Install executable
+------------------
 
 Download the binary package from [Releases](https://github.com/hymkor/gmnlisp/releases) and extract the executable.
 
@@ -228,10 +226,10 @@ Gmnlisp's functions are subset of ISLisp.
 
 - (= EXP1 EXP2...)
 - (/= EXP1 EXP2...)
-- (\< EXP1 EXP2...)
-- (\<= EXP1 EXP2...)
-- (\> EXP1 EXP2...)
-- (\>= EXP1 EXP2...)
+- (&lt; EXP1 EXP2...)
+- (&lt;= EXP1 EXP2...)
+- (&gt; EXP1 EXP2...)
+- (&gt;= EXP1 EXP2...)
 - (eq EXP1 EXP2...)
 - (eql EXP1 EXP2...)
 - (equal EXP1 EXP2...)
