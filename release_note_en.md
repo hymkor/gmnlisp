@@ -1,5 +1,9 @@
 - gmnlisp.exe: support multi-line editing by go-multiline-ny
-- gmnlisp.exe: support Japanese input method editor SKK by go-readline-skk
+- gmnlisp.exe: support Japanese input method editor SKK by go-readline-skk  
+    To use SKK,
+    - (Windows): `set "GOREADLINESKK=(system-jisyo-paths..);user=(user-jisyo-path)"`  
+        for example `set "GOREADLINESKK=~/Share/Etc/SKK-JISYO.*;user=~/.go-skk-jisyo"`
+    - (Linux): `export "GOREADLINESKK=(system-jisyo-paths..):user=(user-jisyo-path)"`
 
 v0.3.1
 ======
