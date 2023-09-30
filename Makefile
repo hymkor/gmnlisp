@@ -9,26 +9,21 @@ else
     RM=rm
 endif
 
-NAME=$(notdir $(CURDIR))
-EXE=$(shell go env GOEXE)
-VERSION=$(shell git describe --tags)
+NAME:=$(notdir $(CURDIR))
+EXE:=$(shell go env GOEXE)
+VERSION:=$(shell git describe --tags || echo v0.0.0)
 
-TARGET=$(NAME)$(EXE)
-
-ifeq ($(RUNLISP),)
-    RUNLISP="./$(TARGET)"
-endif
-
-all: $(TARGET)
-
+TARGET:=$(NAME)$(EXE)
+RUNLISP?="./$(TARGET)"
 GENERATES=sort-world newtypes.go stringer.go
-generate: $(GENERATES)
 
-$(TARGET): $(wildcard *.go) $(wildcard embed/*.lsp)
+all:
 	go fmt
 	go build
 	go fmt cmd/gmnlisp/main.go
-	cd cmd/gmnlisp && go build -o ../../$(TARGET) -ldflags "-s -w -X main.version=$(VERSION)"
+	go build -C cmd/gmnlisp -o "$(CURDIR)/$(TARGET)" -ldflags "-s -w -X main.version=$(VERSION)"
+
+generate: $(GENERATES)
 
 ### test ###
 
