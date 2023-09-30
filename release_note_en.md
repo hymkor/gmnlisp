@@ -1,3 +1,5 @@
+- Use reverse(ESC[7m) and underline(ESC[4m) for SKK conversion
+
 v0.4.0
 ======
 Sep 30, 2023
