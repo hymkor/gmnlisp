@@ -1,3 +1,7 @@
+v0.4.0
+======
+Sep 30, 2023
+
 - gmnlisp.exe: support multi-line editing by go-multiline-ny
 - gmnlisp.exe: support Japanese input method editor SKK by go-readline-skk  
     To use SKK,

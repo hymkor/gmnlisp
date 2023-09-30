@@ -1,3 +1,7 @@
+v0.4.0
+======
+Sep 30 2023
+
 - gmnlisp.exe: go-multiline-ny で複数行編集をサポート
 - gmnlisp.exe: SKK (go-readline-skk) での日本語入力をサポート  
   SKKを使用するには
