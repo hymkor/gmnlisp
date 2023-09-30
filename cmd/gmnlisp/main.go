@@ -49,14 +49,7 @@ func (c *Coloring) Next(ch rune) readline.ColorSequence {
 	prebits := c.bits
 	if c.last != '\\' && ch == '"' {
 		c.bits ^= 1
-	} else if ch == '▽' {
-		c.bits |= 2
-	} else if ch == '▼' {
-		c.bits |= 4
-	} else if ch == readline.CursorPositionDummyRune {
-		c.bits &^= 6
 	}
-
 	var color readline.ColorSequence
 	if (c.bits&1) != 0 || (prebits&1) != 0 {
 		color = readline.Magenta
@@ -67,18 +60,6 @@ func (c *Coloring) Next(ch rune) readline.ColorSequence {
 	} else {
 		color = readline.White
 	}
-
-	if (c.bits & 2) != 0 {
-		color = color.Add(7)
-	} else {
-		color = color.Add(27)
-	}
-	if (c.bits & 4) != 0 {
-		color = color.Add(4)
-	} else {
-		color = color.Add(24)
-	}
-
 	c.last = ch
 	return color
 }
@@ -109,7 +90,7 @@ func interactive(lisp *gmnlisp.World) error {
 
 	editor.SetHistory(history)
 	editor.SetWriter(colorable.NewColorableStdout())
-	editor.SetColoring(&Coloring{})
+	editor.SetColoring(&skk.Coloring{Base: &Coloring{}})
 	editor.SetPrompt(func(w io.Writer, i int) (int, error) {
 		if i == 0 {
 			return io.WriteString(w, "gmnlisp> ")
