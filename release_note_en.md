@@ -1,3 +1,7 @@
+v0.4.1
+======
+Oct 01, 2023
+
 - gmnlisp.exe: Use reverse(ESC[7m) and underline(ESC[4m) for SKK conversion
 - gmnlisp.exe: Fix: SKK failed to start when user-jisyo did not exist
 
