@@ -1,4 +1,5 @@
-- Use reverse(ESC[7m) and underline(ESC[4m) for SKK conversion
+- gmnlisp.exe: Use reverse(ESC[7m) and underline(ESC[4m) for SKK conversion
+- gmnlisp.exe: Fix: SKK failed to start when user-jisyo did not exist
 
 v0.4.0
 ======
