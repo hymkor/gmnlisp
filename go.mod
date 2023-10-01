@@ -6,7 +6,7 @@ require (
 	github.com/hymkor/go-multiline-ny v0.12.1
 	github.com/mattn/go-colorable v0.1.13
 	github.com/nyaosorg/go-readline-ny v0.15.1
-	github.com/nyaosorg/go-readline-skk v0.0.0-20230929171227-5464e4859dba
+	github.com/nyaosorg/go-readline-skk v0.0.0-20230930235910-657651632cc7
 	github.com/nyaosorg/go-windows-mbcs v0.4.2
 )
 
