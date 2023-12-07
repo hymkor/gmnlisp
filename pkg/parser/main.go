@@ -11,10 +11,11 @@ import (
 )
 
 var (
-	rxFloat1  = regexp.MustCompile(`^[\-\+]?[0-9]+\.[0-9]*([eE][\-\+]?\d+)?$`)
-	rxFloat2  = regexp.MustCompile(`^[\-\+]?[0-9]+[eE][-+]?\d+$`)
-	rxInteger = regexp.MustCompile(`^-?[0-9]+$`)
-	rxArray   = regexp.MustCompile(`^#(\d*)[aA]\(`)
+	rxFloat1     = regexp.MustCompile(`^[\-\+]?[0-9]+\.[0-9]*([eE][\-\+]?\d+)?$`)
+	rxFloat2     = regexp.MustCompile(`^[\-\+]?[0-9]+[eE][-+]?\d+$`)
+	rxInteger    = regexp.MustCompile(`^-?[0-9]+$`)
+	rxHexInteger = regexp.MustCompile(`^\#[Xx][0-9A-Fa-f]+$`)
+	rxArray      = regexp.MustCompile(`^#(\d*)[aA]\(`)
 )
 
 var (
@@ -142,10 +143,15 @@ func (p *_Parser[N]) tryParseAsFloat(token string) (N, bool, error) {
 }
 
 func (p *_Parser[N]) tryParseAsInt(token string) (N, bool, error) {
-	if !rxInteger.MatchString(token) {
+	var val int64
+	var err error
+	if rxInteger.MatchString(token) {
+		val, err = strconv.ParseInt(token, 10, 63)
+	} else if rxHexInteger.MatchString(token) {
+		val, err = strconv.ParseInt(token[2:], 16, 63)
+	} else {
 		return p.Null(), false, nil
 	}
-	val, err := strconv.ParseInt(token, 10, 63)
 	if err != nil {
 		return p.Null(), true, fmt.Errorf("%s: %w", token, err)
 	}
