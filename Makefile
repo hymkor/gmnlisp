@@ -18,7 +18,7 @@ RUNLISP?="./$(TARGET)"
 GENERATES=sort-world newtypes.go stringer.go
 
 all:
-	go fmt
+	go fmt ./...
 	go build
 	go fmt cmd/gmnlisp/main.go
 	go build -C cmd/gmnlisp -o "$(CURDIR)/$(TARGET)" -ldflags "-s -w -X main.version=$(VERSION)"
