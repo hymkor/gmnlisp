@@ -161,3 +161,27 @@ func TestFloat(t *testing.T) {
 	testFloat(t, "7e3", 7000)
 	testFloat(t, "-7e-3", -0.007)
 }
+
+func testInt(t *testing.T, text string, expected int) {
+	t.Helper()
+
+	w := New()
+	ctx := context.TODO()
+	val, err := w.Interpret(ctx, text)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	value, ok := val.(Integer)
+	if !ok {
+		t.Fatalf("Not a integer: '%v'", val)
+	}
+	value_ := int(value)
+	if value_ != expected {
+		t.Fatalf("expected '%v' but '%v'", expected, value_)
+	}
+}
+
+func TestInt(t *testing.T) {
+	testInt(t, "1", 1)
+	testInt(t, "-10", -10)
+}
