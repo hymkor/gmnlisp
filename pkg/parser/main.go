@@ -11,7 +11,8 @@ import (
 )
 
 var (
-	rxFloat   = regexp.MustCompile(`^-?[0-9]+\.[0-9]*$`)
+	rxFloat1  = regexp.MustCompile(`^[\-\+]?[0-9]+\.[0-9]*([eE][\-\+]?\d+)?$`)
+	rxFloat2  = regexp.MustCompile(`^[\-\+]?[0-9]+[eE][-+]?\d+$`)
 	rxInteger = regexp.MustCompile(`^-?[0-9]+$`)
 	rxArray   = regexp.MustCompile(`^#(\d*)[aA]\(`)
 )
@@ -130,7 +131,7 @@ func (p *_Parser[N]) newBackQuote(value N) N {
 }
 
 func (p *_Parser[N]) tryParseAsFloat(token string) (N, bool, error) {
-	if !rxFloat.MatchString(token) {
+	if !rxFloat1.MatchString(token) && !rxFloat2.MatchString(token) {
 		return p.Null(), false, nil
 	}
 	val, err := strconv.ParseFloat(token, 64)
