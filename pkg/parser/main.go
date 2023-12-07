@@ -16,6 +16,7 @@ var (
 	rxInteger    = regexp.MustCompile(`^-?[0-9]+$`)
 	rxHexInteger = regexp.MustCompile(`^\#[Xx][0-9A-Fa-f]+$`)
 	rxOctInteger = regexp.MustCompile(`^\#[Oo][0-7]+$`)
+	rxBinInteger = regexp.MustCompile(`^\#[Bb][01]+$`)
 	rxArray      = regexp.MustCompile(`^#(\d*)[aA]\(`)
 )
 
@@ -152,6 +153,8 @@ func (p *_Parser[N]) tryParseAsInt(token string) (N, bool, error) {
 		val, err = strconv.ParseInt(token[2:], 16, 63)
 	} else if rxOctInteger.MatchString(token) {
 		val, err = strconv.ParseInt(token[2:], 8, 63)
+	} else if rxBinInteger.MatchString(token) {
+		val, err = strconv.ParseInt(token[2:], 2, 63)
 	} else {
 		return p.Null(), false, nil
 	}
