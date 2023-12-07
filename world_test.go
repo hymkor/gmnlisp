@@ -3,6 +3,7 @@ package gmnlisp
 import (
 	"context"
 	"errors"
+	"math"
 	"testing"
 	"time"
 )
@@ -131,3 +132,28 @@ func TestIf(t *testing.T) {
 }
 
 var _ CanKnowLastOutput = &_WriterNode{}
+
+func testFloat(t *testing.T, text string, expected float64) {
+	t.Helper()
+
+	w := New()
+	ctx := context.TODO()
+	val, err := w.Interpret(ctx, text)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	value, ok := val.(Float)
+	if !ok {
+		t.Fatalf("Not a float number: '%v'", val)
+	}
+	value_ := float64(value)
+	epsilon := math.Abs(expected) * 1e-6
+	if value_ < expected-epsilon || expected+epsilon < value_ {
+		t.Fatalf("expected '%v' but '%v'", expected, value_)
+	}
+}
+
+func TestFloat(t *testing.T) {
+	testFloat(t, "1.0", 1.0)
+	testFloat(t, "10.", 10.0)
+}
