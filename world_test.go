@@ -186,4 +186,6 @@ func TestInt(t *testing.T) {
 	testInt(t, "-10", -10)
 	testInt(t, "#xB", 11)
 	testInt(t, "#X1c", 16+12)
+	testInt(t, "#o77", 077)
+	testInt(t, "#O123", 0123)
 }
