@@ -1,3 +1,6 @@
+- Support exponential representation of floating point real numbers
+- Add integer formats: `#b..`, `#o..`, and `#x..`
+
 v0.4.1
 ======
 Oct 01, 2023
