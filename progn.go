@@ -360,3 +360,11 @@ mainloop:
 	}
 	return Null, nil
 }
+
+func cmdIgnoreErrors(ctx context.Context, w *World, n Node) (Node, error) {
+	val, err := Progn(ctx, w, n)
+	if err != nil {
+		return Null, nil
+	}
+	return val, nil
+}
