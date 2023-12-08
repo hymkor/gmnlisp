@@ -313,6 +313,7 @@ Gmnlisp's functions are subset of ISLisp.
 - (dotimes (VAR N) FORM...) [MACRO]
 - (when TEST-FORM THEN-FORM...)
 - (unless TEST-FORM ELSE-FORM...)
+- (ignore-errors FORMS...)
 
 #### Functions
 
