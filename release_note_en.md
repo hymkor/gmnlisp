@@ -1,5 +1,6 @@
 - Support exponential representation of floating point real numbers
 - Add integer formats: `#b..`, `#o..`, and `#x..`
+- Implement `(ignore-errors FORMS...)`
 
 v0.4.1
 ======
