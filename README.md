@@ -177,213 +177,554 @@ Support functions
 
 Gmnlisp's functions are subset of ISLisp.
 
-#### List and Sequence
+### 1 Scope, Conventions and Compliance
 
-- (cons OBJ1 OBJ2)
-- (car CONS)
-- (cdr CONS)
-- (quote OBJ)
-- 'OBJ
-- (list OBJ...)
-- (rest LIST)
-- (length SEQUENCE)
-- (last LIST)
-- (reverse LIST)
-- (nreverse LIST)
-- (append LIST...)
-- (assoc OBJ LIST)
-- (subseq SEQUENCE Z1 Z2)
-- (elt SEQUENCE INDEX)
-- (member ATOM LIST)
-- (create-list I INITIAL-ELEMENT)
+### 2 Classes
 
-#### array
+### 3 Scope and Extent
 
+#### 3.1 The lexical Principle
+#### 3.2 Scope of Identifiers
+#### 3.3 Some Specific Scope Rules
+#### 3.4 Extent
+
+- [x] block
+- [x] dynamic-let
+- [x] flet
+- [x] for
+- [x] labels
+- [x] let
+- [x] let\*
+- [x] tagbody
+- [ ] with-error-output
+- [ ] with-open-input-file
+- [ ] with-open-io-file
+- [x] with-open-output-file
+- [ ] with-standard-input
+- [ ] with-standard-output
+
+### 4 Forms and Evaluation
+
+#### 4.1 Forms
+#### 4.2 Function Application Forms
+#### 4.3 Special Forms
+
+- [x] and
+- [ ] assure
+- [x] block
+- [x] case
+- [x] case-using
+- [x] catch
+- [ ] class
+- [x] cond
+- [x] convert
+- [x] dynamic
+- [x] dynamic-let
+- [x] flet
+- [x] for
+- [x] function
+    - [x] &amp;rest
+    - ([x] #'FUNCTION)
+- [x] go
+- [x] if
+- [x] ignore-errors
+- [x] labels
+- [x] lambda
+- [x] let
+- [x] let\*
+- [x] or
+- [x] progn
+- [x] quote
+- [x] return-from
+- [x] setf
+- [x] setq
+- [x] tagbody
+- [ ] the
+- [x] throw
+- [x] unwind-protect
+- [x] while
+- [ ] with-error-output
+- [ ] with-handler
+- [ ] with-open-input-file
+- [ ] with-open-io-file
+- [x] with-open-output-file
+- [ ] with-standard-input
+- [ ] with-standard-output
+
+#### 4.4 Defining Forms
+
+- [ ] defclass
+- [ ] defconstant
+- [x] defdynamic
+- [ ] defgeneric
+- [x] defglobal
+- [x] defmacro
+- [ ] defmethod
+- [x] defun
+
+#### 4.5 Macro Forms
+#### 4.6 The Evaluation Model
+#### 4.7 Functions
+
+- [x] functionp
+- [x] function
+- [x] lambda
+- [x] labels
+- [x] flet
+- [x] apply
+- [x] funcall
+
+#### 4.8 Defining Operators
+
+- [ ] defconstant
+- [x] defglobal
+- [x] defdynamic
+- [x] defun
+
+### 5 Predicates
+
+#### 5.1 Boolean Values
+
+- [x] t
+- [x] nil
+
+#### 5.2 Class Predicates
+
+- ([x] atom)
+- [x] basic-array-p
+- [x] basic-array\*-p
+- [ ] basic-vector-p
+- [x] characterp
+- [x] consp
+- [x] floatp
+- [x] functionp
+- [x] general-array\*-p
+- [ ] general-vector-p
+- [ ] generic-function-p
+- [x] integerp
+- [x] listp
+- [x] null
+- [x] numberp
+- [ ] streamp
+- [x] stringp
+- [x] symbolp
+- ([x] atom OBJ)
+- ([x] evenp OBJ)
+- ([x] minusp OBJ)
+- ([x] oddp OBJ)
+- ([x] plusp OBJ)
+- ([x] zerop OBJ)
+
+#### 5.3 Equality
+
+- [x] eq
+- [x] eql
+- [x] equal
+- ([x] equalp )
+
+#### 5.4 Logical Connectives
+
+- [x] not
+- [x] and
+- [x] or
+
+### 6 Control Structure
+#### 6.1 Constants
+
+- [x] \(quote\)
+- [x] 'OBJ
+
+#### 6.2 Variables
+
+- [x] setq
+- [x] setf
+- [x] let
+- [x] let\*
+
+#### 6.3 Dynamic Variables
+
+- [x] dynamic
+- [x] dynamic-let
+
+#### 6.4 Conditional Expressions
+
+- [x] if
+- [x] cond
+- [x] case
+- [x] case-using
+- ([x] when)
+- ([x] unless)
+
+#### 6.5 Sequencing Forms
+
+- [x] progn
+- ([x] prog1)
+- ([x] prog2)
+
+#### 6.6 Iteration
+
+- [x] while
+- [x] for
+- ([x] dolist)
+- ([x] dotimes)
+
+#### 6.7 Non-Local Exits
+
+##### 6.7.1 Establishing and Invoking Non-Local Exits
+
+- [x] block
+- ([x] return)
+- [x] return-from
+- [x] catch
+- [x] throw
+- [x] tagbody
+- [x] go
+
+##### 6.7.2 Assuring Data Consistency during Non-Local Exists
+
+- [x] unwind-protect
+
+### 7 Objects
+
+#### 7.1 Defining Classes
+
+- [ ] defclass
+- [ ] generic-function-p
+
+#### 7.2 Generic Functions
+
+##### 7.2.1 Defining Generic Functions
+
+- [ ] defgeneric
+
+##### 7.2.2 Defining Methods for Generic Functions
+
+- [ ] defmethod
+
+#### 7.3 Calling Generic Functions
+
+##### 7.3.4 Calling More General Methods
+
+- [ ] call-next-method
+- [ ] next-method-p
+
+#### 7.4 Object Creation and Initialization
+
+- [ ] create
+- [ ] initialize-object
+
+#### 7.5 Class Enquiry
+
+- [ ] class-of
+- [ ] instancep
+- [ ] subclassp
+- [ ] class
+
+### 8 Macros
+
+- [x] defmacro
+- [x] 'form
+- [x] \`form
+- [ ] ,@form
+
+### 9 Declarations and Coercions
+
+- [ ] the
+- [ ] assure
+- [x] convert
+    - [x] \(convert OBJ &lt;float&gt;)
+    - [x] \(convert OBJ &lt;integer&gt;)
+    - [x] \(convert OBJ &lt;list&gt;)
+    - [x] \(convert OBJ &lt;string&gt;)
+    - [x] \(convert OBJ &lt;symbol&gt;)
+
+### 10 Symbol classes
+
+- [x] symbolp
+
+#### 10.2 Symbol Properties
+
+- [ ] property
+- [ ] set-property , setf
+- [ ] remove-property
+
+#### 10.3 Unnamed Symbols
+
+- [x] gensym
+
+### 11 Number class
+
+#### 11.1 Number class
+
+- [x] numberp
+- [x] parse-number
+- [x] =
+- [x] /=
+- [x] \>=
+- [x] \<=
+- [x] \>
+- [x] \<
+- [x] +
+- [x] \*
+- [x] -
+- [ ] reciproca1
+- [ ] quotient
+- [ ] max
+- [ ] min
+- [ ] abs
+- [ ] exp
+- [ ] log
+- [ ] expt
+- [ ] sqrt
+- [ ] sin
+- [ ] cos
+- [ ] tan
+- [ ] atan
+- [ ] atan2
+- [ ] sinh
+- [ ] cosh
+- [ ] tanh
+- [ ] atanh
+- ([x] 1+)
+- ([x] 1-)
+- ([x] incf)
+- ([x] decf)
+
+#### 11.2 Float class
+
+- [ ] \*pi\*
+- [ ] \*most-positive-float\*
+- [ ] \*most-negative-float\*
+- [x] floatp
+- [ ] float
+- [x] floor
+- [x] ceiling
+- [x] truncate
+- [x] round
+
+#### 11.3 Integer class
+
+- [x] integerp
+- [ ] div
+- [x] mod
+- [ ] gcd
+- [ ] lcm
+- [ ] isqrt
+- ([x] rem)
+- ([x] most-postive-fixnum)
+- ([x] most-negative-fixnum)
+
+### 12 Character class
+
+- [x] characterp
+- [x] char=
+- [x] char/=
+- [x] char\<
+- [x] char\>
+- [x] char\<=
+- [x] char\>=
+
+### 13 List class
+
+#### 13.1 Cons
+
+- [x] consp
+- [x] cons OBJ
+- [x] car
+- [x] cdr
+- [x] set-car, (setf (car CONS) OBJ)
+- [x] set-cdr, (setf (cdr CONS) OBJ)
+
+#### 13.2 Null class
+
+- [x] null
+
+#### 13.3 List operations
+
+- [x] listp
+- [x] create-list
+- [x] list
+- [x] reverse
+- [x] nreverse
+- [x] append
+- [x] member
+- [x] mapcar
+- [x] mapc
+- [x] maplist
+- [x] mapl
+- [x] mapcan
+- [x] mapcon
+- [x] assoc
+
+- ([x] last)
+
+### 14 Arrays
+
+#### 14.1 Array Classes
+
+#### 14.2 General Arrays
+
+#### 14.3 Array Operations
+
+- [x] basic-array-p
+- [x] basic-array\*-p
+- [x] general-array\*-p
+- [x] create-array
+- [x] aref
+- [ ] garef
+- [x] set-aref , (setf (aref BASIC-ARRAY Z\*) OBJ)
+- [ ] set-garef , (setf (garef BASIC-ARRAY Z\*) OBJ)
+- [x] array-dimensions
 - #(...) , #2a((...) (...)) , #3a(((.. ..))) ...
-- (create-array '(DIM...) INITIAL-VALUE)
-- (array-dimensions ARRAY)
-- (aref ARRAY INDEX...)
-- (setf (aref ARAY INDEX) NEWVALUE)
-- (set-aref NEWVALUE ARRAY INDEX...)
-- (basic-array-p OBJ)
-- (basic-array\*-p OBJ)
-- (general-array\*-p OBJ)
 
-#### Variables
+### 15 Vector
 
-- (defdyncamic NAME FORM)
-- (defglobal NAME FORM)
-- (dynamic VAR)
-- (dynamic-let ((VAR FORM)...) BODY-FORM...)
-- (let ((VAR FORM)... ) BODY-FORM...)
-- (let\* ((VAR FORM)...) BODY-FORM...)
-- (set-car NEW-CAR CONS)
-- (set-cdr NEW-CDR CONS)
-- (setf PLACE FORM)
-- (setq VAR FORM)
+- [ ] basic-vector-p
+- [ ] general-vector-p
+- [ ] create-vector
+- [ ] vector
 
-#### Operator
+### 16 String class
 
-- (= EXP1 EXP2...)
-- (/= EXP1 EXP2...)
-- (&lt; EXP1 EXP2...)
-- (&lt;= EXP1 EXP2...)
-- (&gt; EXP1 EXP2...)
-- (&gt;= EXP1 EXP2...)
-- (eq EXP1 EXP2...)
-- (eql EXP1 EXP2...)
-- (equal EXP1 EXP2...)
-- (equalp EXP1 EXP2...)
-- (+ EXP1 EXP2...)
-- (- EXP1 EXP2...)
-- (\* EXP1 EXP2...)
-- (/ EXP1 EXP2...)
-- (mod EXP1 EXP2)
-- (rem EXP1 EXP2)
-- (1+ EXP)
-- (1- EXP)
-- (incf VAR [VALUE]) [MACRO]
-- (decf VAR [VALUE]) [MACRO]
-- (and EXP1 EXP2..)
-- (or EXP1 EXP2..)
-- (not EXP)
-- (string= STRING1 STRING2)
-- (string/= STRING1 STRING2)
-- (string&lt; STRING1 STRING2)
-- (string&gt; STRING1 STRING2)
-- (string&gt;= STRING1 STRING2)
-- (string&lt;= STRING1 STRING2)
-- (string-index SUBSTRING STRING [START])
-- (string-append STRING...)
-- (create-string I [INITIAL-CHARACTER])
-- (char= CHAR1 CHAR2)
-- (char/= CHAR1 CHAR2)
-- (char&lt; CHAR1 CHAR2)
-- (char&gt; CHAR1 CHAR2)
-- (char&gt;= CHAR1 CHAR2)
-- (char&lt;= CHAR1 CHAR2)
-- (characterp CHARACTER)
-- (char-index CHAR STRING [START-POSITION])
+- [x] stringp
+- [x] create-string
+- [x] string=
+- [x] string/=
+- [x] string\<
+- [x] string\>
+- [x] string\>=
+- [x] string\<=
+- [x] char-index
+- [x] string-index
+- [x] string-append
 
-#### test
+### 17 Sequence Functions
 
-- (atom OBJ)
-- (consp OBJ)
-- (evenp OBJ)
-- (floatp OBJ)
-- (functionp OBJ)
-- (integerp OBJ)
-- (listp OBJ)
-- (minusp OBJ)
-- (null OBJ)
-- (numberp OBJ)
-- (oddp OBJ)
-- (plusp OBJ)
-- (stringp OBJ)
-- (symbolp OBJ)
-- (zerop OBJ)
+- [x] length
+- [x] elt
+- [x] set-elt, (setf (elt SEQ Z) OBJ)
+- [x] subseq
+- [ ] map-into
 
-#### Convert
+### 18 Stream class
 
-- (convert OBJ &lt;float&gt;)
-- (convert OBJ &lt;integer&gt;)
-- (convert OBJ &lt;list&gt;)
-- (convert OBJ &lt;string&gt;)
-- (convert OBJ &lt;symbol&gt;)
-- (parse-number STRING)
-- (truncate X)
-- (floor X)
-- (ceiling X)
-- (round X)
+- [ ] streamp
+- [ ] open-stream-p
+- [ ] input-stream-p
+- [ ] output-stream-p
+- [x] standard-input
+- [x] standard-output
+- [x] error-output
+- [ ] with-standard-input
+- [ ] with-standard-output
+- [ ] with-error-output
 
-#### Branch and Loop
+#### 18.1 Streams to files
 
-- (case KEYFORM ((KEY...) FORM...)... [(t FORM...)])
-- (case-using PREDFORM KEYFORM ((KEY...) FORM...)... [(t FORM...)])
-- (cond (TEST FORM...)...)
-- (for ((VAR INIT [STEP])...) (END-TEST RESULT...) FORM... )
-- (if TEST-FORM THEN-FORM ELSE-FORM)
-- (progn FORM...)
-- (prog1 FORM...)
-- (prog2 FORM...)
-- (while TEST-FORM BODY-FORM...)
-- (tagbody {TAG|FORM}...)
-    - (go TAG)
-- (dolist (VAR '(VALUES..)) FORM...) [MACRO]
-- (dotimes (VAR N) FORM...) [MACRO]
-- (when TEST-FORM THEN-FORM...)
-- (unless TEST-FORM ELSE-FORM...)
-- (ignore-errors FORMS...)
+- [x] open-input-file
+- [x] open-output-file
+- [ ] open-io-file
+- [x] with-open-input-file
+- [x] with-open-output-file
+- [ ] with-open-io-file
+- [x] close
+- [ ] finish-output
 
-#### Functions
+#### 18.2 Other streams
 
-- (lambda (IDENTIFIER... [&amp;rest IDENTIFIER]) FORM...)
-- (defun FUNCTION-NAME (IDENTIFIER... [&amp;rest IDENTIFIER]) FORM...)
-- (labels ((FUNCTION-NAME LAMBDA-LIST FORM...)...) BODY-FORM...)
-- (flet ((FUNCTION-NAME LAMBDA-LIST FORM...)...) BODY-FORM...)
+- [x] create-string-input-stream
+- [x] create-string-output-stream
+- [x] get-output-stream-string
 
-#### Constant
+### 19 Input and Output
 
-- most-postive-fixnum
-- most-negative-fixnum
-- pi
+#### 19.1 Argument conventions for input functions
 
-#### Function Reference
+- [x] read
+- [ ] read-char
+- [ ] preview-char
+- [x] read-line
+- [ ] stream-ready-p
+- [x] format
+- [x] format-char
+- [x] format-float
+- [ ] format-fresh-line
+- [x] format-integer
+- [x] format-object
+- [ ] format-tab
 
-- (function FUNCTION)
-- #'FUNCTION
+#### 19.2 Charactoer I/O
 
-#### Macro
+#### 19.3 Binary I/O
 
-- (defmacro NAME (IDENTIFIER... [&amp;rest IDENTIFIER]) FORM...)
+- [ ] read-byte
+- [ ] write-byte
 
-#### Mapping
+### 20 Files
 
-- (mapcar #'FUNCTION LIST)
-- (mapc #'FUNCTION LIST)
-- (mapcan #'FUNCTION LIST)
-- (maplist #'FUNCTION LIST)
-- (mapl #'FUNCTION LIST)
-- (mapcon #'FUNCTION LIST)
-- (apply #'FUNCTION [PARAMS...] LIST)
-- (funcall #'FUNCTION EXP1...)
+- [x] probe-file
+- [ ] file-position
+- [ ] set-file-position
+- [x] file-length
 
-#### I/O
+### 21 Condition System
 
-- (close STREAM)
-- (create-string-input-stream STRING)
-- (create-string-output-stream)
-    - (get-output-stream-string STRSTREAM)
-- (error-output)
-- (file-length FILENAME ELEMENT-CLASS)
-- (format {OUTPUT-STREAM|t|nil} FORMAT-STRING OBJ..)
-    - (format t "..") is same as (format (standard-output) "..")
-    - (format nil "..") is same as (let ((B create-string-output-stream)) (format B "..") (get-output-stream-string B))
-- (format-char {OUTPUT-STREAM|t|nil} CHAR)
-- (format-float {OUTPUT-STREAM|t|nil} FLOAT)
-- (format-integer {OUTPUT-STREAM|t|nil} INTEGER RADIX)
-- (format-object {OUTPUT-STREAM|t|nil} OBJ ESCAPE-P)
-- (open-input-file FILENAME)
-- (open-output-file FILENAME)
-- (probe-file FILENAME)
-- (read [STREAM [EOF-FLAG [EOF-VALUE]]])
-- (read-line [STREAM [EOF-FLAG [EOF-VALUE]]])
-- (standard-input)
-- (standard-output)
-- (with-open-input-file (NAME FILENAME) FORM...)
-- (with-open-output-file (NAME FILENAME) FORM...)
+#### 21.1 Condition
+#### 21.2 Signaling and handling condtions
+##### 21.2.1 Operations relating to condition signaling
 
-#### Exceptions
+- [ ] error
+- [ ] cerror
+- [ ] signal-condition
 
-- (block {SYMBOL|nil} FORM...)
-    - (return RESULT-FORM)
-    - (return-from SYMBOL RESULT-FORM)
-- (catch TAG-FORM FORM...)
-    - (throw TAG-FORM RESULT-FORM)
-- (unwind-protect FORM CLEANUP-FORM...)
-- (with-handler HANDLER FORM...)
+##### 21.2.2 Operations relating to condition handling
 
-#### Regular Expression
+- [x] ignore-error
+- [ ] report-condition
+- [ ] condition-continuable
+- [x] with-handler
+
+#### 21.3 Data associated with condition classes
+##### 21.3.1 Arithmetic errors
+
+- [ ] arithmetic-error-operands
+
+##### 21.3.2 Domain errors
+
+- [ ] domain-error-object
+- [ ] domain-error-expected-class
+
+##### 21.3.3 Parse errors
+
+- [ ] parse-error-string
+- [ ] parse-error-expected-class
+
+##### 21.3.4 Simple errors
+
+- [ ] simple-error-format-string
+- [ ] simple-error-format-arguments
+
+##### 21.3.5 Stream errors
+
+- [ ] stream-error-stream
+- [ ] undefined-entity-name
+- [ ] undefined-entity-namespace
+
+#### 21.4 Error identification
+
+- [ ] arity-error  
+    :
+- [ ] undefined-function
+
+### 22 Miscellaneous
+
+- [ ] identify
+- [ ] get-universal-time
+- [ ] get-internal-real-time
+- [ ] get-internal-run-time
+- [ ] internal-time-units-per-second
+
+### Regular Expression
 
 ```
 import (
@@ -446,3 +787,9 @@ INDEXES=((1 5 2 4) (6 8 7 7))
 - (exit)
 - (quit)
 - (abort)
+
+References
+----------
+
++ [islisp-v20.pdf](http://islisp.org/docs/islisp-v20.pdf)
++ [JISX3012:1998 プログラム言語ＩＳＬＩＳＰ](https://kikakurui.com/x3/X3012-1998-01.html) 対応
