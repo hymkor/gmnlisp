@@ -224,7 +224,7 @@ Gmnlisp's functions are subset of ISLisp.
 - [x] for
 - [x] function
     - [x] &amp;rest
-    - ([x] #'FUNCTION)
+    - #'FUNCTION
 - [x] go
 - [x] if
 - [x] ignore-errors
@@ -290,7 +290,6 @@ Gmnlisp's functions are subset of ISLisp.
 
 #### 5.2 Class Predicates
 
-- ([x] atom)
 - [x] basic-array-p
 - [x] basic-array\*-p
 - [ ] basic-vector-p
@@ -308,19 +307,21 @@ Gmnlisp's functions are subset of ISLisp.
 - [ ] streamp
 - [x] stringp
 - [x] symbolp
-- ([x] atom OBJ)
-- ([x] evenp OBJ)
-- ([x] minusp OBJ)
-- ([x] oddp OBJ)
-- ([x] plusp OBJ)
-- ([x] zerop OBJ)
+- Non-standard functions
+    - atom OBJ
+    - evenp OBJ
+    - minusp OBJ
+    - oddp OBJ
+    - plusp OBJ
+    - zerop OBJ
 
 #### 5.3 Equality
 
 - [x] eq
 - [x] eql
 - [x] equal
-- ([x] equalp )
+- Non-standard functions
+    - equalp
 
 #### 5.4 Logical Connectives
 
@@ -352,33 +353,37 @@ Gmnlisp's functions are subset of ISLisp.
 - [x] cond
 - [x] case
 - [x] case-using
-- ([x] when)
-- ([x] unless)
+- Non-standard functions
+    - when
+    - unless
 
 #### 6.5 Sequencing Forms
 
 - [x] progn
-- ([x] prog1)
-- ([x] prog2)
+- Non-standard functions
+    - prog1
+    - prog2
 
 #### 6.6 Iteration
 
 - [x] while
 - [x] for
-- ([x] dolist)
-- ([x] dotimes)
+- Non-standard functions
+    - dolist
+    - dotimes
 
 #### 6.7 Non-Local Exits
 
 ##### 6.7.1 Establishing and Invoking Non-Local Exits
 
 - [x] block
-- ([x] return)
 - [x] return-from
 - [x] catch
 - [x] throw
 - [x] tagbody
 - [x] go
+- Non-standard functions
+    - return
 
 ##### 6.7.2 Assuring Data Consistency during Non-Local Exists
 
@@ -485,10 +490,11 @@ Gmnlisp's functions are subset of ISLisp.
 - [ ] cosh
 - [ ] tanh
 - [ ] atanh
-- ([x] 1+)
-- ([x] 1-)
-- ([x] incf)
-- ([x] decf)
+- Non-standard functions
+    - 1+
+    - 1-
+    - incf
+    - decf
 
 #### 11.2 Float class
 
@@ -510,9 +516,10 @@ Gmnlisp's functions are subset of ISLisp.
 - [ ] gcd
 - [ ] lcm
 - [ ] isqrt
-- ([x] rem)
-- ([x] most-postive-fixnum)
-- ([x] most-negative-fixnum)
+- Non-standard functions
+    - rem
+    - most-postive-fixnum
+    - most-negative-fixnum
 
 ### 12 Character class
 
@@ -555,8 +562,8 @@ Gmnlisp's functions are subset of ISLisp.
 - [x] mapcan
 - [x] mapcon
 - [x] assoc
-
-- ([x] last)
+- Non-standard functions
+    - last
 
 ### 14 Arrays
 
