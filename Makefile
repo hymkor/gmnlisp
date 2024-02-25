@@ -73,7 +73,7 @@ package:
 	$(SET) "GOOS=windows" && $(SET) "GOARCH=amd64" && $(MAKE) _package
 
 manifest:
-	go run mkmanifest.go *-windows-*.zip > gmnlisp.json
+	make-scoop-manifest *-windows-*.zip > $(NAME).json
 
 release:
 	gh release create -d --notes "" -t $(VERSION) $(VERSION) $(wildcard $(NAME)-$(VERSION)-*.zip)
