@@ -18,6 +18,27 @@ type _SlotSpec struct {
 	initarg    Symbol
 }
 
+type Accessor struct {
+	Symbol
+	class map[Symbol]func(*_ClassInstance) (Node, error)
+}
+
+func (acc *Accessor) Call(ctx context.Context, w *World, node Node) (Node, error) {
+	_this, _, err := w.ShiftAndEvalCar(ctx, node)
+	if err != nil {
+		return nil, err
+	}
+	this, ok := _this.(*_ClassInstance)
+	if !ok {
+		return nil, errors.New("Expect Class Instance")
+	}
+	f, ok := acc.class[this._Class.Symbol]
+	if !ok {
+		return nil, errors.New("reciever not found")
+	}
+	return f(this)
+}
+
 func readSlotSpec(ctx context.Context, w *World, list Node) (*_SlotSpec, error) {
 	cons, ok := list.(*Cons)
 	if !ok {
@@ -54,12 +75,15 @@ func readSlotSpec(ctx context.Context, w *World, list Node) (*_SlotSpec, error) 
 			slotSpec.writer, ok = value.(Symbol)
 		case NewKeyword(":accessor"):
 			slotSpec.accessor, ok = value.(Symbol)
+			// println("accessor=", slotSpec.accessor.String())
 		case NewKeyword(":boundp"):
 			slotSpec.boundp, ok = value.(Symbol)
 		case NewKeyword(":initform"):
 			slotSpec.initform = func() (Node, error) { return value.Eval(ctx, w) }
 		case NewKeyword(":initarg"):
 			slotSpec.initarg, ok = value.(Symbol)
+		default:
+			return nil, fmt.Errorf("invalid keyword %v", keyword)
 		}
 		if err != nil {
 			return nil, fmt.Errorf("[%d][4] %w: %#v", count, err, value)
@@ -73,7 +97,7 @@ func readSlotSpec(ctx context.Context, w *World, list Node) (*_SlotSpec, error) 
 }
 
 type _Class struct {
-	Name  Symbol
+	Symbol
 	Super map[Symbol]*_Class
 	Slot  map[Symbol]*_SlotSpec
 }
@@ -91,9 +115,9 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 		return nil, fmt.Errorf("[1] %w: %#v", ErrExpectedSymbol, _className)
 	}
 	class := &_Class{
-		Name:  className,
-		Super: make(map[Symbol]*_Class),
-		Slot:  make(map[Symbol]*_SlotSpec),
+		Symbol: className,
+		Super:  make(map[Symbol]*_Class),
+		Slot:   make(map[Symbol]*_SlotSpec),
 	}
 	if w.shared.classes == nil {
 		w.shared.classes = make(map[Symbol]*_Class)
@@ -141,6 +165,28 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 			return nil, fmt.Errorf("[3][%d] %w", slotCount, err)
 		}
 		class.Slot[spec.identifier] = spec
+
+		if IsSome(spec.accessor) {
+			accessor := func(this *_ClassInstance) (Node, error) {
+				return this.Slot[spec.identifier], nil
+			}
+			if _acc, err := w.Get(spec.accessor); err == nil {
+				// println("accessor is found", spec.accessor.String())
+				if acc, ok := _acc.(*Accessor); ok {
+					acc.class[className] = accessor
+				} else {
+					return nil, fmt.Errorf("%v: already defined as not accessor", spec.accessor)
+				}
+			} else {
+				// println("accessor not found", spec.accessor.String())
+				w.DefineGlobal(spec.accessor, &Accessor{
+					Symbol: spec.accessor,
+					class: map[Symbol]func(*_ClassInstance) (Node, error){
+						className: accessor,
+					},
+				})
+			}
+		}
 	}
 	if w.shared.classes == nil {
 		w.shared.classes = make(map[Symbol]*_Class)
@@ -150,20 +196,12 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 }
 
 type _ClassInstance struct {
-	ClassDefine *_Class
-	Slot        map[Symbol]Node
-}
-
-func (c *_ClassInstance) Eval(ctx context.Context, w *World) (Node, error) {
-	return _NullType{}, errors.New("not callable")
-}
-
-func (c *_ClassInstance) Equals(Node, EqlMode) bool {
-	return false
+	*_Class
+	Slot map[Symbol]Node
 }
 
 func (c *_ClassInstance) PrintTo(w io.Writer, mode PrintMode) (int, error) {
-	n, err := c.ClassDefine.Name.PrintTo(w, mode)
+	n, err := c._Class.Symbol.PrintTo(w, mode)
 	if err != nil {
 		return n, err
 	}
@@ -222,8 +260,8 @@ func cmdCreate(ctx context.Context, w *World, args Node) (Node, error) {
 		return nil, fmt.Errorf("class %v undefined", className)
 	}
 	this := &_ClassInstance{
-		ClassDefine: classDef,
-		Slot:        map[Symbol]Node{},
+		_Class: classDef,
+		Slot:   map[Symbol]Node{},
 	}
 	for IsSome(args) {
 		var _initArg Node
