@@ -272,6 +272,7 @@ var autoLoad = Variables{
 	NewSymbol("cons"):                        &Function{C: 2, F: funCons},
 	NewSymbol("consp"):                       &Function{C: 1, F: funAnyTypep[*Cons]},
 	NewSymbol("convert"):                     SpecialF(cmdConvert),
+	NewSymbol("create"):                      SpecialF(cmdCreate),
 	NewSymbol("create-array"):                &Function{F: funCreateArray},
 	NewSymbol("create-list"):                 &Function{Min: 2, F: funCreateList},
 	NewSymbol("create-string"):               &Function{F: funCreateString},
