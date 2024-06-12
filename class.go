@@ -18,12 +18,12 @@ type _SlotSpec struct {
 	initarg    Symbol
 }
 
-type Accessor struct {
+type _Getter struct {
 	Symbol
 	class map[Symbol]func(*_ClassInstance) (Node, error)
 }
 
-func (acc *Accessor) Call(ctx context.Context, w *World, node Node) (Node, error) {
+func (acc *_Getter) Call(ctx context.Context, w *World, node Node) (Node, error) {
 	_this, _, err := w.ShiftAndEvalCar(ctx, node)
 	if err != nil {
 		return nil, err
@@ -37,6 +37,32 @@ func (acc *Accessor) Call(ctx context.Context, w *World, node Node) (Node, error
 		return nil, errors.New("reciever not found")
 	}
 	return f(this)
+}
+
+type _Setter struct {
+	Symbol
+	class map[Symbol]func(*_ClassInstance, Node)
+}
+
+func (acc *_Setter) Call(ctx context.Context, w *World, node Node) (Node, error) {
+	value, node, err := w.ShiftAndEvalCar(ctx, node)
+	if err != nil {
+		return nil, err
+	}
+	_this, _, err := w.ShiftAndEvalCar(ctx, node)
+	if err != nil {
+		return nil, err
+	}
+	this, ok := _this.(*_ClassInstance)
+	if !ok {
+		return nil, errors.New("Expect Class Instance")
+	}
+	f, ok := acc.class[this._Class.Symbol]
+	if !ok {
+		return nil, errors.New("reciever not found")
+	}
+	f(this, value)
+	return acc, nil
 }
 
 func readSlotSpec(ctx context.Context, w *World, list Node) (*_SlotSpec, error) {
@@ -167,22 +193,42 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 		class.Slot[spec.identifier] = spec
 
 		if IsSome(spec.accessor) {
-			accessor := func(this *_ClassInstance) (Node, error) {
+			getter := func(this *_ClassInstance) (Node, error) {
 				return this.Slot[spec.identifier], nil
 			}
 			if _acc, err := w.Get(spec.accessor); err == nil {
 				// println("accessor is found", spec.accessor.String())
-				if acc, ok := _acc.(*Accessor); ok {
-					acc.class[className] = accessor
+				if acc, ok := _acc.(*_Getter); ok {
+					acc.class[className] = getter
 				} else {
 					return nil, fmt.Errorf("%v: already defined as not accessor", spec.accessor)
 				}
 			} else {
 				// println("accessor not found", spec.accessor.String())
-				w.DefineGlobal(spec.accessor, &Accessor{
+				w.DefineGlobal(spec.accessor, &_Getter{
 					Symbol: spec.accessor,
 					class: map[Symbol]func(*_ClassInstance) (Node, error){
-						className: accessor,
+						className: getter,
+					},
+				})
+			}
+			setter := func(this *_ClassInstance, value Node) {
+				this.Slot[spec.identifier] = value
+			}
+			setterName := NewSymbol("set-" + spec.accessor.String())
+			if _acc, err := w.Get(setterName); err == nil {
+				// println("accessor is found", spec.accessor.String())
+				if acc, ok := _acc.(*_Setter); ok {
+					acc.class[className] = setter
+				} else {
+					return nil, fmt.Errorf("%v: already defined as not accessor", spec.accessor)
+				}
+			} else {
+				// println("accessor not found", spec.accessor.String())
+				w.DefineGlobal(setterName, &_Setter{
+					Symbol: setterName,
+					class: map[Symbol]func(*_ClassInstance, Node){
+						className: setter,
 					},
 				})
 			}
