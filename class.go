@@ -23,20 +23,32 @@ type _Getter struct {
 	class map[Symbol]func(*_ClassInstance) (Node, error)
 }
 
+func (acc *_Getter) findClass(class *_Class) func(*_ClassInstance) (Node, error) {
+	if f, ok := acc.class[class.Symbol]; ok {
+		return f
+	}
+	for _, super := range class.Super {
+		if f := acc.findClass(super); f != nil {
+			return f
+		}
+	}
+	return nil
+}
+
 func (acc *_Getter) Call(ctx context.Context, w *World, node Node) (Node, error) {
 	_this, _, err := w.ShiftAndEvalCar(ctx, node)
 	if err != nil {
 		return nil, err
 	}
-	this, ok := _this.(*_ClassInstance)
+	instance, ok := _this.(*_ClassInstance)
 	if !ok {
 		return nil, errors.New("Expect Class Instance")
 	}
-	f, ok := acc.class[this._Class.Symbol]
-	if !ok {
+	f := acc.findClass(instance._Class)
+	if f == nil {
 		return nil, errors.New("reciever not found")
 	}
-	return f(this)
+	return f(instance)
 }
 
 type _Setter struct {
