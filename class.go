@@ -256,9 +256,17 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 		}
 		class.Slot[spec.identifier] = spec
 
+		if IsSome(spec.reader) {
+			getter := func(r *_Receiver) (Node, error) {
+				return r.Slot[spec.identifier], nil
+			}
+			if err := registerGetter(w, spec.reader, className, getter); err != nil {
+				return nil, err
+			}
+		}
 		if IsSome(spec.accessor) {
-			getter := func(this *_Receiver) (Node, error) {
-				return this.Slot[spec.identifier], nil
+			getter := func(r *_Receiver) (Node, error) {
+				return r.Slot[spec.identifier], nil
 			}
 			if err := registerGetter(w, spec.accessor, className, getter); err != nil {
 				return nil, err
