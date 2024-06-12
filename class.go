@@ -56,24 +56,36 @@ type _Setter struct {
 	class map[Symbol]func(*_ClassInstance, Node)
 }
 
+func (acc *_Setter) findClass(class *_Class) func(*_ClassInstance, Node) {
+	if f := acc.class[class.Symbol]; f != nil {
+		return f
+	}
+	for _, super := range class.Super {
+		if f := acc.findClass(super); f != nil {
+			return f
+		}
+	}
+	return nil
+}
+
 func (acc *_Setter) Call(ctx context.Context, w *World, node Node) (Node, error) {
 	value, node, err := w.ShiftAndEvalCar(ctx, node)
 	if err != nil {
 		return nil, err
 	}
-	_this, _, err := w.ShiftAndEvalCar(ctx, node)
+	_instance, _, err := w.ShiftAndEvalCar(ctx, node)
 	if err != nil {
 		return nil, err
 	}
-	this, ok := _this.(*_ClassInstance)
+	instance, ok := _instance.(*_ClassInstance)
 	if !ok {
 		return nil, errors.New("Expect Class Instance")
 	}
-	f, ok := acc.class[this._Class.Symbol]
-	if !ok {
+	f := acc.findClass(instance._Class)
+	if f == nil {
 		return nil, errors.New("reciever not found")
 	}
-	f(this, value)
+	f(instance, value)
 	return acc, nil
 }
 
