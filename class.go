@@ -74,6 +74,26 @@ type _Setter struct {
 	class map[Symbol]func(*_ClassInstance, Node)
 }
 
+func registerSetter(w *World, setterName, className Symbol, setter func(*_ClassInstance, Node)) error {
+	if _acc, err := w.Get(setterName); err == nil {
+		// println("accessor is found", spec.accessor.String())
+		if acc, ok := _acc.(*_Setter); ok {
+			acc.class[className] = setter
+		} else {
+			return fmt.Errorf("%v: already defined as not accessor", setterName.String())
+		}
+	} else {
+		// println("accessor not found", spec.accessor.String())
+		w.DefineGlobal(setterName, &_Setter{
+			Symbol: setterName,
+			class: map[Symbol]func(*_ClassInstance, Node){
+				className: setter,
+			},
+		})
+	}
+	return nil
+}
+
 func (acc *_Setter) findClass(class *_Class) func(*_ClassInstance, Node) {
 	if f := acc.class[class.Symbol]; f != nil {
 		return f
@@ -247,21 +267,8 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 				this.Slot[spec.identifier] = value
 			}
 			setterName := NewSymbol("set-" + spec.accessor.String())
-			if _acc, err := w.Get(setterName); err == nil {
-				// println("accessor is found", spec.accessor.String())
-				if acc, ok := _acc.(*_Setter); ok {
-					acc.class[className] = setter
-				} else {
-					return nil, fmt.Errorf("%v: already defined as not accessor", spec.accessor)
-				}
-			} else {
-				// println("accessor not found", spec.accessor.String())
-				w.DefineGlobal(setterName, &_Setter{
-					Symbol: setterName,
-					class: map[Symbol]func(*_ClassInstance, Node){
-						className: setter,
-					},
-				})
+			if err := registerSetter(w, setterName, className, setter); err != nil {
+				return nil, err
 			}
 		}
 	}
