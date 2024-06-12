@@ -20,10 +20,10 @@ type _SlotSpec struct {
 
 type _Getter struct {
 	Symbol
-	class map[Symbol]func(*_ClassInstance) (Node, error)
+	class map[Symbol]func(*_Receiver) (Node, error)
 }
 
-func registerGetter(w *World, getterName, className Symbol, getter func(*_ClassInstance) (Node, error)) error {
+func registerGetter(w *World, getterName, className Symbol, getter func(*_Receiver) (Node, error)) error {
 	if _acc, err := w.Get(getterName); err == nil {
 		if acc, ok := _acc.(*_Getter); ok {
 			acc.class[className] = getter
@@ -33,7 +33,7 @@ func registerGetter(w *World, getterName, className Symbol, getter func(*_ClassI
 	} else {
 		w.DefineGlobal(getterName, &_Getter{
 			Symbol: getterName,
-			class: map[Symbol]func(*_ClassInstance) (Node, error){
+			class: map[Symbol]func(*_Receiver) (Node, error){
 				className: getter,
 			},
 		})
@@ -41,7 +41,7 @@ func registerGetter(w *World, getterName, className Symbol, getter func(*_ClassI
 	return nil
 }
 
-func (acc *_Getter) findClass(class *_Class) func(*_ClassInstance) (Node, error) {
+func (acc *_Getter) findClass(class *_Class) func(*_Receiver) (Node, error) {
 	if f, ok := acc.class[class.Symbol]; ok {
 		return f
 	}
@@ -58,23 +58,23 @@ func (acc *_Getter) Call(ctx context.Context, w *World, node Node) (Node, error)
 	if err != nil {
 		return nil, err
 	}
-	instance, ok := _this.(*_ClassInstance)
+	reciever, ok := _this.(*_Receiver)
 	if !ok {
 		return nil, errors.New("Expect Class Instance")
 	}
-	f := acc.findClass(instance._Class)
+	f := acc.findClass(reciever._Class)
 	if f == nil {
-		return nil, fmt.Errorf("reciever %v not found in %v", acc.Symbol.String(), instance._Class.Symbol.String())
+		return nil, fmt.Errorf("reciever %v not found in %v", acc.Symbol.String(), reciever._Class.Symbol.String())
 	}
-	return f(instance)
+	return f(reciever)
 }
 
 type _Setter struct {
 	Symbol
-	class map[Symbol]func(*_ClassInstance, Node)
+	class map[Symbol]func(*_Receiver, Node)
 }
 
-func registerSetter(w *World, setterName, className Symbol, setter func(*_ClassInstance, Node)) error {
+func registerSetter(w *World, setterName, className Symbol, setter func(*_Receiver, Node)) error {
 	if _acc, err := w.Get(setterName); err == nil {
 		// println("accessor is found", spec.accessor.String())
 		if acc, ok := _acc.(*_Setter); ok {
@@ -86,7 +86,7 @@ func registerSetter(w *World, setterName, className Symbol, setter func(*_ClassI
 		// println("accessor not found", spec.accessor.String())
 		w.DefineGlobal(setterName, &_Setter{
 			Symbol: setterName,
-			class: map[Symbol]func(*_ClassInstance, Node){
+			class: map[Symbol]func(*_Receiver, Node){
 				className: setter,
 			},
 		})
@@ -94,7 +94,7 @@ func registerSetter(w *World, setterName, className Symbol, setter func(*_ClassI
 	return nil
 }
 
-func (acc *_Setter) findClass(class *_Class) func(*_ClassInstance, Node) {
+func (acc *_Setter) findClass(class *_Class) func(*_Receiver, Node) {
 	if f := acc.class[class.Symbol]; f != nil {
 		return f
 	}
@@ -115,15 +115,15 @@ func (acc *_Setter) Call(ctx context.Context, w *World, node Node) (Node, error)
 	if err != nil {
 		return nil, err
 	}
-	instance, ok := _instance.(*_ClassInstance)
+	reciever, ok := _instance.(*_Receiver)
 	if !ok {
 		return nil, errors.New("Expect Class Instance")
 	}
-	f := acc.findClass(instance._Class)
+	f := acc.findClass(reciever._Class)
 	if f == nil {
 		return nil, errors.New("reciever not found")
 	}
-	f(instance, value)
+	f(reciever, value)
 	return acc, nil
 }
 
@@ -257,13 +257,13 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 		class.Slot[spec.identifier] = spec
 
 		if IsSome(spec.accessor) {
-			getter := func(this *_ClassInstance) (Node, error) {
+			getter := func(this *_Receiver) (Node, error) {
 				return this.Slot[spec.identifier], nil
 			}
 			if err := registerGetter(w, spec.accessor, className, getter); err != nil {
 				return nil, err
 			}
-			setter := func(this *_ClassInstance, value Node) {
+			setter := func(this *_Receiver, value Node) {
 				this.Slot[spec.identifier] = value
 			}
 			setterName := NewSymbol("set-" + spec.accessor.String())
@@ -279,12 +279,12 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 	return className, nil
 }
 
-type _ClassInstance struct {
+type _Receiver struct {
 	*_Class
 	Slot map[Symbol]Node
 }
 
-func (c *_ClassInstance) PrintTo(w io.Writer, mode PrintMode) (int, error) {
+func (c *_Receiver) PrintTo(w io.Writer, mode PrintMode) (int, error) {
 	n, err := c._Class.Symbol.PrintTo(w, mode)
 	if err != nil {
 		return n, err
@@ -318,28 +318,28 @@ func (c *_ClassInstance) PrintTo(w io.Writer, mode PrintMode) (int, error) {
 	return n, err
 }
 
-func (c *_ClassInstance) String() string {
+func (c *_Receiver) String() string {
 	var buffer strings.Builder
 	c.PrintTo(&buffer, PRINC)
 	return buffer.String()
 }
 
-func (c *_ClassInstance) GoString() string {
+func (c *_Receiver) GoString() string {
 	var buffer strings.Builder
 	c.PrintTo(&buffer, PRINT)
 	return buffer.String()
 }
 
-func (instance *_ClassInstance) callInitForm(classDef *_Class) error {
+func (reciever *_Receiver) callInitForm(classDef *_Class) error {
 	for _, super := range classDef.Super {
-		if err := instance.callInitForm(super); err != nil {
+		if err := reciever.callInitForm(super); err != nil {
 			return err
 		}
 	}
 	for name, slot1 := range classDef.Slot {
-		if _, ok := instance.Slot[name]; !ok && slot1.initform != nil {
+		if _, ok := reciever.Slot[name]; !ok && slot1.initform != nil {
 			var err error
-			instance.Slot[name], err = slot1.initform()
+			reciever.Slot[name], err = slot1.initform()
 			if err != nil {
 				return err
 			}
@@ -348,15 +348,15 @@ func (instance *_ClassInstance) callInitForm(classDef *_Class) error {
 	return nil
 }
 
-func (instance *_ClassInstance) callInitArg(classDef *_Class, initArg Symbol, initVal Node) bool {
+func (reciever *_Receiver) callInitArg(classDef *_Class, initArg Symbol, initVal Node) bool {
 	for name, slot1 := range classDef.Slot {
 		if slot1.initarg == initArg {
-			instance.Slot[name] = initVal
+			reciever.Slot[name] = initVal
 			return true
 		}
 	}
 	for _, super := range classDef.Super {
-		if instance.callInitArg(super, initArg, initVal) {
+		if reciever.callInitArg(super, initArg, initVal) {
 			return true
 		}
 	}
@@ -376,7 +376,7 @@ func cmdCreate(ctx context.Context, w *World, args Node) (Node, error) {
 	if !ok {
 		return nil, fmt.Errorf("class %v undefined", className)
 	}
-	this := &_ClassInstance{
+	this := &_Receiver{
 		_Class: classDef,
 		Slot:   map[Symbol]Node{},
 	}
