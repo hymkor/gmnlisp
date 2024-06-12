@@ -255,24 +255,25 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 			return nil, fmt.Errorf("[3][%d] %w", slotCount, err)
 		}
 		class.Slot[spec.identifier] = spec
-
+		getter := func(r *_Receiver) (Node, error) {
+			return r.Slot[spec.identifier], nil
+		}
+		setter := func(this *_Receiver, value Node) {
+			this.Slot[spec.identifier] = value
+		}
 		if IsSome(spec.reader) {
-			getter := func(r *_Receiver) (Node, error) {
-				return r.Slot[spec.identifier], nil
-			}
 			if err := registerGetter(w, spec.reader, className, getter); err != nil {
 				return nil, err
 			}
 		}
-		if IsSome(spec.accessor) {
-			getter := func(r *_Receiver) (Node, error) {
-				return r.Slot[spec.identifier], nil
-			}
-			if err := registerGetter(w, spec.accessor, className, getter); err != nil {
+		if IsSome(spec.writer) {
+			if err := registerSetter(w, spec.writer, className, setter); err != nil {
 				return nil, err
 			}
-			setter := func(this *_Receiver, value Node) {
-				this.Slot[spec.identifier] = value
+		}
+		if IsSome(spec.accessor) {
+			if err := registerGetter(w, spec.accessor, className, getter); err != nil {
+				return nil, err
 			}
 			setterName := NewSymbol("set-" + spec.accessor.String())
 			if err := registerSetter(w, setterName, className, setter); err != nil {
