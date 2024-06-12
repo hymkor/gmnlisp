@@ -23,6 +23,24 @@ type _Getter struct {
 	class map[Symbol]func(*_ClassInstance) (Node, error)
 }
 
+func registerGetter(w *World, getterName, className Symbol, getter func(*_ClassInstance) (Node, error)) error {
+	if _acc, err := w.Get(getterName); err == nil {
+		if acc, ok := _acc.(*_Getter); ok {
+			acc.class[className] = getter
+		} else {
+			return fmt.Errorf("%v: already defined as not accessor", getterName)
+		}
+	} else {
+		w.DefineGlobal(getterName, &_Getter{
+			Symbol: getterName,
+			class: map[Symbol]func(*_ClassInstance) (Node, error){
+				className: getter,
+			},
+		})
+	}
+	return nil
+}
+
 func (acc *_Getter) findClass(class *_Class) func(*_ClassInstance) (Node, error) {
 	if f, ok := acc.class[class.Symbol]; ok {
 		return f
@@ -222,21 +240,8 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 			getter := func(this *_ClassInstance) (Node, error) {
 				return this.Slot[spec.identifier], nil
 			}
-			if _acc, err := w.Get(spec.accessor); err == nil {
-				// println("accessor is found", spec.accessor.String())
-				if acc, ok := _acc.(*_Getter); ok {
-					acc.class[className] = getter
-				} else {
-					return nil, fmt.Errorf("%v: already defined as not accessor", spec.accessor)
-				}
-			} else {
-				// println("accessor not found", spec.accessor.String())
-				w.DefineGlobal(spec.accessor, &_Getter{
-					Symbol: spec.accessor,
-					class: map[Symbol]func(*_ClassInstance) (Node, error){
-						className: getter,
-					},
-				})
+			if err := registerGetter(w, spec.accessor, className, getter); err != nil {
+				return nil, err
 			}
 			setter := func(this *_ClassInstance, value Node) {
 				this.Slot[spec.identifier] = value
