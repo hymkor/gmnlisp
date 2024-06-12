@@ -46,7 +46,7 @@ func (acc *_Getter) Call(ctx context.Context, w *World, node Node) (Node, error)
 	}
 	f := acc.findClass(instance._Class)
 	if f == nil {
-		return nil, errors.New("reciever not found")
+		return nil, fmt.Errorf("reciever %v not found in %v", acc.Symbol.String(), instance._Class.Symbol.String())
 	}
 	return f(instance)
 }
@@ -186,12 +186,14 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 		if !ok {
 			return nil, fmt.Errorf("[2] %w: %#v", ErrExpectedCons, _scNames)
 		}
-		for p, ok := scNames.Car.(*Cons), true; ok && IsSome(p); p, ok = p.Cdr.(*Cons) {
+		// println(scNames.GoString())
+		for p, ok := scNames, true; ok && IsSome(p); p, ok = p.Cdr.(*Cons) {
 			name, ok := p.Car.(Symbol)
 			if !ok {
 				return nil, fmt.Errorf("[2][%d] %w: %#v", 1+len(class.Super), ErrExpectedSymbol, p.Car)
 			}
-			class.Super[name] = nil
+			//println("class", className, "inherits", name)
+			class.Super[name] = w.shared.classes[name]
 		}
 	}
 	if IsNone(args) {
@@ -316,6 +318,39 @@ func (c *_ClassInstance) GoString() string {
 	return buffer.String()
 }
 
+func (instance *_ClassInstance) callInitForm(classDef *_Class) error {
+	for _, super := range classDef.Super {
+		if err := instance.callInitForm(super); err != nil {
+			return err
+		}
+	}
+	for name, slot1 := range classDef.Slot {
+		if _, ok := instance.Slot[name]; !ok && slot1.initform != nil {
+			var err error
+			instance.Slot[name], err = slot1.initform()
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+func (instance *_ClassInstance) callInitArg(classDef *_Class, initArg Symbol, initVal Node) bool {
+	for name, slot1 := range classDef.Slot {
+		if slot1.initarg == initArg {
+			instance.Slot[name] = initVal
+			return true
+		}
+	}
+	for _, super := range classDef.Super {
+		if instance.callInitArg(super, initArg, initVal) {
+			return true
+		}
+	}
+	return false
+}
+
 func cmdCreate(ctx context.Context, w *World, args Node) (Node, error) {
 	_className, args, err := Shift(args)
 	if err != nil {
@@ -348,20 +383,7 @@ func cmdCreate(ctx context.Context, w *World, args Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		for name, slot1 := range classDef.Slot {
-			if slot1.initarg == initArg {
-				this.Slot[name] = initVal
-			}
-		}
+		this.callInitArg(classDef, initArg, initVal)
 	}
-	for name, slot1 := range classDef.Slot {
-		if _, ok := this.Slot[name]; !ok && slot1.initform != nil {
-			var err error
-			this.Slot[name], err = slot1.initform()
-			if err != nil {
-				return nil, err
-			}
-		}
-	}
-	return this, nil
+	return this, this.callInitForm(classDef)
 }
