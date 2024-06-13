@@ -40,7 +40,9 @@ func TestDefClass(t *testing.T) {
 	if slot.initarg != NewSymbol("I") {
 		t.Fatal("initarg not found")
 	}
-	if slot.initform != Integer(3) {
-		t.Fatalf("iniform is wrong: %#v", slot.initform)
+	if val, err := slot.initform(); err != nil {
+		t.Fatal(err.Error())
+	} else if val != Integer(3) {
+		t.Fatalf("iniform is wrong: %#v", val)
 	}
 }
