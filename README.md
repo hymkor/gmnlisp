@@ -9,12 +9,18 @@ It is developed to embbed to the applications for customizing.
 
 ![Example image](factorial.png)
 
-Install executable
-------------------
+Install
+-------
 
 Download the binary package from [Releases](https://github.com/hymkor/gmnlisp/releases) and extract the executable.
 
-### for scoop-installer
+### via golang-installer
+
+```
+go install github.com/hymkor/gmnlisp/cmd/gmnlisp@latest
+```
+
+### via scoop-installer
 
 ```
 scoop install https://raw.githubusercontent.com/hymkor/gmnlisp/master/gmnlisp.json
