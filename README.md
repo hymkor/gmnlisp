@@ -804,5 +804,6 @@ INDEXES=((1 5 2 4) (6 8 7 7))
 References
 ----------
 
-+ [islisp-v20.pdf](http://islisp.org/docs/islisp-v20.pdf)
++ [ISLisp Home Page](http://islisp.org/)
+    + [islisp-v20.pdf](http://islisp.org/docs/islisp-v20.pdf)
 + [JISX3012:1998 プログラム言語ＩＳＬＩＳＰ](https://kikakurui.com/x3/X3012-1998-01.html) 対応
