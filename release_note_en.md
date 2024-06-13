@@ -1,3 +1,7 @@
+v0.5.0
+======
+Jun 14, 2024
+
 - Support exponential representation of floating point real numbers
 - Add integer formats: `#b..`, `#o..`, and `#x..`
 - Implement `(ignore-errors FORMS...)`
