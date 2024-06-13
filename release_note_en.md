@@ -1,6 +1,8 @@
 - Support exponential representation of floating point real numbers
 - Add integer formats: `#b..`, `#o..`, and `#x..`
 - Implement `(ignore-errors FORMS...)`
+- Implement `(defclass)` and `(create)`
+- gmnlisp.exe: go-multiline-ny v0.12.1 → v0.15.0 - improving history
 
 v0.4.1
 ======

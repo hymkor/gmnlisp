@@ -1,6 +1,8 @@
 - 浮動小数点型実数の指数表現をサポート
 - 整数のフォーマット `#b..`, `#o..`, および `#x..` を追加
 - `(ignore-errors FORMS...)` を実装
+- `(defclass)`, `(create)` を実装
+- gmnlisp.exe: go-multiline-ny v0.12.1 → v0.15.0 - ヒストリ機能を改善
 
 v0.4.1
 ======
