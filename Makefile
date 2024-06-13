@@ -62,15 +62,15 @@ stringer.go : tools/stringer.lsp Makefile
 
 ### Packaging ###
 
-_package:
+_dist:
 	$(SET) "CGO_ENABLED=0" && $(MAKE) clean && $(MAKE) all
 	zip -9 $(NAME)-$(VERSION)-$(GOOS)-$(GOARCH).zip $(TARGET)
 
-package:
-	$(SET) "GOOS=linux" && $(SET) "GOARCH=386"   && $(MAKE) _package
-	$(SET) "GOOS=linux" && $(SET) "GOARCH=amd64" && $(MAKE) _package
-	$(SET) "GOOS=windows" && $(SET) "GOARCH=386"   && $(MAKE) _package
-	$(SET) "GOOS=windows" && $(SET) "GOARCH=amd64" && $(MAKE) _package
+dist:
+	$(SET) "GOOS=linux" && $(SET) "GOARCH=386"   && $(MAKE) _dist
+	$(SET) "GOOS=linux" && $(SET) "GOARCH=amd64" && $(MAKE) _dist
+	$(SET) "GOOS=windows" && $(SET) "GOARCH=386"   && $(MAKE) _dist
+	$(SET) "GOOS=windows" && $(SET) "GOARCH=amd64" && $(MAKE) _dist
 
 manifest:
 	make-scoop-manifest *-windows-*.zip > $(NAME).json
@@ -78,4 +78,4 @@ manifest:
 release:
 	gh release create -d --notes "" -t $(VERSION) $(VERSION) $(wildcard $(NAME)-$(VERSION)-*.zip)
 
-.PHONY: generate test clean clean-gen sort-world _package package manifest
+.PHONY: generate test clean clean-gen sort-world _dist dist manifest
