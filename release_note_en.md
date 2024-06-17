@@ -1,3 +1,5 @@
+- Implement `(class-of)`
+
 v0.5.0
 ======
 Jun 14, 2024
