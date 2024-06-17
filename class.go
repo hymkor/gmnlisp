@@ -41,7 +41,7 @@ func registerGetter(w *World, getterName, className Symbol, getter func(*_Receiv
 	return nil
 }
 
-func (acc *_Getter) findClass(class *_Class) func(*_Receiver) (Node, error) {
+func (acc *_Getter) findClass(class *_UserClass) func(*_Receiver) (Node, error) {
 	if f, ok := acc.class[class.Symbol]; ok {
 		return f
 	}
@@ -62,9 +62,9 @@ func (acc *_Getter) Call(ctx context.Context, w *World, node Node) (Node, error)
 	if !ok {
 		return nil, errors.New("Expect Class Instance")
 	}
-	f := acc.findClass(reciever._Class)
+	f := acc.findClass(reciever._UserClass)
 	if f == nil {
-		return nil, fmt.Errorf("reciever %v not found in %v", acc.Symbol.String(), reciever._Class.Symbol.String())
+		return nil, fmt.Errorf("reciever %v not found in %v", acc.Symbol.String(), reciever._UserClass.Symbol.String())
 	}
 	return f(reciever)
 }
@@ -94,7 +94,7 @@ func registerSetter(w *World, setterName, className Symbol, setter func(*_Receiv
 	return nil
 }
 
-func (acc *_Setter) findClass(class *_Class) func(*_Receiver, Node) {
+func (acc *_Setter) findClass(class *_UserClass) func(*_Receiver, Node) {
 	if f := acc.class[class.Symbol]; f != nil {
 		return f
 	}
@@ -119,7 +119,7 @@ func (acc *_Setter) Call(ctx context.Context, w *World, node Node) (Node, error)
 	if !ok {
 		return nil, errors.New("Expect Class Instance")
 	}
-	f := acc.findClass(reciever._Class)
+	f := acc.findClass(reciever._UserClass)
 	if f == nil {
 		return nil, errors.New("reciever not found")
 	}
@@ -184,10 +184,26 @@ func readSlotSpec(ctx context.Context, w *World, list Node) (*_SlotSpec, error) 
 	return slotSpec, nil
 }
 
-type _Class struct {
+type _UserClass struct {
 	Symbol
-	Super map[Symbol]*_Class
+	Super map[Symbol]*_UserClass
 	Slot  map[Symbol]*_SlotSpec
+}
+
+func (c *_UserClass) Name() Symbol {
+	return c.Symbol
+}
+
+func (c *_UserClass) InstanceP(n Node) bool {
+	_, ok := n.(*_UserClass)
+	return ok
+}
+
+func (c *_UserClass) Create() Node {
+	return &_Receiver{
+		_UserClass: c,
+		Slot:       make(map[Symbol]Node),
+	}
 }
 
 func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
@@ -202,16 +218,13 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 	if !ok {
 		return nil, fmt.Errorf("[1] %w: %#v", ErrExpectedSymbol, _className)
 	}
-	class := &_Class{
+	class := &_UserClass{
 		Symbol: className,
-		Super:  make(map[Symbol]*_Class),
+		Super:  make(map[Symbol]*_UserClass),
 		Slot:   make(map[Symbol]*_SlotSpec),
 	}
-	if w.shared.classes == nil {
-		w.shared.classes = make(map[Symbol]*_Class)
-	}
 	if IsNone(args) {
-		w.shared.classes[className] = class
+		w.DefineGlobal(className, class)
 		return className, nil
 	}
 	// (sc-name*) ... super class list
@@ -219,23 +232,20 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 	if err != nil {
 		return nil, fmt.Errorf("[2] %w", err)
 	}
-	if IsSome(_scNames) {
-		scNames, ok := _scNames.(*Cons)
+	for IsSome(_scNames) {
+		var _super Node
+		_super, _scNames, err = w.ShiftAndEvalCar(ctx, _scNames)
+		if err != nil {
+			return nil, err
+		}
+		super, ok := _super.(*_UserClass)
 		if !ok {
-			return nil, fmt.Errorf("[2] %w: %#v", ErrExpectedCons, _scNames)
+			return nil, errors.New("exepected user class")
 		}
-		// println(scNames.GoString())
-		for p, ok := scNames, true; ok && IsSome(p); p, ok = p.Cdr.(*Cons) {
-			name, ok := p.Car.(Symbol)
-			if !ok {
-				return nil, fmt.Errorf("[2][%d] %w: %#v", 1+len(class.Super), ErrExpectedSymbol, p.Car)
-			}
-			//println("class", className, "inherits", name)
-			class.Super[name] = w.shared.classes[name]
-		}
+		class.Super[super.Symbol] = super
 	}
 	if IsNone(args) {
-		w.shared.classes[className] = class
+		w.DefineGlobal(className, class)
 		return className, nil
 	}
 	// (slot-spec*)
@@ -281,20 +291,17 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 			}
 		}
 	}
-	if w.shared.classes == nil {
-		w.shared.classes = make(map[Symbol]*_Class)
-	}
-	w.shared.classes[className] = class
+	w.DefineGlobal(className, class)
 	return className, nil
 }
 
 type _Receiver struct {
-	*_Class
+	*_UserClass
 	Slot map[Symbol]Node
 }
 
 func (c *_Receiver) PrintTo(w io.Writer, mode PrintMode) (int, error) {
-	n, err := c._Class.Symbol.PrintTo(w, mode)
+	n, err := c._UserClass.Symbol.PrintTo(w, mode)
 	if err != nil {
 		return n, err
 	}
@@ -339,7 +346,7 @@ func (c *_Receiver) GoString() string {
 	return buffer.String()
 }
 
-func (reciever *_Receiver) callInitForm(classDef *_Class) error {
+func (reciever *_Receiver) callInitForm(classDef *_UserClass) error {
 	for _, super := range classDef.Super {
 		if err := reciever.callInitForm(super); err != nil {
 			return err
@@ -357,7 +364,7 @@ func (reciever *_Receiver) callInitForm(classDef *_Class) error {
 	return nil
 }
 
-func (reciever *_Receiver) callInitArg(classDef *_Class, initArg Symbol, initVal Node) bool {
+func (reciever *_Receiver) callInitArg(classDef *_UserClass, initArg Symbol, initVal Node) bool {
 	for name, slot1 := range classDef.Slot {
 		if slot1.initarg == initArg {
 			reciever.Slot[name] = initVal
@@ -373,21 +380,21 @@ func (reciever *_Receiver) callInitArg(classDef *_Class, initArg Symbol, initVal
 }
 
 func cmdCreate(ctx context.Context, w *World, args Node) (Node, error) {
-	_className, args, err := Shift(args)
+	_class, args, err := w.ShiftAndEvalCar(ctx, args)
 	if err != nil {
 		return nil, err
 	}
-	className, ok := _className.(Symbol)
+	class, ok := _class.(Class)
 	if !ok {
-		return nil, ErrExpectedSymbol
+		return nil, errors.New("expect class")
 	}
-	classDef, ok := w.shared.classes[className]
+	_this := class.Create()
+	this, ok := _this.(*_Receiver)
 	if !ok {
-		return nil, fmt.Errorf("class %v undefined", className)
-	}
-	this := &_Receiver{
-		_Class: classDef,
-		Slot:   map[Symbol]Node{},
+		if IsSome(args) {
+			return nil, fmt.Errorf("%s does not have slot", class.String())
+		}
+		return _this, nil
 	}
 	for IsSome(args) {
 		var _initArg Node
@@ -404,7 +411,10 @@ func cmdCreate(ctx context.Context, w *World, args Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		this.callInitArg(classDef, initArg, initVal)
+		if this._UserClass == nil {
+			panic("!")
+		}
+		this.callInitArg(this._UserClass, initArg, initVal)
 	}
-	return this, this.callInitForm(classDef)
+	return this, this.callInitForm(this._UserClass)
 }

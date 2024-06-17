@@ -67,7 +67,6 @@ type _Shared struct {
 	stdout  *_WriterNode
 	errout  *_WriterNode
 	stdin   *_ReaderNode
-	classes map[Symbol]*_Class
 }
 
 type World struct {

@@ -7,7 +7,8 @@ import (
 
 func TestDefClass(t *testing.T) {
 	w := New()
-	_, err := w.Interpret(context.TODO(), `
+	todo := context.TODO()
+	_, err := w.Interpret(todo, `
 		(defclass
 			testclass
 			()
@@ -20,7 +21,11 @@ func TestDefClass(t *testing.T) {
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-	class, ok := w.shared.classes[NewSymbol("testclass")]
+	_class, err := w.Interpret(todo, "testclass")
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	class, ok := _class.(*_UserClass)
 	if !ok {
 		t.Fatal("testclass not found")
 	}
