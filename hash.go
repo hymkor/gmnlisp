@@ -26,8 +26,10 @@ func (h _Hash) PrintTo(w io.Writer, mode PrintMode) (int, error) {
 	return wc.Result()
 }
 
+var hashClass = embedClassOf[_Hash]("<hashtable>")
+
 func (_Hash) ClassOf() Class {
-	return embedClassOf[_Hash]("<hashtable>")
+	return hashClass
 }
 
 func (h _Hash) Eval(ctx context.Context, w *World) (Node, error) {

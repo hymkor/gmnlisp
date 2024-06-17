@@ -11,8 +11,10 @@ import (
 
 type String string
 
+var stringClass = embedClassOf[String]("<string>")
+
 func (String) ClassOf() Class {
-	return embedClassOf[String]("<string>")
+	return stringClass
 }
 
 func (s String) String() string {

@@ -9,8 +9,10 @@ import (
 
 type _TrueType struct{}
 
+var trueClass = embedClassOf[_TrueType]("<truetype>")
+
 func (t _TrueType) ClassOf() Class {
-	return embedClassOf[_TrueType]("<truetype>")
+	return trueClass
 }
 
 func (_TrueType) PrintTo(w io.Writer, m PrintMode) (int, error) {
@@ -30,8 +32,10 @@ func (_TrueType) Equals(n Node, m EqlMode) bool {
 
 type _NullType struct{}
 
+var nullClass = embedClassOf[_NullType]("<null>")
+
 func (_NullType) ClassOf() Class {
-	return embedClassOf[_NullType]("<null>")
+	return nullClass
 }
 
 func (_NullType) PrintTo(w io.Writer, m PrintMode) (int, error) {
@@ -90,8 +94,10 @@ func cmdGensym(ctx context.Context, w *World, node Node) (Node, error) {
 	return NewSymbol(fmt.Sprintf("-gensym-%d-", symbolManager.Count())), nil
 }
 
+var symbolClass = embedClassOf[Symbol]("<symbol>")
+
 func (Symbol) ClassOf() Class {
-	return embedClassOf[Symbol]("<symbol>")
+	return symbolClass
 }
 
 func (s Symbol) PrintTo(w io.Writer, m PrintMode) (int, error) {
@@ -117,8 +123,10 @@ func (s Symbol) GoString() string {
 
 type Rune rune
 
+var runeClass = embedClassOf[Rune]("<character>")
+
 func (Rune) ClassOf() Class {
-	return embedClassOf[Rune]("<character>")
+	return runeClass
 }
 
 func (r Rune) PrintTo(w io.Writer, m PrintMode) (int, error) {
@@ -254,8 +262,10 @@ func NewKeyword(name string) Keyword {
 	return keywordManager.NameToId(name)
 }
 
+var keywordClass = embedClassOf[Keyword]("<keyword>")
+
 func (Keyword) ClassOf() Class {
-	return embedClassOf[Keyword]("<keyword>")
+	return keywordClass
 }
 
 func (k Keyword) PrintTo(w io.Writer, m PrintMode) (int, error) {

@@ -69,8 +69,10 @@ func (e *EmbedClass) Create() Node {
 	return e.create()
 }
 
+var embedClass = embedClassOf[*EmbedClass]("<embed-class>")
+
 func (e *EmbedClass) ClassOf() Class {
-	return embedClassOf[*EmbedClass]("<embed-class>")
+	return embedClass
 }
 
 func (e *EmbedClass) Name() Symbol {
@@ -115,9 +117,10 @@ type Node interface {
 	ClassOf() Class
 }
 
-func embedClassOf[T Node](name string) Class {
-	return &EmbedClass{
-		name: NewSymbol(name),
+func embedClassOf[T Node](name string) *EmbedClass {
+	symbol := NewSymbol(name)
+	class := &EmbedClass{
+		name: symbol,
 		instanceP: func(n Node) bool {
 			_, ok := n.(T)
 			return ok
@@ -127,6 +130,8 @@ func embedClassOf[T Node](name string) Class {
 			return value
 		},
 	}
+	autoLoad[symbol] = class
+	return class
 }
 
 // IsNone returns whether `node` does not have a value or not

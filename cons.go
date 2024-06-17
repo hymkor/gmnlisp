@@ -11,8 +11,10 @@ type Cons struct {
 	Cdr Node
 }
 
+var consClass = embedClassOf[*Cons]("<cons>")
+
 func (*Cons) ClassOf() Class {
-	return embedClassOf[*Cons]("<cons>")
+	return consClass
 }
 
 func (cons *Cons) FirstAndRest() (Node, Node, bool) {

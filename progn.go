@@ -242,8 +242,10 @@ type ErrorNode struct {
 	Value error
 }
 
+var errorClass = embedClassOf[*ErrorNode]("<error>")
+
 func (*ErrorNode) ClassOf() Class {
-	return embedClassOf[*ErrorNode]("<error>")
+	return errorClass
 }
 
 func (e *ErrorNode) PrintTo(w io.Writer, m PrintMode) (int, error) {

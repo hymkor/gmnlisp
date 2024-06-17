@@ -402,8 +402,10 @@ type Callable interface {
 
 type SpecialF func(context.Context, *World, Node) (Node, error)
 
+var specialFClass = embedClassOf[SpecialF]("<special-function>")
+
 func (SpecialF) ClassOf() Class {
-	return embedClassOf[SpecialF]("<special-function>")
+	return specialFClass
 }
 
 func (SpecialF) PrintTo(w io.Writer, m PrintMode) (int, error) {
@@ -462,8 +464,10 @@ type Function struct {
 	Max int
 }
 
+var functionClass = embedClassOf[*Function]("<function>")
+
 func (*Function) ClassOf() Class {
-	return embedClassOf[*Function]("<function>")
+	return functionClass
 }
 
 func (*Function) PrintTo(w io.Writer, m PrintMode) (int, error) {
@@ -522,8 +526,10 @@ type LispString struct {
 	compile Node
 }
 
+var lispStringClass = embedClassOf[*LispString]("<function>")
+
 func (L *LispString) ClassOf() Class {
-	return embedClassOf[*LispString]("<function>")
+	return lispStringClass
 }
 
 func (L *LispString) Eval(ctx context.Context, w *World) (Node, error) {

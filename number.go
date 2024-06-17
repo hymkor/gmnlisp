@@ -8,8 +8,10 @@ import (
 
 type Integer int64
 
+var integerClass = embedClassOf[Integer]("<integer>")
+
 func (i Integer) ClassOf() Class {
-	return embedClassOf[Integer]("<integer>")
+	return integerClass
 }
 
 func (i Integer) PrintTo(w io.Writer, m PrintMode) (int, error) {
@@ -91,8 +93,10 @@ func (i Integer) LessThan(n Node) (bool, error) {
 
 type Float float64
 
+var floatClass = embedClassOf[Float]("<float>")
+
 func (Float) ClassOf() Class {
-	return embedClassOf[Float]("<float>")
+	return floatClass
 }
 
 func (f Float) PrintTo(w io.Writer, m PrintMode) (int, error) {

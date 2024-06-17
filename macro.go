@@ -16,14 +16,18 @@ type _Macro struct {
 	lexical *World
 }
 
+var macroClass = embedClassOf[*_Macro]("<macro>")
+
 func (*_Macro) ClassOf() Class {
-	return embedClassOf[*_Macro]("<macro>")
+	return macroClass
 }
 
 type _JoinedForm []Node
 
+var joinedFormClass = embedClassOf[_JoinedForm]("<joined-form>")
+
 func (_JoinedForm) ClassOf() Class {
-	return embedClassOf[_JoinedForm]("<joined-form>")
+	return joinedFormClass
 }
 
 func (j _JoinedForm) PrintTo(w io.Writer, m PrintMode) (int, error) {

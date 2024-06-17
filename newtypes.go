@@ -5,8 +5,10 @@ import (
 	"io"
 )
 
+var stringBuilderClass = embedClassOf[*StringBuilder]("<string-builder>")
+
 func (*StringBuilder) ClassOf() Class {
-	return embedClassOf[*StringBuilder]("<string-builder>")
+	return stringBuilderClass
 }
 
 func (t *StringBuilder) Eval(context.Context, *World) (Node, error) {
@@ -21,8 +23,10 @@ func (t *StringBuilder) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	return io.WriteString(w, "(*StringBuilder)")
 }
 
+var inputStreamClass = embedClassOf[*inputStream]("<input-stream>")
+
 func (t *inputStream) ClassOf() Class {
-	return embedClassOf[*inputStream]("<input-stream>")
+	return inputStreamClass
 }
 
 func (t *inputStream) Eval(context.Context, *World) (Node, error) {
@@ -37,8 +41,10 @@ func (t *inputStream) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	return io.WriteString(w, "(*inputStream)")
 }
 
+var outputFileStreamClass = embedClassOf[*_OutputFileStream]("<output-file-stream>")
+
 func (*_OutputFileStream) ClassOf() Class {
-	return embedClassOf[*_OutputFileStream]("<output-file-stream>")
+	return outputFileStreamClass
 }
 
 func (t *_OutputFileStream) Eval(context.Context, *World) (Node, error) {
@@ -65,8 +71,10 @@ func (t *_Macro) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	return io.WriteString(w, "(*_Macro)")
 }
 
+var readerNodeClass = embedClassOf[_ReaderNode]("<reader>")
+
 func (_ReaderNode) ClassOf() Class {
-	return embedClassOf[_ReaderNode]("<reader>")
+	return readerNodeClass
 }
 
 func (t _ReaderNode) Eval(context.Context, *World) (Node, error) {
@@ -81,8 +89,10 @@ func (t _ReaderNode) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	return io.WriteString(w, "(_ReaderNode)")
 }
 
+var writerNodeClass = embedClassOf[_WriterNode]("<_WriterNode>")
+
 func (_WriterNode) ClassOf() Class {
-	return embedClassOf[_WriterNode]("<_WriterNode>")
+	return writerNodeClass
 }
 
 func (t _WriterNode) Eval(context.Context, *World) (Node, error) {
