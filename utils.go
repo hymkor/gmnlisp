@@ -54,12 +54,12 @@ const (
 
 type Class interface {
 	Node
-	Name() string
+	Name() Symbol
 	InstanceP(Node) bool
 }
 
 type EmbedClass struct {
-	name      string
+	name      Symbol
 	instanceP func(Node) bool
 }
 
@@ -67,7 +67,7 @@ func (e *EmbedClass) ClassOf() Class {
 	return embedClassOf[*EmbedClass]("<embed-class>")
 }
 
-func (e *EmbedClass) Name() string {
+func (e *EmbedClass) Name() Symbol {
 	return e.name
 }
 
@@ -76,11 +76,11 @@ func (e *EmbedClass) InstanceP(n Node) bool {
 }
 
 func (e *EmbedClass) String() string {
-	return e.Name()
+	return e.Name().String()
 }
 
 func (e *EmbedClass) GoString() string {
-	return e.Name()
+	return e.Name().String()
 }
 
 func (e *EmbedClass) PrintTo(w io.Writer, m PrintMode) (int, error) {
@@ -111,7 +111,7 @@ type Node interface {
 
 func embedClassOf[T Node](name string) Class {
 	return &EmbedClass{
-		name: name,
+		name: NewSymbol(name),
 		instanceP: func(n Node) bool {
 			_, ok := n.(T)
 			return ok
