@@ -35,6 +35,10 @@ type Array struct {
 	dim  []int
 }
 
+func (*Array) ClassOf() Class {
+	return embedClassOf[*Array]("<array>")
+}
+
 func (A *Array) printTo(w io.Writer, mode PrintMode, list []Node, dim []int) ([]Node, int, error) {
 	dem := byte('(')
 	n := 0

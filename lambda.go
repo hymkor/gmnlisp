@@ -81,6 +81,10 @@ func newLambda(w *World, node Node, blockName Symbol) (Node, error) {
 	}, nil
 }
 
+func (L *_Lambda) ClassOf() Class {
+	return embedClassOf[*_Lambda]("<lambda>")
+}
+
 func (L *_Lambda) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	var wc writeCounter
 	if wc.Try(io.WriteString(w, "(lambda (")) {
@@ -398,6 +402,10 @@ type Callable interface {
 
 type SpecialF func(context.Context, *World, Node) (Node, error)
 
+func (SpecialF) ClassOf() Class {
+	return embedClassOf[SpecialF]("<special-function>")
+}
+
 func (SpecialF) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	return io.WriteString(w, "buildin function")
 }
@@ -454,6 +462,10 @@ type Function struct {
 	Max int
 }
 
+func (*Function) ClassOf() Class {
+	return embedClassOf[*Function]("<function>")
+}
+
 func (*Function) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	return io.WriteString(w, "buildin function")
 }
@@ -508,6 +520,10 @@ func (f *Function) Call(ctx context.Context, w *World, list Node) (Node, error) 
 type LispString struct {
 	S       string
 	compile Node
+}
+
+func (L *LispString) ClassOf() Class {
+	return embedClassOf[*LispString]("<function>")
 }
 
 func (L *LispString) Eval(ctx context.Context, w *World) (Node, error) {

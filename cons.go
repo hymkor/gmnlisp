@@ -11,6 +11,10 @@ type Cons struct {
 	Cdr Node
 }
 
+func (*Cons) ClassOf() Class {
+	return embedClassOf[*Cons]("<cons>")
+}
+
 func (cons *Cons) FirstAndRest() (Node, Node, bool) {
 	car := cons.Car
 	if car == nil {

@@ -52,12 +52,71 @@ const (
 	PRINC
 )
 
+type Class interface {
+	Node
+	Name() string
+	InstanceP(Node) bool
+}
+
+type EmbedClass struct {
+	name      string
+	instanceP func(Node) bool
+}
+
+func (e *EmbedClass) ClassOf() Class {
+	return embedClassOf[*EmbedClass]("<embed-class>")
+}
+
+func (e *EmbedClass) Name() string {
+	return e.name
+}
+
+func (e *EmbedClass) InstanceP(n Node) bool {
+	return e.instanceP(n)
+}
+
+func (e *EmbedClass) String() string {
+	return e.Name()
+}
+
+func (e *EmbedClass) GoString() string {
+	return e.Name()
+}
+
+func (e *EmbedClass) PrintTo(w io.Writer, m PrintMode) (int, error) {
+	return io.WriteString(w, e.String())
+}
+
+func (e *EmbedClass) Equals(_other Node, _ EqlMode) bool {
+	other, ok := _other.(*EmbedClass)
+	return ok && other.String() == e.String()
+}
+
+func (e *EmbedClass) Eval(context.Context, *World) (Node, error) {
+	return e, nil
+}
+
+func funClassOf(_ context.Context, _ *World, argv []Node) (Node, error) {
+	return argv[0].ClassOf(), nil
+}
+
 type Node interface {
 	Eval(context.Context, *World) (Node, error)
 	Equals(Node, EqlMode) bool
 	PrintTo(io.Writer, PrintMode) (int, error)
 	String() string
 	GoString() string
+	ClassOf() Class
+}
+
+func embedClassOf[T Node](name string) Class {
+	return &EmbedClass{
+		name: name,
+		instanceP: func(n Node) bool {
+			_, ok := n.(T)
+			return ok
+		},
+	}
 }
 
 // IsNone returns whether `node` does not have a value or not

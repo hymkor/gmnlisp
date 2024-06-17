@@ -8,6 +8,10 @@ import (
 
 type Integer int64
 
+func (i Integer) ClassOf() Class {
+	return embedClassOf[Integer]("<integer>")
+}
+
 func (i Integer) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	return fmt.Fprintf(w, "%d", int64(i))
 }
@@ -86,6 +90,10 @@ func (i Integer) LessThan(n Node) (bool, error) {
 }
 
 type Float float64
+
+func (Float) ClassOf() Class {
+	return embedClassOf[Float]("<float>")
+}
 
 func (f Float) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	return fmt.Fprintf(w, "%f", float64(f))
