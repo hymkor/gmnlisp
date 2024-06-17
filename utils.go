@@ -56,11 +56,17 @@ type Class interface {
 	Node
 	Name() Symbol
 	InstanceP(Node) bool
+	Create() Node
 }
 
 type EmbedClass struct {
 	name      Symbol
 	instanceP func(Node) bool
+	create    func() Node
+}
+
+func (e *EmbedClass) Create() Node {
+	return e.create()
 }
 
 func (e *EmbedClass) ClassOf() Class {
@@ -115,6 +121,10 @@ func embedClassOf[T Node](name string) Class {
 		instanceP: func(n Node) bool {
 			_, ok := n.(T)
 			return ok
+		},
+		create: func() Node {
+			var value T
+			return value
 		},
 	}
 }
