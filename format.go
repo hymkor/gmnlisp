@@ -298,9 +298,9 @@ func tAndNilToWriter(w *World, argv []Node, f func(*_WriterNode, []Node) error) 
 		return String(buffer.String()), err
 	}
 	if True.Equals(argv[0], STRICT) {
-		W, ok := w.shared.stdout._Writer.(*_WriterNode)
+		W, ok := w.stdout._Writer.(*_WriterNode)
 		if !ok {
-			W = &_WriterNode{_Writer: w.shared.stdout._Writer}
+			W = &_WriterNode{_Writer: w.stdout._Writer}
 		}
 		return Null, f(W, argv[1:])
 	}

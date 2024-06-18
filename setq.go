@@ -182,7 +182,7 @@ func cmdDefDynamic(ctx context.Context, w *World, list Node) (Node, error) {
 		return nil, ErrTooManyArguments
 	}
 
-	w.shared.dynamic.Set(symbol, value)
+	w.dynamic.Set(symbol, value)
 	return symbol, nil
 }
 
@@ -198,7 +198,7 @@ func cmdDynamic(ctx context.Context, w *World, list Node) (Node, error) {
 	if !ok {
 		return nil, ErrExpectedSymbol
 	}
-	value, ok := w.shared.dynamic.Get(symbol)
+	value, ok := w.dynamic.Get(symbol)
 	if !ok {
 		return nil, ErrVariableUnbound
 	}
@@ -213,10 +213,10 @@ type Dynamics struct {
 
 func (D *Dynamics) Close() {
 	for key := range D.removes {
-		delete(D.world.shared.dynamic, key)
+		delete(D.world.dynamic, key)
 	}
 	for key, val := range D.backups {
-		D.world.shared.dynamic.Set(key, val)
+		D.world.dynamic.Set(key, val)
 	}
 }
 
@@ -229,17 +229,17 @@ func (w *World) NewDynamics() *Dynamics {
 }
 
 func (w *World) Dynamic(name Symbol) Node {
-	return w.shared.dynamic[name]
+	return w.dynamic[name]
 }
 
 func (D *Dynamics) Set(symbol Symbol, newValue Node) {
-	if orig, ok := D.world.shared.dynamic.Get(symbol); ok {
+	if orig, ok := D.world.dynamic.Get(symbol); ok {
 		D.backups[symbol] = orig
 	} else {
 		D.removes[symbol] = struct{}{}
 	}
 	if newValue != nil {
-		D.world.shared.dynamic.Set(symbol, newValue)
+		D.world.dynamic.Set(symbol, newValue)
 	}
 }
 

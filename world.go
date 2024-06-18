@@ -62,7 +62,7 @@ func (m *Pair) Range(f func(Symbol, Node) error) error {
 	return f(m.Key, m.Value)
 }
 
-type _Shared struct {
+type shared struct {
 	dynamic Variables
 	stdout  *_WriterNode
 	errout  *_WriterNode
@@ -70,9 +70,9 @@ type _Shared struct {
 }
 
 type World struct {
+	*shared
 	parent  *World
 	lexical Scope
-	shared  *_Shared
 }
 
 type _Reader interface {
@@ -186,37 +186,37 @@ func cmdStandardOutput(ctx context.Context, w *World, list Node) (Node, error) {
 	if IsSome(list) {
 		return nil, ErrTooManyArguments
 	}
-	return w.shared.stdout, nil
+	return w.stdout, nil
 }
 
 func (w *World) Stdout() io.Writer {
-	return w.shared.stdout
+	return w.stdout
 }
 
 func (w *World) SetStdout(writer io.Writer) {
-	w.shared.stdout = &_WriterNode{_Writer: writer}
+	w.stdout = &_WriterNode{_Writer: writer}
 }
 
 func cmdErrorOutput(ctx context.Context, w *World, list Node) (Node, error) {
 	if IsSome(list) {
 		return nil, ErrTooManyArguments
 	}
-	return w.shared.errout, nil
+	return w.errout, nil
 }
 
 func (w *World) Errout() io.Writer {
-	return w.shared.errout
+	return w.errout
 }
 
 func (w *World) SetErrout(writer io.Writer) {
-	w.shared.errout = &_WriterNode{_Writer: writer}
+	w.errout = &_WriterNode{_Writer: writer}
 }
 
 func cmdStandardInput(ctx context.Context, w *World, list Node) (Node, error) {
-	return w.shared.stdin, nil
+	return w.stdin, nil
 }
 func (w *World) Stdin() *_ReaderNode {
-	return w.shared.stdin
+	return w.stdin
 }
 
 var autoLoad = Variables{
@@ -437,7 +437,7 @@ func (rw _RootWorld) Range(f func(Symbol, Node) error) error {
 
 func New() *World {
 	w := &World{
-		shared: &_Shared{
+		shared: &shared{
 			dynamic: Variables{},
 			stdin:   &_ReaderNode{_Reader: bufio.NewReader(os.Stdin)},
 			stdout:  &_WriterNode{_Writer: os.Stdout},
@@ -514,7 +514,7 @@ func (w *World) Let(scope Scope) *World {
 	return &World{
 		parent:  w,
 		lexical: scope,
-		shared:  w.shared,
+		shared: w.shared,
 	}
 }
 
@@ -549,7 +549,7 @@ func (w *World) Range(f func(Symbol, Node) error) error {
 }
 
 func cmdDumpSession(_ context.Context, w *World, _ Node) (Node, error) {
-	out := w.shared.stdout
+	out := w.stdout
 	return Null, w.Range(func(key Symbol, val Node) error {
 		cons := &Cons{
 			Car: key,
