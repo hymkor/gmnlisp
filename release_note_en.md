@@ -1,4 +1,5 @@
 - Implement `(class-of)`
+- `(create)` can create the instance of not only user-defined class, but also embeded-types.
 
 v0.5.0
 ======
