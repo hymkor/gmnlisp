@@ -293,6 +293,18 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 		setter := func(r *_Receiver, value Node) {
 			r.Slot[spec.identifier] = value
 		}
+		if len(spec.boundp) > 0 {
+			boundp := func(r *_Receiver) (Node, error) {
+				if _, ok := r.Slot[spec.identifier]; ok {
+					return True, nil
+				}
+				return Null, nil
+			}
+			if err := registerGetter(w, spec.boundp[0], className, boundp); err != nil {
+				println(spec.boundp[0].String(), className.String())
+				return nil, fmt.Errorf("boundp: %w", err)
+			}
+		}
 		if len(spec.reader) > 0 {
 			if err := registerGetter(w, spec.reader[0], className, getter); err != nil {
 				return nil, err
