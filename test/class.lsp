@@ -36,3 +36,12 @@
   (test (create <float>) 0.0)
   (test (create <string>) "")
   )
+
+(defclass <foo> ()
+  ((X :initarg x :accessor x-of-foo :boundp has-x)))
+(let ((f1 (create <foo> 'x 0))
+      (f2 (create <foo>)))
+  (test (has-x f1) t)
+  (test (has-x f2) nil)
+  (setf (x-of-foo f2) 1)
+  (test (has-x f2) t))
