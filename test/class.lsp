@@ -35,6 +35,11 @@
   (test (create <integer>) 0)
   (test (create <float>) 0.0)
   (test (create <string>) "")
+
+  (test (instancep p1 <point2d>) t)
+  (test (instancep p2 <point2d>) t)
+  (test (instancep p1 <point3d>) nil)
+  (test (instancep 0 <point2d>) nil)
   )
 
 (defclass <foo> ()

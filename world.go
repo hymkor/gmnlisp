@@ -286,6 +286,7 @@ var autoLoad = Variables{
 	NewSymbol("hash-table-count"):            &Function{C: 1, F: funHashTableCount},
 	NewSymbol("if"):                          SpecialF(cmdIf),
 	NewSymbol("ignore-errors"):               SpecialF(cmdIgnoreErrors),
+	NewSymbol("instancep"):                   SpecialF(defInstanceP),
 	NewSymbol("integerp"):                    &Function{C: 1, F: funAnyTypep[Integer]},
 	NewSymbol("lambda"):                      SpecialF(cmdLambda),
 	NewSymbol("lambda-macro"):                SpecialF(cmdLambaMacro),

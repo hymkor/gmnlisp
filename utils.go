@@ -12,6 +12,7 @@ import (
 var (
 	ErrDevisionByZero       = errors.New("devision by zeor")
 	ErrExpectedCharacter    = errors.New("expected character")
+	ErrExpectedClass        = errors.New("expected class")
 	ErrExpectedCons         = errors.New("expected CONS")
 	ErrExpectedFunction     = errors.New("expected function")
 	ErrExpectedNumber       = errors.New("expected number")

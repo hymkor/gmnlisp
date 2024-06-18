@@ -213,9 +213,26 @@ func (c *_UserClass) Name() Symbol {
 	return c.Symbol
 }
 
-func (c *_UserClass) InstanceP(n Node) bool {
-	_, ok := n.(*_UserClass)
-	return ok
+// subClassP returns true when class1 is one of the sub-classes of class2
+func (class1 *_UserClass) subClassP(class2 *_UserClass) bool {
+	if class1.Symbol == class2.Symbol {
+		return true
+	}
+	for _, super := range class1.Super {
+		if super.subClassP(class2) {
+			return true
+		}
+	}
+	return false
+}
+
+func (c *_UserClass) InstanceP(obj Node) bool {
+	class := obj.ClassOf()
+	userClass, ok := class.(*_UserClass)
+	if !ok {
+		return false
+	}
+	return userClass.subClassP(c)
 }
 
 func (c *_UserClass) Create() Node {
@@ -332,6 +349,10 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 type _Receiver struct {
 	*_UserClass
 	Slot map[Symbol]Node
+}
+
+func (c *_Receiver) ClassOf() Class {
+	return c._UserClass
 }
 
 func (c *_Receiver) PrintTo(w io.Writer, mode PrintMode) (int, error) {
@@ -453,4 +474,26 @@ func cmdCreate(ctx context.Context, w *World, args Node) (Node, error) {
 		this.callInitArg(this._UserClass, initArg, initVal)
 	}
 	return this, this.callInitForm(this._UserClass)
+}
+
+func defInstanceP(ctx context.Context, w *World, node Node) (Node, error) {
+	value, node, err := w.ShiftAndEvalCar(ctx, node)
+	if err != nil {
+		return nil, err
+	}
+	_class, node, err := w.ShiftAndEvalCar(ctx, node)
+	if err != nil {
+		return nil, err
+	}
+	class, ok := _class.(Class)
+	if !ok {
+		return nil, ErrExpectedClass
+	}
+	if IsSome(node) {
+		return nil, ErrTooManyArguments
+	}
+	if class.InstanceP(value) {
+		return True, nil
+	}
+	return Null, nil
 }
