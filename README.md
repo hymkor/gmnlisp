@@ -259,13 +259,13 @@ Gmnlisp's functions are subset of ISLisp.
 
 #### 4.4 Defining Forms
 
-- [ ] defclass
+- [x] defclass
     - [x] :initarg
     - [x] :initform
     - [x] :accessor
     - [x] :reader
     - [x] :writer
-    - [ ] :boundp
+    - [x] :boundp
 - [ ] defconstant
 - [x] defdynamic
 - [ ] defgeneric
@@ -405,7 +405,7 @@ Gmnlisp's functions are subset of ISLisp.
 
 #### 7.1 Defining Classes
 
-- [ ] defclass
+- [x] defclass
 - [ ] generic-function-p
 
 #### 7.2 Generic Functions
