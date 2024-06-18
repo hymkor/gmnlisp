@@ -221,7 +221,7 @@ Gmnlisp's functions are subset of ISLisp.
 - [x] case
 - [x] case-using
 - [x] catch
-- [ ] class
+- [x] class
 - [x] cond
 - [x] convert
 - [x] dynamic
@@ -427,21 +427,21 @@ Gmnlisp's functions are subset of ISLisp.
 
 #### 7.4 Object Creation and Initialization
 
-- [ ] create
+- [x] create
     - [x] :initarg
     - [x] :initform
     - [x] :accessor
     - [x] :reader
     - [x] :writer
-    - [ ] :boundp
+    - [x] :boundp
 - [ ] initialize-object
 
 #### 7.5 Class Enquiry
 
-- [ ] class-of
+- [x] class-of
 - [ ] instancep
 - [ ] subclassp
-- [ ] class
+- [x] class
 
 ### 8 Macros
 
