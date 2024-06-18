@@ -10,12 +10,12 @@ import (
 
 type _SlotSpec struct {
 	identifier Symbol
-	reader     Symbol
-	writer     Symbol
-	accessor   Symbol
-	boundp     Symbol
+	reader     []Symbol
+	writer     []Symbol
+	accessor   []Symbol
+	boundp     []Symbol
 	initform   func() (Node, error)
-	initarg    Symbol
+	initarg    []Symbol
 }
 
 type _Getter struct {
@@ -158,18 +158,37 @@ func readSlotSpec(ctx context.Context, w *World, list Node) (*_SlotSpec, error) 
 		value := valueCons.Car
 		switch keyword {
 		case NewKeyword(":reader"):
-			slotSpec.reader, ok = value.(Symbol)
+			if v, ok := value.(Symbol); ok {
+				slotSpec.reader = append(slotSpec.reader, v)
+			} else {
+				return nil, fmt.Errorf(":reader:  %w", ErrExpectedSymbol)
+			}
 		case NewKeyword(":writer"):
-			slotSpec.writer, ok = value.(Symbol)
+			if v, ok := value.(Symbol); ok {
+				slotSpec.writer = append(slotSpec.writer, v)
+			} else {
+				return nil, fmt.Errorf(":writer: %w", ErrExpectedSymbol)
+			}
 		case NewKeyword(":accessor"):
-			slotSpec.accessor, ok = value.(Symbol)
-			// println("accessor=", slotSpec.accessor.String())
+			if v, ok := value.(Symbol); ok {
+				slotSpec.accessor = append(slotSpec.accessor, v)
+			} else {
+				return nil, fmt.Errorf(":accessor: %w", ErrExpectedSymbol)
+			}
 		case NewKeyword(":boundp"):
-			slotSpec.boundp, ok = value.(Symbol)
+			if v, ok := value.(Symbol); ok {
+				slotSpec.boundp = append(slotSpec.boundp, v)
+			} else {
+				return nil, fmt.Errorf(":boundp: %w", ErrExpectedSymbol)
+			}
 		case NewKeyword(":initform"):
 			slotSpec.initform = func() (Node, error) { return value.Eval(ctx, w) }
 		case NewKeyword(":initarg"):
-			slotSpec.initarg, ok = value.(Symbol)
+			if v, ok := value.(Symbol); ok {
+				slotSpec.initarg = append(slotSpec.initarg, v)
+			} else {
+				return nil, fmt.Errorf(":initarg: %w", ErrExpectedSymbol)
+			}
 		default:
 			return nil, fmt.Errorf("invalid keyword %v", keyword)
 		}
@@ -266,26 +285,29 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 		}
 		class.Slot[spec.identifier] = spec
 		getter := func(r *_Receiver) (Node, error) {
-			return r.Slot[spec.identifier], nil
+			if val, ok := r.Slot[spec.identifier]; ok {
+				return val, nil
+			}
+			return Null, nil
 		}
-		setter := func(this *_Receiver, value Node) {
-			this.Slot[spec.identifier] = value
+		setter := func(r *_Receiver, value Node) {
+			r.Slot[spec.identifier] = value
 		}
-		if IsSome(spec.reader) {
-			if err := registerGetter(w, spec.reader, className, getter); err != nil {
+		if len(spec.reader) > 0 {
+			if err := registerGetter(w, spec.reader[0], className, getter); err != nil {
 				return nil, err
 			}
 		}
-		if IsSome(spec.writer) {
-			if err := registerSetter(w, spec.writer, className, setter); err != nil {
+		if len(spec.writer) > 0 {
+			if err := registerSetter(w, spec.writer[0], className, setter); err != nil {
 				return nil, err
 			}
 		}
-		if IsSome(spec.accessor) {
-			if err := registerGetter(w, spec.accessor, className, getter); err != nil {
+		if len(spec.accessor) > 0 {
+			if err := registerGetter(w, spec.accessor[0], className, getter); err != nil {
 				return nil, err
 			}
-			setterName := NewSymbol("set-" + spec.accessor.String())
+			setterName := NewSymbol("set-" + spec.accessor[0].String())
 			if err := registerSetter(w, setterName, className, setter); err != nil {
 				return nil, err
 			}
@@ -365,10 +387,12 @@ func (reciever *_Receiver) callInitForm(classDef *_UserClass) error {
 }
 
 func (reciever *_Receiver) callInitArg(classDef *_UserClass, initArg Symbol, initVal Node) bool {
-	for name, slot1 := range classDef.Slot {
-		if slot1.initarg == initArg {
-			reciever.Slot[name] = initVal
-			return true
+	for name, slot := range classDef.Slot {
+		for _, slotInitArg := range slot.initarg {
+			if slotInitArg == initArg {
+				reciever.Slot[name] = initVal
+				return true
+			}
 		}
 	}
 	for _, super := range classDef.Super {

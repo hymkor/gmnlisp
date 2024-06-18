@@ -33,16 +33,16 @@ func TestDefClass(t *testing.T) {
 	if !ok {
 		t.Fatal("slot f not found")
 	}
-	if slot.reader != NewSymbol("R") {
+	if len(slot.reader) < 1 || slot.reader[0] != NewSymbol("R") {
 		t.Fatal("reader not found")
 	}
-	if slot.writer != NewSymbol("W") {
+	if len(slot.writer) < 1 || slot.writer[0] != NewSymbol("W") {
 		t.Fatal("writer not found")
 	}
-	if slot.accessor != NewSymbol("A") {
+	if len(slot.accessor) < 1 || slot.accessor[0] != NewSymbol("A") {
 		t.Fatal("accessor not found")
 	}
-	if slot.initarg != NewSymbol("I") {
+	if len(slot.initarg) < 1 || slot.initarg[0] != NewSymbol("I") {
 		t.Fatal("initarg not found")
 	}
 	if val, err := slot.initform(); err != nil {
