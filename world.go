@@ -139,28 +139,12 @@ func (w *World) Get(name Symbol) (Node, error) {
 	return Null, MakeError(ErrVariableUnbound, name)
 }
 
-func (w *World) SetOrDefineParameter(name Symbol, value Node) {
-	for w != nil {
-		if _, ok := w.lexical.Get(name); ok || w.parent == nil {
-			w.lexical.Set(name, value)
-			return
-		}
-		w = w.parent
-	}
-}
-
 // DefineGlobal implements (defglobal) of ISLisp or (defparameter) of CommonLisp.
 func (w *World) DefineGlobal(name Symbol, value Node) {
 	w.global.Set(name, value)
 }
 
-var UseStrict = true
-
 func (w *World) Set(name Symbol, value Node) error {
-	if !UseStrict {
-		w.SetOrDefineParameter(name, value)
-		return nil
-	}
 	for w != nil {
 		if _, ok := w.lexical.Get(name); ok {
 			w.lexical.Set(name, value)

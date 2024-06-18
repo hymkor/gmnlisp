@@ -31,7 +31,7 @@ func setArgv(w *gmnlisp.World, args []string) {
 	for _, s := range args {
 		posixArgv = append(posixArgv, gmnlisp.String(s))
 	}
-	w.SetOrDefineParameter(gmnlisp.NewSymbol("*posix-argv*"), gmnlisp.List(posixArgv...))
+	w.DefineGlobal(gmnlisp.NewSymbol("*posix-argv*"), gmnlisp.List(posixArgv...))
 }
 
 type Coloring struct {
