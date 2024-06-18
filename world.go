@@ -63,6 +63,7 @@ func (m *Pair) Range(f func(Symbol, Node) error) error {
 }
 
 type shared struct {
+	global  Scope
 	dynamic Variables
 	stdout  *_WriterNode
 	errout  *_WriterNode
@@ -150,19 +151,7 @@ func (w *World) SetOrDefineParameter(name Symbol, value Node) {
 
 // DefineGlobal implements (defglobal) of ISLisp or (defparameter) of CommonLisp.
 func (w *World) DefineGlobal(name Symbol, value Node) {
-	for w.parent != nil {
-		w = w.parent
-	}
-	w.lexical.Set(name, value)
-}
-
-func (w *World) DefineVariable(name Symbol, getter func() Node) {
-	for w.parent != nil {
-		w = w.parent
-	}
-	if _, ok := w.lexical.Get(name); !ok {
-		w.lexical.Set(name, getter())
-	}
+	w.global.Set(name, value)
 }
 
 var UseStrict = true
@@ -436,14 +425,16 @@ func (rw _RootWorld) Range(f func(Symbol, Node) error) error {
 }
 
 func New() *World {
+	rw := _RootWorld{}
 	w := &World{
 		shared: &shared{
+			global:  rw,
 			dynamic: Variables{},
 			stdin:   &_ReaderNode{_Reader: bufio.NewReader(os.Stdin)},
 			stdout:  &_WriterNode{_Writer: os.Stdout},
 			errout:  &_WriterNode{_Writer: os.Stderr},
 		},
-		lexical: _RootWorld{},
+		lexical: rw,
 	}
 	return w
 }
@@ -514,7 +505,7 @@ func (w *World) Let(scope Scope) *World {
 	return &World{
 		parent:  w,
 		lexical: scope,
-		shared: w.shared,
+		shared:  w.shared,
 	}
 }
 
