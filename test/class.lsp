@@ -31,4 +31,8 @@
   (test (point-x p2) 10)
   (test (point-y p2) 20)
   (test (point-z p2) 30)
+
+  (test (create <integer>) 0)
+  (test (create <float>) 0.0)
+  (test (create <string>) "")
   )
