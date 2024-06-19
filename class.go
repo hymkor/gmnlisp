@@ -18,55 +18,28 @@ type _SlotSpec struct {
 	initarg    []Symbol
 }
 
-type _Getter struct {
-	Symbol
-	class map[Symbol]func(*_Receiver) (Node, error)
-}
-
-func registerGetter(w *World, getterName, className Symbol, getter func(*_Receiver) (Node, error)) error {
+func registerGetter(w *World, getterName Symbol, class Class, getter func(*_Receiver) (Node, error)) error {
+	method := &_Method{
+		types: []Class{class},
+		method: func(ctx context.Context, w *World, node []Node) (Node, error) {
+			rec := node[0].(*_Receiver)
+			return getter(rec)
+		},
+	}
 	if _acc, err := w.Get(getterName); err == nil {
-		if acc, ok := _acc.(*_Getter); ok {
-			acc.class[className] = getter
+		if gen, ok := _acc.(*_Generic); ok {
+			gen.methods = append(gen.methods, method)
 		} else {
 			return fmt.Errorf("%v: already defined as not accessor", getterName)
 		}
 	} else {
-		w.DefineGlobal(getterName, &_Getter{
-			Symbol: getterName,
-			class: map[Symbol]func(*_Receiver) (Node, error){
-				className: getter,
-			},
+		w.DefineGlobal(getterName, &_Generic{
+			Symbol:  getterName,
+			argc:    1,
+			methods: []*_Method{method},
 		})
 	}
 	return nil
-}
-
-func (acc *_Getter) findClass(class *_UserClass) func(*_Receiver) (Node, error) {
-	if f, ok := acc.class[class.Symbol]; ok {
-		return f
-	}
-	for _, super := range class.Super {
-		if f := acc.findClass(super); f != nil {
-			return f
-		}
-	}
-	return nil
-}
-
-func (acc *_Getter) Call(ctx context.Context, w *World, node Node) (Node, error) {
-	_this, _, err := w.ShiftAndEvalCar(ctx, node)
-	if err != nil {
-		return nil, err
-	}
-	reciever, ok := _this.(*_Receiver)
-	if !ok {
-		return nil, errors.New("Expect Class Instance")
-	}
-	f := acc.findClass(reciever._UserClass)
-	if f == nil {
-		return nil, fmt.Errorf("reciever %v not found in %v", acc.Symbol.String(), reciever._UserClass.Symbol.String())
-	}
-	return f(reciever)
 }
 
 type _Setter struct {
@@ -317,13 +290,13 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 				}
 				return Null, nil
 			}
-			if err := registerGetter(w, spec.boundp[0], className, boundp); err != nil {
+			if err := registerGetter(w, spec.boundp[0], class, boundp); err != nil {
 				println(spec.boundp[0].String(), className.String())
 				return nil, fmt.Errorf("boundp: %w", err)
 			}
 		}
 		if len(spec.reader) > 0 {
-			if err := registerGetter(w, spec.reader[0], className, getter); err != nil {
+			if err := registerGetter(w, spec.reader[0], class, getter); err != nil {
 				return nil, err
 			}
 		}
@@ -333,7 +306,7 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 			}
 		}
 		if len(spec.accessor) > 0 {
-			if err := registerGetter(w, spec.accessor[0], className, getter); err != nil {
+			if err := registerGetter(w, spec.accessor[0], class, getter); err != nil {
 				return nil, err
 			}
 			setterName := NewSymbol("set-" + spec.accessor[0].String())
