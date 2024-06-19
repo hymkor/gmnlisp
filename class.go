@@ -42,62 +42,31 @@ func registerGetter(w *World, getterName Symbol, class Class, getter func(*_Rece
 	return nil
 }
 
-type _Setter struct {
-	Symbol
-	class map[Symbol]func(*_Receiver, Node)
-}
-
-func registerSetter(w *World, setterName, className Symbol, setter func(*_Receiver, Node)) error {
+func registerSetter(w *World, setterName Symbol, class Class, setter func(*_Receiver, Node)) error {
+	method := &_Method{
+		types: []Class{objectClass, class},
+		method: func(ctx context.Context, w *World, node []Node) (Node, error) {
+			rec := node[1].(*_Receiver)
+			setter(rec, node[0])
+			return True, nil
+		},
+	}
 	if _acc, err := w.Get(setterName); err == nil {
 		// println("accessor is found", spec.accessor.String())
-		if acc, ok := _acc.(*_Setter); ok {
-			acc.class[className] = setter
+		if gen, ok := _acc.(*_Generic); ok {
+			gen.methods = append(gen.methods, method)
 		} else {
 			return fmt.Errorf("%v: already defined as not accessor", setterName.String())
 		}
 	} else {
 		// println("accessor not found", spec.accessor.String())
-		w.DefineGlobal(setterName, &_Setter{
-			Symbol: setterName,
-			class: map[Symbol]func(*_Receiver, Node){
-				className: setter,
-			},
+		w.DefineGlobal(setterName, &_Generic{
+			Symbol:  setterName,
+			argc:    2,
+			methods: []*_Method{method},
 		})
 	}
 	return nil
-}
-
-func (acc *_Setter) findClass(class *_UserClass) func(*_Receiver, Node) {
-	if f := acc.class[class.Symbol]; f != nil {
-		return f
-	}
-	for _, super := range class.Super {
-		if f := acc.findClass(super); f != nil {
-			return f
-		}
-	}
-	return nil
-}
-
-func (acc *_Setter) Call(ctx context.Context, w *World, node Node) (Node, error) {
-	value, node, err := w.ShiftAndEvalCar(ctx, node)
-	if err != nil {
-		return nil, err
-	}
-	_instance, _, err := w.ShiftAndEvalCar(ctx, node)
-	if err != nil {
-		return nil, err
-	}
-	reciever, ok := _instance.(*_Receiver)
-	if !ok {
-		return nil, errors.New("Expect Class Instance")
-	}
-	f := acc.findClass(reciever._UserClass)
-	if f == nil {
-		return nil, errors.New("reciever not found")
-	}
-	f(reciever, value)
-	return acc, nil
 }
 
 func readSlotSpec(ctx context.Context, w *World, list Node) (*_SlotSpec, error) {
@@ -301,7 +270,7 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 			}
 		}
 		if len(spec.writer) > 0 {
-			if err := registerSetter(w, spec.writer[0], className, setter); err != nil {
+			if err := registerSetter(w, spec.writer[0], class, setter); err != nil {
 				return nil, err
 			}
 		}
@@ -310,7 +279,7 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 				return nil, err
 			}
 			setterName := NewSymbol("set-" + spec.accessor[0].String())
-			if err := registerSetter(w, setterName, className, setter); err != nil {
+			if err := registerSetter(w, setterName, class, setter); err != nil {
 				return nil, err
 			}
 		}

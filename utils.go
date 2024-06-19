@@ -135,6 +135,12 @@ func embedClassOf[T Node](name string) *EmbedClass {
 	return class
 }
 
+var objectClass = &EmbedClass{
+	name:      NewSymbol("<object>"),
+	instanceP: func(Node) bool { return true },
+	create:    func() Node { return Null },
+}
+
 // IsNone returns whether `node` does not have a value or not
 func IsNone(node Node) bool {
 	if node == nil {
