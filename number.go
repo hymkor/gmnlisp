@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"math"
 )
 
 type Integer int64
@@ -174,4 +175,13 @@ func (f Float) LessThan(n Node) (bool, error) {
 		return f < Float(_n), nil
 	}
 	return false, MakeError(ErrNotSupportType, n)
+}
+
+func funSqrt(ctx context.Context, w *World, node []Node) (Node, error) {
+	n, ok := node[0].(Float)
+	if !ok {
+		return nil, ErrExpectedNumber
+	}
+	v := math.Sqrt(float64(n))
+	return Float(v), nil
 }

@@ -345,6 +345,7 @@ var autoLoad = Variables{
 	NewSymbol("set-cdr"):                     &Function{C: 2, F: funSetCdr},
 	NewSymbol("set-gethash"):                 &Function{C: 3, F: funSetHash},
 	NewSymbol("setq"):                        SpecialF(cmdSetq),
+	NewSymbol("sqrt"):                        &Function{C: 1, F: funSqrt},
 	NewSymbol("standard-input"):              SpecialF(cmdStandardInput),
 	NewSymbol("standard-output"):             SpecialF(cmdStandardOutput),
 	NewSymbol("string-append"):               &Function{F: funStringAppend},
