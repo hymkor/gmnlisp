@@ -439,7 +439,7 @@ Gmnlisp's functions are subset of ISLisp.
 #### 7.5 Class Enquiry
 
 - [x] class-of
-- [ ] instancep
+- [x] instancep
 - [ ] subclassp
 - [x] class
 
@@ -498,7 +498,7 @@ Gmnlisp's functions are subset of ISLisp.
 - [ ] exp
 - [ ] log
 - [ ] expt
-- [ ] sqrt
+- [x] sqrt
 - [ ] sin
 - [ ] cos
 - [ ] tan
