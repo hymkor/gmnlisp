@@ -1,6 +1,7 @@
 - Implement `(class-of)`
 - `(create)` can create the instance of not only user-defined class, but also embeded-types.
 - `(defclass)`: support `:boundp` for slot-definition
+- Implement `(instancep)`
 
 v0.5.0
 ======
