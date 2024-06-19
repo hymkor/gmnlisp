@@ -2,6 +2,7 @@
 - `(create)` can create the instance of not only user-defined class, but also embeded-types.
 - `(defclass)`: support `:boundp` for slot-definition
 - Implement `(instancep)`
+- Implement `(defgeneric` , `(defmethod)`
 
 v0.5.0
 ======

@@ -2,6 +2,7 @@
 - `(create)` でユーザクラスだけでなく、システムクラスのインスタンスを作れるようにした
 - `(defclass)` のスロット定義の `:boundp` をサポート
 - `(instancep)` を実装
+- `(defgeneric)`, `(defmethod)` を実装
 
 v0.5.0
 ======
