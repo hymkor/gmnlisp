@@ -3,6 +3,8 @@
 - `(defclass)` のスロット定義の `:boundp` をサポート
 - `(instancep)` を実装
 - `(defgeneric)`, `(defmethod)` を実装
+- `(class <class-name>)` を実装
+- `(sqrt)` を実装
 
 v0.5.0
 ======

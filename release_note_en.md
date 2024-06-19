@@ -3,6 +3,8 @@
 - `(defclass)`: support `:boundp` for slot-definition
 - Implement `(instancep)`
 - Implement `(defgeneric` , `(defmethod)`
+- Implement `(class <class-name>)`
+- Implement `(sqrt)`
 
 v0.5.0
 ======
