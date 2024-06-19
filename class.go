@@ -439,3 +439,18 @@ func defInstanceP(ctx context.Context, w *World, node Node) (Node, error) {
 	}
 	return Null, nil
 }
+
+func cmdClass(ctx context.Context, w *World, node Node) (Node, error) {
+	value, node, err := w.ShiftAndEvalCar(ctx, node)
+	if err != nil {
+		return nil, err
+	}
+	if IsSome(node) {
+		return nil, ErrTooManyArguments
+	}
+	_, ok := value.(Class)
+	if !ok {
+		return nil, ErrExpectedClass
+	}
+	return value, nil
+}
