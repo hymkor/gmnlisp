@@ -157,11 +157,8 @@ func (c *_UserClass) Name() Symbol {
 
 // subClassP returns true when class1 is one of the sub-classes of class2
 func (class1 *_UserClass) subClassP(class2 *_UserClass) bool {
-	if class1.Symbol == class2.Symbol {
-		return true
-	}
 	for _, super := range class1.Super {
-		if super.subClassP(class2) {
+		if super.Symbol == class2.Symbol || super.subClassP(class2) {
 			return true
 		}
 	}
@@ -173,6 +170,9 @@ func (c *_UserClass) InstanceP(obj Node) bool {
 	userClass, ok := class.(*_UserClass)
 	if !ok {
 		return false
+	}
+	if userClass.Symbol == c.Symbol {
+		return true
 	}
 	return userClass.subClassP(c)
 }
