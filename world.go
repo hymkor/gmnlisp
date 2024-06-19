@@ -357,6 +357,7 @@ var autoLoad = Variables{
 	NewSymbol("string>"):                     &Function{C: 2, F: funStringGt},
 	NewSymbol("string>="):                    &Function{C: 2, F: funStringGe},
 	NewSymbol("stringp"):                     &Function{C: 1, F: funAnyTypep[String]},
+	NewSymbol("subclassp"):                   &Function{C: 2, F: funSubClassP},
 	NewSymbol("subseq"):                      &Function{C: 3, F: funSubSeq},
 	NewSymbol("symbolp"):                     &Function{C: 1, F: funAnyTypep[Symbol]},
 	NewSymbol("tagbody"):                     SpecialF(cmdTagBody),

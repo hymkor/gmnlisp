@@ -42,6 +42,10 @@
   (test (instancep 0 <point2d>) nil)
   )
 
+(test (subclassp <point1d> <point2d>) nil)
+(test (subclassp <point1d> <point1d>) nil)
+(test (subclassp <point2d> <point1d>) t)
+
 (defclass <foo> ()
   ((X :initarg x :accessor x-of-foo :boundp has-x)))
 (let ((f1 (create <foo> 'x 0))

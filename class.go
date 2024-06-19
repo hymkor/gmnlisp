@@ -454,3 +454,18 @@ func cmdClass(ctx context.Context, w *World, node Node) (Node, error) {
 	}
 	return value, nil
 }
+
+func funSubClassP(ctx context.Context, w *World, node []Node) (Node, error) {
+	class1, ok := node[0].(*_UserClass)
+	if !ok {
+		return nil, ErrExpectedClass
+	}
+	class2, ok := node[1].(*_UserClass)
+	if !ok {
+		return nil, ErrExpectedClass
+	}
+	if class1.subClassP(class2) {
+		return True, nil
+	}
+	return Null, nil
+}
