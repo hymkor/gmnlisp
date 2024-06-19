@@ -268,10 +268,10 @@ Gmnlisp's functions are subset of ISLisp.
     - [x] :boundp
 - [ ] defconstant
 - [x] defdynamic
-- [ ] defgeneric
+- [x] defgeneric
 - [x] defglobal
 - [x] defmacro
-- [ ] defmethod
+- [x] defmethod
 - [x] defun
 
 #### 4.5 Macro Forms
@@ -412,11 +412,11 @@ Gmnlisp's functions are subset of ISLisp.
 
 ##### 7.2.1 Defining Generic Functions
 
-- [ ] defgeneric
+- [x] defgeneric
 
 ##### 7.2.2 Defining Methods for Generic Functions
 
-- [ ] defmethod
+- [x] defmethod
 
 #### 7.3 Calling Generic Functions
 
