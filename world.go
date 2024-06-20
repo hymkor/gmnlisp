@@ -16,7 +16,7 @@ import (
 type Scope interface {
 	Get(Symbol) (Node, bool)
 	Set(Symbol, Node)
-	Range(func(Symbol, Node) error) error
+	Range(func(Symbol, Node) bool)
 }
 
 type Variables map[Symbol]Node
@@ -30,13 +30,12 @@ func (m Variables) Set(key Symbol, value Node) {
 	m[key] = value
 }
 
-func (m Variables) Range(f func(Symbol, Node) error) error {
+func (m Variables) Range(f func(Symbol, Node) bool) {
 	for key, val := range m {
-		if err := f(key, val); err != nil {
-			return err
+		if !f(key, val) {
+			return
 		}
 	}
-	return nil
 }
 
 type Pair struct {
@@ -58,8 +57,8 @@ func (m *Pair) Set(key Symbol, value Node) {
 	panic("Pair can be set value")
 }
 
-func (m *Pair) Range(f func(Symbol, Node) error) error {
-	return f(m.Key, m.Value)
+func (m *Pair) Range(f func(Symbol, Node) bool) {
+	f(m.Key, m.Value)
 }
 
 type shared struct {
@@ -412,8 +411,7 @@ func (rw _RootWorld) Set(symbol Symbol, value Node) {
 	rw[symbol] = value
 }
 
-func (rw _RootWorld) Range(f func(Symbol, Node) error) error {
-	return nil
+func (rw _RootWorld) Range(f func(Symbol, Node) bool) {
 }
 
 func New() *World {
@@ -512,28 +510,25 @@ func (w *World) Assert(equation string, expect Node) string {
 	return ""
 }
 
-func (w *World) Range(f func(Symbol, Node) error) error {
+func (w *World) Range(f func(Symbol, Node) bool) {
 	marked := map[Symbol]struct{}{}
 	for ; w != nil; w = w.parent {
-		err := w.lexical.Range(func(key Symbol, val Node) error {
+		w.lexical.Range(func(key Symbol, val Node) bool {
 			if _, ok := marked[key]; !ok {
-				if err := f(key, val); err != nil {
-					return err
+				if !f(key, val) {
+					return false
 				}
 				marked[key] = struct{}{}
 			}
-			return nil
+			return true
 		})
-		if err != nil {
-			return err
-		}
 	}
-	return nil
 }
 
 func cmdDumpSession(_ context.Context, w *World, _ Node) (Node, error) {
 	out := w.stdout
-	return Null, w.Range(func(key Symbol, val Node) error {
+	var err error
+	w.Range(func(key Symbol, val Node) bool {
 		cons := &Cons{
 			Car: key,
 			Cdr: &Cons{
@@ -541,8 +536,12 @@ func cmdDumpSession(_ context.Context, w *World, _ Node) (Node, error) {
 				Cdr: Null,
 			},
 		}
-		_, err := cons.PrintTo(out, PRINT)
-		fmt.Fprintln(out)
-		return err
+		_, err = cons.PrintTo(out, PRINT)
+		if err != nil {
+			return false
+		}
+		_, err = fmt.Fprintln(out)
+		return err == nil
 	})
+	return True, err
 }
