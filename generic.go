@@ -3,20 +3,35 @@ package gmnlisp
 import (
 	"context"
 	"errors"
+	"fmt"
 )
 
 type _Method struct {
-	types  []Class
-	method func(context.Context, *World, []Node) (Node, error)
+	restType Class
+	types    []Class
+	method   func(context.Context, *World, []Node) (Node, error)
 }
 
 func (m *_Method) canCallWith(values []Node) bool {
-	if len(m.types) != len(values) {
-		return false
+	if m.restType != nil {
+		if len(m.types) > len(values) {
+			return false
+		}
+	} else {
+		if len(m.types) != len(values) {
+			return false
+		}
 	}
 	for i, t := range m.types {
 		if !t.InstanceP(values[i]) {
 			return false
+		}
+	}
+	if m.restType != nil {
+		for _, v := range values[len(m.types):] {
+			if !m.restType.InstanceP(v) {
+				return false
+			}
 		}
 	}
 	return true
@@ -25,6 +40,7 @@ func (m *_Method) canCallWith(values []Node) bool {
 type _Generic struct {
 	Symbol
 	argc    int
+	rest    bool
 	methods []*_Method
 }
 
@@ -45,6 +61,7 @@ func cmdDefGeneric(_ context.Context, w *World, node Node) (Node, error) {
 		return nil, ErrTooManyArguments
 	}
 	argc := 0
+	hasRest := false
 	for IsSome(types) {
 		var type1 Node
 		var err error
@@ -52,12 +69,27 @@ func cmdDefGeneric(_ context.Context, w *World, node Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		if _, ok := type1.(Symbol); !ok {
-			return nil, ErrExpectedSymbol
+		if type1.Equals(colonRest, STRICT) || type1.Equals(ampRest, STRICT) {
+			type2, types, err := Shift(types)
+			if err != nil {
+				return nil, err
+			}
+			if _, ok := type2.(Symbol); !ok {
+				return nil, fmt.Errorf("after %s %w", type1.String(), ErrExpectedSymbol)
+			}
+			if IsSome(types) {
+				return nil, ErrTooManyArguments
+			}
+			hasRest = true
+			break
+		}
+		_, ok := type1.(Symbol)
+		if !ok {
+			return nil, fmt.Errorf("%s: %w", type1.String(), ErrExpectedSymbol)
 		}
 		argc++
 	}
-	w.DefineGlobal(name, &_Generic{Symbol: name, argc: argc})
+	w.DefineGlobal(name, &_Generic{Symbol: name, argc: argc, rest: hasRest})
 	return name, nil
 }
 
@@ -104,11 +136,43 @@ func cmdDefMethod(ctx context.Context, w *World, node Node) (Node, error) {
 
 	method := &_Method{}
 	paramNames := []Symbol{}
+	var restName Symbol
 	for IsSome(params) {
 		var t1 Node
 		t1, params, err = Shift(params)
 		if err != nil {
 			return nil, err
+		}
+		if t1.Equals(colonRest, STRICT) || t1.Equals(ampRest, STRICT) {
+			// rest
+			t1, params, err = Shift(params)
+			if err != nil {
+				return nil, err
+			}
+			if IsSome(params) {
+				return nil, ErrTooManyArguments
+			}
+			_name, t1, err = Shift(t1)
+			if err != nil {
+				return nil, err
+			}
+			restName, ok = _name.(Symbol)
+			if !ok {
+				return nil, ErrExpectedSymbol
+			}
+			_type1, t1, err := w.ShiftAndEvalCar(ctx, t1)
+			if err != nil {
+				return nil, err
+			}
+			if IsSome(t1) {
+				return nil, ErrTooManyArguments
+			}
+			type1, ok := _type1.(Class)
+			if !ok {
+				return nil, ErrExpectedClass
+			}
+			method.restType = type1
+			break
 		}
 		var _pn1 Node
 		_pn1, t1, err = Shift(t1)
@@ -137,6 +201,14 @@ func cmdDefMethod(ctx context.Context, w *World, node Node) (Node, error) {
 	method.method = func(ctx context.Context, w *World, args []Node) (Node, error) {
 		vars := Variables{}
 		for i, v := range args {
+			if i >= len(paramNames) {
+				var rest Node = Null
+				for j := len(args) - 1; j >= i; j-- {
+					rest = &Cons{Car: args[j], Cdr: rest}
+				}
+				vars[restName] = rest
+				break
+			}
 			vars[paramNames[i]] = v
 		}
 		return Progn(ctx, w.Let(vars), code)

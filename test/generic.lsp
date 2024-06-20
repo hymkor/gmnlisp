@@ -36,3 +36,23 @@
       (create <vector1d> 'x 5)
       (create <vector2d> 'x 6 'y 7))
   "(3) x=5 x=6")
+
+(defgeneric generic-rest (p :rest q))
+(defmethod generic-rest ((p <integer>) :rest (q <string>))
+  (let ((buf (create-string-output-stream)))
+    (format buf "A-~D" p)
+    (while q
+      (format buf "-~A" (car q))
+      (setq q (cdr q)))
+    (get-output-stream-string buf)))
+
+(defmethod generic-rest ((p <integer>) :rest (q <integer>))
+  (let ((buf (create-string-output-stream)))
+    (format buf "B-~D" p)
+    (while q
+      (format buf "-~A" (car q))
+      (setq q (cdr q)))
+    (get-output-stream-string buf)))
+
+(test (generic-rest 1 "2" "3") "A-1-2-3")
+(test (generic-rest 1 2 3) "B-1-2-3")
