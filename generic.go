@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 )
 
 type _Method struct {
@@ -13,8 +14,12 @@ type _Method struct {
 }
 
 func (m *_Method) canCallWith(values []Node) bool {
+	//println("values:", joinStringer(values, ":"))
+	//println("method:", joinStringer(m.types, ":"))
 	if m.restType != nil {
+		//println("rest:", m.restType.String())
 		if len(m.types) > len(values) {
+			//println("too few arguments")
 			return false
 		}
 	} else {
@@ -24,12 +29,14 @@ func (m *_Method) canCallWith(values []Node) bool {
 	}
 	for i, t := range m.types {
 		if !t.InstanceP(values[i]) {
+			//println("NG2", t.String(), values[i].String())
 			return false
 		}
 	}
 	if m.restType != nil {
 		for _, v := range values[len(m.types):] {
 			if !m.restType.InstanceP(v) {
+				//println("NG1")
 				return false
 			}
 		}
@@ -91,6 +98,16 @@ func cmdDefGeneric(_ context.Context, w *World, node Node) (Node, error) {
 	}
 	w.DefineGlobal(name, &_Generic{Symbol: name, argc: argc, rest: hasRest})
 	return name, nil
+}
+
+func joinStringer[T interface{ String() string }](s []T, dem string) string {
+	var buffer strings.Builder
+	buffer.WriteString(s[0].String())
+	for _, s1 := range s[1:] {
+		buffer.WriteString(dem)
+		buffer.WriteString(s1.String())
+	}
+	return buffer.String()
 }
 
 func (c *_Generic) Call(ctx context.Context, w *World, node Node) (Node, error) {

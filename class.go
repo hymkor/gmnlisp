@@ -151,6 +151,14 @@ type _UserClass struct {
 	Slot  map[Symbol]*_SlotSpec
 }
 
+func (c *_UserClass) Eval(ctx context.Context, w *World) (Node, error) {
+	return c, nil
+}
+
+func (c *_UserClass) String() string {
+	return "{*_UserClass}" + c.Symbol.String()
+}
+
 func (c *_UserClass) Name() Symbol {
 	return c.Symbol
 }
@@ -169,11 +177,13 @@ func (c *_UserClass) InstanceP(obj Node) bool {
 	class := obj.ClassOf()
 	userClass, ok := class.(*_UserClass)
 	if !ok {
+		// println("InstanceP: NG1")
 		return false
 	}
-	if userClass.Symbol == c.Symbol {
+	if userClass.Symbol.Equals(c.Symbol, STRICT) {
 		return true
 	}
+	// println("InstanceP: NG2")
 	return userClass.subClassP(c)
 }
 
@@ -183,6 +193,8 @@ func (c *_UserClass) Create() Node {
 		Slot:       make(map[Symbol]Node),
 	}
 }
+
+var symInitializeObject = NewSymbol("initialize-object")
 
 func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 	// (defclass class-name (sc-name*) (slot-spec*) class-opt*)
@@ -260,7 +272,7 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 				return Null, nil
 			}
 			if err := registerGetter(w, spec.boundp[0], class, boundp); err != nil {
-				println(spec.boundp[0].String(), className.String())
+				// println(spec.boundp[0].String(), className.String())
 				return nil, fmt.Errorf("boundp: %w", err)
 			}
 		}
@@ -285,12 +297,36 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 		}
 	}
 	w.DefineGlobal(className, class)
+
+	_gen, err := w.Get(symInitializeObject)
+	if err != nil {
+		// not found
+		_gen = &_Generic{
+			Symbol: symInitializeObject,
+			argc:   1,
+			rest:   true,
+		}
+		w.DefineGlobal(symInitializeObject, _gen)
+	}
+	gen, ok := _gen.(*_Generic)
+	if !ok {
+		return nil, errors.New("expected generic function")
+	}
+	gen.methods = append(gen.methods, &_Method{
+		restType: objectClass,
+		types:    []Class{class},
+		method:   defaultInitializeObject,
+	})
 	return className, nil
 }
 
 type _Receiver struct {
 	*_UserClass
 	Slot map[Symbol]Node
+}
+
+func (r *_Receiver) Eval(ctx context.Context, w *World) (Node, error) {
+	return r, nil
 }
 
 func (c *_Receiver) ClassOf() Class {
@@ -378,6 +414,14 @@ func (reciever *_Receiver) callInitArg(classDef *_UserClass, initArg Symbol, ini
 	return false
 }
 
+type Uneval struct {
+	Node
+}
+
+func (u Uneval) Eval(ctx context.Context, w *World) (Node, error) {
+	return u.Node, nil
+}
+
 func cmdCreate(ctx context.Context, w *World, args Node) (Node, error) {
 	_class, args, err := w.ShiftAndEvalCar(ctx, args)
 	if err != nil {
@@ -387,36 +431,42 @@ func cmdCreate(ctx context.Context, w *World, args Node) (Node, error) {
 	if !ok {
 		return nil, errors.New("expect class")
 	}
-	return initializeObject(ctx, w, class.Create(), args)
+	_gen, err := w.Get(symInitializeObject)
+	if err != nil {
+		return nil, err
+	}
+	gen, ok := _gen.(*_Generic)
+	if !ok {
+		return nil, errors.New("expected generic function")
+	}
+	rec := class.Create()
+	if _, ok := rec.(*_Receiver); ok {
+		return gen.Call(ctx, w, &Cons{Car: Uneval{Node: rec}, Cdr: args})
+	}
+	return rec, nil
 }
 
-func initializeObject(ctx context.Context, w *World, _this, args Node) (Node, error) {
+func defaultInitializeObject(ctx context.Context, w *World, args []Node) (Node, error) {
+	_this, args := args[0], args[1:]
 	this, ok := _this.(*_Receiver)
 	if !ok {
-		if IsSome(args) {
+		if len(args) > 0 {
 			return nil, fmt.Errorf("%s does not have slot", _this.String())
 		}
 		return _this, nil
 	}
-	for IsSome(args) {
+	for len(args) > 0 {
 		var _initArg Node
-		var err error
-		_initArg, args, err = w.ShiftAndEvalCar(ctx, args)
-		if err != nil {
-			return nil, err
-		}
+		_initArg, args = args[0], args[1:]
 		initArg, ok := _initArg.(Symbol)
 		if !ok {
-			return nil, ErrExpectedSymbol
+			return nil, fmt.Errorf("defaultInitializeObject: initArg: %w: %v", ErrExpectedSymbol, _initArg)
+		}
+		if len(args) <= 0 {
+			return nil, ErrTooFewArguments
 		}
 		var initVal Node
-		initVal, args, err = w.ShiftAndEvalCar(ctx, args)
-		if err != nil {
-			return nil, err
-		}
-		if this._UserClass == nil {
-			panic("!")
-		}
+		initVal, args = args[0], args[1:]
 		this.callInitArg(this._UserClass, initArg, initVal)
 	}
 	return this, this.callInitForm(this._UserClass)

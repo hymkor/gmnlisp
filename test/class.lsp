@@ -54,3 +54,11 @@
   (test (has-x f2) nil)
   (setf (x-of-foo f2) 1)
   (test (has-x f2) t))
+
+(defmethod initialize-object ((this <foo>) (x <string>))
+  (setf (x-of-foo this) x)
+  this)
+(let ((f1 (create <foo> (string-append "x" "y"))))
+  ; (format (standard-output) "~S~%" f1)
+  (test (x-of-foo f1) "xy"))
+
