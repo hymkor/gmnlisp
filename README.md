@@ -1,11 +1,13 @@
-[![GoDoc](https://godoc.org/github.com/hymkor/gmnlisp?status.svg)](https://godoc.org/github.com/hymkor/gmnlisp)
+[![GoDoc](https://pkg.go.dev/badge/github.com/hymkor/gmnlisp)][pkgGoDev]
 
 Gmnlisp
 =======
 
 The Gmnlisp is a small Lisp implementation in Go.
-The functions are the subset of ISLisp's.
+The functions are the subset of [ISLisp]'s.
 It is developed to embbed to the applications for customizing.
+
+[pkgGoDev]: https://pkg.go.dev/github.com/hymkor/gmnlisp
 
 ![Example image](factorial.png)
 
@@ -181,7 +183,7 @@ All objects used in Lisp code have to satisfy it.
 Support functions
 -----------------
 
-Gmnlisp's functions are subset of ISLisp.
+Gmnlisp's functions are subset of [ISLisp].
 
 ### 1 Scope, Conventions and Compliance
 
@@ -816,6 +818,25 @@ INDEXES=((1 5 2 4) (6 8 7 7))
 References
 ----------
 
-+ [ISLisp Home Page](http://islisp.org/)
-    + [islisp-v20.pdf](http://islisp.org/docs/islisp-v20.pdf)
-+ [JISX3012:1998 プログラム言語ＩＳＬＩＳＰ](https://kikakurui.com/x3/X3012-1998-01.html) 対応
+### Documents (English)
+
++ [ISLISP - Wikipedia](https://en.wikipedia.org/wiki/ISLISP)
++ [ISLisp Home Page][ISLisp]
+
+### Documents (Japanese)
+
++ [JISX3012:1998 プログラム言語ＩＳＬＩＳＰ](https://kikakurui.com/x3/X3012-1998-01.html)
++ [M.Hiroi's Home Page / お気楽 ISLisp プログラミング超入門](http://www.nct9.ne.jp/m_hiroi/clisp/islisp.html)
+
+### Other implementations of [ISLisp]
+
+|               | Language|  Windows  | Linux
+|---------------------|---|-----------|----------
+| [OK!ISLisp][oki]    | C | Supported | ?
+| [iris]              | Go| Supported | Supported
+| [Easy-ISLisp][eisl] | C |           | Supported
+
+[ISLisp]: http://islisp.org/
+[oki]: http://islisp.org/OKIISLisp.html
+[iris]: https://github.com/islisp-dev/iris
+[eisl]: https://github.com/sasagawa888/eisl
