@@ -104,8 +104,8 @@ func (c *_Generic) Call(ctx context.Context, w *World, node Node) (Node, error) 
 		}
 		values = append(values, v)
 	}
-	for _, m := range c.methods {
-		if m.canCallWith(values) {
+	for i := len(c.methods) - 1; i >= 0; i-- {
+		if m := c.methods[i]; m.canCallWith(values) {
 			return m.method(ctx, w, values)
 		}
 	}
