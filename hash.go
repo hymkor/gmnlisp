@@ -2,7 +2,6 @@ package gmnlisp
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"io"
 )
@@ -39,8 +38,6 @@ func (h _Hash) Eval(ctx context.Context, w *World) (Node, error) {
 func cmdMakeHashTable(ctx context.Context, w *World, _ Node) (Node, error) {
 	return make(_Hash), nil
 }
-
-var ErrExpectedHash = errors.New("expected Hash-table")
 
 func canUseHashKey(value Node) bool {
 	switch value.(type) {

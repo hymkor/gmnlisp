@@ -2,7 +2,6 @@ package gmnlisp
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"io"
 	"strings"
@@ -230,7 +229,7 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 		}
 		super, ok := _super.(*_UserClass)
 		if !ok {
-			return nil, errors.New("exepected user class")
+			return nil, ErrExpectedClass
 		}
 		class.Super[super.Symbol] = super
 	}
@@ -310,7 +309,7 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 	}
 	gen, ok := _gen.(*_Generic)
 	if !ok {
-		return nil, errors.New("expected generic function")
+		return nil, ErrExpectedGeneric
 	}
 	gen.methods = append(gen.methods, &_Method{
 		restType: objectClass,
@@ -429,7 +428,7 @@ func cmdCreate(ctx context.Context, w *World, args Node) (Node, error) {
 	}
 	class, ok := _class.(Class)
 	if !ok {
-		return nil, errors.New("expect class")
+		return nil, ErrExpectedClass
 	}
 	_gen, err := w.Get(symInitializeObject)
 	if err != nil {
@@ -437,7 +436,7 @@ func cmdCreate(ctx context.Context, w *World, args Node) (Node, error) {
 	}
 	gen, ok := _gen.(*_Generic)
 	if !ok {
-		return nil, errors.New("expected generic function")
+		return nil, ErrExpectedGeneric
 	}
 	rec := class.Create()
 	if _, ok := rec.(*_Receiver); ok {

@@ -10,31 +10,34 @@ import (
 )
 
 var (
+	ErrAbort                = errors.New("abort")
 	ErrDevisionByZero       = errors.New("devision by zeor")
+	ErrExpectedArray        = errors.New("expected array")
 	ErrExpectedCharacter    = errors.New("expected character")
 	ErrExpectedClass        = errors.New("expected class")
-	ErrExpectedCons         = errors.New("expected CONS")
+	ErrExpectedCons         = errors.New("expected cons")
 	ErrExpectedFunction     = errors.New("expected function")
+	ErrExpectedGeneric      = errors.New("expected generic function")
+	ErrExpectedHash         = errors.New("expected hashtable")
+	ErrExpectedKeyword      = errors.New("expected keyword")
+	ErrExpectedMacro        = errors.New("expected macro")
 	ErrExpectedNumber       = errors.New("expected number")
-	ErrExpectedReader       = errors.New("expected Reader")
-	ErrExpectedSequence     = errors.New("expected Sequence")
+	ErrExpectedReader       = errors.New("expected reader")
+	ErrExpectedSequence     = errors.New("expected sequence")
 	ErrExpectedString       = errors.New("expected string")
 	ErrExpectedSymbol       = errors.New("expected symbol")
 	ErrExpectedSymbolOrList = errors.New("expected symbol or list")
-	ErrExpectedKeyword      = errors.New("expected keyword")
-	ErrExpectedWriter       = errors.New("expected Writer")
+	ErrExpectedWriter       = errors.New("expected writer")
 	ErrIndexOutOfRange      = errors.New("index out of range")
 	ErrInvalidFormat        = errors.New("invalid format")
+	ErrNoMatchMethods       = errors.New("no match methods")
 	ErrNotSupportType       = errors.New("not support type")
 	ErrQuit                 = errors.New("bye")
-	ErrAbort                = errors.New("abort")
 	ErrVariableUnbound      = errors.New("unbound variable")
-	ErrExpectedArray        = errors.New("expected array")
-	ErrExpectedMacro        = errors.New("expected macro")
 
+	ErrCanNotParseNumber = parser.ErrCanNotParseNumber
 	ErrTooFewArguments   = parser.ErrTooFewArguments
 	ErrTooManyArguments  = parser.ErrTooManyArguments
-	ErrCanNotParseNumber = parser.ErrCanNotParseNumber
 	ErrTooShortTokens    = parser.ErrTooShortTokens
 )
 

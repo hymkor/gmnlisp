@@ -2,7 +2,6 @@ package gmnlisp
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"strings"
 )
@@ -126,7 +125,7 @@ func (c *_Generic) Call(ctx context.Context, w *World, node Node) (Node, error) 
 			return m.method(ctx, w, values)
 		}
 	}
-	return nil, errors.New("no match methods")
+	return nil, ErrNoMatchMethods
 }
 
 func cmdDefMethod(ctx context.Context, w *World, node Node) (Node, error) {
@@ -144,7 +143,7 @@ func cmdDefMethod(ctx context.Context, w *World, node Node) (Node, error) {
 	}
 	generic, ok := _generic.(*_Generic)
 	if !ok {
-		return nil, errors.New("Expected <generic>")
+		return nil, ErrExpectedGeneric
 	}
 	params, code, err := Shift(node)
 	if err != nil {
@@ -211,7 +210,7 @@ func cmdDefMethod(ctx context.Context, w *World, node Node) (Node, error) {
 		}
 		type1, ok := _type1.(Class)
 		if !ok {
-			return nil, errors.New("Expected type")
+			return nil, ErrExpectedClass
 		}
 		method.types = append(method.types, type1)
 	}
