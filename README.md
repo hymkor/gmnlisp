@@ -415,10 +415,12 @@ Gmnlisp's functions are subset of [ISLisp].
 ##### 7.2.1 Defining Generic Functions
 
 - [x] defgeneric
+    - [ ] :rest, &amp;rest
 
 ##### 7.2.2 Defining Methods for Generic Functions
 
 - [x] defmethod
+    - [ ] :rest, &amp;rest
 
 #### 7.3 Calling Generic Functions
 
