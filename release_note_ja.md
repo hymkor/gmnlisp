@@ -1,10 +1,8 @@
-- `(class-of)` 実装
+- 以下の関数を実装
+    - `(class-of)`, `(instancep)`, `(defgeneric)`, `(defmethod)`, `(class)`,
+    `(sqrt)`, `(subclassp)`, `(generic-function-p)`
 - `(create)` でユーザクラスだけでなく、システムクラスのインスタンスを作れるようにした
 - `(defclass)` のスロット定義の `:boundp` をサポート
-- `(instancep)` を実装
-- `(defgeneric)`, `(defmethod)` を実装
-- `(class <class-name>)` を実装
-- `(sqrt)` を実装
 
 v0.5.0
 ======

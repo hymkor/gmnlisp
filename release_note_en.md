@@ -1,10 +1,8 @@
-- Implement `(class-of)`
+- These functions are implemented
+    - `(class-of)`, `(instancep)`, `(defgeneric)`, `(defmethod)`, `(class)`,
+    `(sqrt)`, `(subclassp)`, `(generic-function-p)`
 - `(create)` can create the instance of not only user-defined class, but also embeded-types.
 - `(defclass)`: support `:boundp` for slot-definition
-- Implement `(instancep)`
-- Implement `(defgeneric` , `(defmethod)`
-- Implement `(class <class-name>)`
-- Implement `(sqrt)`
 
 v0.5.0
 ======
