@@ -1,6 +1,6 @@
 - 以下の関数を実装
     - `(class-of)`, `(instancep)`, `(defgeneric)`, `(defmethod)`, `(class)`,
-    `(sqrt)`, `(subclassp)`, `(generic-function-p)`
+    `(sqrt)`, `(subclassp)`, `(generic-function-p)`, `(initialize-object)`
 - `(create)` でユーザクラスだけでなく、システムクラスのインスタンスを作れるようにした
 - `(defclass)` のスロット定義の `:boundp` をサポート
 

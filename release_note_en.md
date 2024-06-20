@@ -1,6 +1,6 @@
 - These functions are implemented
     - `(class-of)`, `(instancep)`, `(defgeneric)`, `(defmethod)`, `(class)`,
-    `(sqrt)`, `(subclassp)`, `(generic-function-p)`
+    `(sqrt)`, `(subclassp)`, `(generic-function-p)`, `(initialize-object`)
 - `(create)` can create the instance of not only user-defined class, but also embeded-types.
 - `(defclass)`: support `:boundp` for slot-definition
 
