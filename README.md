@@ -313,7 +313,7 @@ Gmnlisp's functions are subset of [ISLisp].
 - [x] functionp
 - [x] general-array\*-p
 - [ ] general-vector-p
-- [ ] generic-function-p
+- [x] generic-function-p
 - [x] integerp
 - [x] listp
 - [x] null
@@ -408,7 +408,7 @@ Gmnlisp's functions are subset of [ISLisp].
 #### 7.1 Defining Classes
 
 - [x] defclass
-- [ ] generic-function-p
+- [x] generic-function-p
 
 #### 7.2 Generic Functions
 
@@ -442,7 +442,7 @@ Gmnlisp's functions are subset of [ISLisp].
 
 - [x] class-of
 - [x] instancep
-- [ ] subclassp
+- [x] subclassp
 - [x] class
 
 ### 8 Macros
