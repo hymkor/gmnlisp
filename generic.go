@@ -144,3 +144,10 @@ func cmdDefMethod(ctx context.Context, w *World, node Node) (Node, error) {
 	generic.methods = append(generic.methods, method)
 	return name, nil
 }
+
+func funGenericFunctionP(ctx context.Context, w *World, node []Node) (Node, error) {
+	if _, ok := node[0].(*_Generic); ok {
+		return True, nil
+	}
+	return Null, nil
+}

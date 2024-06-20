@@ -282,6 +282,7 @@ var autoLoad = Variables{
 	NewSymbol("function"):                    &Function{C: 1, F: funFunction},
 	NewSymbol("functionp"):                   &Function{C: 1, F: funAnyTypep[Callable]},
 	NewSymbol("general-array*-p"):            &Function{C: 1, F: funGeneralArray},
+	NewSymbol("generic-function-p"):          &Function{C: 1, F: funGenericFunctionP},
 	NewSymbol("gensym"):                      SpecialF(cmdGensym),
 	NewSymbol("get-output-stream-string"):    &Function{C: 1, F: funGetOutputStreamString},
 	NewSymbol("gethash"):                     &Function{C: 2, F: funGetHash},

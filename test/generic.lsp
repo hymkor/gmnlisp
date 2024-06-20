@@ -14,6 +14,8 @@
 (test (generic-fun (+ 1 1) (string-append "[" "]")) "(1) d=2 s=[]")
 (test (generic-fun "x" 3) "(2) s=x d=3")
 (test (generic-fun "x" (+ 1 2)) "(2) s=x d=3")
+(test (generic-function-p generic-fun) t)
+(test (generic-function-p 1) nil)
 
 (defclass <vector1d> ()
   ((X :initform 0.0 :initarg x :accessor vector-x)))
