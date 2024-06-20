@@ -387,16 +387,20 @@ func cmdCreate(ctx context.Context, w *World, args Node) (Node, error) {
 	if !ok {
 		return nil, errors.New("expect class")
 	}
-	_this := class.Create()
+	return initializeObject(ctx, w, class.Create(), args)
+}
+
+func initializeObject(ctx context.Context, w *World, _this, args Node) (Node, error) {
 	this, ok := _this.(*_Receiver)
 	if !ok {
 		if IsSome(args) {
-			return nil, fmt.Errorf("%s does not have slot", class.String())
+			return nil, fmt.Errorf("%s does not have slot", _this.String())
 		}
 		return _this, nil
 	}
 	for IsSome(args) {
 		var _initArg Node
+		var err error
 		_initArg, args, err = w.ShiftAndEvalCar(ctx, args)
 		if err != nil {
 			return nil, err
