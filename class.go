@@ -242,14 +242,15 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	slotSpecs, ok := _slotSpecs.(*Cons)
-	if !ok {
-		return nil, fmt.Errorf("[3] %w: %#v", ErrExpectedCons, _slotSpecs)
-	}
 	slotCount := 0
-	for p, ok := slotSpecs, true; ok && IsSome(p); p, ok = p.Cdr.(*Cons) {
+	for IsSome(_slotSpecs) {
 		slotCount++
-		spec, err := readSlotSpec(ctx, w, p.Car)
+		var slot1 Node
+		slot1, _slotSpecs, err = Shift(_slotSpecs)
+		if err != nil {
+			return nil, err
+		}
+		spec, err := readSlotSpec(ctx, w, slot1)
 		if err != nil {
 			return nil, fmt.Errorf("[3][%d] %w", slotCount, err)
 		}
