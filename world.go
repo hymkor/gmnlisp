@@ -209,6 +209,7 @@ var autoLoad = Variables{
 	NewSymbol("/="):                          &Function{C: 2, F: funNotEqual},
 	NewSymbol("<"):                           SpecialF(cmdLessThan),
 	NewSymbol("<="):                          SpecialF(cmdLessOrEqual),
+	NewSymbol("<error>"):                     errorClass,
 	NewSymbol("<object>"):                    objectClass,
 	NewSymbol("="):                           SpecialF(cmdEqualOp),
 	NewSymbol(">"):                           SpecialF(cmdGreaterThan),

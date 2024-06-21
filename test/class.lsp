@@ -62,3 +62,6 @@
   ; (format (standard-output) "~S~%" f1)
   (test (x-of-foo f1) "xy"))
 
+(test (subclassp <error> <object>) t)
+(test (subclassp <object> <error>) nil)
+(test (subclassp <error> <error>) nil)

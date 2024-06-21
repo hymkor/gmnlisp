@@ -61,12 +61,23 @@ type Class interface {
 	Name() Symbol
 	InstanceP(Node) bool
 	Create() Node
+	InheritP(Class) bool
 }
 
 type EmbedClass struct {
 	name      Symbol
 	instanceP func(Node) bool
 	create    func() Node
+	super     []Class
+}
+
+func (e *EmbedClass) InheritP(c Class) bool {
+	for _, s := range e.super {
+		if s.Equals(c, STRICT) || s.InheritP(c) {
+			return true
+		}
+	}
+	return false
 }
 
 func (e *EmbedClass) Create() Node {

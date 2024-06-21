@@ -161,8 +161,21 @@ func readSlotSpec(ctx context.Context, w *World, list Node) (*_SlotSpec, error) 
 
 type _UserClass struct {
 	Symbol
-	Super map[Symbol]*_UserClass
+	Super map[Symbol]Class
 	Slot  map[Symbol]*_SlotSpec
+}
+
+func (class1 *_UserClass) InheritP(class2 Class) bool {
+	_, ok := class1.Super[class2.Name()]
+	if ok {
+		return true
+	}
+	for _, s := range class1.Super {
+		if s.InheritP(class2) {
+			return true
+		}
+	}
+	return false
 }
 
 func (c *_UserClass) Eval(ctx context.Context, w *World) (Node, error) {
@@ -180,7 +193,10 @@ func (c *_UserClass) Name() Symbol {
 // subClassP returns true when class1 is one of the sub-classes of class2
 func (class1 *_UserClass) subClassP(class2 *_UserClass) bool {
 	for _, super := range class1.Super {
-		if super.Symbol == class2.Symbol || super.subClassP(class2) {
+		if super.Name() == class2.Name() {
+			return true
+		}
+		if uc, ok := super.(*_UserClass); ok && uc.subClassP(class2) {
 			return true
 		}
 	}
@@ -224,7 +240,7 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 	}
 	class := &_UserClass{
 		Symbol: className,
-		Super:  make(map[Symbol]*_UserClass),
+		Super:  make(map[Symbol]Class),
 		Slot:   make(map[Symbol]*_SlotSpec),
 	}
 	if IsNone(args) {
@@ -242,11 +258,11 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		super, ok := _super.(*_UserClass)
+		super, ok := _super.(Class)
 		if !ok {
 			return nil, fmt.Errorf("%v: %w", _super, ErrExpectedClass)
 		}
-		class.Super[super.Symbol] = super
+		class.Super[super.Name()] = super
 	}
 	if IsNone(args) {
 		w.DefineGlobal(className, class)
@@ -370,8 +386,10 @@ func (c *_Receiver) GoString() string {
 
 func (reciever *_Receiver) callInitForm(classDef *_UserClass) error {
 	for _, super := range classDef.Super {
-		if err := reciever.callInitForm(super); err != nil {
-			return err
+		if uc, ok := super.(*_UserClass); ok {
+			if err := reciever.callInitForm(uc); err != nil {
+				return err
+			}
 		}
 	}
 	for name, slot1 := range classDef.Slot {
@@ -396,8 +414,10 @@ func (reciever *_Receiver) callInitArg(classDef *_UserClass, initArg Symbol, ini
 		}
 	}
 	for _, super := range classDef.Super {
-		if reciever.callInitArg(super, initArg, initVal) {
-			return true
+		if superUc, ok := super.(*_UserClass); ok {
+			if reciever.callInitArg(superUc, initArg, initVal) {
+				return true
+			}
 		}
 	}
 	return false
@@ -499,15 +519,15 @@ func cmdClass(ctx context.Context, w *World, node Node) (Node, error) {
 }
 
 func funSubClassP(ctx context.Context, w *World, node []Node) (Node, error) {
-	class1, ok := node[0].(*_UserClass)
+	class1, ok := node[0].(Class)
 	if !ok {
 		return nil, fmt.Errorf("%v: %w", node[0], ErrExpectedClass)
 	}
-	class2, ok := node[1].(*_UserClass)
+	class2, ok := node[1].(Class)
 	if !ok {
 		return nil, fmt.Errorf("%v: %w", node[1], ErrExpectedClass)
 	}
-	if class1.subClassP(class2) {
+	if class1.InheritP(class2) {
 		return True, nil
 	}
 	return Null, nil

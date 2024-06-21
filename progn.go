@@ -242,7 +242,18 @@ type ErrorNode struct {
 	Value error
 }
 
-var errorClass = embedClassOf[*ErrorNode]("<error>")
+var errorClass = &EmbedClass{
+	name: NewSymbol("<error>"),
+	instanceP: func(value Node) bool {
+		_, ok := value.(error)
+		return ok
+	},
+	create: func() Node {
+		panic("the instance of <error> could not be created")
+		return nil
+	},
+	super: []Class{objectClass},
+}
 
 func (*ErrorNode) ClassOf() Class {
 	return errorClass
