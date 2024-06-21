@@ -3,6 +3,8 @@
     `(sqrt)`, `(subclassp)`, `(generic-function-p)`, `(initialize-object`)
 - `(create)` can create the instance of not only user-defined class, but also embeded-types.
 - `(defclass)`: support `:boundp` for slot-definition
+- `(defconstant)` is defined as alias of `(defglobal)` temporally
+- Embeded class can inherits other embeded classes now
 
 v0.5.0
 ======

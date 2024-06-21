@@ -3,6 +3,8 @@
     `(sqrt)`, `(subclassp)`, `(generic-function-p)`, `(initialize-object)`
 - `(create)` でユーザクラスだけでなく、システムクラスのインスタンスを作れるようにした
 - `(defclass)` のスロット定義の `:boundp` をサポート
+- `(defconstant)` を `(defglobal)` の別名で仮定義
+- 組み込みクラスも他の組み込みクラスを継承できるようになった。
 
 v0.5.0
 ======
