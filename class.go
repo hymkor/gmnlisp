@@ -23,7 +23,7 @@ func newGetter(class Class, slotName Symbol) *_Method {
 		method: func(ctx context.Context, w *World, node []Node) (Node, error) {
 			rec, ok := node[0].(*_Receiver)
 			if !ok {
-				return nil, ErrExpectedClass
+				return nil, fmt.Errorf("%v: %w", node[0], ErrExpectedClass)
 			}
 			if val, ok := rec.Slot[slotName]; ok {
 				return val, nil
@@ -39,7 +39,7 @@ func newSetter(class Class, slotName Symbol) *_Method {
 		method: func(ctx context.Context, w *World, node []Node) (Node, error) {
 			rec, ok := node[1].(*_Receiver)
 			if !ok {
-				return nil, ErrExpectedClass
+				return nil, fmt.Errorf("%v: %w", node[1], ErrExpectedClass)
 			}
 			rec.Slot[slotName] = node[0]
 			return True, nil
@@ -53,7 +53,7 @@ func newBoundp(class Class, slotName Symbol) *_Method {
 		method: func(ctx context.Context, w *World, node []Node) (Node, error) {
 			rec, ok := node[0].(*_Receiver)
 			if !ok {
-				return nil, ErrExpectedClass
+				return nil, fmt.Errorf("%v: %w", node[0], ErrExpectedClass)
 			}
 			if _, ok := rec.Slot[slotName]; ok {
 				return True, nil
@@ -244,7 +244,7 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 		}
 		super, ok := _super.(*_UserClass)
 		if !ok {
-			return nil, ErrExpectedClass
+			return nil, fmt.Errorf("%v: %w", _super, ErrExpectedClass)
 		}
 		class.Super[super.Symbol] = super
 	}
@@ -418,7 +418,7 @@ func cmdCreate(ctx context.Context, w *World, args Node) (Node, error) {
 	}
 	class, ok := _class.(Class)
 	if !ok {
-		return nil, ErrExpectedClass
+		return nil, fmt.Errorf("%v: %w", _class, ErrExpectedClass)
 	}
 	_gen, err := w.Get(symInitializeObject)
 	if err != nil {
@@ -472,7 +472,7 @@ func defInstanceP(ctx context.Context, w *World, node Node) (Node, error) {
 	}
 	class, ok := _class.(Class)
 	if !ok {
-		return nil, ErrExpectedClass
+		return nil, fmt.Errorf("%v: %w", _class, ErrExpectedClass)
 	}
 	if IsSome(node) {
 		return nil, ErrTooManyArguments
@@ -493,7 +493,7 @@ func cmdClass(ctx context.Context, w *World, node Node) (Node, error) {
 	}
 	_, ok := value.(Class)
 	if !ok {
-		return nil, ErrExpectedClass
+		return nil, fmt.Errorf("%v: %w", value, ErrExpectedClass)
 	}
 	return value, nil
 }
@@ -501,11 +501,11 @@ func cmdClass(ctx context.Context, w *World, node Node) (Node, error) {
 func funSubClassP(ctx context.Context, w *World, node []Node) (Node, error) {
 	class1, ok := node[0].(*_UserClass)
 	if !ok {
-		return nil, ErrExpectedClass
+		return nil, fmt.Errorf("%v: %w", node[0], ErrExpectedClass)
 	}
 	class2, ok := node[1].(*_UserClass)
 	if !ok {
-		return nil, ErrExpectedClass
+		return nil, fmt.Errorf("%v: %w", node[1], ErrExpectedClass)
 	}
 	if class1.subClassP(class2) {
 		return True, nil
