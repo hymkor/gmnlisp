@@ -90,8 +90,12 @@ func NewSymbol(s string) Symbol {
 	return symbolManager.NameToId(s)
 }
 
+func genSym() Symbol {
+	return NewSymbol(fmt.Sprintf("-gensym-%d-", symbolManager.Count()))
+}
+
 func cmdGensym(ctx context.Context, w *World, node Node) (Node, error) {
-	return NewSymbol(fmt.Sprintf("-gensym-%d-", symbolManager.Count())), nil
+	return genSym(), nil
 }
 
 var symbolClass = embedClassOf[Symbol]("<symbol>")
