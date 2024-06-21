@@ -268,7 +268,7 @@ Gmnlisp's functions are subset of [ISLisp].
     - [x] :reader
     - [x] :writer
     - [x] :boundp
-- [ ] defconstant
+- [ ] defconstant (defined same as defglobal for dummy)
 - [x] defdynamic
 - [x] defgeneric
 - [x] defglobal
