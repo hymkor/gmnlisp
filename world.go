@@ -253,6 +253,7 @@ var autoLoad = Variables{
 	NewSymbol("create-string-input-stream"):  &Function{C: 1, F: funCreateStringInputStream},
 	NewSymbol("create-string-output-stream"): SpecialF(cmdCreateStringOutputStream),
 	NewSymbol("defclass"):                    SpecialF(cmdDefClass),
+	NewSymbol("defconstant"):                 SpecialF(cmdDefglobal),
 	NewSymbol("defdynamic"):                  SpecialF(cmdDefDynamic),
 	NewSymbol("defgeneric"):                  SpecialF(cmdDefGeneric),
 	NewSymbol("defglobal"):                   SpecialF(cmdDefglobal),
