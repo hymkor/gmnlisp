@@ -17,114 +17,136 @@ type _SlotSpec struct {
 	initarg    []Symbol
 }
 
-func registerGetter(w *World, getterName Symbol, class Class, getter func(*_Receiver) (Node, error)) error {
-	method := &_Method{
+func newGetter(class Class, slotName Symbol) *_Method {
+	return &_Method{
 		types: []Class{class},
 		method: func(ctx context.Context, w *World, node []Node) (Node, error) {
-			rec := node[0].(*_Receiver)
-			return getter(rec)
+			rec, ok := node[0].(*_Receiver)
+			if !ok {
+				return nil, ErrExpectedClass
+			}
+			if val, ok := rec.Slot[slotName]; ok {
+				return val, nil
+			}
+			return Null, nil
 		},
 	}
-	if _acc, err := w.Get(getterName); err == nil {
-		if gen, ok := _acc.(*_Generic); ok {
-			gen.methods = append(gen.methods, method)
-		} else {
-			return fmt.Errorf("%v: already defined as not accessor", getterName)
-		}
-	} else {
-		w.DefineGlobal(getterName, &_Generic{
-			Symbol:  getterName,
-			argc:    1,
-			methods: []*_Method{method},
-		})
-	}
-	return nil
 }
 
-func registerSetter(w *World, setterName Symbol, class Class, setter func(*_Receiver, Node)) error {
-	method := &_Method{
+func newSetter(class Class, slotName Symbol) *_Method {
+	return &_Method{
 		types: []Class{objectClass, class},
 		method: func(ctx context.Context, w *World, node []Node) (Node, error) {
-			rec := node[1].(*_Receiver)
-			setter(rec, node[0])
+			rec, ok := node[1].(*_Receiver)
+			if !ok {
+				return nil, ErrExpectedClass
+			}
+			rec.Slot[slotName] = node[0]
 			return True, nil
 		},
 	}
-	if _acc, err := w.Get(setterName); err == nil {
-		// println("accessor is found", spec.accessor.String())
+}
+
+func newBoundp(class Class, slotName Symbol) *_Method {
+	return &_Method{
+		types: []Class{class},
+		method: func(ctx context.Context, w *World, node []Node) (Node, error) {
+			rec, ok := node[0].(*_Receiver)
+			if !ok {
+				return nil, ErrExpectedClass
+			}
+			if _, ok := rec.Slot[slotName]; ok {
+				return True, nil
+			}
+			return Null, nil
+		},
+	}
+}
+
+func registerMethod(w *World, methodName Symbol, class Class, method *_Method) error {
+	if _acc, err := w.Get(methodName); err == nil {
 		if gen, ok := _acc.(*_Generic); ok {
 			gen.methods = append(gen.methods, method)
 		} else {
-			return fmt.Errorf("%v: already defined as not accessor", setterName.String())
+			return fmt.Errorf("%v: already defined as not method", methodName)
 		}
 	} else {
-		// println("accessor not found", spec.accessor.String())
-		w.DefineGlobal(setterName, &_Generic{
-			Symbol:  setterName,
-			argc:    2,
+		w.DefineGlobal(methodName, &_Generic{
+			Symbol:  methodName,
+			argc:    len(method.types),
+			rest:    method.restType != nil,
 			methods: []*_Method{method},
 		})
 	}
 	return nil
 }
 
+var (
+	kwReader   = NewKeyword(":reader")
+	kwWriter   = NewKeyword(":writer")
+	kwAccessor = NewKeyword(":accessor")
+	kwBoundp   = NewKeyword(":boundp")
+	kwInitForm = NewKeyword(":initform")
+	kwInitArg  = NewKeyword(":initarg")
+)
+
 func readSlotSpec(ctx context.Context, w *World, list Node) (*_SlotSpec, error) {
-	cons, ok := list.(*Cons)
-	if !ok {
-		return nil, fmt.Errorf("[1] %w: %#v", ErrExpectedCons, list)
+	_identifier, list, err := Shift(list)
+	if err != nil {
+		return nil, err
 	}
-	identifier, ok := cons.Car.(Symbol)
+	identifier, ok := _identifier.(Symbol)
 	if !ok {
-		return nil, fmt.Errorf("[1] %w: %#v", ErrExpectedSymbol, cons.Car)
+		return nil, fmt.Errorf("%v: %w", _identifier, ErrExpectedSymbol)
 	}
 	slotSpec := &_SlotSpec{identifier: identifier}
-
-	list = cons.Cdr
 	count := 1
 	for IsSome(list) {
-		count++
-		keywordCons, ok := list.(*Cons)
-		if !ok {
-			return nil, fmt.Errorf("[%d][1] %w: %#v", count, ErrExpectedCons, list)
-		}
-		keyword, ok := keywordCons.Car.(Keyword)
-		if !ok {
-			return nil, fmt.Errorf("[%d][2] %w: %#v", count, ErrExpectedKeyword, keywordCons.Car)
-		}
-		valueCons, ok := keywordCons.Cdr.(*Cons)
-		if !ok {
-			return nil, fmt.Errorf("[%d][3] %w: %#v", count, ErrExpectedCons, keywordCons.Cdr)
-		}
+		var _keyword Node
 		var err error
-		value := valueCons.Car
+		var value Node
+
+		count++
+		_keyword, list, err = Shift(list)
+		if err != nil {
+			return nil, err
+		}
+		keyword, ok := _keyword.(Keyword)
+		if !ok {
+			return nil, fmt.Errorf("%v: %w", _keyword, ErrExpectedKeyword)
+		}
+		value, list, err = Shift(list)
+		if err != nil {
+			return nil, err
+		}
 		switch keyword {
-		case NewKeyword(":reader"):
+		case kwReader:
 			if v, ok := value.(Symbol); ok {
 				slotSpec.reader = append(slotSpec.reader, v)
 			} else {
 				return nil, fmt.Errorf(":reader:  %w", ErrExpectedSymbol)
 			}
-		case NewKeyword(":writer"):
+		case kwWriter:
 			if v, ok := value.(Symbol); ok {
 				slotSpec.writer = append(slotSpec.writer, v)
 			} else {
 				return nil, fmt.Errorf(":writer: %w", ErrExpectedSymbol)
 			}
-		case NewKeyword(":accessor"):
+		case kwAccessor:
 			if v, ok := value.(Symbol); ok {
 				slotSpec.accessor = append(slotSpec.accessor, v)
 			} else {
 				return nil, fmt.Errorf(":accessor: %w", ErrExpectedSymbol)
 			}
-		case NewKeyword(":boundp"):
+		case kwBoundp:
 			if v, ok := value.(Symbol); ok {
 				slotSpec.boundp = append(slotSpec.boundp, v)
 			} else {
 				return nil, fmt.Errorf(":boundp: %w", ErrExpectedSymbol)
 			}
-		case NewKeyword(":initform"):
+		case kwInitForm:
 			slotSpec.initform = func() (Node, error) { return value.Eval(ctx, w) }
-		case NewKeyword(":initarg"):
+		case kwInitArg:
 			if v, ok := value.(Symbol); ok {
 				slotSpec.initarg = append(slotSpec.initarg, v)
 			} else {
@@ -133,13 +155,6 @@ func readSlotSpec(ctx context.Context, w *World, list Node) (*_SlotSpec, error) 
 		default:
 			return nil, fmt.Errorf("invalid keyword %v", keyword)
 		}
-		if err != nil {
-			return nil, fmt.Errorf("[%d][4] %w: %#v", count, err, value)
-		}
-		if !ok {
-			return nil, fmt.Errorf("[%d][5] Domain error: %#v", count, valueCons.Car)
-		}
-		list = valueCons.Cdr
 	}
 	return slotSpec, nil
 }
@@ -255,64 +270,38 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 			return nil, fmt.Errorf("[3][%d] %w", slotCount, err)
 		}
 		class.Slot[spec.identifier] = spec
-		getter := func(r *_Receiver) (Node, error) {
-			if val, ok := r.Slot[spec.identifier]; ok {
-				return val, nil
-			}
-			return Null, nil
-		}
-		setter := func(r *_Receiver, value Node) {
-			r.Slot[spec.identifier] = value
-		}
-		if len(spec.boundp) > 0 {
-			boundp := func(r *_Receiver) (Node, error) {
-				if _, ok := r.Slot[spec.identifier]; ok {
-					return True, nil
-				}
-				return Null, nil
-			}
-			if err := registerGetter(w, spec.boundp[0], class, boundp); err != nil {
-				// println(spec.boundp[0].String(), className.String())
+
+		getter := newGetter(class, spec.identifier)
+		setter := newSetter(class, spec.identifier)
+		for _, f := range spec.boundp {
+			boundp := newBoundp(class, spec.identifier)
+			if err := registerMethod(w, f, class, boundp); err != nil {
 				return nil, fmt.Errorf("boundp: %w", err)
 			}
 		}
-		if len(spec.reader) > 0 {
-			if err := registerGetter(w, spec.reader[0], class, getter); err != nil {
+		for _, f := range spec.reader {
+			if err := registerMethod(w, f, class, getter); err != nil {
 				return nil, err
 			}
 		}
-		if len(spec.writer) > 0 {
-			if err := registerSetter(w, spec.writer[0], class, setter); err != nil {
+		for _, f := range spec.writer {
+			if err := registerMethod(w, f, class, setter); err != nil {
 				return nil, err
 			}
 		}
-		if len(spec.accessor) > 0 {
-			if err := registerGetter(w, spec.accessor[0], class, getter); err != nil {
+		for _, f := range spec.accessor {
+			if err := registerMethod(w, f, class, getter); err != nil {
 				return nil, err
 			}
-			setterName := NewSymbol("set-" + spec.accessor[0].String())
-			if err := registerSetter(w, setterName, class, setter); err != nil {
+			setterName := NewSymbol("set-" + f.String())
+			if err := registerMethod(w, setterName, class, setter); err != nil {
 				return nil, err
 			}
 		}
 	}
 	w.DefineGlobal(className, class)
 
-	_gen, err := w.Get(symInitializeObject)
-	if err != nil {
-		// not found
-		_gen = &_Generic{
-			Symbol: symInitializeObject,
-			argc:   1,
-			rest:   true,
-		}
-		w.DefineGlobal(symInitializeObject, _gen)
-	}
-	gen, ok := _gen.(*_Generic)
-	if !ok {
-		return nil, ErrExpectedGeneric
-	}
-	gen.methods = append(gen.methods, &_Method{
+	registerMethod(w, symInitializeObject, class, &_Method{
 		restType: objectClass,
 		types:    []Class{class},
 		method:   defaultInitializeObject,
