@@ -45,12 +45,12 @@ func cmdWithHandler(ctx context.Context, w *World, node Node) (Node, error) {
 	return nil, err
 }
 
-type ErrContinueCondition struct {
+type _ErrContinueCondition struct {
 	Cond  Node
 	Value Node
 }
 
-func (e *ErrContinueCondition) Error() string {
+func (e *_ErrContinueCondition) Error() string {
 	return e.Value.String()
 }
 
@@ -66,7 +66,7 @@ func funSignalCondition(ctx context.Context, w *World, args []Node) (Node, error
 		panic("handler is not callable")
 	}
 	rv, err := handler.Call(ctx, w, &Cons{Car: cond})
-	var e *ErrContinueCondition
+	var e *_ErrContinueCondition
 	if IsSome(continueable) && errors.As(err, &e) {
 		return e.Value, nil
 	}
@@ -85,5 +85,5 @@ func cmdContinueCondition(ctx context.Context, w *World, node Node) (Node, error
 	if IsSome(node) {
 		return nil, ErrTooManyArguments
 	}
-	return nil, &ErrContinueCondition{Cond: cond, Value: value}
+	return nil, &_ErrContinueCondition{Cond: cond, Value: value}
 }
