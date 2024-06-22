@@ -1,10 +1,12 @@
 - These functions are implemented
     - `(class-of)`, `(instancep)`, `(defgeneric)`, `(defmethod)`, `(class)`,
-    `(sqrt)`, `(subclassp)`, `(generic-function-p)`, `(initialize-object`)
+    `(sqrt)`, `(subclassp)`, `(generic-function-p)`, `(initialize-object`),
+    `(error)`, `(cerror)
 - `(create)` can create the instance of not only user-defined class, but also embeded-types.
 - `(defclass)`: support `:boundp` for slot-definition
 - `(defconstant)` is defined as alias of `(defglobal)` temporally
 - Embeded class can inherits other embeded classes now
+- Implement the class `<simple-error>` on startup.lsp
 
 v0.5.0
 ======

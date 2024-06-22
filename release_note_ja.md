@@ -1,10 +1,12 @@
 - 以下の関数を実装
     - `(class-of)`, `(instancep)`, `(defgeneric)`, `(defmethod)`, `(class)`,
-    `(sqrt)`, `(subclassp)`, `(generic-function-p)`, `(initialize-object)`
+    `(sqrt)`, `(subclassp)`, `(generic-function-p)`, `(initialize-object)` ,
+    `(error)`, `(cerror)`
 - `(create)` でユーザクラスだけでなく、システムクラスのインスタンスを作れるようにした
 - `(defclass)` のスロット定義の `:boundp` をサポート
 - `(defconstant)` を `(defglobal)` の別名で仮定義
 - 組み込みクラスも他の組み込みクラスを継承できるようになった。
+- `<simple-error>` を実装(startup.lsp)
 
 v0.5.0
 ======
