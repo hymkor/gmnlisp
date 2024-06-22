@@ -224,7 +224,7 @@ func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
 			lexical[name] = value
 		}
 	}
-	var errEarlyReturns *ErrEarlyReturns
+	var errEarlyReturns *_ErrEarlyReturns
 	if errors.As(err, &errEarlyReturns) && errEarlyReturns.Name == L.name {
 		return errEarlyReturns.Value, nil
 	}

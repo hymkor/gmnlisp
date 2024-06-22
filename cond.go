@@ -31,9 +31,9 @@ func cmdWithHandler(ctx context.Context, w *World, node Node) (Node, error) {
 	// ようにしている
 	// (将来的にはエラーが起きた場所で呼ぶよう変更しなくてはいけない)
 
-	var e1 *ErrEarlyReturns // block & return-from
-	var e2 *_ErrThrown      // catch & throw
-	var e3 *_ErrTagBody     // tagbody & go
+	var e1 *_ErrEarlyReturns // block & return-from
+	var e2 *_ErrThrown       // catch & throw
+	var e3 *_ErrTagBody      // tagbody & go
 	if err == nil || errors.As(err, &e1) || errors.As(err, &e2) || errors.As(err, &e3) {
 		return value, err
 	}

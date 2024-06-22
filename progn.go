@@ -7,12 +7,12 @@ import (
 	"io"
 )
 
-type ErrEarlyReturns struct {
+type _ErrEarlyReturns struct {
 	Value Node
 	Name  Symbol
 }
 
-func (e *ErrEarlyReturns) Error() string {
+func (e *_ErrEarlyReturns) Error() string {
 	if e.Name == nulSymbol {
 		return "Unexpected (return)"
 	}
@@ -21,7 +21,7 @@ func (e *ErrEarlyReturns) Error() string {
 
 func funReturn(ctx context.Context, w *World, argv []Node) (Node, error) {
 	// from CommonLisp
-	return nil, &ErrEarlyReturns{Value: argv[0], Name: nulSymbol}
+	return nil, &_ErrEarlyReturns{Value: argv[0], Name: nulSymbol}
 }
 
 func cmdReturnFrom(ctx context.Context, w *World, n Node) (Node, error) {
@@ -38,7 +38,7 @@ func cmdReturnFrom(ctx context.Context, w *World, n Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	return nil, &ErrEarlyReturns{Value: value, Name: symbol}
+	return nil, &_ErrEarlyReturns{Value: value, Name: symbol}
 }
 
 func Progn(ctx context.Context, w *World, n Node) (value Node, err error) {
@@ -74,7 +74,7 @@ func cmdBlock(ctx context.Context, w *World, node Node) (Node, error) {
 		nameSymbol = nulSymbol
 	}
 
-	var errEarlyReturns *ErrEarlyReturns
+	var errEarlyReturns *_ErrEarlyReturns
 	rv, err := Progn(ctx, w, statements)
 	if errors.As(err, &errEarlyReturns) && errEarlyReturns.Name == nameSymbol {
 		return errEarlyReturns.Value, nil
