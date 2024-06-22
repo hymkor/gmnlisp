@@ -208,7 +208,7 @@ Gmnlisp's functions are subset of [ISLisp].
 - [ ] with-open-input-file
 - [ ] with-open-io-file
 - [x] with-open-output-file
-- [ ] with-standard-input
+- [x] with-standard-input
 - [ ] with-standard-output
 
 ### 4 Forms and Evaluation
@@ -256,7 +256,7 @@ Gmnlisp's functions are subset of [ISLisp].
 - [ ] with-open-input-file
 - [ ] with-open-io-file
 - [x] with-open-output-file
-- [ ] with-standard-input
+- [x] with-standard-input
 - [ ] with-standard-output
 
 #### 4.4 Defining Forms
