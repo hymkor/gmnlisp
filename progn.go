@@ -158,7 +158,7 @@ func cmdCase(ctx context.Context, w *World, list Node) (Node, error) {
 			var list Node = cons
 			for IsSome(list) {
 				var _caseValue Node
-				_caseValue, list, err = w.ShiftAndEvalCar(ctx, list)
+				_caseValue, list, err = Shift(list)
 				if err != nil {
 					return nil, err
 				}
