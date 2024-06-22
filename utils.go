@@ -25,6 +25,7 @@ var (
 	ErrExpectedReader       = errors.New("expected reader")
 	ErrExpectedSequence     = errors.New("expected sequence")
 	ErrExpectedString       = errors.New("expected string")
+	ErrExpectedStream       = errors.New("expected stream")
 	ErrExpectedSymbol       = errors.New("expected symbol")
 	ErrExpectedSymbolOrList = errors.New("expected symbol or list")
 	ErrExpectedWriter       = errors.New("expected writer")

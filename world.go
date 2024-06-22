@@ -374,6 +374,7 @@ var autoLoad = Variables{
 	NewSymbol("vector"):                      &Function{F: funVector},
 	NewSymbol("while"):                       SpecialF(cmdWhile),
 	NewSymbol("with-handler"):                SpecialF(cmdWithHandler),
+	NewSymbol("with-standard-input"):         SpecialF(cmdWithStandardInput),
 	NewSymbol("with-open-input-file"):        SpecialF(cmdWithOpenInputFile),
 	NewSymbol("with-open-output-file"):       SpecialF(cmdWithOpenOutputFile),
 	NewSymbol("zerop"):                       &Function{C: 1, F: funZerop},

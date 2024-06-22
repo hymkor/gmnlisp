@@ -282,3 +282,19 @@ func funFileLength(ctx context.Context, w *World, list []Node) (Node, error) {
 	}
 	return Integer(stat.Size() * 8 / n), nil
 }
+
+func cmdWithStandardInput(ctx context.Context, w *World, node Node) (Node, error) {
+	_stream, node, err := w.ShiftAndEvalCar(ctx, node)
+	if err != nil {
+		return nil, err
+	}
+	stream, ok := _stream.(_ReaderNode)
+	if !ok {
+		return nil, fmt.Errorf("%v: %w", _stream, ErrExpectedStream)
+	}
+	save := w.stdin
+	w.stdin = stream
+	result, err := Progn(ctx, w, node)
+	w.stdin = save
+	return result, err
+}
