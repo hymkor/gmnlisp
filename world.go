@@ -10,6 +10,7 @@ import (
 	"math"
 	"os"
 	"strings"
+	"sync"
 	"unicode/utf8"
 )
 
@@ -67,6 +68,7 @@ type shared struct {
 	stdout  *_WriterNode
 	errout  *_WriterNode
 	stdin   *_ReaderNode
+	startup sync.Once
 }
 
 type World struct {
@@ -466,7 +468,17 @@ func (w *World) inject(ctx context.Context, list Node, f func(left, right Node) 
 	return result, nil
 }
 
+//go:embed startup.lsp
+var startupCode string
+
 func (w *World) InterpretNodes(ctx context.Context, ns []Node) (Node, error) {
+	w.startup.Do(func() {
+		compiled, err := ReadAll(strings.NewReader(startupCode))
+		if err != nil {
+			panic(err.Error())
+		}
+		ns = append(compiled, ns...)
+	})
 	var result Node = Null
 	var err error
 
