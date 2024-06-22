@@ -161,9 +161,13 @@ func readSlotSpec(ctx context.Context, w *World, list Node) (*_SlotSpec, error) 
 
 type _UserClass struct {
 	serial int
-	Symbol
-	Super []Class
-	Slot  map[Symbol]*_SlotSpec
+	Symbol Symbol
+	Super  []Class
+	Slot   map[Symbol]*_SlotSpec
+}
+
+func (u *_UserClass) ClassOf() Class {
+	return embedClassOf[*_UserClass]("class")
 }
 
 func (u *_UserClass) Equals(_other Node, _ EqlMode) bool {
@@ -195,6 +199,14 @@ func (c *_UserClass) Eval(ctx context.Context, w *World) (Node, error) {
 
 func (c *_UserClass) String() string {
 	return "{*_UserClass}" + c.Symbol.String()
+}
+
+func (c *_UserClass) GoString() string {
+	return "{*_UserClass}" + c.Symbol.String()
+}
+
+func (c *_UserClass) PrintTo(w io.Writer, mode PrintMode) (int, error) {
+	return io.WriteString(w, c.Symbol.String())
 }
 
 func (c *_UserClass) Name() Symbol {
