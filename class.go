@@ -160,17 +160,28 @@ func readSlotSpec(ctx context.Context, w *World, list Node) (*_SlotSpec, error) 
 }
 
 type _UserClass struct {
+	serial int
 	Symbol
-	Super map[Symbol]Class
+	Super []Class
 	Slot  map[Symbol]*_SlotSpec
 }
 
-func (class1 *_UserClass) InheritP(class2 Class) bool {
-	_, ok := class1.Super[class2.Name()]
-	if ok {
-		return true
+func (u *_UserClass) Equals(_other Node, _ EqlMode) bool {
+	if u.serial == 0 {
+		panic("class serial is zero")
 	}
+	other, ok := _other.(*_UserClass)
+	if !ok {
+		return false
+	}
+	return u.serial == other.serial
+}
+
+func (class1 *_UserClass) InheritP(class2 Class) bool {
 	for _, s := range class1.Super {
+		if s.Equals(class2, STRICT) {
+			return true
+		}
 		if s.InheritP(class2) {
 			return true
 		}
@@ -226,6 +237,8 @@ func (c *_UserClass) Create() Node {
 
 var symInitializeObject = NewSymbol("initialize-object")
 
+var classCounter = 0
+
 func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 	// (defclass class-name (sc-name*) (slot-spec*) class-opt*)
 
@@ -238,9 +251,10 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 	if !ok {
 		return nil, fmt.Errorf("[1] %w: %#v", ErrExpectedSymbol, _className)
 	}
+	classCounter++
 	class := &_UserClass{
+		serial: classCounter,
 		Symbol: className,
-		Super:  make(map[Symbol]Class),
 		Slot:   make(map[Symbol]*_SlotSpec),
 	}
 	if IsNone(args) {
@@ -262,7 +276,7 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 		if !ok {
 			return nil, fmt.Errorf("%v: %w", _super, ErrExpectedClass)
 		}
-		class.Super[super.Name()] = super
+		class.Super = append(class.Super, super)
 	}
 	if IsNone(args) {
 		w.DefineGlobal(className, class)
