@@ -82,12 +82,12 @@ func cmdBlock(ctx context.Context, w *World, node Node) (Node, error) {
 	return rv, err
 }
 
-type ErrThrown struct {
+type _ErrThrown struct {
 	Value   Node
 	TagForm Node
 }
 
-func (e *ErrThrown) Error() string {
+func (e *_ErrThrown) Error() string {
 	return fmt.Sprintf("Thrown tag-form %#v was not caught", e.TagForm)
 }
 func cmdCatch(ctx context.Context, w *World, node Node) (Node, error) {
@@ -97,7 +97,7 @@ func cmdCatch(ctx context.Context, w *World, node Node) (Node, error) {
 		return nil, err
 	}
 
-	var errThrown *ErrThrown
+	var errThrown *_ErrThrown
 	rv, err := Progn(ctx, w, statements)
 	if errors.As(err, &errThrown) && errThrown.TagForm.Equals(tagForm, EQUALP) {
 		return errThrown.Value, nil
@@ -107,7 +107,7 @@ func cmdCatch(ctx context.Context, w *World, node Node) (Node, error) {
 
 func funThrow(ctx context.Context, w *World, list []Node) (Node, error) {
 	// from ISLisp
-	return nil, &ErrThrown{Value: list[1], TagForm: list[0]}
+	return nil, &_ErrThrown{Value: list[1], TagForm: list[0]}
 }
 
 func cmdCond(ctx context.Context, w *World, list Node) (Node, error) {
