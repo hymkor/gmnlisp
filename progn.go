@@ -290,11 +290,11 @@ func cmdUnwindProtect(ctx context.Context, w *World, list Node) (Node, error) {
 	return value, nil
 }
 
-type _TagBody struct {
+type _ErrTagBody struct {
 	tag Symbol
 }
 
-func (t *_TagBody) Error() string {
+func (t *_ErrTagBody) Error() string {
 	return fmt.Sprintf("tag: %s not found", t.tag)
 }
 
@@ -307,7 +307,7 @@ func cmdGo(ctx context.Context, w *World, args Node) (Node, error) {
 	if !ok {
 		return nil, ErrExpectedSymbol
 	}
-	return Null, &_TagBody{tag: symbol}
+	return Null, &_ErrTagBody{tag: symbol}
 }
 
 func cmdTagBody(ctx context.Context, w *World, args Node) (Node, error) {
@@ -330,7 +330,7 @@ mainloop:
 		if err == nil {
 			continue
 		}
-		var t *_TagBody
+		var t *_ErrTagBody
 		if !errors.As(err, &t) {
 			return nil, err
 		}
