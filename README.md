@@ -252,7 +252,7 @@ Gmnlisp's functions are subset of [ISLisp].
 - [x] unwind-protect
 - [x] while
 - [ ] with-error-output
-- [ ] with-handler
+- [x] with-handler
 - [ ] with-open-input-file
 - [ ] with-open-io-file
 - [x] with-open-output-file
@@ -702,15 +702,16 @@ Gmnlisp's functions are subset of [ISLisp].
 #### 21.2 Signaling and handling condtions
 ##### 21.2.1 Operations relating to condition signaling
 
-- [ ] error
-- [ ] cerror
-- [ ] signal-condition
+- [x] error
+- [x] cerror
+- [x] signal-condition
 
 ##### 21.2.2 Operations relating to condition handling
 
 - [x] ignore-error
 - [ ] report-condition
 - [ ] condition-continuable
+- [x] continue-condition
 - [x] with-handler
 
 #### 21.3 Data associated with condition classes
@@ -730,8 +731,8 @@ Gmnlisp's functions are subset of [ISLisp].
 
 ##### 21.3.4 Simple errors
 
-- [ ] simple-error-format-string
-- [ ] simple-error-format-arguments
+- [x] simple-error-format-string
+- [x] simple-error-format-arguments
 
 ##### 21.3.5 Stream errors
 
