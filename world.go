@@ -264,6 +264,8 @@ var autoLoad = Variables{
 	NewSymbol("defmacro"):                    SpecialF(cmdDefMacro),
 	NewSymbol("defmethod"):                   SpecialF(cmdDefMethod),
 	NewSymbol("defun"):                       SpecialF(cmdDefun),
+	NewSymbol("domain-error-expected-class"): &Function{C: 1, F: funDomainErrorExpectedClass},
+	NewSymbol("domain-error-object"):         &Function{C: 1, F: funDomainErrorObject},
 	NewSymbol("dynamic"):                     SpecialF(cmdDynamic),
 	NewSymbol("dynamic-let"):                 SpecialF(cmdDynamicLet),
 	NewSymbol("elt"):                         &Function{Min: 2, F: funElt},
