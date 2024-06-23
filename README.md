@@ -471,9 +471,9 @@ Gmnlisp's functions are subset of [ISLisp].
 
 #### 10.2 Symbol Properties
 
-- [ ] property
-- [ ] set-property , setf
-- [ ] remove-property
+- [x] property
+- [x] set-property , setf
+- [x] remove-property
 
 #### 10.3 Unnamed Symbols
 
