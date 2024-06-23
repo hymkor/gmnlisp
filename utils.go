@@ -53,8 +53,8 @@ const (
 type PrintMode int
 
 const (
-	PRINT PrintMode = iota
-	PRINC
+	PRINT PrintMode = iota // AS S-Expression
+	PRINC                  // AS IS
 )
 
 type Class interface {
@@ -133,9 +133,9 @@ type Node interface {
 	ClassOf() Class
 }
 
-func embedClassOf[T Node](name string) *EmbedClass {
+func _embedClassOf[T Node](name string) *EmbedClass {
 	symbol := NewSymbol(name)
-	class := &EmbedClass{
+	return &EmbedClass{
 		name: symbol,
 		instanceP: func(n Node) bool {
 			_, ok := n.(T)
@@ -146,7 +146,11 @@ func embedClassOf[T Node](name string) *EmbedClass {
 			return value
 		},
 	}
-	autoLoad[symbol] = class
+}
+
+func embedClassOf[T Node](name string) *EmbedClass {
+	class := _embedClassOf[T](name)
+	autoLoad[class.name] = class
 	return class
 }
 
