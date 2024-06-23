@@ -1,7 +1,8 @@
 - These functions are implemented
     - `(class-of)`, `(instancep)`, `(defgeneric)`, `(defmethod)`, `(class)`,
     `(sqrt)`, `(subclassp)`, `(generic-function-p)`, `(initialize-object`),
-    `(error)`, `(cerror)`, `(with-standard-input)`
+    `(error)`, `(cerror)`, `(with-standard-input)`, `(property)`,
+    `(set-property)`, `(remove-property)`
 - `(create)` can create the instance of not only user-defined class, but also embeded-types.
 - `(defclass)`: support `:boundp` for slot-definition
 - `(defconstant)` is defined as alias of `(defglobal)` temporally
