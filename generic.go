@@ -3,7 +3,6 @@ package gmnlisp
 import (
 	"context"
 	"fmt"
-	"strings"
 )
 
 type _Method struct {
@@ -97,16 +96,6 @@ func cmdDefGeneric(_ context.Context, w *World, node Node) (Node, error) {
 	}
 	w.DefineGlobal(name, &_Generic{Symbol: name, argc: argc, rest: hasRest})
 	return name, nil
-}
-
-func joinStringer[T interface{ String() string }](s []T, dem string) string {
-	var buffer strings.Builder
-	buffer.WriteString(s[0].String())
-	for _, s1 := range s[1:] {
-		buffer.WriteString(dem)
-		buffer.WriteString(s1.String())
-	}
-	return buffer.String()
 }
 
 func (c *_Generic) Call(ctx context.Context, w *World, node Node) (Node, error) {
