@@ -295,7 +295,7 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 		return className, nil
 	}
 	// (slot-spec*)
-	_slotSpecs, args, err := Shift(args)
+	_slotSpecs, _, err := Shift(args)
 	if err != nil {
 		return nil, err
 	}
