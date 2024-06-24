@@ -11,7 +11,10 @@ type DomainError struct {
 	ExpectedClass Class
 }
 
-var domainErrorClass = _embedClassOf[*DomainError]("<domain-error>")
+var (
+	domainErrorClass = _embedClassOf[*DomainError]("<domain-error>")
+	symDomainError   = domainErrorClass.name
+)
 
 func (e *DomainError) ClassOf() Class {
 	return domainErrorClass

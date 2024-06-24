@@ -38,7 +38,16 @@ func cmdWithHandler(ctx context.Context, w *World, node Node) (Node, error) {
 		return value, err
 	}
 
-	_, err2 := handler.Call(ctx, w, &Cons{Car: &ErrorNode{Value: err}, Cdr: Null})
+	var errorValue interface {
+		Node
+		Error() string
+	}
+	var err2 error
+	if errors.As(err, &errorValue) {
+		_, err2 = handler.Call(ctx, w, &Cons{Car: errorValue, Cdr: Null})
+	} else {
+		_, err2 = handler.Call(ctx, w, &Cons{Car: &ErrorNode{Value: err}, Cdr: Null})
+	}
 	if err2 != nil {
 		return nil, err2
 	}

@@ -381,6 +381,7 @@ var autoLoad = Variables{
 	NewSymbol("with-standard-input"):         SpecialF(cmdWithStandardInput),
 	NewSymbol("zerop"):                       &Function{C: 1, F: funZerop},
 	symReportCondition:                       reportCondition,
+	symDomainError:                           domainErrorClass,
 	// *sort*end*
 }
 
