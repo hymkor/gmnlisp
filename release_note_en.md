@@ -2,7 +2,7 @@
     - `(class-of)`, `(instancep)`, `(defgeneric)`, `(defmethod)`, `(class)`,
     `(sqrt)`, `(subclassp)`, `(generic-function-p)`, `(initialize-object`),
     `(error)`, `(cerror)`, `(with-standard-input)`, `(property)`,
-    `(set-property)`, `(remove-property)`
+    `(set-property)`, `(remove-property)`, `(report-condition)`
 - `(create)` can create the instance of not only user-defined class, but also embeded-types.
 - `(defclass)`: support `:boundp` for slot-definition
 - `(defconstant)` is defined as alias of `(defglobal)` temporally
