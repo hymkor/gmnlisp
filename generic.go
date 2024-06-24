@@ -49,6 +49,10 @@ type _Generic struct {
 	methods []*_Method
 }
 
+func ExpectGeneric(value Node) (*_Generic, error) {
+	return ExpectType[*_Generic](value, "<generic-function>")
+}
+
 func cmdDefGeneric(_ context.Context, w *World, node Node) (Node, error) {
 	_name, node, err := Shift(node)
 	if err != nil {
