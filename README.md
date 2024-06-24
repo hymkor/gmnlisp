@@ -709,7 +709,7 @@ Gmnlisp's functions are subset of [ISLisp].
 ##### 21.2.2 Operations relating to condition handling
 
 - [x] ignore-error
-- [ ] report-condition
+- [x] report-condition
 - [ ] condition-continuable
 - [x] continue-condition
 - [x] with-handler
