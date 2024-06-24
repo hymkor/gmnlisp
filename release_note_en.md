@@ -9,6 +9,7 @@
 - Embeded class can inherits other embeded classes now
 - Implement the class `<simple-error>` on startup.lsp
 - Fix the problem KEY on `(case KEYFORM ((KEY*) FORM*)*)`  was evaluated though it should not
+- Fix: `(apply)` would double evalute the last argument
 
 v0.5.0
 ======
