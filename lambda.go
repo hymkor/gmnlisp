@@ -381,12 +381,12 @@ func cmdApply(ctx context.Context, w *World, list Node) (Node, error) {
 		}
 		if IsNone(list) {
 			// value is the last argument = array
-			value, err = value.Eval(ctx, w)
+			value, err := value.Eval(ctx, w)
 			if err != nil {
 				return nil, err
 			}
 			SeqEach(value, func(n Node) error {
-				newargs.Add(n)
+				newargs.Add(Uneval{n})
 				return nil
 			})
 			return f.Call(ctx, w, newargs.Sequence())
