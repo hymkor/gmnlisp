@@ -250,7 +250,6 @@ var errorClass = &EmbedClass{
 	},
 	create: func() Node {
 		panic("the instance of <error> could not be created")
-		return nil
 	},
 	super: []Class{objectClass},
 }

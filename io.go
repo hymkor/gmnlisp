@@ -130,9 +130,9 @@ func funClose(_ context.Context, _ *World, argv []Node) (Node, error) {
 }
 
 func funCreateStringInputStream(ctx context.Context, w *World, list []Node) (Node, error) {
-	s, ok := list[0].(String)
-	if !ok {
-		return nil, ErrExpectedString
+	s, err := ExpectString(list[0])
+	if err != nil {
+		return nil, err
 	}
 	return _ReaderNode{_Reader: strings.NewReader(s.String())}, nil
 }
@@ -155,9 +155,9 @@ type inputStream struct {
 }
 
 func openInputFile(fname Node) (*inputStream, error) {
-	filename, ok := fname.(String)
-	if !ok {
-		return nil, ErrExpectedString
+	filename, err := ExpectString(fname)
+	if err != nil {
+		return nil, err
 	}
 	reader, err := os.Open(filename.String())
 	if err != nil {
@@ -208,9 +208,9 @@ func (o *_OutputFileStream) Close() error {
 }
 
 func openOutputFile(fnameNode Node) (*_OutputFileStream, error) {
-	filename, ok := fnameNode.(String)
-	if !ok {
-		return nil, ErrExpectedString
+	filename, err := ExpectString(fnameNode)
+	if err != nil {
+		return nil, err
 	}
 	writer, err := os.Create(filename.String())
 	if err != nil {
@@ -251,12 +251,12 @@ func cmdWithOpenOutputFile(ctx context.Context, w *World, list Node) (Node, erro
 }
 
 func funProbeFile(ctx context.Context, w *World, list []Node) (Node, error) {
-	_fname, ok := list[0].(String)
-	if !ok {
-		return nil, ErrExpectedString
+	_fname, err := ExpectString(list[0])
+	if err != nil {
+		return nil, err
 	}
 	fname := _fname.String()
-	_, err := os.Stat(fname)
+	_, err = os.Stat(fname)
 	if err != nil {
 		return Null, nil
 	}
@@ -264,9 +264,9 @@ func funProbeFile(ctx context.Context, w *World, list []Node) (Node, error) {
 }
 
 func funFileLength(ctx context.Context, w *World, list []Node) (Node, error) {
-	_fname, ok := list[0].(String)
-	if !ok {
-		return nil, ErrExpectedString
+	_fname, err := ExpectString(list[0])
+	if err != nil {
+		return nil, err
 	}
 	fname := _fname.String()
 

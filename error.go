@@ -49,7 +49,7 @@ func (e *DomainError) Error() string {
 func funDomainErrorObject(ctx context.Context, w *World, args []Node) (Node, error) {
 	e, ok := args[0].(*DomainError)
 	if !ok {
-		return nil, &DomainError{args[0], domainErrorClass}
+		return nil, &DomainError{Object: args[0], ExpectedClass: domainErrorClass}
 	}
 	return e.Object, nil
 }
@@ -60,4 +60,19 @@ func funDomainErrorExpectedClass(ctx context.Context, w *World, args []Node) (No
 		return nil, &DomainError{e, domainErrorClass}
 	}
 	return e.ExpectedClass, nil
+}
+
+func ExpectType[T Node](_value Node, name string) (T, error) {
+	value, ok := _value.(T)
+	if ok {
+		return value, nil
+	}
+	return value, &DomainError{
+		Object:        _value,
+		ExpectedClass: _embedClassOf[T](name),
+	}
+}
+
+func ExpectString(_value Node) (String, error) {
+	return ExpectType[String](_value, "<string>")
 }

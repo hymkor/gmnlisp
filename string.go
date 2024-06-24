@@ -104,9 +104,9 @@ func funStringAppend(ctx context.Context, w *World, list []Node) (Node, error) {
 	}
 	var buffer strings.Builder
 	for _, s := range list {
-		str, ok := s.(String)
-		if !ok {
-			return nil, MakeError(ErrExpectedString, s)
+		str, err := ExpectString(s)
+		if err != nil {
+			return nil, err
 		}
 		buffer.WriteString(str.String())
 	}
@@ -114,13 +114,13 @@ func funStringAppend(ctx context.Context, w *World, list []Node) (Node, error) {
 }
 
 func compareString(argv []Node, f func(int) bool) (Node, error) {
-	left, ok := argv[0].(String)
-	if !ok {
-		return nil, MakeError(ErrExpectedString, argv[0])
+	left, err := ExpectString(argv[0])
+	if err != nil {
+		return nil, err
 	}
-	right, ok := argv[1].(String)
-	if !ok {
-		return nil, MakeError(ErrExpectedString, argv[1])
+	right, err := ExpectString(argv[1])
+	if err != nil {
+		return nil, err
 	}
 	cmp := strings.Compare(left.String(), right.String())
 	if f(cmp) {
@@ -152,9 +152,9 @@ func funStringIndex(ctx context.Context, w *World, argv []Node) (Node, error) {
 	if len(argv) < 2 {
 		return nil, ErrTooFewArguments
 	}
-	_subStr, ok := argv[0].(String)
-	if !ok {
-		return nil, ErrExpectedString
+	_subStr, err := ExpectString(argv[0])
+	if err != nil {
+		return nil, err
 	}
 	subStr := _subStr.String()
 	start := 0
@@ -168,9 +168,9 @@ func funStringIndex(ctx context.Context, w *World, argv []Node) (Node, error) {
 		}
 		start = int(_start)
 	}
-	_str, ok := argv[1].(String)
-	if !ok {
-		return nil, MakeError(ErrExpectedString, argv[1])
+	_str, err := ExpectString(argv[1])
+	if err != nil {
+		return nil, err
 	}
 	str := _str.String()
 

@@ -199,11 +199,11 @@ func (r Rune) Sub(n Node) (Node, error) {
 func compareRune(argv []Node, f func(rune) bool) (Node, error) {
 	left, ok := argv[0].(Rune)
 	if !ok {
-		return nil, MakeError(ErrExpectedString, argv[0])
+		return nil, ErrExpectedCharacter
 	}
 	right, ok := argv[1].(Rune)
 	if !ok {
-		return nil, MakeError(ErrExpectedString, argv[1])
+		return nil, ErrExpectedCharacter
 	}
 	cmp := rune(left) - rune(right)
 	if f(cmp) {
@@ -236,9 +236,9 @@ func funRuneIndex(ctx context.Context, w *World, argv []Node) (Node, error) {
 		return nil, ErrExpectedCharacter
 	}
 	char := rune(_char)
-	str, ok := argv[1].(String)
+	str, err := ExpectString(argv[1])
 	if !ok {
-		return nil, ErrExpectedString
+		return nil, err
 	}
 	var start int = 0
 	if len(argv) >= 3 {

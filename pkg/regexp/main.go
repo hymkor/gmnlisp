@@ -15,9 +15,9 @@ func init() {
 var regexpCache = map[string]*regexp.Regexp{}
 
 func getRegexpParam(list []Node) (*regexp.Regexp, string, error) {
-	_pattern, ok := list[0].(String)
-	if !ok {
-		return nil, "", MakeError(ErrExpectedString, list[0])
+	_pattern, err := ExpectString(list[0])
+	if err != nil {
+		return nil, "", err
 	}
 	pattern := _pattern.String()
 	reg, ok := regexpCache[pattern]
@@ -28,9 +28,9 @@ func getRegexpParam(list []Node) (*regexp.Regexp, string, error) {
 			return nil, "", MakeError(err, pattern)
 		}
 	}
-	str, ok := list[1].(String)
-	if !ok {
-		return nil, "", MakeError(ErrExpectedString, list[1])
+	str, err := ExpectString(list[1])
+	if err != nil {
+		return nil, "", err
 	}
 	return reg, str.String(), nil
 }

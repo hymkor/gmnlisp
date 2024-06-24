@@ -121,12 +121,13 @@ func printSpaces(n int, w io.Writer) {
 }
 
 func formatSub(w *_WriterNode, argv []Node) error {
-	format, ok := argv[0].(String)
-	if !ok {
-		return MakeError(ErrExpectedString, argv[0])
+	format, err := ExpectString(argv[0])
+	if err != nil {
+		return err
 	}
 	argv = argv[1:]
 
+	ok := true
 	for ok && IsSome(format) {
 		var c Rune
 

@@ -13,9 +13,9 @@ func init() {
 }
 
 func funWildcard(_ context.Context, w *gmnlisp.World, list []gmnlisp.Node) (gmnlisp.Node, error) {
-	pattern, ok := list[0].(gmnlisp.String)
-	if !ok {
-		return nil, fmt.Errorf("%w: %#v", gmnlisp.ErrExpectedString, list[0])
+	pattern, err := gmnlisp.ExpectString(list[0])
+	if err != nil {
+		return nil, err
 	}
 	files, err := filepath.Glob(pattern.String())
 	if err != nil {

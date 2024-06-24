@@ -103,9 +103,9 @@ func funNot(_ context.Context, w *World, argv []Node) (Node, error) {
 }
 
 func funLoad(ctx context.Context, w *World, argv []Node) (Node, error) {
-	fname, ok := argv[0].(String)
-	if !ok {
-		return nil, ErrExpectedString
+	fname, err := ExpectString(argv[0])
+	if err != nil {
+		return nil, err
 	}
 	script, err := os.ReadFile(fname.String())
 	if err != nil {
@@ -187,9 +187,9 @@ func funAnyTypep[T Node](_ context.Context, _ *World, args []Node) (Node, error)
 }
 
 func funParseNumber(_ context.Context, _ *World, args []Node) (Node, error) {
-	s, ok := args[0].(String)
-	if !ok {
-		return nil, ErrExpectedString
+	s, err := ExpectString(args[0])
+	if err != nil {
+		return nil, err
 	}
 	val, ok, err := tryParseAsNumber(s.String())
 	if !ok {
