@@ -1,3 +1,4 @@
+(defgeneric report-condition (s))
 (defclass <simple-error> (<error>)
   ((format-string
      :initarg  format-string
@@ -5,7 +6,11 @@
    (format-arguments
      :initarg  format-arguments
      :reader simple-error-format-arguments)))
-
+(defmethod report-condition ((e <simple-error>) (w <object>))
+    (apply #'format
+           w
+           (simple-error-format-string e)
+           (simple-error-format-arguments e)))
 (let ((all-properties ()))
   (defun property (sym name)
     (let ((sym-props (assoc sym all-properties)))
