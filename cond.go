@@ -53,21 +53,21 @@ func (e *_ErrContinueCondition) Error() string {
 	return e.Value.String()
 }
 
+var symReportCondition = NewSymbol("report-condition")
+var reportCondition = &_Generic{
+	Symbol:  symReportCondition,
+	argc:    2,
+	methods: []*_Method{},
+}
+
 func funSignalCondition(ctx context.Context, w *World, args []Node) (Node, error) {
 	cond := args[0]
 	continueable := args[1]
 	_handler := w.Dynamic(activeHandleFuncKey)
 	if IsNull(_handler) {
-		if _reportCondition, err := w.Get(NewSymbol("report-condition")); err == nil {
-			reportCondition, err := ExpectGeneric(_reportCondition)
-			if err != nil {
-				return nil, err
-			}
-			buffer := &StringBuilder{}
-			_, err = reportCondition.Call(ctx, w, &Cons{Car: Uneval{Node: cond}, Cdr: &Cons{Car: Uneval{Node: buffer}}})
-			if err == nil {
-				return nil, errors.New(buffer.String())
-			}
+		buffer := &StringBuilder{}
+		if _, err := reportCondition.Call(ctx, w, &Cons{Car: Uneval{Node: cond}, Cdr: &Cons{Car: Uneval{Node: buffer}}}); err == nil {
+			return nil, errors.New(buffer.String())
 		}
 		if err, ok := args[0].(error); ok {
 			return nil, err

@@ -1,4 +1,3 @@
-(defgeneric report-condition (s))
 (defclass <simple-error> (<error>)
   ((format-string
      :initarg  format-string
