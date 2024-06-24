@@ -159,9 +159,9 @@ func funStringIndex(ctx context.Context, w *World, argv []Node) (Node, error) {
 	subStr := _subStr.String()
 	start := 0
 	if len(argv) >= 3 {
-		_start, ok := argv[2].(Integer)
-		if !ok {
-			return nil, MakeError(ErrExpectedNumber, argv[2])
+		_start, err := ExpectInteger(argv[2])
+		if err != nil {
+			return nil, err
 		}
 		if len(argv) >= 4 {
 			return nil, ErrTooManyArguments
@@ -190,9 +190,9 @@ func funCreateString(ctx context.Context, w *World, list []Node) (Node, error) {
 	if len(list) < 1 {
 		return nil, ErrTooFewArguments
 	}
-	length, ok := list[0].(Integer)
-	if !ok {
-		return nil, MakeError(ErrExpectedNumber, list[0])
+	length, err := ExpectInteger(list[0])
+	if err != nil {
+		return nil, err
 	}
 	if len(list) > 2 {
 		return nil, ErrTooManyArguments

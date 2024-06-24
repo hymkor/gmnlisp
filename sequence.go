@@ -83,9 +83,9 @@ func funElt(_ context.Context, _ *World, args []Node) (Node, error) {
 	}
 	var value Node = args[0]
 	for _, indexArg := range args[1:] {
-		index, ok := indexArg.(Integer)
-		if !ok {
-			return nil, ErrExpectedNumber
+		index, err := ExpectInteger(indexArg)
+		if err != nil {
+			return nil, err
 		}
 		if aref, ok := value.(canElt); ok {
 			var err error
@@ -305,13 +305,13 @@ type SeqBuilder interface {
 }
 
 func funSubSeq(ctx context.Context, w *World, args []Node) (Node, error) {
-	start, ok := args[1].(Integer)
-	if !ok {
-		return nil, ErrExpectedNumber
+	start, err := ExpectInteger(args[1])
+	if err != nil {
+		return nil, err
 	}
-	end, ok := args[2].(Integer)
-	if !ok {
-		return nil, ErrExpectedNumber
+	end, err := ExpectInteger(args[2])
+	if err != nil {
+		return nil, err
 	}
 	var buffer SeqBuilder
 	if _, ok := args[0].(String); ok {
@@ -320,7 +320,7 @@ func funSubSeq(ctx context.Context, w *World, args []Node) (Node, error) {
 		buffer = &ListBuilder{}
 	}
 	count := Integer(0)
-	err := SeqEach(args[0], func(value Node) (e error) {
+	err = SeqEach(args[0], func(value Node) (e error) {
 		if count >= end {
 			return io.EOF
 		}

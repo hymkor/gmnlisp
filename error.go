@@ -79,3 +79,25 @@ func ExpectType[T Node](_value Node, name string) (T, error) {
 func ExpectString(_value Node) (String, error) {
 	return ExpectType[String](_value, "<string>")
 }
+
+func ExpectInteger(_value Node) (Integer, error) {
+	value, err := ExpectType[Integer](_value, "<integer>")
+	if err == nil {
+		return value, nil
+	}
+	if v, ok := _value.(Float); ok {
+		return Integer(v), nil
+	}
+	return Integer(0), err
+}
+
+func ExpectFloat(_value Node) (Float, error) {
+	value, err := ExpectType[Float](_value, "<float>")
+	if err == nil {
+		return value, nil
+	}
+	if v, ok := _value.(Integer); ok {
+		return Float(v), nil
+	}
+	return Float(0.), err
+}

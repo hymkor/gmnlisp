@@ -21,7 +21,6 @@ var (
 	ErrExpectedHash         = errors.New("expected hashtable")
 	ErrExpectedKeyword      = errors.New("expected keyword")
 	ErrExpectedMacro        = errors.New("expected macro")
-	ErrExpectedNumber       = errors.New("expected number")
 	ErrExpectedReader       = errors.New("expected reader")
 	ErrExpectedSequence     = errors.New("expected sequence")
 	ErrExpectedStream       = errors.New("expected stream")

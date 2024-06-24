@@ -138,9 +138,9 @@ func funCreateArray(ctx context.Context, w *World, args []Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		n, ok := _n.(Integer)
-		if !ok {
-			return nil, MakeError(ErrExpectedNumber, _n)
+		n, err := ExpectInteger(_n)
+		if err != nil {
+			return nil, err
 		}
 		_dim = append(_dim, int(n))
 		size *= int(n)
@@ -186,9 +186,9 @@ func funAref(ctx context.Context, w *World, args []Node) (Node, error) {
 		return nil, ErrTooManyArguments
 	}
 	for _, _nth := range args[1:] {
-		nth, ok := _nth.(Integer)
-		if !ok {
-			return nil, MakeError(ErrExpectedNumber, args[1])
+		nth, err := ExpectInteger(_nth)
+		if err != nil {
+			return nil, err
 		}
 		if nth < 0 || int(nth) >= array.dim[0] {
 			return nil, MakeError(ErrIndexOutOfRange, args[1])
@@ -218,9 +218,9 @@ func funSetAref(ctx context.Context, w *World, args []Node) (Node, error) {
 	}
 
 	for _, _index := range args[2:] {
-		index, ok := _index.(Integer)
-		if !ok {
-			return nil, MakeError(ErrExpectedNumber, _index)
+		index, err := ExpectInteger(_index)
+		if err != nil {
+			return nil, err
 		}
 		if len(array.dim) == 1 {
 			array.list[index] = newValue

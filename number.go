@@ -37,37 +37,41 @@ func (i Integer) Equals(n Node, m EqlMode) bool {
 }
 
 func (i Integer) Add(n Node) (Node, error) {
-	if _n, ok := n.(Integer); ok {
+	_n, err := ExpectInteger(n)
+	if err == nil {
 		return i + _n, nil
 	}
 	if _n, ok := n.(Float); ok {
 		return Float(i) + _n, nil
 	}
-	return nil, MakeError(ErrNotSupportType, n)
+	return nil, err
 }
 
 func (i Integer) Sub(n Node) (Node, error) {
-	if _n, ok := n.(Integer); ok {
+	_n, err := ExpectInteger(n)
+	if err == nil {
 		return i - _n, nil
 	}
 	if _n, ok := n.(Float); ok {
 		return Float(i) - _n, nil
 	}
-	return nil, MakeError(ErrNotSupportType, n)
+	return nil, err
 }
 
 func (i Integer) Multi(n Node) (Node, error) {
-	if _n, ok := n.(Integer); ok {
+	_n, err := ExpectInteger(n)
+	if err == nil {
 		return i * _n, nil
 	}
 	if _n, ok := n.(Float); ok {
 		return Float(i) * _n, nil
 	}
-	return nil, MakeError(ErrNotSupportType, n)
+	return nil, err
 }
 
 func (i Integer) Divide(n Node) (Node, error) {
-	if _n, ok := n.(Integer); ok {
+	_n, err := ExpectInteger(n)
+	if err == nil {
 		if _n == 0 {
 			return nil, ErrDevisionByZero
 		}
@@ -79,17 +83,18 @@ func (i Integer) Divide(n Node) (Node, error) {
 		}
 		return Float(i) / _n, nil
 	}
-	return nil, MakeError(ErrNotSupportType, n)
+	return nil, err
 }
 
 func (i Integer) LessThan(n Node) (bool, error) {
-	if _n, ok := n.(Integer); ok {
+	_n, err := ExpectInteger(n)
+	if err == nil {
 		return i < _n, nil
 	}
 	if _n, ok := n.(Float); ok {
 		return Float(i) < _n, nil
 	}
-	return false, MakeError(ErrNotSupportType, n)
+	return false, err
 }
 
 type Float float64
@@ -122,37 +127,41 @@ func (f Float) Equals(n Node, m EqlMode) bool {
 }
 
 func (f Float) Add(n Node) (Node, error) {
-	if _n, ok := n.(Float); ok {
+	_n, err := ExpectFloat(n)
+	if err == nil {
 		return f + _n, nil
 	}
 	if _n, ok := n.(Integer); ok {
 		return f + Float(_n), nil
 	}
-	return nil, MakeError(ErrNotSupportType, n)
+	return nil, err
 }
 
 func (f Float) Sub(n Node) (Node, error) {
-	if _n, ok := n.(Float); ok {
+	_n, err := ExpectFloat(n)
+	if err == nil {
 		return f - _n, nil
 	}
 	if _n, ok := n.(Integer); ok {
 		return f - Float(_n), nil
 	}
-	return nil, MakeError(ErrNotSupportType, n)
+	return nil, err
 }
 
 func (f Float) Multi(n Node) (Node, error) {
-	if _n, ok := n.(Float); ok {
+	_n, err := ExpectFloat(n)
+	if err == nil {
 		return f * _n, nil
 	}
 	if _n, ok := n.(Integer); ok {
 		return f * Float(_n), nil
 	}
-	return nil, MakeError(ErrNotSupportType, n)
+	return nil, err
 }
 
 func (f Float) Divide(n Node) (Node, error) {
-	if _n, ok := n.(Float); ok {
+	_n, err := ExpectFloat(n)
+	if err == nil {
 		if _n == 0 {
 			return nil, ErrDevisionByZero
 		}
@@ -164,23 +173,24 @@ func (f Float) Divide(n Node) (Node, error) {
 		}
 		return f / Float(_n), nil
 	}
-	return nil, MakeError(ErrNotSupportType, n)
+	return nil, err
 }
 
 func (f Float) LessThan(n Node) (bool, error) {
-	if _n, ok := n.(Float); ok {
+	_n, err := ExpectFloat(n)
+	if err == nil {
 		return f < _n, nil
 	}
 	if _n, ok := n.(Integer); ok {
 		return f < Float(_n), nil
 	}
-	return false, MakeError(ErrNotSupportType, n)
+	return false, err
 }
 
 func funSqrt(ctx context.Context, w *World, node []Node) (Node, error) {
-	n, ok := node[0].(Float)
-	if !ok {
-		return nil, ErrExpectedNumber
+	n, err := ExpectFloat(node[0])
+	if err != nil {
+		return nil, err
 	}
 	v := math.Sqrt(float64(n))
 	return Float(v), nil

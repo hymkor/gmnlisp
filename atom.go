@@ -242,9 +242,9 @@ func funRuneIndex(ctx context.Context, w *World, argv []Node) (Node, error) {
 	}
 	var start int = 0
 	if len(argv) >= 3 {
-		_start, ok := argv[2].(Integer)
-		if !ok {
-			return nil, ErrExpectedNumber
+		_start, err := ExpectInteger(argv[2])
+		if err != nil {
+			return nil, err
 		}
 		start = int(_start)
 	}

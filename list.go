@@ -161,9 +161,9 @@ func funSetCdr(_ context.Context, _ *World, argv []Node) (Node, error) {
 }
 
 func funCreateList(_ context.Context, _ *World, argv []Node) (Node, error) {
-	n, ok := argv[0].(Integer)
-	if !ok {
-		return nil, MakeError(ErrExpectedNumber, argv[0])
+	n, err := ExpectInteger(argv[0])
+	if err != nil {
+		return nil, err
 	}
 	result := Null
 	for ; n > 0; n-- {
