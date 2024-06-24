@@ -81,19 +81,20 @@ func (s String) FirstAndRest() (Node, Node, bool) {
 }
 
 func (s String) Add(n Node) (Node, error) {
-	if value, ok := n.(String); ok {
-		news := make([]byte, 0, len(s)+len(value)+1)
-		news = append(news, s...)
-		news = append(news, value...)
-		return String(news), nil
+	value, err := ExpectString(n)
+	if err != nil {
+		return nil, err
 	}
-	return nil, MakeError(ErrNotSupportType, n)
+	news := make([]byte, 0, len(s)+len(value)+1)
+	news = append(news, s...)
+	news = append(news, value...)
+	return String(news), nil
 }
 
 func (s String) LessThan(n Node) (bool, error) {
-	ns, ok := n.(String)
-	if !ok {
-		return false, MakeError(ErrNotSupportType, n)
+	ns, err := ExpectString(n)
+	if err != nil {
+		return false, err
 	}
 	return string(s) < string(ns), nil
 }
