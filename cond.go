@@ -3,6 +3,7 @@ package gmnlisp
 import (
 	"context"
 	"errors"
+	"fmt"
 )
 
 var activeHandleFuncKey = genSym()
@@ -68,6 +69,8 @@ func funSignalCondition(ctx context.Context, w *World, args []Node) (Node, error
 		buffer := &StringBuilder{}
 		if _, err := reportCondition.Call(ctx, w, &Cons{Car: Uneval{Node: cond}, Cdr: &Cons{Car: Uneval{Node: buffer}}}); err == nil {
 			return nil, errors.New(buffer.String())
+		} else if !errors.Is(err, ErrNoMatchMethods) {
+			return nil, fmt.Errorf("%w in (report-condition)", err)
 		}
 		if err, ok := args[0].(error); ok {
 			return nil, err
