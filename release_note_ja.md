@@ -1,15 +1,34 @@
-- 以下の関数を実装
-    - `(class-of)`, `(instancep)`, `(defgeneric)`, `(defmethod)`, `(class)`,
-    `(sqrt)`, `(subclassp)`, `(generic-function-p)`, `(initialize-object)` ,
-    `(error)`, `(cerror)`, `(with-standard-input)`, `(property)`,
-    `(set-property)`, `(remove-property)`, `(report-condition)`
-- `(create)` でユーザクラスだけでなく、システムクラスのインスタンスを作れるようにした
-- `(defclass)` のスロット定義の `:boundp` をサポート
-- `(defconstant)` を `(defglobal)` の別名で仮定義
-- 組み込みクラスも他の組み込みクラスを継承できるようになった。
-- `<simple-error>` を実装(startup.lsp)
+### 不具合修正
+
 - `(case KEYFORM ((KEY*) FORM*)...` で KEY* は評価されるべきではないのに、評価されていた不具合を修正
 - `(apply)` が最後の引数を二重に評価していた不具合を修正
+
+### 包括関数対応
+
+- `(defgeneric)`, `(defmethod)`, `(generic-function-p)` を実装
+
+### クラス関連機能
+
+- `(class-of)`, `(instancep)`, `(class)`, `(subclassp)`, `(initialize-object)` を実装
+- `(create)` でユーザクラスだけでなく、システムクラスのインスタンスを作れるようにした
+- `(defclass)` のスロット定義の `:boundp` をサポート
+
+### 例外処理機能
+
+- 例外状態をクラスで実装できるようにした。
+- `(with-handler)`, `(signal-condition)`, `(continue-condition)`, `(error)`,
+    `(cerror)`, `(report-condition)`, `<simple-error>` を実装
+
+今のところ、既存のエラー処理はまだ全て Condition オブジェクト化できていません
+
+### プロパティ操作
+
+- `(property)`, `(set-property)`, `(remove-property)` を実装
+
+### その他
+
+- `(sqrt)`, `(with-standard-input)` を実装
+- `(defconstant)` を実装。ただし、現状は `(defglobal)` の別名
 
 v0.5.0
 ======

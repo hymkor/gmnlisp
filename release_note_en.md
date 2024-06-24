@@ -1,15 +1,36 @@
-- These functions are implemented
-    - `(class-of)`, `(instancep)`, `(defgeneric)`, `(defmethod)`, `(class)`,
-    `(sqrt)`, `(subclassp)`, `(generic-function-p)`, `(initialize-object`),
-    `(error)`, `(cerror)`, `(with-standard-input)`, `(property)`,
-    `(set-property)`, `(remove-property)`, `(report-condition)`
-- `(create)` can create the instance of not only user-defined class, but also embeded-types.
-- `(defclass)`: support `:boundp` for slot-definition
-- `(defconstant)` is defined as alias of `(defglobal)` temporally
-- Embeded class can inherits other embeded classes now
-- Implement the class `<simple-error>` on startup.lsp
-- Fix the problem KEY on `(case KEYFORM ((KEY*) FORM*)*)`  was evaluated though it should not
+### Fixed bugs
+
+- Fix: KEY on `(case KEYFORM ((KEY*) FORM*)*)` was evaluated though it should not
 - Fix: `(apply)` would double evalute the last argument
+
+### Generic functions
+
+- Implement `(defgeneric)`, `(defmethod)`, and `(generic-function-p)`
+
+### Objects
+
+- Implement `(class-of)`, `(instancep)`, `(class)`, `(subclassp)`,
+    and `(initialize-object`),
+- `(create)` can create the instance of not only user-defined class,
+    but also embeded-types
+- `(defclass)`: support `:boundp` for slot-definition
+
+### Condition system
+
+- A conditiones can be implemented with a class now
+- Implement `(with-handler)`, `(signal-condition)`, `(continue-condition)`,
+  `(error)`, `(cerror)`, `(report-condition)`, and `<simple-error>`
+
+Now, all of errors have not been changed to condition object
+
+### Properties operations
+
+- Implement `(property)`, `(set-property)`, and `(remove-property)`
+
+### Miscellaneous
+
+- Implement `(sqrt)` and `(with-standard-input)`
+- `(defconstant)` is defined as alias of `(defglobal)` temporally
 
 v0.5.0
 ======
