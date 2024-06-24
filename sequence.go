@@ -61,9 +61,9 @@ type StringBuilder struct {
 }
 
 func (S *StringBuilder) Add(n Node) error {
-	r, ok := n.(Rune)
-	if !ok {
-		return ErrExpectedCharacter
+	r, err := ExpectCharacter(n)
+	if err != nil {
+		return err
 	}
 	S.WriteRune(rune(r))
 	return nil

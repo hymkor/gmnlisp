@@ -177,33 +177,35 @@ func (r Rune) Equals(n Node, m EqlMode) bool {
 }
 
 func (r Rune) Add(n Node) (Node, error) {
+	value, err := ExpectCharacter(n)
+	if err == nil {
+		return r + value, nil
+	}
 	if value, ok := n.(Integer); ok {
 		return r + Rune(value), nil
 	}
-	if value, ok := n.(Rune); ok {
-		return r + value, nil
-	}
-	return nil, MakeError(ErrNotSupportType, n)
+	return nil, err
 }
 
 func (r Rune) Sub(n Node) (Node, error) {
+	value, err := ExpectCharacter(n)
+	if err == nil {
+		return r - value, nil
+	}
 	if value, ok := n.(Integer); ok {
 		return r - Rune(value), nil
 	}
-	if value, ok := n.(Rune); ok {
-		return r - value, nil
-	}
-	return nil, MakeError(ErrNotSupportType, n)
+	return nil, err
 }
 
 func compareRune(argv []Node, f func(rune) bool) (Node, error) {
-	left, ok := argv[0].(Rune)
-	if !ok {
-		return nil, ErrExpectedCharacter
+	left, err := ExpectCharacter(argv[0])
+	if err != nil {
+		return nil, err
 	}
-	right, ok := argv[1].(Rune)
-	if !ok {
-		return nil, ErrExpectedCharacter
+	right, err := ExpectCharacter(argv[1])
+	if err != nil {
+		return nil, err
 	}
 	cmp := rune(left) - rune(right)
 	if f(cmp) {
@@ -231,13 +233,13 @@ func funRuneNe(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return compareRune(argv, func(cmp rune) bool { return cmp != 0 })
 }
 func funRuneIndex(ctx context.Context, w *World, argv []Node) (Node, error) {
-	_char, ok := argv[0].(Rune)
-	if !ok {
-		return nil, ErrExpectedCharacter
+	_char, err := ExpectCharacter(argv[0])
+	if err != nil {
+		return nil, err
 	}
 	char := rune(_char)
 	str, err := ExpectString(argv[1])
-	if !ok {
+	if err != nil {
 		return nil, err
 	}
 	var start int = 0

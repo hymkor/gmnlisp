@@ -13,7 +13,6 @@ var (
 	ErrAbort                = errors.New("abort")
 	ErrDevisionByZero       = errors.New("devision by zeor")
 	ErrExpectedArray        = errors.New("expected array")
-	ErrExpectedCharacter    = errors.New("expected character")
 	ErrExpectedClass        = errors.New("expected class")
 	ErrExpectedCons         = errors.New("expected cons")
 	ErrExpectedFunction     = errors.New("expected function")

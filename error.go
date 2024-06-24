@@ -101,3 +101,7 @@ func ExpectFloat(_value Node) (Float, error) {
 	}
 	return Float(0.), err
 }
+
+func ExpectCharacter(_value Node) (Rune, error) {
+	return ExpectType[Rune](_value, "<character>")
+}

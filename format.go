@@ -60,11 +60,11 @@ func funFormatObject(_ context.Context, w *World, list []Node) (Node, error) {
 
 func funFormatChar(_ context.Context, w *World, list []Node) (Node, error) {
 	return tAndNilToWriter(w, list, func(writer *_WriterNode, list []Node) error {
-		r, ok := list[0].(Rune)
-		if !ok {
-			return MakeError(ErrExpectedCharacter, list[0])
+		r, err := ExpectCharacter(list[0])
+		if err != nil {
+			return err
 		}
-		_, err := writer.WriteRune(rune(r))
+		_, err = writer.WriteRune(rune(r))
 		return err
 	})
 }

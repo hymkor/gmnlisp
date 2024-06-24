@@ -199,10 +199,9 @@ func funCreateString(ctx context.Context, w *World, list []Node) (Node, error) {
 	}
 	ch := Rune(' ')
 	if len(list) == 2 {
-		var ok bool
-		ch, ok = list[1].(Rune)
-		if !ok {
-			return nil, MakeError(ErrExpectedCharacter, list[1])
+		ch, err = ExpectCharacter(list[1])
+		if err != nil {
+			return nil, err
 		}
 	}
 	return String(strings.Repeat(string(ch), int(length))), nil
