@@ -179,16 +179,24 @@ func cmdDefMacro(ctx context.Context, w *World, n Node) (Node, error) {
 }
 
 func funMacroExpand(ctx context.Context, w *World, args []Node) (Node, error) {
-	name, param, err := Shift(args[0])
+	_name, param, err := Shift(args[0])
 	if err != nil {
 		return nil, err
 	}
-	macro, err := name.Eval(ctx, w)
+	name, ok := _name.(Symbol)
+	if !ok {
+		return nil, ErrExpectedSymbol
+	}
+	macro, err := w.GetFunc(name)
 	if err != nil {
-		return nil, MakeError(err, name)
+		return nil, err
 	}
 	if L, ok := macro.(*LispString); ok {
-		macro, err = L.Eval(ctx, w)
+		_macro, err := L.Eval(ctx, w)
+		if err != nil {
+			return nil, err
+		}
+		macro, err = ExpectFunction(_macro)
 		if err != nil {
 			return nil, err
 		}

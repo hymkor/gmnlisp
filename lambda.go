@@ -82,10 +82,6 @@ func newLambda(w *World, node Node, blockName Symbol) (Callable, error) {
 	}, nil
 }
 
-func (L *_Lambda) ClassOf() Class {
-	return embedClassOf[*_Lambda]("<lambda>")
-}
-
 func (L *_Lambda) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	var wc writeCounter
 	if wc.Try(io.WriteString(w, "(lambda (")) {
@@ -326,14 +322,6 @@ func prognWithTailRecOpt(ctx context.Context, w *World, n Node, sym Symbol) (val
 	return value, nil
 }
 
-func (L *_Lambda) Eval(context.Context, *World) (Node, error) {
-	return L, nil
-}
-
-func (*_Lambda) Equals(Node, EqlMode) bool {
-	return false
-}
-
 func cmdDefun(_ context.Context, w *World, list Node) (Node, error) {
 	_symbol, list, err := Shift(list)
 	if err != nil {
@@ -438,24 +426,6 @@ type Function struct {
 	Max int
 }
 
-var functionClass = embedClassOf[*Function]("<function>")
-
-func (*Function) ClassOf() Class {
-	return functionClass
-}
-
-func (*Function) PrintTo(w io.Writer, m PrintMode) (int, error) {
-	return io.WriteString(w, "buildin function")
-}
-
-func (f *Function) Eval(context.Context, *World) (Node, error) {
-	return f, nil
-}
-
-func (f *Function) Equals(n Node, m EqlMode) bool {
-	return false
-}
-
 func (f *Function) Call(ctx context.Context, w *World, list Node) (Node, error) {
 	if err := checkContext(ctx); err != nil {
 		return nil, err
@@ -500,12 +470,6 @@ type LispString struct {
 	compile Node
 }
 
-var lispStringClass = embedClassOf[*LispString]("<function>")
-
-func (L *LispString) ClassOf() Class {
-	return lispStringClass
-}
-
 func (L *LispString) Eval(ctx context.Context, w *World) (Node, error) {
 	if L.compile == nil {
 		c, err := w.Interpret(ctx, L.S)
@@ -515,15 +479,6 @@ func (L *LispString) Eval(ctx context.Context, w *World) (Node, error) {
 		L.compile = c
 	}
 	return L.compile, nil
-}
-
-func (L *LispString) PrintTo(w io.Writer, m PrintMode) (int, error) {
-	return io.WriteString(w, L.S)
-}
-
-func (L *LispString) Equals(_other Node, m EqlMode) bool {
-	other, ok := _other.(*LispString)
-	return ok && L.S == other.S
 }
 
 func (L *LispString) Call(ctx context.Context, w *World, n Node) (Node, error) {

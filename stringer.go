@@ -112,18 +112,6 @@ func (t _JoinedForm) GoString() string {
 	return buffer.String()
 }
 
-func (t LispString) String() string {
-	var buffer strings.Builder
-	t.PrintTo(&buffer, PRINC)
-	return buffer.String()
-}
-
-func (t LispString) GoString() string {
-	var buffer strings.Builder
-	t.PrintTo(&buffer, PRINT)
-	return buffer.String()
-}
-
 func (t _Lambda) String() string {
 	var buffer strings.Builder
 	t.PrintTo(&buffer, PRINC)
@@ -203,18 +191,6 @@ func (t Array) String() string {
 }
 
 func (t Array) GoString() string {
-	var buffer strings.Builder
-	t.PrintTo(&buffer, PRINT)
-	return buffer.String()
-}
-
-func (t Function) String() string {
-	var buffer strings.Builder
-	t.PrintTo(&buffer, PRINC)
-	return buffer.String()
-}
-
-func (t Function) GoString() string {
 	var buffer strings.Builder
 	t.PrintTo(&buffer, PRINT)
 	return buffer.String()
