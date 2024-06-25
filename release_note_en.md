@@ -1,3 +1,7 @@
+v0.6.0
+======
+Jun 25, 2024
+
 ### Fixed bugs
 
 - Fix: KEY on `(case KEYFORM ((KEY*) FORM*)*)` was evaluated though it should not
