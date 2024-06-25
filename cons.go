@@ -149,18 +149,18 @@ func (cons *Cons) Equals(n Node, m EqlMode) bool {
 		cons.getCdr().Equals(value.Cdr, m)
 }
 
-func (cons *Cons) Eval(ctx context.Context, w *World) (Node, error) {
-	first := cons.Car
-	if p, ok := first.(*Cons); ok {
-		var err error
-		first, err = p.Eval(ctx, w)
-		if err != nil {
-			return nil, err
-		}
-	}
-	symbol, ok := first.(Symbol)
+func ExpectSymbol(value Node) (Symbol, error) {
+	symbol, ok := value.(Symbol)
 	if !ok {
-		return nil, fmt.Errorf("%w: %#v", ErrExpectedSymbol, first)
+		return symbol, fmt.Errorf("%w: %#v", ErrExpectedSymbol, value)
+	}
+	return symbol, nil
+}
+
+func (cons *Cons) Eval(ctx context.Context, w *World) (Node, error) {
+	symbol, err := ExpectSymbol(cons.Car)
+	if err != nil {
+		return nil, err
 	}
 	function, err := w.GetFunc(symbol)
 	if err != nil {
@@ -168,7 +168,7 @@ func (cons *Cons) Eval(ctx context.Context, w *World) (Node, error) {
 	}
 	rc, err := function.Call(ctx, w, cons.Cdr)
 	if err != nil {
-		return nil, fmt.Errorf("%w\n\tat %v", err, first)
+		return nil, fmt.Errorf("%w\n\tat %v", err, symbol)
 	}
 	return rc, nil
 }
