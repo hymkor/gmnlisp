@@ -105,3 +105,41 @@ func ExpectFloat(_value Node) (Float, error) {
 func ExpectCharacter(_value Node) (Rune, error) {
 	return ExpectType[Rune](_value, "<character>")
 }
+
+type _UndefinedFunction struct {
+	name Symbol
+}
+
+func (u _UndefinedFunction) Error() string {
+	return fmt.Sprintf("Undefined Function: %#v", u.name)
+}
+
+func (u _UndefinedFunction) String() string {
+	return u.Error()
+}
+
+func (u _UndefinedFunction) GoString() string {
+	return u.Error()
+}
+
+func (u _UndefinedFunction) Eval(_ context.Context, _ *World) (Node, error) {
+	return u, nil
+}
+
+func (u _UndefinedFunction) PrintTo(w io.Writer, mode PrintMode) (int, error) {
+	return fmt.Fprintf(w, "Undefined Function: %#v", u.name)
+}
+
+func (u _UndefinedFunction) Equals(other Node, mode EqlMode) bool {
+	o, ok := other.(_UndefinedFunction)
+	if !ok {
+		return false
+	}
+	return u.name.Equals(o.name, mode)
+}
+
+var undefinedFunctionClass = embedClassOf[_UndefinedFunction]("<undefined-function>")
+
+func (u _UndefinedFunction) ClassOf() Class {
+	return undefinedFunctionClass
+}

@@ -30,7 +30,6 @@ var (
 	ErrNotSupportType       = errors.New("not support type")
 	ErrQuit                 = errors.New("bye")
 	ErrVariableUnbound      = errors.New("unbound variable")
-	ErrFunctionUnbound      = errors.New("unbound function")
 
 	ErrCanNotParseNumber = parser.ErrCanNotParseNumber
 	ErrTooFewArguments   = parser.ErrTooFewArguments

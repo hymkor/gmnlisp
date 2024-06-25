@@ -182,7 +182,7 @@ func (w *World) GetFunc(name Symbol) (Callable, error) {
 		}
 		w = w.parent
 	}
-	return nil, MakeError(ErrFunctionUnbound, name)
+	return nil, _UndefinedFunction{name: name}
 }
 
 // DefineGlobal implements (defglobal) of ISLisp or (defparameter) of CommonLisp.

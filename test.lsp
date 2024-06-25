@@ -334,7 +334,7 @@
 (test (catch 'hoge
              (with-handler
                (lambda (c)
-                 (if (eql c *err-variable-unbound*)
+                 (if (instancep c <undefined-function>)
                    (throw 'hoge "OK")))
                (not-exist-func)
                "NG"

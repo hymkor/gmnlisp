@@ -152,7 +152,10 @@ func (cons *Cons) Equals(n Node, m EqlMode) bool {
 func ExpectSymbol(value Node) (Symbol, error) {
 	symbol, ok := value.(Symbol)
 	if !ok {
-		return symbol, fmt.Errorf("%w: %#v", ErrExpectedSymbol, value)
+		return symbol, &DomainError{
+			Object:        value,
+			ExpectedClass: symbolClass,
+		}
 	}
 	return symbol, nil
 }
