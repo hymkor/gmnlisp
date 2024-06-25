@@ -723,7 +723,7 @@
       3.0)
 
 (test (let ((f2 (lambda (a b) (+ a b))))
-        (f2 4 5))
+        (funcall f2 4 5))
       9)
 
 (test (let (a)
