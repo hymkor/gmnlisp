@@ -73,7 +73,7 @@ func cmdFlet(ctx context.Context, w *World, list Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	lexical := Variables{}
+	lexical := Functions{}
 	for HasValue(flist) {
 		var flist1 Node
 		flist1, flist, err = Shift(flist)
@@ -104,7 +104,7 @@ func cmdLabels(ctx context.Context, w *World, list Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	lexical := Variables{}
+	lexical := Functions{}
 	nw := w.Flet(lexical)
 	for HasValue(flist) {
 		var flist1 Node

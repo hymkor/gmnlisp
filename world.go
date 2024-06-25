@@ -20,6 +20,12 @@ type Scope interface {
 	Range(func(Symbol, Node) bool)
 }
 
+type FuncScope interface {
+	Get(Symbol) (Callable, bool)
+	Set(Symbol, Callable)
+	Range(func(Symbol, Callable) bool)
+}
+
 type Variables map[Symbol]Node
 
 func (m Variables) Get(key Symbol) (Node, bool) {
@@ -32,6 +38,25 @@ func (m Variables) Set(key Symbol, value Node) {
 }
 
 func (m Variables) Range(f func(Symbol, Node) bool) {
+	for key, val := range m {
+		if !f(key, val) {
+			return
+		}
+	}
+}
+
+type Functions map[Symbol]Callable
+
+func (m Functions) Get(key Symbol) (Callable, bool) {
+	value, ok := m[key]
+	return value, ok
+}
+
+func (m Functions) Set(key Symbol, value Callable) {
+	m[key] = value
+}
+
+func (m Functions) Range(f func(Symbol, Callable) bool) {
 	for key, val := range m {
 		if !f(key, val) {
 			return
@@ -64,7 +89,7 @@ func (m *Pair) Range(f func(Symbol, Node) bool) {
 
 type shared struct {
 	global  Scope
-	defun   Scope
+	defun   FuncScope
 	dynamic Variables
 	stdout  *_WriterNode
 	errout  *_WriterNode
@@ -75,7 +100,7 @@ type shared struct {
 type World struct {
 	*shared
 	parent *World
-	funcs  Scope
+	funcs  FuncScope
 	vars   Scope
 }
 
@@ -222,9 +247,12 @@ var autoLoadVars = Variables{
 	NewSymbol("<error>"):                  errorClass,
 	NewSymbol("<object>"):                 objectClass,
 	symDomainError:                        domainErrorClass,
+	NewSymbol("most-negative-fixnum"):     Integer(math.MinInt),
+	NewSymbol("most-positive-fixnum"):     Integer(math.MaxInt),
+	NewSymbol("pi"):                       Float(math.Pi),
 }
 
-var autoLoadFunc = Variables{
+var autoLoadFunc = Functions{
 	// *sort*start*
 	NewSymbol("*"):                           SpecialF(cmdMulti),
 	NewSymbol("+"):                           SpecialF(cmdAdd),
@@ -341,8 +369,6 @@ var autoLoadFunc = Variables{
 	NewSymbol("member"):                      &Function{C: 2, F: funMember},
 	NewSymbol("minusp"):                      &Function{C: 1, F: funMinusp},
 	NewSymbol("mod"):                         &Function{C: 2, F: funMod},
-	NewSymbol("most-negative-fixnum"):        Integer(math.MinInt),
-	NewSymbol("most-positive-fixnum"):        Integer(math.MaxInt),
 	NewSymbol("not"):                         &Function{C: 1, F: funNot},
 	NewSymbol("nreverse"):                    &Function{C: 1, F: funNReverse},
 	NewSymbol("null"):                        &Function{C: 1, F: funNullp},
@@ -352,7 +378,6 @@ var autoLoadFunc = Variables{
 	NewSymbol("open-output-file"):            &Function{C: 1, F: funOpenOutputFile},
 	NewSymbol("or"):                          SpecialF(cmdOr),
 	NewSymbol("parse-number"):                &Function{C: 1, F: funParseNumber},
-	NewSymbol("pi"):                          Float(math.Pi),
 	NewSymbol("plusp"):                       &Function{C: 1, F: funPlusp},
 	NewSymbol("probe-file"):                  &Function{C: 1, F: funProbeFile},
 	NewSymbol("progn"):                       SpecialF(cmdProgn),
@@ -406,11 +431,11 @@ var autoLoadFunc = Variables{
 	// *sort*end*
 }
 
-func Export(name Symbol, value Node) {
+func Export(name Symbol, value Callable) {
 	autoLoadFunc[name] = value
 }
 
-func ExportRange(v Variables) {
+func ExportRange(v Functions) {
 	for key, val := range v {
 		autoLoadFunc[key] = val
 	}
@@ -419,9 +444,9 @@ func ExportRange(v Variables) {
 //go:embed embed/*
 var embedLisp embed.FS
 
-type _RootWorld map[Symbol]Node
+type _RootWorld map[Symbol]Callable
 
-func (rw _RootWorld) Get(symbol Symbol) (Node, bool) {
+func (rw _RootWorld) Get(symbol Symbol) (Callable, bool) {
 	if value, ok := rw[symbol]; ok {
 		return value, true
 	}
@@ -436,14 +461,14 @@ func (rw _RootWorld) Get(symbol Symbol) (Node, bool) {
 		autoLoadFunc[symbol] = value
 		return value, true
 	}
-	return Null, false
+	return nil, false
 }
 
-func (rw _RootWorld) Set(symbol Symbol, value Node) {
+func (rw _RootWorld) Set(symbol Symbol, value Callable) {
 	rw[symbol] = value
 }
 
-func (rw _RootWorld) Range(f func(Symbol, Node) bool) {
+func (rw _RootWorld) Range(f func(Symbol, Callable) bool) {
 }
 
 func New() *World {
@@ -545,7 +570,7 @@ func (w *World) Let(scope Scope) *World {
 	}
 }
 
-func (w *World) Flet(scope Scope) *World {
+func (w *World) Flet(scope FuncScope) *World {
 	return &World{
 		parent: w,
 		vars:   nil,
