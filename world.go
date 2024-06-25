@@ -53,7 +53,11 @@ func (m Functions) Get(key Symbol) (Callable, bool) {
 }
 
 func (m Functions) Set(key Symbol, value Callable) {
-	m[key] = value
+	if value != nil {
+		m[key] = value
+	} else {
+		delete(m, key)
+	}
 }
 
 func (m Functions) Range(f func(Symbol, Callable) bool) {

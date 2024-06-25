@@ -17,9 +17,12 @@ func cmdWithHandler(ctx context.Context, w *World, node Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	D := w.NewDynamics()
-	defer D.Close()
-	D.Set(activeHandleFuncKey, handler)
+	if oldHandler, ok := w.defun.Get(activeHandleFuncKey); ok {
+		defer func() { w.defun.Set(activeHandleFuncKey, oldHandler) }()
+	} else {
+		defer func() { w.defun.Set(activeHandleFuncKey, nil) }()
+	}
+	w.defun.Set(activeHandleFuncKey, handler)
 	value, err := Progn(ctx, w, node)
 
 	// 本来、場合によっては継続処理があるため、ハンドラー関数はエラーが起きた場所で
@@ -73,8 +76,8 @@ var reportCondition = &_Generic{
 func funSignalCondition(ctx context.Context, w *World, args []Node) (Node, error) {
 	cond := args[0]
 	continueable := args[1]
-	_handler := w.Dynamic(activeHandleFuncKey)
-	if IsNull(_handler) {
+	handler, ok := w.defun.Get(activeHandleFuncKey)
+	if !ok {
 		buffer := &StringBuilder{}
 		if _, err := reportCondition.Call(ctx, w, &Cons{Car: Uneval{Node: cond}, Cdr: &Cons{Car: Uneval{Node: buffer}}}); err == nil {
 			return nil, errors.New(buffer.String())
@@ -85,10 +88,6 @@ func funSignalCondition(ctx context.Context, w *World, args []Node) (Node, error
 			return nil, err
 		}
 		return nil, errors.New(args[0].String())
-	}
-	handler, err := ExpectFunction(_handler)
-	if err != nil {
-		return nil, err
 	}
 	rv, err := handler.Call(ctx, w, &Cons{Car: cond})
 	var e *_ErrContinueCondition

@@ -397,7 +397,6 @@ func cmdApply(ctx context.Context, w *World, list Node) (Node, error) {
 }
 
 type Callable interface {
-	Node
 	Call(context.Context, *World, Node) (Node, error)
 }
 

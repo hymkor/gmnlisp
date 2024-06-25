@@ -21,19 +21,19 @@ func (f FunctionRef) Equals(other Node, mode EqlMode) bool {
 	if !ok {
 		return false
 	}
-	return f.value.Equals(_other.value, mode)
+	return f.value == _other.value
 }
 
 func (f FunctionRef) PrintTo(w io.Writer, _ PrintMode) (int, error) {
-	return fmt.Fprintf(w, "(function to %#v)", f.value.String())
+	return fmt.Fprintf(w, "(function to %#v)", f.value)
 }
 
 func (f FunctionRef) String() string {
-	return fmt.Sprintf("(function to %#v)", f.value.String())
+	return fmt.Sprintf("(function to %#v)", f.value)
 }
 
 func (f FunctionRef) GoString() string {
-	return fmt.Sprintf("function to %#v)", f.value.GoString())
+	return fmt.Sprintf("function to %#v)", f.value)
 }
 
 func (f FunctionRef) Eval(ctx context.Context, w *World) (Node, error) {
