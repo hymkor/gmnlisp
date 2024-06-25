@@ -380,8 +380,8 @@ var autoLoad = Variables{
 	NewSymbol("with-open-output-file"):       SpecialF(cmdWithOpenOutputFile),
 	NewSymbol("with-standard-input"):         SpecialF(cmdWithStandardInput),
 	NewSymbol("zerop"):                       &Function{C: 1, F: funZerop},
-	symReportCondition:                       reportCondition,
 	symDomainError:                           domainErrorClass,
+	symReportCondition:                       reportCondition,
 	// *sort*end*
 }
 
