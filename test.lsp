@@ -709,10 +709,6 @@
         (funcall f 1 2))
       3)
 
-(test (let ((f (function (lambda (a b) (+ a b)))))
-        (funcall f 1 2))
-      3)
-
 ;;; test for lambda
 (test (progn
         (defun f (a b)
