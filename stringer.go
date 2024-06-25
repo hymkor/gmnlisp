@@ -124,18 +124,6 @@ func (t LispString) GoString() string {
 	return buffer.String()
 }
 
-func (t SpecialF) String() string {
-	var buffer strings.Builder
-	t.PrintTo(&buffer, PRINC)
-	return buffer.String()
-}
-
-func (t SpecialF) GoString() string {
-	var buffer strings.Builder
-	t.PrintTo(&buffer, PRINT)
-	return buffer.String()
-}
-
 func (t _Lambda) String() string {
 	var buffer strings.Builder
 	t.PrintTo(&buffer, PRINC)

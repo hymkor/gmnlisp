@@ -402,24 +402,6 @@ type Callable interface {
 
 type SpecialF func(context.Context, *World, Node) (Node, error)
 
-var specialFClass = embedClassOf[SpecialF]("<special-function>")
-
-func (SpecialF) ClassOf() Class {
-	return specialFClass
-}
-
-func (SpecialF) PrintTo(w io.Writer, m PrintMode) (int, error) {
-	return io.WriteString(w, "buildin function")
-}
-
-func (f SpecialF) Eval(context.Context, *World) (Node, error) {
-	return f, nil
-}
-
-func (f SpecialF) Equals(n Node, m EqlMode) bool {
-	return false
-}
-
 func (f SpecialF) Call(ctx context.Context, w *World, n Node) (Node, error) {
 	if err := checkContext(ctx); err != nil {
 		return nil, err
