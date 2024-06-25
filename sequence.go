@@ -121,9 +121,9 @@ func MapCar(ctx context.Context, w *World, funcNode Node, sourceSet []Node, stor
 	if err != nil {
 		return err
 	}
-	_f, ok := f.(Callable)
-	if !ok {
-		return ErrExpectedFunction
+	_f, err := ExpectFunction(f)
+	if err != nil {
+		return err
 	}
 	listSet := make([]Node, len(sourceSet))
 	copy(listSet, sourceSet)
@@ -198,9 +198,9 @@ func mapList(ctx context.Context, w *World, funcNode Node, sourceSet []Node, sto
 	if err != nil {
 		return err
 	}
-	_f, ok := f.(Callable)
-	if !ok {
-		return ErrExpectedFunction
+	_f, err := ExpectFunction(f)
+	if err != nil {
+		return err
 	}
 	listSet := make([]Node, len(sourceSet))
 	copy(listSet, sourceSet)

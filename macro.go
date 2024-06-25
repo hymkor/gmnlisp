@@ -140,7 +140,15 @@ func (m *_Macro) Call(ctx context.Context, w *World, n Node) (Node, error) {
 	return newCode.Eval(ctx, w)
 }
 
-func cmdLambaMacro(ctx context.Context, w *World, n Node) (Node, error) {
+func cmdLambdaMacro(ctx context.Context, w *World, n Node) (Node, error) {
+	v, err := lambdaMacro(ctx, w, n)
+	if err != nil {
+		return nil, err
+	}
+	return FunctionRef{value: v}, nil
+}
+
+func lambdaMacro(ctx context.Context, w *World, n Node) (Callable, error) {
 	p, err := getParameterList(n)
 	if err != nil {
 		return nil, err
@@ -162,7 +170,7 @@ func cmdDefMacro(ctx context.Context, w *World, n Node) (Node, error) {
 	if !ok {
 		return nil, ErrExpectedSymbol
 	}
-	value, err := cmdLambaMacro(ctx, w, cons.Cdr)
+	value, err := lambdaMacro(ctx, w, cons.Cdr)
 	if err != nil {
 		return nil, err
 	}

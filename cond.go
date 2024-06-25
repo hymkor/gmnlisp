@@ -13,9 +13,9 @@ func cmdWithHandler(ctx context.Context, w *World, node Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	handler, ok := _handler.(Callable)
-	if !ok {
-		return nil, ErrExpectedFunction
+	handler, err := ExpectFunction(_handler)
+	if err != nil {
+		return nil, err
 	}
 	D := w.NewDynamics()
 	defer D.Close()

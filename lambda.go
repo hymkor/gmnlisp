@@ -18,7 +18,8 @@ type _Lambda struct {
 }
 
 func cmdLambda(_ context.Context, w *World, node Node) (Node, error) {
-	return newLambda(w, node, nulSymbol)
+	value, err := newLambda(w, node, nulSymbol)
+	return FunctionRef{value: value}, err
 }
 
 type _Parameters struct {
@@ -67,7 +68,7 @@ func getParameterList(node Node) (*_Parameters, error) {
 	}, nil
 }
 
-func newLambda(w *World, node Node, blockName Symbol) (Node, error) {
+func newLambda(w *World, node Node, blockName Symbol) (Callable, error) {
 	p, err := getParameterList(node)
 	if err != nil {
 		return nil, err
@@ -355,9 +356,9 @@ func cmdFunCall(ctx context.Context, w *World, node Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	_f, ok := f.(Callable)
-	if !ok {
-		return nil, ErrExpectedFunction
+	_f, err := ExpectFunction(f)
+	if err != nil {
+		return nil, err
 	}
 	return _f.Call(ctx, w, node)
 }
@@ -367,9 +368,9 @@ func cmdApply(ctx context.Context, w *World, list Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	f, ok := funcNode.(Callable)
-	if !ok {
-		return nil, ErrExpectedFunction
+	f, err := ExpectFunction(funcNode)
+	if err != nil {
+		return nil, err
 	}
 	var newargs ListBuilder
 	for {
@@ -425,14 +426,6 @@ func (f SpecialF) Call(ctx context.Context, w *World, n Node) (Node, error) {
 		return nil, err
 	}
 	return f(ctx, w, n)
-}
-
-func funFunction(_ context.Context, _ *World, argv []Node) (Node, error) {
-	f, ok := argv[0].(Callable)
-	if !ok {
-		return nil, ErrExpectedFunction
-	}
-	return f, nil
 }
 
 func cmdTrace(_ context.Context, _ *World, list Node) (Node, error) {
@@ -557,9 +550,9 @@ func (L *LispString) Call(ctx context.Context, w *World, n Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	f, ok := compile.(Callable)
-	if !ok {
-		return nil, ErrExpectedFunction
+	f, err := ExpectFunction(compile)
+	if err != nil {
+		return nil, fmt.Errorf("(*LispString) Call: %w", err)
 	}
 	return f.Call(ctx, w, n)
 }
