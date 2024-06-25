@@ -98,7 +98,7 @@ func cmdDefGeneric(_ context.Context, w *World, node Node) (Node, error) {
 		}
 		argc++
 	}
-	w.DefineGlobal(name, &_Generic{Symbol: name, argc: argc, rest: hasRest})
+	w.defun.Set(name, &_Generic{Symbol: name, argc: argc, rest: hasRest})
 	return name, nil
 }
 
@@ -130,7 +130,7 @@ func cmdDefMethod(ctx context.Context, w *World, node Node) (Node, error) {
 	if !ok {
 		return nil, ErrExpectedSymbol
 	}
-	_generic, err := w.Get(name)
+	_generic, err := w.GetFunc(name)
 	if err != nil {
 		return nil, err
 	}
@@ -227,7 +227,11 @@ func cmdDefMethod(ctx context.Context, w *World, node Node) (Node, error) {
 }
 
 func funGenericFunctionP(ctx context.Context, w *World, node []Node) (Node, error) {
-	if _, ok := node[0].(*_Generic); ok {
+	f, err := ExpectFunction(node[0])
+	if err != nil {
+		return Null, nil
+	}
+	if _, ok := f.(*_Generic); ok {
 		return True, nil
 	}
 	return Null, nil

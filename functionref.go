@@ -40,10 +40,22 @@ func (f FunctionRef) Eval(ctx context.Context, w *World) (Node, error) {
 	return f, nil
 }
 
-func funFunction(_ context.Context, _ *World, argv []Node) (Node, error) {
-	f, ok := argv[0].(Callable)
+func cmdFunction(_ context.Context, w *World, node Node) (Node, error) {
+	_symbol, node, err := Shift(node)
+	if err != nil {
+		return nil, err
+	}
+	symbol, ok := _symbol.(Symbol)
 	if !ok {
-		return nil, fmt.Errorf("%#v: %w", argv[0], ErrExpectedFunction)
+		return nil, ErrExpectedSymbol
+	}
+	_f, err := w.GetFunc(symbol)
+	if err != nil {
+		return nil, err
+	}
+	f, ok := _f.(Callable)
+	if !ok {
+		return nil, fmt.Errorf("%#v: %w", _f, ErrExpectedFunction)
 	}
 	return FunctionRef{value: f}, nil
 }
@@ -83,7 +95,7 @@ func cmdFlet(ctx context.Context, w *World, list Node) (Node, error) {
 		}
 		lexical[symbol] = lambda
 	}
-	nw := w.Let(lexical)
+	nw := w.Flet(lexical)
 	return Progn(ctx, nw, list)
 }
 
@@ -93,7 +105,7 @@ func cmdLabels(ctx context.Context, w *World, list Node) (Node, error) {
 		return nil, err
 	}
 	lexical := Variables{}
-	nw := w.Let(lexical)
+	nw := w.Flet(lexical)
 	for HasValue(flist) {
 		var flist1 Node
 		flist1, flist, err = Shift(flist)

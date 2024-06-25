@@ -347,7 +347,7 @@ func cmdDefun(_ context.Context, w *World, list Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	w.DefineGlobal(symbol, lambda)
+	w.defun.Set(symbol, lambda)
 	return symbol, nil
 }
 

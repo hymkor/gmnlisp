@@ -147,7 +147,7 @@ func _embedClassOf[T Node](name string) *EmbedClass {
 
 func embedClassOf[T Node](name string) *EmbedClass {
 	class := _embedClassOf[T](name)
-	autoLoad[class.name] = class
+	autoLoadVars[class.name] = class
 	return class
 }
 

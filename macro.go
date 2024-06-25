@@ -174,7 +174,7 @@ func cmdDefMacro(ctx context.Context, w *World, n Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	w.DefineGlobal(macroName, value)
+	w.defun.Set(macroName, value)
 	return macroName, nil
 }
 

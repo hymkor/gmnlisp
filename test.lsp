@@ -409,7 +409,7 @@
 (test (stringp 1) nil)
 (test (consp '(1) ) t)
 (test (consp 1) nil)
-(test (functionp consp) t)
+(test (functionp #'consp) t)
 
 ;;; test (evenp)
 (test (evenp 0) t)

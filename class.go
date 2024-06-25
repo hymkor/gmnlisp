@@ -64,14 +64,14 @@ func newBoundp(class Class, slotName Symbol) *_Method {
 }
 
 func registerMethod(w *World, methodName Symbol, class Class, method *_Method) error {
-	if _acc, err := w.Get(methodName); err == nil {
+	if _acc, err := w.GetFunc(methodName); err == nil {
 		if gen, ok := _acc.(*_Generic); ok {
 			gen.methods = append(gen.methods, method)
 		} else {
 			return fmt.Errorf("%v: already defined as not method", methodName)
 		}
 	} else {
-		w.DefineGlobal(methodName, &_Generic{
+		w.defun.Set(methodName, &_Generic{
 			Symbol:  methodName,
 			argc:    len(method.types),
 			rest:    method.restType != nil,
@@ -466,7 +466,7 @@ func cmdCreate(ctx context.Context, w *World, args Node) (Node, error) {
 	if !ok {
 		return nil, fmt.Errorf("%v: %w", _class, ErrExpectedClass)
 	}
-	_gen, err := w.Get(symInitializeObject)
+	_gen, err := w.GetFunc(symInitializeObject)
 	if err != nil {
 		return nil, err
 	}

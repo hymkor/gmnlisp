@@ -169,7 +169,7 @@ func (cons *Cons) Eval(ctx context.Context, w *World) (Node, error) {
 	if !ok {
 		return nil, fmt.Errorf("%w: %#v", ErrExpectedSymbol, first)
 	}
-	value, err := symbol.Eval(ctx, w)
+	value, err := w.GetFunc(symbol)
 	if err != nil {
 		return nil, err
 	}

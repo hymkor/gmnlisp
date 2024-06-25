@@ -64,6 +64,7 @@ func (m *Pair) Range(f func(Symbol, Node) bool) {
 
 type shared struct {
 	global  Scope
+	defun   Scope
 	dynamic Variables
 	stdout  *_WriterNode
 	errout  *_WriterNode
@@ -73,8 +74,9 @@ type shared struct {
 
 type World struct {
 	*shared
-	parent  *World
-	lexical Scope
+	parent *World
+	funcs  Scope
+	vars   Scope
 }
 
 type _Reader interface {
@@ -132,8 +134,22 @@ func (w *_WriterNode) WriteString(s string) (size int, err error) {
 
 func (w *World) Get(name Symbol) (Node, error) {
 	for w != nil {
-		if value, ok := w.lexical.Get(name); ok {
-			return value, nil
+		if w.vars != nil {
+			if value, ok := w.vars.Get(name); ok {
+				return value, nil
+			}
+		}
+		w = w.parent
+	}
+	return Null, MakeError(ErrVariableUnbound, name)
+}
+
+func (w *World) GetFunc(name Symbol) (Node, error) {
+	for w != nil {
+		if w.funcs != nil {
+			if value, ok := w.funcs.Get(name); ok {
+				return value, nil
+			}
 		}
 		w = w.parent
 	}
@@ -147,9 +163,11 @@ func (w *World) DefineGlobal(name Symbol, value Node) {
 
 func (w *World) Set(name Symbol, value Node) error {
 	for w != nil {
-		if _, ok := w.lexical.Get(name); ok {
-			w.lexical.Set(name, value)
-			return nil
+		if w.vars != nil {
+			if _, ok := w.vars.Get(name); ok {
+				w.vars.Set(name, value)
+				return nil
+			}
 		}
 		w = w.parent
 	}
@@ -193,26 +211,28 @@ func (w *World) Stdin() _ReaderNode {
 	return w.stdin
 }
 
-var autoLoad = Variables{
+var autoLoadVars = Variables{
+	NewSymbol("*err-exist*"):              &ErrorNode{Value: os.ErrExist},
+	NewSymbol("*err-not-exist*"):          &ErrorNode{Value: os.ErrNotExist},
+	NewSymbol("*err-quit*"):               &ErrorNode{Value: ErrQuit},
+	NewSymbol("*err-too-few-arguments*"):  &ErrorNode{Value: ErrTooFewArguments},
+	NewSymbol("*err-too-many-arguments*"): &ErrorNode{Value: ErrTooManyArguments},
+	NewSymbol("*err-too-short-tokens*"):   &ErrorNode{Value: ErrTooShortTokens},
+	NewSymbol("*err-variable-unbound*"):   &ErrorNode{Value: ErrVariableUnbound},
+	NewSymbol("<error>"):                  errorClass,
+	NewSymbol("<object>"):                 objectClass,
+	symDomainError:                        domainErrorClass,
+}
+
+var autoLoadFunc = Variables{
 	// *sort*start*
-	//NewSymbol("nil"):                         Null,
-	//NewSymbol("t"):                           True,
 	NewSymbol("*"):                           SpecialF(cmdMulti),
-	NewSymbol("*err-exist*"):                 &ErrorNode{Value: os.ErrExist},
-	NewSymbol("*err-not-exist*"):             &ErrorNode{Value: os.ErrNotExist},
-	NewSymbol("*err-quit*"):                  &ErrorNode{Value: ErrQuit},
-	NewSymbol("*err-too-few-arguments*"):     &ErrorNode{Value: ErrTooFewArguments},
-	NewSymbol("*err-too-many-arguments*"):    &ErrorNode{Value: ErrTooManyArguments},
-	NewSymbol("*err-too-short-tokens*"):      &ErrorNode{Value: ErrTooShortTokens},
-	NewSymbol("*err-variable-unbound*"):      &ErrorNode{Value: ErrVariableUnbound},
 	NewSymbol("+"):                           SpecialF(cmdAdd),
 	NewSymbol("-"):                           SpecialF(cmdSub),
 	NewSymbol("/"):                           SpecialF(cmdDevide),
 	NewSymbol("/="):                          &Function{C: 2, F: funNotEqual},
 	NewSymbol("<"):                           SpecialF(cmdLessThan),
 	NewSymbol("<="):                          SpecialF(cmdLessOrEqual),
-	NewSymbol("<error>"):                     errorClass,
-	NewSymbol("<object>"):                    objectClass,
 	NewSymbol("="):                           SpecialF(cmdEqualOp),
 	NewSymbol(">"):                           SpecialF(cmdGreaterThan),
 	NewSymbol(">="):                          SpecialF(cmdGreaterOrEqual),
@@ -286,8 +306,8 @@ var autoLoad = Variables{
 	NewSymbol("format-integer"):              &Function{C: 3, F: funFormatInteger},
 	NewSymbol("format-object"):               &Function{C: 3, F: funFormatObject},
 	NewSymbol("funcall"):                     SpecialF(cmdFunCall),
-	NewSymbol("function"):                    &Function{C: 1, F: funFunction},
-	NewSymbol("functionp"):                   &Function{C: 1, F: funAnyTypep[Callable]},
+	NewSymbol("function"):                    SpecialF(cmdFunction),
+	NewSymbol("functionp"):                   &Function{C: 1, F: funAnyTypep[FunctionRef]},
 	NewSymbol("general-array*-p"):            &Function{C: 1, F: funGeneralArray},
 	NewSymbol("generic-function-p"):          &Function{C: 1, F: funGenericFunctionP},
 	NewSymbol("gensym"):                      SpecialF(cmdGensym),
@@ -382,18 +402,17 @@ var autoLoad = Variables{
 	NewSymbol("with-open-output-file"):       SpecialF(cmdWithOpenOutputFile),
 	NewSymbol("with-standard-input"):         SpecialF(cmdWithStandardInput),
 	NewSymbol("zerop"):                       &Function{C: 1, F: funZerop},
-	symDomainError:                           domainErrorClass,
 	symReportCondition:                       reportCondition,
 	// *sort*end*
 }
 
 func Export(name Symbol, value Node) {
-	autoLoad[name] = value
+	autoLoadFunc[name] = value
 }
 
 func ExportRange(v Variables) {
 	for key, val := range v {
-		autoLoad[key] = val
+		autoLoadFunc[key] = val
 	}
 }
 
@@ -406,7 +425,7 @@ func (rw _RootWorld) Get(symbol Symbol) (Node, bool) {
 	if value, ok := rw[symbol]; ok {
 		return value, true
 	}
-	if value, ok := autoLoad[symbol]; ok {
+	if value, ok := autoLoadFunc[symbol]; ok {
 		return value, true
 	}
 	fname := "embed/" + symbol.String() + ".lsp"
@@ -414,7 +433,7 @@ func (rw _RootWorld) Get(symbol Symbol) (Node, bool) {
 	script, err := embedLisp.ReadFile(fname)
 	if err == nil {
 		value := &LispString{S: string(script)}
-		autoLoad[symbol] = value
+		autoLoadFunc[symbol] = value
 		return value, true
 	}
 	return Null, false
@@ -428,16 +447,19 @@ func (rw _RootWorld) Range(f func(Symbol, Node) bool) {
 }
 
 func New() *World {
-	rw := _RootWorld{}
+	rwvars := &autoLoadVars
+	rwfuncs := _RootWorld{}
 	w := &World{
 		shared: &shared{
-			global:  rw,
+			global:  rwvars,
+			defun:   rwfuncs,
 			dynamic: Variables{},
 			stdin:   _ReaderNode{_Reader: bufio.NewReader(os.Stdin)},
 			stdout:  &_WriterNode{_Writer: os.Stdout},
 			errout:  &_WriterNode{_Writer: os.Stderr},
 		},
-		lexical: rw,
+		vars:  rwvars,
+		funcs: rwfuncs,
 	}
 	return w
 }
@@ -516,9 +538,19 @@ func (w *World) InterpretBytes(ctx context.Context, code []byte) (Node, error) {
 
 func (w *World) Let(scope Scope) *World {
 	return &World{
-		parent:  w,
-		lexical: scope,
-		shared:  w.shared,
+		parent: w,
+		vars:   scope,
+		funcs:  nil,
+		shared: w.shared,
+	}
+}
+
+func (w *World) Flet(scope Scope) *World {
+	return &World{
+		parent: w,
+		vars:   nil,
+		funcs:  scope,
+		shared: w.shared,
 	}
 }
 
@@ -536,7 +568,7 @@ func (w *World) Assert(equation string, expect Node) string {
 func (w *World) Range(f func(Symbol, Node) bool) {
 	marked := map[Symbol]struct{}{}
 	for ; w != nil; w = w.parent {
-		w.lexical.Range(func(key Symbol, val Node) bool {
+		w.vars.Range(func(key Symbol, val Node) bool {
 			if _, ok := marked[key]; !ok {
 				if !f(key, val) {
 					return false

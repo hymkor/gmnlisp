@@ -38,15 +38,10 @@ func TestWorld(t *testing.T) {
 	}
 
 	w2 := New()
-	_, err = w2.Interpret(context.TODO(), `a`)
-
-	if !errors.Is(err, ErrVariableUnbound) {
-		if err == nil {
-			t.Fatal("error had to occur")
-		} else {
-			t.Fatal(err.Error())
-		}
-		return
+	if v, err := w2.Interpret(context.TODO(), `a`); err != nil {
+		t.Fatal(err.Error())
+	} else if v != String("A") {
+		t.Fatalf(`expect "A" but %#v`, v)
 	}
 
 	w3 := New()
