@@ -2,6 +2,7 @@ package gmnlisp
 
 import (
 	"context"
+	"errors"
 	"fmt"
 )
 
@@ -47,10 +48,6 @@ type _Generic struct {
 	argc    int
 	rest    bool
 	methods []*_Method
-}
-
-func ExpectGeneric(value Node) (*_Generic, error) {
-	return ExpectType[*_Generic](value, "<generic-function>")
 }
 
 func cmdDefGeneric(_ context.Context, w *World, node Node) (Node, error) {
@@ -121,6 +118,14 @@ func (c *_Generic) Call(ctx context.Context, w *World, node Node) (Node, error) 
 	return nil, ErrNoMatchMethods
 }
 
+func ExpectGeneric(c Callable) (*_Generic, error) {
+	g, ok := c.(*_Generic)
+	if !ok {
+		return nil, errors.New("Already used for normal function or macro")
+	}
+	return g, nil
+}
+
 func cmdDefMethod(ctx context.Context, w *World, node Node) (Node, error) {
 	_name, node, err := Shift(node)
 	if err != nil {
@@ -134,9 +139,9 @@ func cmdDefMethod(ctx context.Context, w *World, node Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	generic, ok := _generic.(*_Generic)
-	if !ok {
-		return nil, ErrExpectedGeneric
+	generic, err := ExpectGeneric(_generic)
+	if err != nil {
+		return nil, fmt.Errorf("%w: %#v", err, name.String())
 	}
 	params, code, err := Shift(node)
 	if err != nil {

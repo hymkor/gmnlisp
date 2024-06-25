@@ -470,9 +470,9 @@ func cmdCreate(ctx context.Context, w *World, args Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	gen, ok := _gen.(*_Generic)
-	if !ok {
-		return nil, ErrExpectedGeneric
+	gen, err := ExpectGeneric(_gen)
+	if err != nil {
+		return nil, err
 	}
 	rec := class.Create()
 	if _, ok := rec.(*_Receiver); ok {
