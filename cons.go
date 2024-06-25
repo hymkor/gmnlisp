@@ -158,24 +158,13 @@ func (cons *Cons) Eval(ctx context.Context, w *World) (Node, error) {
 			return nil, err
 		}
 	}
-	if f, ok := first.(Callable); ok {
-		rc, err := f.Call(ctx, w, cons.Cdr)
-		if err != nil {
-			return nil, fmt.Errorf("%w\n\tat %v", err, first)
-		}
-		return rc, nil
-	}
 	symbol, ok := first.(Symbol)
 	if !ok {
 		return nil, fmt.Errorf("%w: %#v", ErrExpectedSymbol, first)
 	}
-	value, err := w.GetFunc(symbol)
+	function, err := w.GetFunc(symbol)
 	if err != nil {
 		return nil, err
-	}
-	function, ok := value.(Callable)
-	if !ok {
-		return nil, fmt.Errorf("%s: %w", symbol, ErrExpectedFunction)
 	}
 	rc, err := function.Call(ctx, w, cons.Cdr)
 	if err != nil {

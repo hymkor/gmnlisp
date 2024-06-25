@@ -169,7 +169,7 @@ func (w *World) Get(name Symbol) (Node, error) {
 	return Null, MakeError(ErrVariableUnbound, name)
 }
 
-func (w *World) GetFunc(name Symbol) (Node, error) {
+func (w *World) GetFunc(name Symbol) (Callable, error) {
 	for w != nil {
 		if w.funcs != nil {
 			if value, ok := w.funcs.Get(name); ok {
@@ -178,7 +178,7 @@ func (w *World) GetFunc(name Symbol) (Node, error) {
 		}
 		w = w.parent
 	}
-	return Null, MakeError(ErrVariableUnbound, name)
+	return nil, MakeError(ErrVariableUnbound, name)
 }
 
 // DefineGlobal implements (defglobal) of ISLisp or (defparameter) of CommonLisp.

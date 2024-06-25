@@ -86,9 +86,9 @@ func funSignalCondition(ctx context.Context, w *World, args []Node) (Node, error
 		}
 		return nil, errors.New(args[0].String())
 	}
-	handler, ok := _handler.(Callable)
-	if !ok {
-		panic("handler is not callable")
+	handler, err := ExpectFunction(_handler)
+	if err != nil {
+		return nil, err
 	}
 	rv, err := handler.Call(ctx, w, &Cons{Car: cond})
 	var e *_ErrContinueCondition

@@ -15,7 +15,6 @@ var (
 	ErrExpectedArray        = errors.New("expected array")
 	ErrExpectedClass        = errors.New("expected class")
 	ErrExpectedCons         = errors.New("expected cons")
-	ErrExpectedFunction     = errors.New("expected function")
 	ErrExpectedGeneric      = errors.New("expected generic function")
 	ErrExpectedHash         = errors.New("expected hashtable")
 	ErrExpectedKeyword      = errors.New("expected keyword")

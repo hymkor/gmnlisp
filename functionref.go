@@ -49,13 +49,9 @@ func cmdFunction(_ context.Context, w *World, node Node) (Node, error) {
 	if !ok {
 		return nil, ErrExpectedSymbol
 	}
-	_f, err := w.GetFunc(symbol)
+	f, err := w.GetFunc(symbol)
 	if err != nil {
 		return nil, err
-	}
-	f, ok := _f.(Callable)
-	if !ok {
-		return nil, fmt.Errorf("%#v: %w", _f, ErrExpectedFunction)
 	}
 	return FunctionRef{value: f}, nil
 }
