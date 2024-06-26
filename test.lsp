@@ -334,7 +334,8 @@
 (test (catch 'hoge
              (with-handler
                (lambda (c)
-                 (if (instancep c <undefined-function>)
+                 (if (and (instancep c <undefined-function>)
+                          (eql (undefined-entity-name c) 'not-exist-func))
                    (throw 'hoge "OK")))
                (not-exist-func)
                "NG"

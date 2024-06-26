@@ -432,6 +432,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("with-standard-input"):         SpecialF(cmdWithStandardInput),
 	NewSymbol("zerop"):                       &Function{C: 1, F: funZerop},
 	symReportCondition:                       reportCondition,
+	undefinedEntityName.Symbol:               undefinedEntityName,
 	// *sort*end*
 }
 

@@ -143,3 +143,23 @@ var undefinedFunctionClass = embedClassOf[_UndefinedFunction]("<undefined-functi
 func (u _UndefinedFunction) ClassOf() Class {
 	return undefinedFunctionClass
 }
+
+var undefinedEntityName = &_Generic{
+	Symbol: NewSymbol("undefined-entity-name"),
+	argc:   1,
+	methods: []*_Method{
+		&_Method{
+			types: []Class{undefinedFunctionClass},
+			method: func(_ context.Context, _ *World, args []Node) (Node, error) {
+				entity, ok := args[0].(_UndefinedFunction)
+				if !ok {
+					return nil, &DomainError{
+						Object:        args[0],
+						ExpectedClass: undefinedFunctionClass,
+					}
+				}
+				return entity.name, nil
+			},
+		},
+	},
+}
