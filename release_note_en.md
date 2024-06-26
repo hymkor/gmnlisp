@@ -1,3 +1,7 @@
+v0.7.0
+======
+Jun 27, 2024
+
 - Implement the type function reference
     - `(lambda)`, `(function)` and `#'` return not a function itself, but a reference to a function now
     - `(funcall)`, `(map*)`, `(labels)`, and `(flets)` require not a function but a reference, and raise an error when a function itself is given
