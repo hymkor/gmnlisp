@@ -258,16 +258,16 @@ var autoLoadVars = Variables{
 
 var autoLoadFunc = Functions{
 	// *sort*start*
-	NewSymbol("*"):                           SpecialF(cmdMulti),
-	NewSymbol("+"):                           SpecialF(cmdAdd),
-	NewSymbol("-"):                           SpecialF(cmdSub),
-	NewSymbol("/"):                           SpecialF(cmdDevide),
+	NewSymbol("*"):                           &Function{F: funMulti},
+	NewSymbol("+"):                           &Function{F: funAdd},
+	NewSymbol("-"):                           &Function{F: funSub},
+	NewSymbol("/"):                           &Function{F: funDevide},
 	NewSymbol("/="):                          &Function{C: 2, F: funNotEqual},
-	NewSymbol("<"):                           SpecialF(cmdLessThan),
-	NewSymbol("<="):                          SpecialF(cmdLessOrEqual),
-	NewSymbol("="):                           SpecialF(cmdEqualOp),
-	NewSymbol(">"):                           SpecialF(cmdGreaterThan),
-	NewSymbol(">="):                          SpecialF(cmdGreaterOrEqual),
+	NewSymbol("<"):                           &Function{F: funLessThan},
+	NewSymbol("<="):                          &Function{F: funLessOrEqual},
+	NewSymbol("="):                           &Function{F: funEqualOp},
+	NewSymbol(">"):                           &Function{F: funGreaterThan},
+	NewSymbol(">="):                          &Function{F: funGreaterOrEqual},
 	NewSymbol("abort"):                       SpecialF(cmdAbort),
 	NewSymbol("and"):                         SpecialF(cmdAnd),
 	NewSymbol("append"):                      &Function{F: funAppend},
@@ -324,7 +324,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("eq"):                          SpecialF(cmdEq),
 	NewSymbol("eql"):                         SpecialF(cmdEql),
 	NewSymbol("equal"):                       SpecialF(cmdEqual),
-	NewSymbol("equalp"):                      SpecialF(cmdEqualOp),
+	NewSymbol("equalp"):                      &Function{F: funEqualOp},
 	NewSymbol("error-output"):                SpecialF(cmdErrorOutput),
 	NewSymbol("evenp"):                       &Function{C: 1, F: funEvenp},
 	NewSymbol("exit"):                        SpecialF(cmdQuit),
@@ -505,6 +505,22 @@ func (w *World) ShiftAndEvalCar(ctx context.Context, list Node) (Node, Node, err
 		return nil, list, err
 	}
 	return value, list, nil
+}
+
+func inject(list []Node, f func(left, right Node) (Node, error)) (Node, error) {
+	if len(list) <= 0 {
+		return Null, nil
+	}
+	result, list := list[0], list[1:]
+	for len(list) > 0 {
+		var err error
+		result, err = f(result, list[0])
+		if err != nil {
+			return nil, err
+		}
+		list = list[1:]
+	}
+	return result, nil
 }
 
 func (w *World) inject(ctx context.Context, list Node, f func(left, right Node) (Node, error)) (Node, error) {

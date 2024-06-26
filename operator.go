@@ -20,8 +20,8 @@ type canPlus interface {
 	Add(Node) (Node, error)
 }
 
-func cmdAdd(ctx context.Context, w *World, param Node) (Node, error) {
-	return w.inject(ctx, param, func(left, right Node) (Node, error) {
+func funAdd(ctx context.Context, w *World, args []Node) (Node, error) {
+	return inject(args, func(left, right Node) (Node, error) {
 		if _left, ok := left.(canPlus); ok {
 			return _left.Add(right)
 		}
@@ -34,8 +34,8 @@ type canMinus interface {
 	Sub(Node) (Node, error)
 }
 
-func cmdSub(ctx context.Context, w *World, param Node) (Node, error) {
-	return w.inject(ctx, param, func(left, right Node) (Node, error) {
+func funSub(ctx context.Context, w *World, args []Node) (Node, error) {
+	return inject(args, func(left, right Node) (Node, error) {
 		if _left, ok := left.(canMinus); ok {
 			return _left.Sub(right)
 		}
@@ -43,12 +43,12 @@ func cmdSub(ctx context.Context, w *World, param Node) (Node, error) {
 	})
 }
 
-func cmdMulti(ctx context.Context, w *World, param Node) (Node, error) {
+func funMulti(ctx context.Context, w *World, args []Node) (Node, error) {
 	type CanMulti interface {
 		Node
 		Multi(Node) (Node, error)
 	}
-	return w.inject(ctx, param, func(left, right Node) (Node, error) {
+	return inject(args, func(left, right Node) (Node, error) {
 		if _left, ok := left.(CanMulti); ok {
 			return _left.Multi(right)
 		}
@@ -56,12 +56,12 @@ func cmdMulti(ctx context.Context, w *World, param Node) (Node, error) {
 	})
 }
 
-func cmdDevide(ctx context.Context, w *World, param Node) (Node, error) {
+func funDevide(ctx context.Context, w *World, args []Node) (Node, error) {
 	type CanDevide interface {
 		Node
 		Divide(Node) (Node, error)
 	}
-	return w.inject(ctx, param, func(left, right Node) (Node, error) {
+	return inject(args, func(left, right Node) (Node, error) {
 		if _left, ok := left.(CanDevide); ok {
 			return _left.Divide(right)
 		}
@@ -73,8 +73,8 @@ type canLessThan interface {
 	LessThan(Node) (bool, error)
 }
 
-func cmdLessThan(ctx context.Context, w *World, param Node) (Node, error) {
-	return notNullToTrue(w.inject(ctx, param, func(left, right Node) (Node, error) {
+func funLessThan(ctx context.Context, w *World, args []Node) (Node, error) {
+	return notNullToTrue(inject(args, func(left, right Node) (Node, error) {
 		if _left, ok := left.(canLessThan); ok {
 			result, err := _left.LessThan(right)
 			if err != nil {
@@ -89,8 +89,8 @@ func cmdLessThan(ctx context.Context, w *World, param Node) (Node, error) {
 	}))
 }
 
-func cmdGreaterThan(ctx context.Context, w *World, param Node) (Node, error) {
-	return notNullToTrue(w.inject(ctx, param, func(left, right Node) (Node, error) {
+func funGreaterThan(ctx context.Context, w *World, args []Node) (Node, error) {
+	return notNullToTrue(inject(args, func(left, right Node) (Node, error) {
 		if _right, ok := right.(canLessThan); ok {
 			result, err := _right.LessThan(left)
 			if err != nil {
@@ -105,8 +105,8 @@ func cmdGreaterThan(ctx context.Context, w *World, param Node) (Node, error) {
 	}))
 }
 
-func cmdEqualOp(ctx context.Context, w *World, param Node) (Node, error) {
-	return notNullToTrue(w.inject(ctx, param, func(left, right Node) (Node, error) {
+func funEqualOp(ctx context.Context, w *World, args []Node) (Node, error) {
+	return notNullToTrue(inject(args, func(left, right Node) (Node, error) {
 		if left.Equals(right, EQUALP) {
 			return right, nil
 		}
@@ -114,8 +114,8 @@ func cmdEqualOp(ctx context.Context, w *World, param Node) (Node, error) {
 	}))
 }
 
-func cmdGreaterOrEqual(ctx context.Context, w *World, param Node) (Node, error) {
-	return notNullToTrue(w.inject(ctx, param, func(left, right Node) (Node, error) {
+func funGreaterOrEqual(ctx context.Context, w *World, args []Node) (Node, error) {
+	return notNullToTrue(inject(args, func(left, right Node) (Node, error) {
 		//     left >= right
 		// <=> not (left < right )
 		if _left, ok := left.(canLessThan); ok {
@@ -132,8 +132,8 @@ func cmdGreaterOrEqual(ctx context.Context, w *World, param Node) (Node, error) 
 	}))
 }
 
-func cmdLessOrEqual(ctx context.Context, w *World, param Node) (Node, error) {
-	return notNullToTrue(w.inject(ctx, param, func(left, right Node) (Node, error) {
+func funLessOrEqual(ctx context.Context, w *World, args []Node) (Node, error) {
+	return notNullToTrue(inject(args, func(left, right Node) (Node, error) {
 		//     left <= right
 		// <=> not (right < left)
 		if _right, ok := right.(canLessThan); ok {
