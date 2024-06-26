@@ -3,6 +3,7 @@
     - `(funcall)`, `(map*)`, `(labels)`, `(flets)` は関数ではなく参照を要求し、関数自体が与えられた時はエラーを起すようにした。
 - 関数の名前空間と変数の名前空間を分離した
 - エラー型: `<undefined-function>`, メソッド: `(undefined-entity-name)`,`(undefined-entity-namespace)` を実装
+- `(function)` ではマクロ・特殊形式・定義形式の場合はエラーとした(ISO規格では結果未定義)
 
 v0.6.0
 ======
