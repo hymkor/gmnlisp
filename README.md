@@ -737,14 +737,14 @@ Gmnlisp's functions are subset of [ISLisp].
 ##### 21.3.5 Stream errors
 
 - [ ] stream-error-stream
-- [ ] undefined-entity-name
-- [ ] undefined-entity-namespace
+- [x] undefined-entity-name
+- [x] undefined-entity-namespace
 
 #### 21.4 Error identification
 
 - [ ] arity-error  
     :
-- [ ] undefined-function
+- [x] undefined-function
 
 ### 22 Miscellaneous
 
