@@ -163,3 +163,16 @@ var undefinedEntityName = &_Generic{
 		},
 	},
 }
+
+var undefinedEntityNameSpace = &_Generic{
+	Symbol: NewSymbol("undefined-entity-namespace"),
+	argc:   1,
+	methods: []*_Method{
+		&_Method{
+			types: []Class{undefinedFunctionClass},
+			method: func(_ context.Context, _ *World, args []Node) (Node, error) {
+				return NewSymbol("function"), nil
+			},
+		},
+	},
+}
