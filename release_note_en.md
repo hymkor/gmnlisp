@@ -2,7 +2,7 @@
     - `(lambda)`, `(function)` and `#'` return not a function itself, but a reference to a function now
     - `(funcall)`, `(map*)`, `(labels)`, and `(flets)` require not a function but a reference, and raise an error when a function itself is given
 - Split the namespace for functions and that of variables
-- Implement the error class `<undefined-function>`
+- Implement the error class `<undefined-function>`, methods: `(undefined-entity-name)`,`(undefined-entity-namespace)`
 
 v0.6.0
 ======
