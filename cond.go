@@ -6,8 +6,6 @@ import (
 	"fmt"
 )
 
-var activeHandleFuncKey = genSym()
-
 func cmdWithHandler(ctx context.Context, w *World, node Node) (Node, error) {
 	_handler, node, err := w.ShiftAndEvalCar(ctx, node)
 	if err != nil {
@@ -17,12 +15,9 @@ func cmdWithHandler(ctx context.Context, w *World, node Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	if oldHandler, ok := w.defun.Get(activeHandleFuncKey); ok {
-		defer func() { w.defun.Set(activeHandleFuncKey, oldHandler) }()
-	} else {
-		defer func() { w.defun.Set(activeHandleFuncKey, nil) }()
-	}
-	w.defun.Set(activeHandleFuncKey, handler)
+	oldHandler := w.handler
+	defer func() { w.handler = oldHandler }()
+	w.handler = handler
 	value, err := Progn(ctx, w, node)
 
 	// 本来、場合によっては継続処理があるため、ハンドラー関数はエラーが起きた場所で
@@ -76,8 +71,7 @@ var reportCondition = &_Generic{
 func funSignalCondition(ctx context.Context, w *World, args []Node) (Node, error) {
 	cond := args[0]
 	continueable := args[1]
-	handler, ok := w.defun.Get(activeHandleFuncKey)
-	if !ok {
+	if w.handler == nil {
 		buffer := &StringBuilder{}
 		if _, err := reportCondition.Call(ctx, w, &Cons{Car: Uneval{Node: cond}, Cdr: &Cons{Car: Uneval{Node: buffer}}}); err == nil {
 			return nil, errors.New(buffer.String())
@@ -89,7 +83,7 @@ func funSignalCondition(ctx context.Context, w *World, args []Node) (Node, error
 		}
 		return nil, errors.New(args[0].String())
 	}
-	rv, err := handler.Call(ctx, w, &Cons{Car: cond})
+	rv, err := w.handler.Call(ctx, w, &Cons{Car: cond})
 	var e *_ErrContinueCondition
 	if IsSome(continueable) && errors.As(err, &e) {
 		return e.Value, nil
