@@ -166,8 +166,23 @@ type _StandardClass struct {
 	Slot   map[Symbol]*_SlotSpec
 }
 
+// standardClass can not be created with registerNewBuilInClass
+// because it does not inherit <built-in-class>.
+var standardClass = &_BuiltInClass{
+	name: NewSymbol("<standard-class>"),
+	instanceP: func(n Node) bool {
+		_, ok := n.(*_StandardClass)
+		return ok
+	},
+	create: func() Node {
+		classCounter++
+		return &_StandardClass{}
+	},
+	super: []Class{objectClass},
+}
+
 func (u *_StandardClass) ClassOf() Class {
-	return registerNewBuiltInClass[*_StandardClass]("class")
+	return standardClass
 }
 
 func (u *_StandardClass) Equals(_other Node, _ EqlMode) bool {

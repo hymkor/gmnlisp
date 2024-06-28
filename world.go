@@ -256,6 +256,7 @@ var autoLoadVars = Variables{
 	domainErrorClass.name:                 domainErrorClass,
 	objectClass.name:                      objectClass,
 	builtInClass.name:                     builtInClass,
+	standardClass.name:                    standardClass,
 }
 
 var autoLoadFunc = Functions{
