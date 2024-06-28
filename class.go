@@ -352,8 +352,30 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 }
 
 type _Receiver struct {
-	*_UserClass
-	Slot map[Symbol]Node
+	_UserClass *_UserClass
+	Slot       map[Symbol]Node
+}
+
+func (r *_Receiver) Equals(o Node, m EqlMode) bool {
+	other, ok := o.(*_Receiver)
+	if !ok {
+		return false
+	}
+	if m == STRICT {
+		return r == other
+	}
+	if !r._UserClass.Equals(other._UserClass, m) {
+		return false
+	}
+	if len(r.Slot) != len(other.Slot) {
+		return false
+	}
+	for key, val := range r.Slot {
+		if !val.Equals(other.Slot[key], m) {
+			return false
+		}
+	}
+	return true
 }
 
 func (r *_Receiver) Eval(ctx context.Context, w *World) (Node, error) {
