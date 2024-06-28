@@ -21,7 +21,7 @@ func newGetter(class Class, slotName Symbol) *_Method {
 	return &_Method{
 		types: []Class{class},
 		method: func(ctx context.Context, w *World, node []Node) (Node, error) {
-			rec, ok := node[0].(*_Receiver)
+			rec, ok := node[0].(*_StandardObject)
 			if !ok {
 				return nil, fmt.Errorf("%v: %w", node[0], ErrExpectedClass)
 			}
@@ -37,7 +37,7 @@ func newSetter(class Class, slotName Symbol) *_Method {
 	return &_Method{
 		types: []Class{objectClass, class},
 		method: func(ctx context.Context, w *World, node []Node) (Node, error) {
-			rec, ok := node[1].(*_Receiver)
+			rec, ok := node[1].(*_StandardObject)
 			if !ok {
 				return nil, fmt.Errorf("%v: %w", node[1], ErrExpectedClass)
 			}
@@ -51,7 +51,7 @@ func newBoundp(class Class, slotName Symbol) *_Method {
 	return &_Method{
 		types: []Class{class},
 		method: func(ctx context.Context, w *World, node []Node) (Node, error) {
-			rec, ok := node[0].(*_Receiver)
+			rec, ok := node[0].(*_StandardObject)
 			if !ok {
 				return nil, fmt.Errorf("%v: %w", node[0], ErrExpectedClass)
 			}
@@ -241,7 +241,7 @@ func (c *_StandardClass) InstanceP(obj Node) bool {
 }
 
 func (c *_StandardClass) Create() Node {
-	return &_Receiver{
+	return &_StandardObject{
 		_StandardClass: c,
 		Slot:           make(map[Symbol]Node),
 	}
@@ -351,13 +351,13 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 	return className, nil
 }
 
-type _Receiver struct {
+type _StandardObject struct {
 	_StandardClass *_StandardClass
 	Slot           map[Symbol]Node
 }
 
-func (r *_Receiver) Equals(o Node, m EqlMode) bool {
-	other, ok := o.(*_Receiver)
+func (r *_StandardObject) Equals(o Node, m EqlMode) bool {
+	other, ok := o.(*_StandardObject)
 	if !ok {
 		return false
 	}
@@ -378,15 +378,15 @@ func (r *_Receiver) Equals(o Node, m EqlMode) bool {
 	return true
 }
 
-func (r *_Receiver) Eval(ctx context.Context, w *World) (Node, error) {
+func (r *_StandardObject) Eval(ctx context.Context, w *World) (Node, error) {
 	return r, nil
 }
 
-func (c *_Receiver) ClassOf() Class {
+func (c *_StandardObject) ClassOf() Class {
 	return c._StandardClass
 }
 
-func (c *_Receiver) PrintTo(w io.Writer, mode PrintMode) (int, error) {
+func (c *_StandardObject) PrintTo(w io.Writer, mode PrintMode) (int, error) {
 	n, err := c._StandardClass.Symbol.PrintTo(w, mode)
 	if err != nil {
 		return n, err
@@ -420,19 +420,19 @@ func (c *_Receiver) PrintTo(w io.Writer, mode PrintMode) (int, error) {
 	return n, err
 }
 
-func (c *_Receiver) String() string {
+func (c *_StandardObject) String() string {
 	var buffer strings.Builder
 	c.PrintTo(&buffer, PRINC)
 	return buffer.String()
 }
 
-func (c *_Receiver) GoString() string {
+func (c *_StandardObject) GoString() string {
 	var buffer strings.Builder
 	c.PrintTo(&buffer, PRINT)
 	return buffer.String()
 }
 
-func (reciever *_Receiver) callInitForm(classDef *_StandardClass) error {
+func (reciever *_StandardObject) callInitForm(classDef *_StandardClass) error {
 	for _, super := range classDef.Super {
 		if uc, ok := super.(*_StandardClass); ok {
 			if err := reciever.callInitForm(uc); err != nil {
@@ -452,7 +452,7 @@ func (reciever *_Receiver) callInitForm(classDef *_StandardClass) error {
 	return nil
 }
 
-func (reciever *_Receiver) callInitArg(classDef *_StandardClass, initArg Symbol, initVal Node) bool {
+func (reciever *_StandardObject) callInitArg(classDef *_StandardClass, initArg Symbol, initVal Node) bool {
 	for name, slot := range classDef.Slot {
 		for _, slotInitArg := range slot.initarg {
 			if slotInitArg == initArg {
@@ -497,7 +497,7 @@ func cmdCreate(ctx context.Context, w *World, args Node) (Node, error) {
 		return nil, err
 	}
 	rec := class.Create()
-	if _, ok := rec.(*_Receiver); ok {
+	if _, ok := rec.(*_StandardObject); ok {
 		return gen.Call(ctx, w, &Cons{Car: Uneval{Node: rec}, Cdr: args})
 	}
 	return rec, nil
@@ -505,7 +505,7 @@ func cmdCreate(ctx context.Context, w *World, args Node) (Node, error) {
 
 func defaultInitializeObject(ctx context.Context, w *World, args []Node) (Node, error) {
 	_this, args := args[0], args[1:]
-	this, ok := _this.(*_Receiver)
+	this, ok := _this.(*_StandardObject)
 	if !ok {
 		if len(args) > 0 {
 			return nil, fmt.Errorf("%s does not have slot", _this.String())
