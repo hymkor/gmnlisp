@@ -145,8 +145,9 @@ func newBuiltInClass[T Node](name string) *_BuiltInClass {
 	}
 }
 
-func registerNewBuiltInClass[T Node](name string) *_BuiltInClass {
+func registerNewBuiltInClass[T Node](name string, super ...Class) *_BuiltInClass {
 	class := newBuiltInClass[T](name)
+	class.super = super
 	autoLoadVars[class.name] = class
 	return class
 }
