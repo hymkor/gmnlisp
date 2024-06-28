@@ -250,11 +250,12 @@ var autoLoadVars = Variables{
 	NewSymbol("*err-too-short-tokens*"):   &ErrorNode{Value: ErrTooShortTokens},
 	NewSymbol("*err-variable-unbound*"):   &ErrorNode{Value: ErrVariableUnbound},
 	NewSymbol("<error>"):                  errorClass,
-	NewSymbol("<object>"):                 objectClass,
-	symDomainError:                        domainErrorClass,
 	NewSymbol("most-negative-fixnum"):     Integer(math.MinInt),
 	NewSymbol("most-positive-fixnum"):     Integer(math.MaxInt),
 	NewSymbol("pi"):                       Float(math.Pi),
+	domainErrorClass.name:                 domainErrorClass,
+	objectClass.name:                      objectClass,
+	builtInClass.name:                     builtInClass,
 }
 
 var autoLoadFunc = Functions{

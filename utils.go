@@ -82,7 +82,7 @@ func (e *_BuiltInClass) Create() Node {
 
 var classClass = registerNewBuiltInClass[Class]("<class>")
 
-var builtInClass = registerNewBuiltInClass[*_BuiltInClass]("<built-in-class>")
+var builtInClass = newBuiltInClass[*_BuiltInClass]("<built-in-class>")
 
 func (e *_BuiltInClass) ClassOf() Class {
 	return builtInClass
@@ -147,7 +147,7 @@ func newBuiltInClass[T Node](name string) *_BuiltInClass {
 
 func registerNewBuiltInClass[T Node](name string, super ...Class) *_BuiltInClass {
 	class := newBuiltInClass[T](name)
-	class.super = super
+	class.super = append(super, objectClass, builtInClass)
 	autoLoadVars[class.name] = class
 	return class
 }
