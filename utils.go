@@ -60,14 +60,14 @@ type Class interface {
 	InheritP(Class) bool
 }
 
-type EmbedClass struct {
+type _BuiltInClass struct {
 	name      Symbol
 	instanceP func(Node) bool
 	create    func() Node
 	super     []Class
 }
 
-func (e *EmbedClass) InheritP(c Class) bool {
+func (e *_BuiltInClass) InheritP(c Class) bool {
 	for _, s := range e.super {
 		if s.Equals(c, STRICT) || s.InheritP(c) {
 			return true
@@ -76,44 +76,44 @@ func (e *EmbedClass) InheritP(c Class) bool {
 	return false
 }
 
-func (e *EmbedClass) Create() Node {
+func (e *_BuiltInClass) Create() Node {
 	return e.create()
 }
 
 var classClass = embedClassOf[Class]("<class>")
 
-var builtInClass = embedClassOf[*EmbedClass]("<built-in-class>")
+var builtInClass = embedClassOf[*_BuiltInClass]("<built-in-class>")
 
-func (e *EmbedClass) ClassOf() Class {
+func (e *_BuiltInClass) ClassOf() Class {
 	return builtInClass
 }
 
-func (e *EmbedClass) Name() Symbol {
+func (e *_BuiltInClass) Name() Symbol {
 	return e.name
 }
 
-func (e *EmbedClass) InstanceP(n Node) bool {
+func (e *_BuiltInClass) InstanceP(n Node) bool {
 	return e.instanceP(n)
 }
 
-func (e *EmbedClass) String() string {
+func (e *_BuiltInClass) String() string {
 	return e.Name().String()
 }
 
-func (e *EmbedClass) GoString() string {
+func (e *_BuiltInClass) GoString() string {
 	return e.Name().String()
 }
 
-func (e *EmbedClass) PrintTo(w io.Writer, m PrintMode) (int, error) {
+func (e *_BuiltInClass) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	return io.WriteString(w, e.String())
 }
 
-func (e *EmbedClass) Equals(_other Node, _ EqlMode) bool {
-	other, ok := _other.(*EmbedClass)
+func (e *_BuiltInClass) Equals(_other Node, _ EqlMode) bool {
+	other, ok := _other.(*_BuiltInClass)
 	return ok && other.String() == e.String()
 }
 
-func (e *EmbedClass) Eval(context.Context, *World) (Node, error) {
+func (e *_BuiltInClass) Eval(context.Context, *World) (Node, error) {
 	return e, nil
 }
 
@@ -130,9 +130,9 @@ type Node interface {
 	ClassOf() Class
 }
 
-func _embedClassOf[T Node](name string) *EmbedClass {
+func _embedClassOf[T Node](name string) *_BuiltInClass {
 	symbol := NewSymbol(name)
-	return &EmbedClass{
+	return &_BuiltInClass{
 		name: symbol,
 		instanceP: func(n Node) bool {
 			_, ok := n.(T)
@@ -145,13 +145,13 @@ func _embedClassOf[T Node](name string) *EmbedClass {
 	}
 }
 
-func embedClassOf[T Node](name string) *EmbedClass {
+func embedClassOf[T Node](name string) *_BuiltInClass {
 	class := _embedClassOf[T](name)
 	autoLoadVars[class.name] = class
 	return class
 }
 
-var objectClass = &EmbedClass{
+var objectClass = &_BuiltInClass{
 	name:      NewSymbol("<object>"),
 	instanceP: func(Node) bool { return true },
 	create:    func() Node { return Null },

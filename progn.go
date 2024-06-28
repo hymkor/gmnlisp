@@ -242,7 +242,7 @@ type ErrorNode struct {
 	Value error
 }
 
-var errorClass = &EmbedClass{
+var errorClass = &_BuiltInClass{
 	name: NewSymbol("<error>"),
 	instanceP: func(value Node) bool {
 		_, ok := value.(error)
