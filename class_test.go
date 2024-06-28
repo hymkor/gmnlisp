@@ -25,7 +25,7 @@ func TestDefClass(t *testing.T) {
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-	class, ok := _class.(*_UserClass)
+	class, ok := _class.(*_StandardClass)
 	if !ok {
 		t.Fatal("testclass not found")
 	}

@@ -159,29 +159,29 @@ func readSlotSpec(ctx context.Context, w *World, list Node) (*_SlotSpec, error) 
 	return slotSpec, nil
 }
 
-type _UserClass struct {
+type _StandardClass struct {
 	serial int
 	Symbol Symbol
 	Super  []Class
 	Slot   map[Symbol]*_SlotSpec
 }
 
-func (u *_UserClass) ClassOf() Class {
-	return registerNewBuiltInClass[*_UserClass]("class")
+func (u *_StandardClass) ClassOf() Class {
+	return registerNewBuiltInClass[*_StandardClass]("class")
 }
 
-func (u *_UserClass) Equals(_other Node, _ EqlMode) bool {
+func (u *_StandardClass) Equals(_other Node, _ EqlMode) bool {
 	if u.serial == 0 {
 		panic("class serial is zero")
 	}
-	other, ok := _other.(*_UserClass)
+	other, ok := _other.(*_StandardClass)
 	if !ok {
 		return false
 	}
 	return u.serial == other.serial
 }
 
-func (class1 *_UserClass) InheritP(class2 Class) bool {
+func (class1 *_StandardClass) InheritP(class2 Class) bool {
 	for _, s := range class1.Super {
 		if s.Equals(class2, STRICT) {
 			return true
@@ -193,42 +193,42 @@ func (class1 *_UserClass) InheritP(class2 Class) bool {
 	return false
 }
 
-func (c *_UserClass) Eval(ctx context.Context, w *World) (Node, error) {
+func (c *_StandardClass) Eval(ctx context.Context, w *World) (Node, error) {
 	return c, nil
 }
 
-func (c *_UserClass) String() string {
+func (c *_StandardClass) String() string {
 	return "{*_UserClass}" + c.Symbol.String()
 }
 
-func (c *_UserClass) GoString() string {
+func (c *_StandardClass) GoString() string {
 	return "{*_UserClass}" + c.Symbol.String()
 }
 
-func (c *_UserClass) PrintTo(w io.Writer, mode PrintMode) (int, error) {
+func (c *_StandardClass) PrintTo(w io.Writer, mode PrintMode) (int, error) {
 	return io.WriteString(w, c.Symbol.String())
 }
 
-func (c *_UserClass) Name() Symbol {
+func (c *_StandardClass) Name() Symbol {
 	return c.Symbol
 }
 
 // subClassP returns true when class1 is one of the sub-classes of class2
-func (class1 *_UserClass) subClassP(class2 *_UserClass) bool {
+func (class1 *_StandardClass) subClassP(class2 *_StandardClass) bool {
 	for _, super := range class1.Super {
 		if super.Name() == class2.Name() {
 			return true
 		}
-		if uc, ok := super.(*_UserClass); ok && uc.subClassP(class2) {
+		if uc, ok := super.(*_StandardClass); ok && uc.subClassP(class2) {
 			return true
 		}
 	}
 	return false
 }
 
-func (c *_UserClass) InstanceP(obj Node) bool {
+func (c *_StandardClass) InstanceP(obj Node) bool {
 	class := obj.ClassOf()
-	userClass, ok := class.(*_UserClass)
+	userClass, ok := class.(*_StandardClass)
 	if !ok {
 		// println("InstanceP: NG1")
 		return false
@@ -240,10 +240,10 @@ func (c *_UserClass) InstanceP(obj Node) bool {
 	return userClass.subClassP(c)
 }
 
-func (c *_UserClass) Create() Node {
+func (c *_StandardClass) Create() Node {
 	return &_Receiver{
-		_UserClass: c,
-		Slot:       make(map[Symbol]Node),
+		_StandardClass: c,
+		Slot:           make(map[Symbol]Node),
 	}
 }
 
@@ -264,7 +264,7 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 		return nil, fmt.Errorf("[1] %w: %#v", ErrExpectedSymbol, _className)
 	}
 	classCounter++
-	class := &_UserClass{
+	class := &_StandardClass{
 		serial: classCounter,
 		Symbol: className,
 		Slot:   make(map[Symbol]*_SlotSpec),
@@ -352,8 +352,8 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 }
 
 type _Receiver struct {
-	_UserClass *_UserClass
-	Slot       map[Symbol]Node
+	_StandardClass *_StandardClass
+	Slot           map[Symbol]Node
 }
 
 func (r *_Receiver) Equals(o Node, m EqlMode) bool {
@@ -364,7 +364,7 @@ func (r *_Receiver) Equals(o Node, m EqlMode) bool {
 	if m == STRICT {
 		return r == other
 	}
-	if !r._UserClass.Equals(other._UserClass, m) {
+	if !r._StandardClass.Equals(other._StandardClass, m) {
 		return false
 	}
 	if len(r.Slot) != len(other.Slot) {
@@ -383,11 +383,11 @@ func (r *_Receiver) Eval(ctx context.Context, w *World) (Node, error) {
 }
 
 func (c *_Receiver) ClassOf() Class {
-	return c._UserClass
+	return c._StandardClass
 }
 
 func (c *_Receiver) PrintTo(w io.Writer, mode PrintMode) (int, error) {
-	n, err := c._UserClass.Symbol.PrintTo(w, mode)
+	n, err := c._StandardClass.Symbol.PrintTo(w, mode)
 	if err != nil {
 		return n, err
 	}
@@ -432,9 +432,9 @@ func (c *_Receiver) GoString() string {
 	return buffer.String()
 }
 
-func (reciever *_Receiver) callInitForm(classDef *_UserClass) error {
+func (reciever *_Receiver) callInitForm(classDef *_StandardClass) error {
 	for _, super := range classDef.Super {
-		if uc, ok := super.(*_UserClass); ok {
+		if uc, ok := super.(*_StandardClass); ok {
 			if err := reciever.callInitForm(uc); err != nil {
 				return err
 			}
@@ -452,7 +452,7 @@ func (reciever *_Receiver) callInitForm(classDef *_UserClass) error {
 	return nil
 }
 
-func (reciever *_Receiver) callInitArg(classDef *_UserClass, initArg Symbol, initVal Node) bool {
+func (reciever *_Receiver) callInitArg(classDef *_StandardClass, initArg Symbol, initVal Node) bool {
 	for name, slot := range classDef.Slot {
 		for _, slotInitArg := range slot.initarg {
 			if slotInitArg == initArg {
@@ -462,7 +462,7 @@ func (reciever *_Receiver) callInitArg(classDef *_UserClass, initArg Symbol, ini
 		}
 	}
 	for _, super := range classDef.Super {
-		if superUc, ok := super.(*_UserClass); ok {
+		if superUc, ok := super.(*_StandardClass); ok {
 			if reciever.callInitArg(superUc, initArg, initVal) {
 				return true
 			}
@@ -524,9 +524,9 @@ func defaultInitializeObject(ctx context.Context, w *World, args []Node) (Node, 
 		}
 		var initVal Node
 		initVal, args = args[0], args[1:]
-		this.callInitArg(this._UserClass, initArg, initVal)
+		this.callInitArg(this._StandardClass, initArg, initVal)
 	}
-	return this, this.callInitForm(this._UserClass)
+	return this, this.callInitForm(this._StandardClass)
 }
 
 func defInstanceP(ctx context.Context, w *World, node Node) (Node, error) {
