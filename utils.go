@@ -80,6 +80,8 @@ func (e *EmbedClass) Create() Node {
 	return e.create()
 }
 
+var classClass = embedClassOf[Class]("<class>")
+
 var embedClass = embedClassOf[*EmbedClass]("<embed-class>")
 
 func (e *EmbedClass) ClassOf() Class {

@@ -129,3 +129,20 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 	}
 	return nil, fmt.Errorf("%w: %#v to %#v", ErrNotSupportType, source, class)
 }
+
+func funAssure(ctx context.Context, w *World, args []Node) (Node, error) {
+	class, ok := args[0].(Class)
+	if !ok {
+		return nil, &DomainError{
+			Object:        args[0],
+			ExpectedClass: classClass,
+		}
+	}
+	if !class.InstanceP(args[1]) {
+		return nil, &DomainError{
+			Object:        args[1],
+			ExpectedClass: class,
+		}
+	}
+	return args[1], nil
+}
