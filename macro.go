@@ -148,14 +148,20 @@ func cmdLambdaMacro(ctx context.Context, w *World, n Node) (Node, error) {
 	return FunctionRef{value: v}, nil
 }
 
-func lambdaMacro(ctx context.Context, w *World, n Node) (Callable, error) {
+func lambdaMacro(ctx context.Context, w *World, n Node) (*_Macro, error) {
 	p, err := getParameterList(n)
 	if err != nil {
 		return nil, err
 	}
+	code := p.code
+	if c, err := expandMacroInList(ctx, w, code); err == nil {
+		code = c
+	} else {
+		println(err.Error())
+	}
 	return &_Macro{
 		param:   p.param,
-		code:    p.code,
+		code:    code,
 		rest:    p.rest,
 		lexical: w,
 	}, nil
@@ -175,6 +181,10 @@ func cmdDefMacro(ctx context.Context, w *World, n Node) (Node, error) {
 		return nil, err
 	}
 	w.defun.Set(macroName, value)
+	if w.macro == nil {
+		w.macro = make(map[Symbol]*_Macro)
+	}
+	w.macro[macroName] = value
 	return macroName, nil
 }
 

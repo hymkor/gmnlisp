@@ -93,7 +93,7 @@ func cmdFlet(ctx context.Context, w *World, list Node) (Node, error) {
 		if !ok {
 			return nil, ErrExpectedSymbol
 		}
-		lambda, err := newLambda(w, flist1, symbol)
+		lambda, err := newLambda(ctx, w, flist1, symbol)
 		if err != nil {
 			return nil, err
 		}
@@ -125,7 +125,7 @@ func cmdLabels(ctx context.Context, w *World, list Node) (Node, error) {
 		if !ok {
 			return nil, ErrExpectedSymbol
 		}
-		lambda, err := newLambda(nw, flist1, symbol)
+		lambda, err := newLambda(ctx, nw, flist1, symbol)
 		if err != nil {
 			return nil, err
 		}

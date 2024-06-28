@@ -17,8 +17,8 @@ type _Lambda struct {
 	lexical *World
 }
 
-func cmdLambda(_ context.Context, w *World, node Node) (Node, error) {
-	value, err := newLambda(w, node, nulSymbol)
+func cmdLambda(ctx context.Context, w *World, node Node) (Node, error) {
+	value, err := newLambda(ctx, w, node, nulSymbol)
 	return FunctionRef{value: value}, err
 }
 
@@ -68,14 +68,82 @@ func getParameterList(node Node) (*_Parameters, error) {
 	}, nil
 }
 
-func newLambda(w *World, node Node, blockName Symbol) (Callable, error) {
+func expandMacroOne(ctx context.Context, w *World, value Node) Node {
+	cons, ok := value.(*Cons)
+	if !ok {
+		return nil
+	}
+	symbol, ok := cons.Car.(Symbol)
+	if !ok {
+		car := expandMacroOne(ctx, w, cons.Car)
+		cdr := expandMacroOne(ctx, w, cons.Cdr)
+		return &Cons{Car: car, Cdr: cdr}
+	}
+	macro, ok := w.macro[symbol]
+	if !ok {
+		f, err := w.GetFunc(symbol)
+		if err != nil {
+			return nil
+		}
+		ls, ok := f.(*LispString)
+		if !ok {
+			return nil
+		}
+		fm, err := ls.Eval(ctx, w)
+		if err != nil {
+			return nil
+		}
+		fmacro, ok := fm.(FunctionRef)
+		if !ok {
+			return nil
+		}
+		macro, ok = fmacro.value.(*_Macro)
+		if !ok {
+			return nil
+		}
+	}
+	expandCode, err := macro.expand(ctx, w, cons.Cdr)
+	if err != nil {
+		println(err.Error())
+		return nil
+	}
+	if x := expandMacroOne(ctx, w, expandCode); x != nil {
+		return x
+	}
+	return expandCode
+}
+
+func expandMacroInList(ctx context.Context, w *World, code Node) (Node, error) {
+	var newCode Node
+	for IsSome(code) {
+		var value Node
+		var err error
+		value, code, err = Shift(code)
+		if err != nil {
+			return nil, err
+		}
+		if c := expandMacroOne(ctx, w, value); c != nil {
+			value = c
+		}
+		newCode = &Cons{Car: value, Cdr: newCode}
+	}
+	return NReverse(newCode)
+}
+
+func newLambda(ctx context.Context, w *World, node Node, blockName Symbol) (Callable, error) {
 	p, err := getParameterList(node)
 	if err != nil {
 		return nil, err
 	}
+	code := p.code
+	if c, err := expandMacroInList(ctx, w, code); err == nil {
+		code = c
+	} else {
+		println(err.Error())
+	}
 	return &_Lambda{
 		param:   p.param,
-		code:    p.code,
+		code:    code,
 		name:    blockName,
 		rest:    p.rest,
 		lexical: w,
@@ -322,7 +390,7 @@ func prognWithTailRecOpt(ctx context.Context, w *World, n Node, sym Symbol) (val
 	return value, nil
 }
 
-func cmdDefun(_ context.Context, w *World, list Node) (Node, error) {
+func cmdDefun(ctx context.Context, w *World, list Node) (Node, error) {
 	_symbol, list, err := Shift(list)
 	if err != nil {
 		return nil, err
@@ -331,7 +399,7 @@ func cmdDefun(_ context.Context, w *World, list Node) (Node, error) {
 	if !ok {
 		return nil, ErrExpectedSymbol
 	}
-	lambda, err := newLambda(w, list, symbol)
+	lambda, err := newLambda(ctx, w, list, symbol)
 	if err != nil {
 		return nil, err
 	}
