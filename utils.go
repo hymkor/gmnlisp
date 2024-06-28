@@ -82,10 +82,10 @@ func (e *EmbedClass) Create() Node {
 
 var classClass = embedClassOf[Class]("<class>")
 
-var embedClass = embedClassOf[*EmbedClass]("<embed-class>")
+var builtInClass = embedClassOf[*EmbedClass]("<built-in-class>")
 
 func (e *EmbedClass) ClassOf() Class {
-	return embedClass
+	return builtInClass
 }
 
 func (e *EmbedClass) Name() Symbol {
