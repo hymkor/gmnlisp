@@ -40,6 +40,21 @@
   (test (instancep p2 <point2d>) t)
   (test (instancep p1 <point3d>) nil)
   (test (instancep 0 <point2d>) nil)
+  (test (assure <point2d> p1) p1)
+  (test (the <point2d> p1) p1)
+  (test
+    (catch
+      'c
+      (with-handler
+        (lambda (c)
+          (if (instancep c <domain-error>)
+            (throw 'c "OK")
+            "NG1"))
+        (assure <point3d> p1)
+        "NG2"
+        )
+      )
+    "OK")
   )
 
 (test (subclassp <point1d> <point2d>) nil)
