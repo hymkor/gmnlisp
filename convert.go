@@ -7,9 +7,8 @@ import (
 )
 
 var (
-	classList      = NewSymbol("<list>")
-	classVector    = NewSymbol("<general-vector>")
-	classCharacter = NewSymbol("<character>")
+	classList   = NewSymbol("<list>")
+	classVector = NewSymbol("<general-vector>")
 )
 
 func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
@@ -28,7 +27,7 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 	switch val := source.(type) {
 	case Rune:
 		switch class {
-		case classCharacter:
+		case characterClass.name:
 			return val, nil
 		case integerClass.name:
 			return Integer(val), nil
@@ -77,7 +76,7 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 		}
 	case Integer:
 		switch class {
-		case classCharacter:
+		case characterClass.name:
 			return Rune(val), nil
 		case integerClass.name:
 			return val, nil
