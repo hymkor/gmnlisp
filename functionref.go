@@ -10,7 +10,7 @@ type FunctionRef struct {
 	value Callable
 }
 
-var functionRefClassObject = _embedClassOf[FunctionRef]("<function>")
+var functionRefClassObject = newBuiltInClass[FunctionRef]("<function>")
 
 func (f FunctionRef) ClassOf() Class {
 	return functionRefClassObject

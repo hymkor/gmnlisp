@@ -12,7 +12,7 @@ type DomainError struct {
 }
 
 var (
-	domainErrorClass = _embedClassOf[*DomainError]("<domain-error>")
+	domainErrorClass = newBuiltInClass[*DomainError]("<domain-error>")
 	symDomainError   = domainErrorClass.name
 )
 
@@ -72,7 +72,7 @@ func ExpectType[T Node](_value Node, name string) (T, error) {
 	}
 	return value, &DomainError{
 		Object:        _value,
-		ExpectedClass: _embedClassOf[T](name),
+		ExpectedClass: newBuiltInClass[T](name),
 	}
 }
 

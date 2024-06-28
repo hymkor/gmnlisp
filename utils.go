@@ -130,7 +130,7 @@ type Node interface {
 	ClassOf() Class
 }
 
-func _embedClassOf[T Node](name string) *_BuiltInClass {
+func newBuiltInClass[T Node](name string) *_BuiltInClass {
 	symbol := NewSymbol(name)
 	return &_BuiltInClass{
 		name: symbol,
@@ -146,7 +146,7 @@ func _embedClassOf[T Node](name string) *_BuiltInClass {
 }
 
 func registerNewBuiltInClass[T Node](name string) *_BuiltInClass {
-	class := _embedClassOf[T](name)
+	class := newBuiltInClass[T](name)
 	autoLoadVars[class.name] = class
 	return class
 }
