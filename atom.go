@@ -127,10 +127,10 @@ func (s Symbol) GoString() string {
 
 type Rune rune
 
-var runeClass = registerNewBuiltInClass[Rune]("<character>")
+var characterClass = registerNewBuiltInClass[Rune]("<character>")
 
 func (Rune) ClassOf() Class {
-	return runeClass
+	return characterClass
 }
 
 func (r Rune) PrintTo(w io.Writer, m PrintMode) (int, error) {
