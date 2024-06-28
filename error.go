@@ -138,7 +138,7 @@ func (u _UndefinedFunction) Equals(other Node, mode EqlMode) bool {
 	return u.name.Equals(o.name, mode)
 }
 
-var undefinedFunctionClass = embedClassOf[_UndefinedFunction]("<undefined-function>")
+var undefinedFunctionClass = registerNewBuiltInClass[_UndefinedFunction]("<undefined-function>")
 
 func (u _UndefinedFunction) ClassOf() Class {
 	return undefinedFunctionClass

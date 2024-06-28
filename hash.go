@@ -25,7 +25,7 @@ func (h _Hash) PrintTo(w io.Writer, mode PrintMode) (int, error) {
 	return wc.Result()
 }
 
-var hashClass = embedClassOf[_Hash]("<hashtable>")
+var hashClass = registerNewBuiltInClass[_Hash]("<hashtable>")
 
 func (_Hash) ClassOf() Class {
 	return hashClass

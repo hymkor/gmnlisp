@@ -5,7 +5,7 @@ import (
 	"io"
 )
 
-var stringBuilderClass = embedClassOf[*StringBuilder]("<string-builder>")
+var stringBuilderClass = registerNewBuiltInClass[*StringBuilder]("<string-builder>")
 
 func (*StringBuilder) ClassOf() Class {
 	return stringBuilderClass
@@ -23,7 +23,7 @@ func (t *StringBuilder) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	return io.WriteString(w, "(*StringBuilder)")
 }
 
-var inputStreamClass = embedClassOf[*inputStream]("<input-stream>")
+var inputStreamClass = registerNewBuiltInClass[*inputStream]("<input-stream>")
 
 func (t *inputStream) ClassOf() Class {
 	return inputStreamClass
@@ -41,7 +41,7 @@ func (t *inputStream) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	return io.WriteString(w, "(*inputStream)")
 }
 
-var outputFileStreamClass = embedClassOf[*_OutputFileStream]("<output-file-stream>")
+var outputFileStreamClass = registerNewBuiltInClass[*_OutputFileStream]("<output-file-stream>")
 
 func (*_OutputFileStream) ClassOf() Class {
 	return outputFileStreamClass
@@ -71,7 +71,7 @@ func (t *_Macro) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	return io.WriteString(w, "(*_Macro)")
 }
 
-var readerNodeClass = embedClassOf[_ReaderNode]("<reader>")
+var readerNodeClass = registerNewBuiltInClass[_ReaderNode]("<reader>")
 
 func (_ReaderNode) ClassOf() Class {
 	return readerNodeClass
@@ -89,7 +89,7 @@ func (t _ReaderNode) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	return io.WriteString(w, "(_ReaderNode)")
 }
 
-var writerNodeClass = embedClassOf[_WriterNode]("<_WriterNode>")
+var writerNodeClass = registerNewBuiltInClass[_WriterNode]("<_WriterNode>")
 
 func (_WriterNode) ClassOf() Class {
 	return writerNodeClass

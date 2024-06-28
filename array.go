@@ -35,7 +35,7 @@ type Array struct {
 	dim  []int
 }
 
-var arrayClass = embedClassOf[*Array]("<array>")
+var arrayClass = registerNewBuiltInClass[*Array]("<array>")
 
 func (*Array) ClassOf() Class {
 	return arrayClass

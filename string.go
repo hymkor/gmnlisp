@@ -11,7 +11,7 @@ import (
 
 type String string
 
-var stringClass = embedClassOf[String]("<string>")
+var stringClass = registerNewBuiltInClass[String]("<string>")
 
 func (String) ClassOf() Class {
 	return stringClass

@@ -80,9 +80,9 @@ func (e *_BuiltInClass) Create() Node {
 	return e.create()
 }
 
-var classClass = embedClassOf[Class]("<class>")
+var classClass = registerNewBuiltInClass[Class]("<class>")
 
-var builtInClass = embedClassOf[*_BuiltInClass]("<built-in-class>")
+var builtInClass = registerNewBuiltInClass[*_BuiltInClass]("<built-in-class>")
 
 func (e *_BuiltInClass) ClassOf() Class {
 	return builtInClass
@@ -145,7 +145,7 @@ func _embedClassOf[T Node](name string) *_BuiltInClass {
 	}
 }
 
-func embedClassOf[T Node](name string) *_BuiltInClass {
+func registerNewBuiltInClass[T Node](name string) *_BuiltInClass {
 	class := _embedClassOf[T](name)
 	autoLoadVars[class.name] = class
 	return class

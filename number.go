@@ -9,7 +9,7 @@ import (
 
 type Integer int64
 
-var integerClass = embedClassOf[Integer]("<integer>")
+var integerClass = registerNewBuiltInClass[Integer]("<integer>")
 
 func (i Integer) ClassOf() Class {
 	return integerClass
@@ -99,7 +99,7 @@ func (i Integer) LessThan(n Node) (bool, error) {
 
 type Float float64
 
-var floatClass = embedClassOf[Float]("<float>")
+var floatClass = registerNewBuiltInClass[Float]("<float>")
 
 func (Float) ClassOf() Class {
 	return floatClass

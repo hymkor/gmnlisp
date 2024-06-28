@@ -9,7 +9,7 @@ import (
 
 type _TrueType struct{}
 
-var trueClass = embedClassOf[_TrueType]("<truetype>")
+var trueClass = registerNewBuiltInClass[_TrueType]("<truetype>")
 
 func (t _TrueType) ClassOf() Class {
 	return trueClass
@@ -32,7 +32,7 @@ func (_TrueType) Equals(n Node, m EqlMode) bool {
 
 type _NullType struct{}
 
-var nullClass = embedClassOf[_NullType]("<null>")
+var nullClass = registerNewBuiltInClass[_NullType]("<null>")
 
 func (_NullType) ClassOf() Class {
 	return nullClass
@@ -98,7 +98,7 @@ func cmdGensym(ctx context.Context, w *World, node Node) (Node, error) {
 	return genSym(), nil
 }
 
-var symbolClass = embedClassOf[Symbol]("<symbol>")
+var symbolClass = registerNewBuiltInClass[Symbol]("<symbol>")
 
 func (Symbol) ClassOf() Class {
 	return symbolClass
@@ -127,7 +127,7 @@ func (s Symbol) GoString() string {
 
 type Rune rune
 
-var runeClass = embedClassOf[Rune]("<character>")
+var runeClass = registerNewBuiltInClass[Rune]("<character>")
 
 func (Rune) ClassOf() Class {
 	return runeClass
@@ -268,7 +268,7 @@ func NewKeyword(name string) Keyword {
 	return keywordManager.NameToId(name)
 }
 
-var keywordClass = embedClassOf[Keyword]("<keyword>")
+var keywordClass = registerNewBuiltInClass[Keyword]("<keyword>")
 
 func (Keyword) ClassOf() Class {
 	return keywordClass

@@ -167,7 +167,7 @@ type _UserClass struct {
 }
 
 func (u *_UserClass) ClassOf() Class {
-	return embedClassOf[*_UserClass]("class")
+	return registerNewBuiltInClass[*_UserClass]("class")
 }
 
 func (u *_UserClass) Equals(_other Node, _ EqlMode) bool {

@@ -16,7 +16,7 @@ type _Macro struct {
 	lexical *World
 }
 
-var macroClass = embedClassOf[*_Macro]("<macro>")
+var macroClass = registerNewBuiltInClass[*_Macro]("<macro>")
 
 func (*_Macro) ClassOf() Class {
 	return macroClass
@@ -24,7 +24,7 @@ func (*_Macro) ClassOf() Class {
 
 type _JoinedForm []Node
 
-var joinedFormClass = embedClassOf[_JoinedForm]("<joined-form>")
+var joinedFormClass = registerNewBuiltInClass[_JoinedForm]("<joined-form>")
 
 func (_JoinedForm) ClassOf() Class {
 	return joinedFormClass

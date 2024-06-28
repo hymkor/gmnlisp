@@ -11,7 +11,7 @@ type Cons struct {
 	Cdr Node
 }
 
-var consClass = embedClassOf[*Cons]("<cons>")
+var consClass = registerNewBuiltInClass[*Cons]("<cons>")
 
 func (*Cons) ClassOf() Class {
 	return consClass
