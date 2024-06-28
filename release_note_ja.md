@@ -1,3 +1,7 @@
+- `(equal)` でユーザ定義クラスのオジェクトの比較が常に不一致になる問題を修正
+- `(assure)`, `(the)` を実装
+- 任意の組み込みクラス CLASS において `(subclassp CLASS <built-in-class>)` , `(subclassp CLASS <object>)` がともに `t` になるようにした
+
 v0.7.0
 ======
 Jun 27, 2024

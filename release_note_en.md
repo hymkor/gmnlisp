@@ -1,3 +1,7 @@
+- Fix: `(equal USER-DEFINED-CLASS-OBJECT...)` was always false.
+- Implement `(assure)`, `(the)`
+- On any built-in-class CLASS, both `(subclassp CLASS <built-in-class>)` and `(subclassp CLASS <object>)` are `t`
+
 v0.7.0
 ======
 Jun 27, 2024
