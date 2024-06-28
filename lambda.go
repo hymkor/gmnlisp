@@ -492,3 +492,34 @@ func (L *LispString) Call(ctx context.Context, w *World, n Node) (Node, error) {
 	}
 	return f.Call(ctx, w, n)
 }
+
+func cmdExpandDefun(ctx context.Context, w *World, n Node) (Node, error) {
+	v, n, err := Shift(n)
+	if err != nil {
+		return nil, err
+	}
+	if IsSome(n) {
+		return nil, ErrTooManyArguments
+	}
+	symbol, err := ExpectSymbol(v)
+	if err != nil {
+		return nil, err
+	}
+	callable, ok := w.defun.Get(symbol)
+	if !ok {
+		return nil, _UndefinedFunction{name: symbol}
+	}
+	f, ok := callable.(*_Lambda)
+	if !ok {
+		return nil, _UndefinedFunction{name: symbol}
+	}
+	var param Node
+	for i := len(f.param) - 1; i >= 0; i-- {
+		param = &Cons{Car: f.param[i], Cdr: param}
+	}
+	result := &Cons{Car: param, Cdr: f.code}
+	result = &Cons{Car: symbol, Cdr: result}
+	result = &Cons{Car: NewSymbol("defun"), Cdr: result}
+	fmt.Fprintln(w.stdout, result.GoString())
+	return Null, nil
+}

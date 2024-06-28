@@ -331,6 +331,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("error-output"):                SpecialF(cmdErrorOutput),
 	NewSymbol("evenp"):                       &Function{C: 1, F: funEvenp},
 	NewSymbol("exit"):                        SpecialF(cmdQuit),
+	NewSymbol("expand-defun"):                SpecialF(cmdExpandDefun),
 	NewSymbol("file-length"):                 &Function{C: 2, F: funFileLength},
 	NewSymbol("flet"):                        SpecialF(cmdFlet),
 	NewSymbol("floatp"):                      &Function{C: 1, F: funAnyTypep[Float]},
