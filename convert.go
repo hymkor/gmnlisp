@@ -7,7 +7,6 @@ import (
 )
 
 var (
-	classInteger   = NewSymbol("<integer>")
 	classFloat     = NewSymbol("<float>")
 	classList      = NewSymbol("<list>")
 	classVector    = NewSymbol("<general-vector>")
@@ -32,14 +31,14 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 		switch class {
 		case classCharacter:
 			return val, nil
-		case classInteger:
+		case integerClass.name:
 			return Integer(val), nil
 		case symbolClass.name:
 			return NewSymbol(fmt.Sprintf("%c", val)), nil
 		}
 	case String:
 		switch class {
-		case classInteger:
+		case integerClass.name:
 			i, err := strconv.ParseInt(val.String(), 10, 64)
 			if err != nil {
 				return nil, err
@@ -70,7 +69,7 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 		}
 	case Float:
 		switch class {
-		case classInteger: // it should be error
+		case integerClass.name: // it should be error
 			return Integer(val), nil
 		case classFloat:
 			return val, nil
@@ -81,7 +80,7 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 		switch class {
 		case classCharacter:
 			return Rune(val), nil
-		case classInteger:
+		case integerClass.name:
 			return val, nil
 		case classFloat:
 			return Float(val), nil
