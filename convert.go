@@ -7,7 +7,6 @@ import (
 )
 
 var (
-	classString    = NewSymbol("<string>")
 	classSymbol    = NewSymbol("<symbol>")
 	classInteger   = NewSymbol("<integer>")
 	classFloat     = NewSymbol("<float>")
@@ -55,7 +54,7 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 			return Float(f), nil
 		case classSymbol:
 			return NewSymbol(val.String()), nil
-		case classString:
+		case stringClass.name:
 			return val, nil
 		case classList:
 			var buffer ListBuilder
@@ -76,7 +75,7 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 			return Integer(val), nil
 		case classFloat:
 			return val, nil
-		case classString:
+		case stringClass.name:
 			return String(fmt.Sprintf("%f", float64(val))), nil
 		}
 	case Integer:
@@ -87,7 +86,7 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 			return val, nil
 		case classFloat:
 			return Float(val), nil
-		case classString:
+		case stringClass.name:
 			return String(fmt.Sprintf("%d", int(val))), nil
 		}
 	case *Cons:
@@ -123,7 +122,7 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 		}
 	case Symbol:
 		switch class {
-		case classString:
+		case stringClass.name:
 			return String(val.String()), nil
 		}
 	}
