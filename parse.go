@@ -11,7 +11,7 @@ var (
 	commaSymbol     = NewSymbol(",")
 	nulSymbol       = NewSymbol("")
 	quoteSymbol     = NewSymbol("quote")
-	backQuoteSymbol = NewSymbol("backquote")
+	backQuoteSymbol = NewSymbol("quasiquote")
 	slashSymbol     = NewSymbol("/")
 	colonRest       = NewKeyword(":rest")
 )

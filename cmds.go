@@ -13,7 +13,7 @@ func cmdQuote(_ context.Context, _ *World, n Node) (Node, error) {
 	return argv[0], nil
 }
 
-func backQuote(ctx context.Context, w *World, n Node) (Node, error) {
+func quasiQuote(ctx context.Context, w *World, n Node) (Node, error) {
 	if cons, ok := n.(*Cons); ok {
 		if cons.Car == commaSymbol {
 			if cdrCons, ok := cons.Cdr.(*Cons); ok {
@@ -21,7 +21,7 @@ func backQuote(ctx context.Context, w *World, n Node) (Node, error) {
 				if err != nil {
 					return nil, err
 				}
-				newCdr, err := backQuote(ctx, w, cdrCons.Cdr)
+				newCdr, err := quasiQuote(ctx, w, cdrCons.Cdr)
 				if err != nil {
 					return nil, err
 				}
@@ -29,11 +29,11 @@ func backQuote(ctx context.Context, w *World, n Node) (Node, error) {
 			}
 			return cons.Cdr.Eval(ctx, w)
 		}
-		newCar, err := backQuote(ctx, w, cons.Car)
+		newCar, err := quasiQuote(ctx, w, cons.Car)
 		if err != nil {
 			return nil, err
 		}
-		newCdr, err := backQuote(ctx, w, cons.Cdr)
+		newCdr, err := quasiQuote(ctx, w, cons.Cdr)
 		if err != nil {
 			return nil, err
 		}
@@ -42,12 +42,12 @@ func backQuote(ctx context.Context, w *World, n Node) (Node, error) {
 	return n, nil
 }
 
-func cmdBackQuote(ctx context.Context, w *World, n Node) (Node, error) {
+func cmdQuasiQuote(ctx context.Context, w *World, n Node) (Node, error) {
 	value, _, err := Shift(n)
 	if err != nil {
 		return nil, err
 	}
-	return backQuote(ctx, w, value)
+	return quasiQuote(ctx, w, value)
 }
 
 func funAtom(_ context.Context, _ *World, argv []Node) (Node, error) {

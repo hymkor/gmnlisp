@@ -130,7 +130,7 @@ func (p *_Parser[N]) newQuote(value N) N {
 }
 
 func (p *_Parser[N]) newBackQuote(value N) N {
-	return p.Cons(p.Symbol("backquote"), p.Cons(value, p.Null()))
+	return p.Cons(p.Symbol("quasiquote"), p.Cons(value, p.Null()))
 }
 
 func (p *_Parser[N]) tryParseAsFloat(token string) (N, bool, error) {
