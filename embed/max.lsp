@@ -1,0 +1,6 @@
+(lambda (a :rest b)
+  (while (and b (consp b))
+    (if (> (car b) a)
+      (setq a (car b)))
+    (setq b (cdr b)))
+  a)
