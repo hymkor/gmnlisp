@@ -1,6 +1,8 @@
 - Fix: `(equal USER-DEFINED-CLASS-OBJECT...)` was always false.
-- Implement `(assure)`, `(the)`
+- Implement `(assure)`, `(the)`, `(max)`, and `(min)`
 - On any built-in-class CLASS, both `(subclassp CLASS <built-in-class>)` and `(subclassp CLASS <object>)` are `t`
+- Macros within functions are now expanded when the function is defined (previously it was always done when the function was called).
+- Implement `(expand-defun)` which displays the definition of the function
 
 v0.7.0
 ======
