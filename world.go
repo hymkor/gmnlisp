@@ -529,27 +529,6 @@ func inject(list []Node, f func(left, right Node) (Node, error)) (Node, error) {
 	return result, nil
 }
 
-func (w *World) inject(ctx context.Context, list Node, f func(left, right Node) (Node, error)) (Node, error) {
-	result, list, err := w.ShiftAndEvalCar(ctx, list)
-	if err != nil {
-		return nil, err
-	}
-	for IsSome(list) {
-		var next Node
-		var err error
-
-		next, list, err = w.ShiftAndEvalCar(ctx, list)
-		if err != nil {
-			return nil, err
-		}
-		result, err = f(result, next)
-		if err != nil {
-			return nil, err
-		}
-	}
-	return result, nil
-}
-
 //go:embed startup.lsp
 var startupCode string
 
