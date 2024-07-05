@@ -185,6 +185,8 @@ Support functions
 
 Gmnlisp's functions are subset of [ISLisp].
 
+Items without checkboxes are not standard functions
+
 ### 1 Scope, Conventions and Compliance
 
 ### 2 Classes
@@ -218,7 +220,7 @@ Gmnlisp's functions are subset of [ISLisp].
 #### 4.3 Special Forms
 
 - [x] and
-- [ ] assure
+- [x] assure
 - [x] block
 - [x] case
 - [x] case-using
@@ -247,7 +249,7 @@ Gmnlisp's functions are subset of [ISLisp].
 - [x] setf
 - [x] setq
 - [x] tagbody
-- [ ] the
+- [x] the
 - [x] throw
 - [x] unwind-protect
 - [x] while
@@ -268,7 +270,7 @@ Gmnlisp's functions are subset of [ISLisp].
     - [x] :reader
     - [x] :writer
     - [x] :boundp
-- [ ] defconstant (defined same as defglobal for dummy)
+- [x] defconstant (defined same as defglobal for dummy)
 - [x] defdynamic
 - [x] defgeneric
 - [x] defglobal
@@ -290,7 +292,7 @@ Gmnlisp's functions are subset of [ISLisp].
 
 #### 4.8 Defining Operators
 
-- [ ] defconstant
+- [x] defconstant
 - [x] defglobal
 - [x] defdynamic
 - [x] defun
@@ -321,21 +323,19 @@ Gmnlisp's functions are subset of [ISLisp].
 - [ ] streamp
 - [x] stringp
 - [x] symbolp
-- Non-standard functions
-    - atom OBJ
-    - evenp OBJ
-    - minusp OBJ
-    - oddp OBJ
-    - plusp OBJ
-    - zerop OBJ
+- atom OBJ
+- evenp OBJ
+- minusp OBJ
+- oddp OBJ
+- plusp OBJ
+- zerop OBJ
 
 #### 5.3 Equality
 
 - [x] eq
 - [x] eql
 - [x] equal
-- Non-standard functions
-    - equalp
+- equalp
 
 #### 5.4 Logical Connectives
 
@@ -367,24 +367,21 @@ Gmnlisp's functions are subset of [ISLisp].
 - [x] cond
 - [x] case
 - [x] case-using
-- Non-standard functions
-    - when
-    - unless
+- when
+- unless
 
 #### 6.5 Sequencing Forms
 
 - [x] progn
-- Non-standard functions
-    - prog1
-    - prog2
+- prog1
+- prog2
 
 #### 6.6 Iteration
 
 - [x] while
 - [x] for
-- Non-standard functions
-    - dolist
-    - dotimes
+- dolist
+- dotimes
 
 #### 6.7 Non-Local Exits
 
@@ -396,8 +393,7 @@ Gmnlisp's functions are subset of [ISLisp].
 - [x] throw
 - [x] tagbody
 - [x] go
-- Non-standard functions
-    - return
+- return
 
 ##### 6.7.2 Assuring Data Consistency during Non-Local Exists
 
@@ -415,7 +411,7 @@ Gmnlisp's functions are subset of [ISLisp].
 ##### 7.2.1 Defining Generic Functions
 
 - [x] defgeneric
-    - [x] :rest, &amp;rest
+- [x] :rest, &amp;rest
 
 ##### 7.2.2 Defining Methods for Generic Functions
 
@@ -456,8 +452,8 @@ Gmnlisp's functions are subset of [ISLisp].
 
 ### 9 Declarations and Coercions
 
-- [ ] the
-- [ ] assure
+- [x] the
+- [x] assure
 - [x] convert
     - [x] \(convert OBJ &lt;float&gt;)
     - [x] \(convert OBJ &lt;integer&gt;)
@@ -496,8 +492,8 @@ Gmnlisp's functions are subset of [ISLisp].
 - [x] -
 - [ ] reciproca1
 - [ ] quotient
-- [ ] max
-- [ ] min
+- [x] max
+- [x] min
 - [ ] abs
 - [ ] exp
 - [ ] log
@@ -512,11 +508,10 @@ Gmnlisp's functions are subset of [ISLisp].
 - [ ] cosh
 - [ ] tanh
 - [ ] atanh
-- Non-standard functions
-    - 1+
-    - 1-
-    - incf
-    - decf
+- 1+
+- 1-
+- incf
+- decf
 
 #### 11.2 Float class
 
@@ -538,10 +533,9 @@ Gmnlisp's functions are subset of [ISLisp].
 - [ ] gcd
 - [ ] lcm
 - [ ] isqrt
-- Non-standard functions
-    - rem
-    - most-postive-fixnum
-    - most-negative-fixnum
+- rem
+- most-postive-fixnum
+- most-negative-fixnum
 
 ### 12 Character class
 
@@ -584,8 +578,7 @@ Gmnlisp's functions are subset of [ISLisp].
 - [x] mapcan
 - [x] mapcon
 - [x] assoc
-- Non-standard functions
-    - last
+- last
 
 ### 14 Arrays
 
@@ -742,9 +735,29 @@ Gmnlisp's functions are subset of [ISLisp].
 
 #### 21.4 Error identification
 
-- [ ] arity-error  
-    :
-- [x] undefined-function
+- [ ] \<program-error\>
+    - [ ] arity-error
+    - [ ] immutable-binding
+    - [ ] improper-argument-binding
+    - [ ] index-out-of-range
+- [ ] \<storage-exhausted\>
+    - [ ] cannot-create-array
+    - [ ] cannot-create-array
+    - [ ] cannot-create-cons
+    - [ ] cannot-create-list
+    - [ ] cannot-create-sequence
+    - [ ] cannot-create-string
+    - [ ] cannot-create-vector
+- [ ] \<parse-error\>, cannot-parse-number
+- [ ] \<control-error\>, control-error
+- [ ] \<devision-by-zero\>, division-by-zero
+- [ ] \<domain-error\>
+    - not-an-input-stream
+    - not-an-output-stream
+- [ ] \<end-of-stream\>, end-of-stream
+- [ ] \<undefined-entity\> , undefined-entity
+    - [x] \<unbound-variable\> , unbound-variable
+    - [x] \<undefined-function\>, undefined-function
 
 ### 22 Miscellaneous
 
