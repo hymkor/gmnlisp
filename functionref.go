@@ -56,10 +56,10 @@ func cmdFunction(_ context.Context, w *World, node Node) (Node, error) {
 	// The consequences are undefined if the function-name names a macro or special form.
 	//   https://islisp-dev.github.io/ISLispHyperDraft/islisp-v23.html#s_function
 	if _, ok := f.(*_Macro); ok {
-		return nil, fmt.Errorf("Macro forms can be avaliable on (function): %#v", symbol)
+		return nil, fmt.Errorf("macro forms can be avaliable on (function): %#v", symbol)
 	}
 	if _, ok := f.(SpecialF); ok {
-		return nil, fmt.Errorf("Special forms can be avaliable on (function): %#v", symbol)
+		return nil, fmt.Errorf("special forms can be avaliable on (function): %#v", symbol)
 	}
 	return FunctionRef{value: f}, nil
 }

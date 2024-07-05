@@ -121,7 +121,7 @@ func (c *_Generic) Call(ctx context.Context, w *World, node Node) (Node, error) 
 func ExpectGeneric(c Callable) (*_Generic, error) {
 	g, ok := c.(*_Generic)
 	if !ok {
-		return nil, errors.New("Already used for normal function or macro")
+		return nil, errors.New("already used for normal function or macro")
 	}
 	return g, nil
 }
