@@ -13,7 +13,6 @@ type DomainError struct {
 
 var (
 	domainErrorClass = newBuiltInClass[*DomainError]("<domain-error>")
-	symDomainError   = domainErrorClass.name
 )
 
 func (e *DomainError) ClassOf() Class {
