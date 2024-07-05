@@ -168,9 +168,9 @@ func lambdaMacro(ctx context.Context, w *World, n Node) (*_Macro, error) {
 }
 
 func cmdDefMacro(ctx context.Context, w *World, n Node) (Node, error) {
-	cons, ok := n.(*Cons)
-	if !ok {
-		return nil, ErrExpectedCons
+	cons, err := ExpectCons(n)
+	if err != nil {
+		return nil, err
 	}
 	macroName, err := ExpectSymbol(cons.Car)
 	if err != nil {

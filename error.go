@@ -76,6 +76,10 @@ func ExpectType[T Node](_value Node, name string) (T, error) {
 	}
 }
 
+func ExpectCons(v Node) (*Cons, error) {
+	return ExpectType[*Cons](v, "<cons>")
+}
+
 func ExpectSymbol(v Node) (Symbol, error) {
 	return ExpectType[Symbol](v, "<symbol>")
 }

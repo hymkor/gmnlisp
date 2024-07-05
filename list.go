@@ -6,18 +6,18 @@ import (
 
 // funGetCar implements (car X)
 func funGetCar(_ context.Context, _ *World, argv []Node) (Node, error) {
-	cons, ok := argv[0].(*Cons)
-	if !ok {
-		return nil, MakeError(ErrExpectedCons, argv[0])
+	cons, err := ExpectCons(argv[0])
+	if err != nil {
+		return nil, err
 	}
 	return cons.Car, nil
 }
 
 // funGetCdr implements (cdr X)
 func funGetCdr(_ context.Context, _ *World, argv []Node) (Node, error) {
-	cons, ok := argv[0].(*Cons)
-	if !ok {
-		return nil, ErrExpectedCons
+	cons, err := ExpectCons(argv[0])
+	if err != nil {
+		return nil, err
 	}
 	return cons.Cdr, nil
 }
@@ -39,9 +39,9 @@ func lastOfList(node Node) (*Cons, error) {
 		if IsNone(node) {
 			return nil, nil
 		}
-		cons, ok := node.(*Cons)
-		if !ok {
-			return nil, MakeError(ErrExpectedCons, node)
+		cons, err := ExpectCons(node)
+		if err != nil {
+			return nil, err
 		}
 		if IsNone(cons.Cdr) {
 			return cons, nil
@@ -125,9 +125,9 @@ func Assoc(key Node, list Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		cons, ok := element.(*Cons)
-		if !ok {
-			return nil, ErrExpectedCons
+		cons, err := ExpectCons(element)
+		if err != nil {
+			return nil, err
 		}
 		if key.Equals(cons.Car, STRICT) {
 			return cons, nil
@@ -142,9 +142,9 @@ func funAssoc(_ context.Context, _ *World, argv []Node) (Node, error) {
 
 // funSetCar implements (set-car X Y) == (setf (car X) Y)
 func funSetCar(_ context.Context, _ *World, argv []Node) (Node, error) {
-	cons, ok := argv[1].(*Cons)
-	if !ok {
-		return nil, ErrExpectedCons
+	cons, err := ExpectCons(argv[1])
+	if err != nil {
+		return nil, err
 	}
 	cons.Car = argv[0]
 	return cons, nil
@@ -152,9 +152,9 @@ func funSetCar(_ context.Context, _ *World, argv []Node) (Node, error) {
 
 // funSetCdr implements (replacd X Y) == (setf (cdr X) Y)
 func funSetCdr(_ context.Context, _ *World, argv []Node) (Node, error) {
-	cons, ok := argv[1].(*Cons)
-	if !ok {
-		return nil, ErrExpectedCons
+	cons, err := ExpectCons(argv[1])
+	if err != nil {
+		return nil, err
 	}
 	cons.Cdr = argv[0]
 	return cons, nil

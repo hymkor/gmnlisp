@@ -14,7 +14,6 @@ var (
 	ErrDevisionByZero   = errors.New("devision by zeor")
 	ErrExpectedArray    = errors.New("expected array")
 	ErrExpectedClass    = errors.New("expected class")
-	ErrExpectedCons     = errors.New("expected cons")
 	ErrExpectedHash     = errors.New("expected hashtable")
 	ErrExpectedMacro    = errors.New("expected macro")
 	ErrExpectedReader   = errors.New("expected reader")

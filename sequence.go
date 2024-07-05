@@ -280,9 +280,9 @@ func Reverse(list Node) (Node, error) {
 func NReverse(list Node) (Node, error) {
 	var result Node = Null
 	for IsSome(list) {
-		cons, ok := list.(*Cons)
-		if !ok {
-			return nil, ErrExpectedCons
+		cons, err := ExpectCons(list)
+		if err != nil {
+			return nil, err
 		}
 		list = cons.Cdr
 		cons.Cdr = result
