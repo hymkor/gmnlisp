@@ -95,9 +95,9 @@ func readSlotSpec(ctx context.Context, w *World, list Node) (*_SlotSpec, error) 
 	if err != nil {
 		return nil, err
 	}
-	identifier, ok := _identifier.(Symbol)
-	if !ok {
-		return nil, fmt.Errorf("%v: %w", _identifier, ErrExpectedSymbol)
+	identifier, err := ExpectSymbol(_identifier)
+	if err != nil {
+		return nil, err
 	}
 	slotSpec := &_SlotSpec{identifier: identifier}
 	count := 1
@@ -121,36 +121,36 @@ func readSlotSpec(ctx context.Context, w *World, list Node) (*_SlotSpec, error) 
 		}
 		switch keyword {
 		case kwReader:
-			if v, ok := value.(Symbol); ok {
+			if v, err := ExpectSymbol(value); err == nil {
 				slotSpec.reader = append(slotSpec.reader, v)
 			} else {
-				return nil, fmt.Errorf(":reader:  %w", ErrExpectedSymbol)
+				return nil, fmt.Errorf("%#v: %w", keyword.String(), err)
 			}
 		case kwWriter:
-			if v, ok := value.(Symbol); ok {
+			if v, err := ExpectSymbol(value); err == nil {
 				slotSpec.writer = append(slotSpec.writer, v)
 			} else {
-				return nil, fmt.Errorf(":writer: %w", ErrExpectedSymbol)
+				return nil, fmt.Errorf("%#v: %w", keyword.String(), err)
 			}
 		case kwAccessor:
-			if v, ok := value.(Symbol); ok {
+			if v, err := ExpectSymbol(value); err == nil {
 				slotSpec.accessor = append(slotSpec.accessor, v)
 			} else {
-				return nil, fmt.Errorf(":accessor: %w", ErrExpectedSymbol)
+				return nil, fmt.Errorf("%#v: %w", keyword.String(), err)
 			}
 		case kwBoundp:
-			if v, ok := value.(Symbol); ok {
+			if v, err := ExpectSymbol(value); err == nil {
 				slotSpec.boundp = append(slotSpec.boundp, v)
 			} else {
-				return nil, fmt.Errorf(":boundp: %w", ErrExpectedSymbol)
+				return nil, fmt.Errorf("%#v: %w", keyword.String(), err)
 			}
 		case kwInitForm:
 			slotSpec.initform = func() (Node, error) { return value.Eval(ctx, w) }
 		case kwInitArg:
-			if v, ok := value.(Symbol); ok {
+			if v, err := ExpectSymbol(value); err == nil {
 				slotSpec.initarg = append(slotSpec.initarg, v)
 			} else {
-				return nil, fmt.Errorf(":initarg: %w", ErrExpectedSymbol)
+				return nil, fmt.Errorf("%#v: %w", keyword.String(), err)
 			}
 		default:
 			return nil, fmt.Errorf("invalid keyword %v", keyword)
@@ -274,9 +274,9 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 	if err != nil {
 		return nil, fmt.Errorf("[1] %w", err)
 	}
-	className, ok := _className.(Symbol)
-	if !ok {
-		return nil, fmt.Errorf("[1] %w: %#v", ErrExpectedSymbol, _className)
+	className, err := ExpectSymbol(_className)
+	if err != nil {
+		return nil, err
 	}
 	classCounter++
 	class := &_StandardClass{
@@ -530,9 +530,9 @@ func defaultInitializeObject(ctx context.Context, w *World, args []Node) (Node, 
 	for len(args) > 0 {
 		var _initArg Node
 		_initArg, args = args[0], args[1:]
-		initArg, ok := _initArg.(Symbol)
+		initArg, err := ExpectSymbol(_initArg)
 		if !ok {
-			return nil, fmt.Errorf("defaultInitializeObject: initArg: %w: %v", ErrExpectedSymbol, _initArg)
+			return nil, fmt.Errorf("defaultInitializeObject: initArg: %w: %v", err, _initArg)
 		}
 		if len(args) <= 0 {
 			return nil, ErrTooFewArguments

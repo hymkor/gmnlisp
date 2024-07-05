@@ -55,9 +55,9 @@ func cmdDefGeneric(_ context.Context, w *World, node Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	name, ok := _name.(Symbol)
-	if !ok {
-		return nil, ErrExpectedSymbol
+	name, err := ExpectSymbol(_name)
+	if err != nil {
+		return nil, err
 	}
 	types, node, err := Shift(node)
 	if err != nil {
@@ -80,8 +80,8 @@ func cmdDefGeneric(_ context.Context, w *World, node Node) (Node, error) {
 			if err != nil {
 				return nil, err
 			}
-			if _, ok := type2.(Symbol); !ok {
-				return nil, fmt.Errorf("after %s %w", type1.String(), ErrExpectedSymbol)
+			if _, err := ExpectSymbol(type2); err != nil {
+				return nil, fmt.Errorf("after %s %w", type1.String(), err)
 			}
 			if IsSome(types) {
 				return nil, ErrTooManyArguments
@@ -89,9 +89,9 @@ func cmdDefGeneric(_ context.Context, w *World, node Node) (Node, error) {
 			hasRest = true
 			break
 		}
-		_, ok := type1.(Symbol)
-		if !ok {
-			return nil, fmt.Errorf("%s: %w", type1.String(), ErrExpectedSymbol)
+		_, err = ExpectSymbol(type1)
+		if err != nil {
+			return nil, fmt.Errorf("%s: %w", type1.String(), err)
 		}
 		argc++
 	}
@@ -131,9 +131,9 @@ func cmdDefMethod(ctx context.Context, w *World, node Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	name, ok := _name.(Symbol)
-	if !ok {
-		return nil, ErrExpectedSymbol
+	name, err := ExpectSymbol(_name)
+	if err != nil {
+		return nil, err
 	}
 	_generic, err := w.GetFunc(name)
 	if err != nil {
@@ -170,9 +170,9 @@ func cmdDefMethod(ctx context.Context, w *World, node Node) (Node, error) {
 			if err != nil {
 				return nil, err
 			}
-			restName, ok = _name.(Symbol)
-			if !ok {
-				return nil, ErrExpectedSymbol
+			restName, err = ExpectSymbol(_name)
+			if err != nil {
+				return nil, err
 			}
 			_type1, t1, err := w.ShiftAndEvalCar(ctx, t1)
 			if err != nil {
@@ -193,9 +193,9 @@ func cmdDefMethod(ctx context.Context, w *World, node Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		pn1, ok := _pn1.(Symbol)
-		if !ok {
-			return nil, ErrExpectedSymbol
+		pn1, err := ExpectSymbol(_pn1)
+		if err != nil {
+			return nil, err
 		}
 		paramNames = append(paramNames, pn1)
 		var _type1 Node

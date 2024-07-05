@@ -179,9 +179,9 @@ func cmdWithOpenInputFile(ctx context.Context, w *World, list Node) (Node, error
 	if err != nil {
 		return nil, err
 	}
-	symbol, ok := varName.(Symbol)
-	if !ok {
-		return nil, ErrExpectedSymbol
+	symbol, err := ExpectSymbol(varName)
+	if err != nil {
+		return nil, err
 	}
 	filename, _, err := w.ShiftAndEvalCar(ctx, param)
 	if err != nil {
@@ -232,9 +232,9 @@ func cmdWithOpenOutputFile(ctx context.Context, w *World, list Node) (Node, erro
 	if err != nil {
 		return nil, err
 	}
-	symbol, ok := varName.(Symbol)
-	if !ok {
-		return nil, ErrExpectedSymbol
+	symbol, err := ExpectSymbol(varName)
+	if err != nil {
+		return nil, err
 	}
 	filename, _, err := w.ShiftAndEvalCar(ctx, param)
 	if err != nil {

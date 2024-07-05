@@ -149,17 +149,6 @@ func (cons *Cons) Equals(n Node, m EqlMode) bool {
 		cons.getCdr().Equals(value.Cdr, m)
 }
 
-func ExpectSymbol(value Node) (Symbol, error) {
-	symbol, ok := value.(Symbol)
-	if !ok {
-		return symbol, &DomainError{
-			Object:        value,
-			ExpectedClass: symbolClass,
-		}
-	}
-	return symbol, nil
-}
-
 func (cons *Cons) Eval(ctx context.Context, w *World) (Node, error) {
 	symbol, err := ExpectSymbol(cons.Car)
 	if err != nil {

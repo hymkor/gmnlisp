@@ -172,9 +172,9 @@ func cmdDefMacro(ctx context.Context, w *World, n Node) (Node, error) {
 	if !ok {
 		return nil, ErrExpectedCons
 	}
-	macroName, ok := cons.Car.(Symbol)
-	if !ok {
-		return nil, ErrExpectedSymbol
+	macroName, err := ExpectSymbol(cons.Car)
+	if err != nil {
+		return nil, err
 	}
 	value, err := lambdaMacro(ctx, w, cons.Cdr)
 	if err != nil {
@@ -193,9 +193,9 @@ func funMacroExpand(ctx context.Context, w *World, args []Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	name, ok := _name.(Symbol)
-	if !ok {
-		return nil, ErrExpectedSymbol
+	name, err := ExpectSymbol(_name)
+	if err != nil {
+		return nil, err
 	}
 	macro, err := w.GetFunc(name)
 	if err != nil {

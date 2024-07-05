@@ -21,8 +21,6 @@ var (
 	ErrExpectedReader       = errors.New("expected reader")
 	ErrExpectedSequence     = errors.New("expected sequence")
 	ErrExpectedStream       = errors.New("expected stream")
-	ErrExpectedSymbol       = errors.New("expected symbol")
-	ErrExpectedSymbolOrList = errors.New("expected symbol or list")
 	ErrExpectedWriter       = errors.New("expected writer")
 	ErrIndexOutOfRange      = errors.New("index out of range")
 	ErrInvalidFormat        = errors.New("invalid format")

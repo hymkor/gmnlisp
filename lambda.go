@@ -47,15 +47,14 @@ func getParameterList(node Node) (*_Parameters, error) {
 			if err != nil {
 				return nil, err
 			}
-			var ok bool
-			rest, ok = nameNode.(Symbol)
-			if !ok {
-				return nil, ErrExpectedSymbol
+			rest, err = ExpectSymbol(nameNode)
+			if err != nil {
+				return nil, err
 			}
 		} else {
-			nameSymbol, ok := nameNode.(Symbol)
-			if !ok {
-				return nil, MakeError(ErrExpectedSymbol, nameNode)
+			nameSymbol, err := ExpectSymbol(nameNode)
+			if err != nil {
+				return nil, err
 			}
 			params = append(params, nameSymbol)
 		}
@@ -395,9 +394,9 @@ func cmdDefun(ctx context.Context, w *World, list Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	symbol, ok := _symbol.(Symbol)
-	if !ok {
-		return nil, ErrExpectedSymbol
+	symbol, err := ExpectSymbol(_symbol)
+	if err != nil {
+		return nil, err
 	}
 	lambda, err := newLambda(ctx, w, list, symbol)
 	if err != nil {
@@ -478,9 +477,9 @@ func cmdTrace(_ context.Context, _ *World, list Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		symbol, ok := symbolNode.(Symbol)
-		if !ok {
-			return nil, ErrExpectedSymbol
+		symbol, err := ExpectSymbol(symbolNode)
+		if err != nil {
+			return nil, err
 		}
 		trace[symbol] = 0
 	}

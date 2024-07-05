@@ -15,9 +15,9 @@ func cmdSetq(ctx context.Context, w *World, params Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		nameSymbol, ok := nameNode.(Symbol)
-		if !ok {
-			return nil, MakeError(ErrExpectedSymbol, nameSymbol)
+		nameSymbol, err := ExpectSymbol(nameNode)
+		if err != nil {
+			return nil, err
 		}
 		value, params, err = w.ShiftAndEvalCar(ctx, params)
 		if err != nil {
@@ -46,9 +46,9 @@ func cmdPSetq(ctx context.Context, w *World, params Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		nameSymbol, ok := nameNode.(Symbol)
-		if !ok {
-			return nil, MakeError(ErrExpectedSymbol, nameSymbol)
+		nameSymbol, err := ExpectSymbol(nameNode)
+		if err != nil {
+			return nil, err
 		}
 		value, params, err = w.ShiftAndEvalCar(ctx, params)
 		if err != nil {
@@ -82,9 +82,9 @@ func letValuesToVars(ctx context.Context, w *World, list Node, lexical map[Symbo
 		if err := ListToArray(item, argv[:]); err != nil {
 			return err
 		}
-		symbol, ok := argv[0].(Symbol)
-		if !ok {
-			return MakeError(ErrExpectedSymbol, argv[0])
+		symbol, err := ExpectSymbol(argv[0])
+		if err != nil {
+			return err
 		}
 		value, err := argv[1].Eval(ctx, w)
 		if err != nil {
@@ -146,9 +146,9 @@ func cmdDefglobal(ctx context.Context, w *World, list Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	symbol, ok := symbolNode.(Symbol)
-	if !ok {
-		return nil, ErrExpectedSymbol
+	symbol, err := ExpectSymbol(symbolNode)
+	if err != nil {
+		return nil, err
 	}
 	value, list, err = w.ShiftAndEvalCar(ctx, list)
 	if err != nil {
@@ -169,9 +169,9 @@ func cmdDefDynamic(ctx context.Context, w *World, list Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	symbol, ok := symbolNode.(Symbol)
-	if !ok {
-		return nil, ErrExpectedSymbol
+	symbol, err := ExpectSymbol(symbolNode)
+	if err != nil {
+		return nil, err
 	}
 	var value Node
 	value, list, err = w.ShiftAndEvalCar(ctx, list)
@@ -194,9 +194,9 @@ func cmdDynamic(ctx context.Context, w *World, list Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	symbol, ok := symbolNode.(Symbol)
-	if !ok {
-		return nil, ErrExpectedSymbol
+	symbol, err := ExpectSymbol(symbolNode)
+	if err != nil {
+		return nil, err
 	}
 	value, ok := w.dynamic.Get(symbol)
 	if !ok {
@@ -271,9 +271,9 @@ func cmdDynamicLet(ctx context.Context, w *World, list Node) (Node, error) {
 			if err != nil {
 				return nil, err
 			}
-			symbol, ok := symbolNode.(Symbol)
-			if !ok {
-				return nil, ErrExpectedSymbol
+			symbol, err := ExpectSymbol(symbolNode)
+			if err != nil {
+				return nil, err
 			}
 			value, varAndValue, err = w.ShiftAndEvalCar(ctx, varAndValue)
 			if err != nil {

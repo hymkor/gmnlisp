@@ -45,9 +45,9 @@ func cmdFunction(_ context.Context, w *World, node Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	symbol, ok := _symbol.(Symbol)
-	if !ok {
-		return nil, ErrExpectedSymbol
+	symbol, err := ExpectSymbol(_symbol)
+	if err != nil {
+		return nil, err
 	}
 	f, err := w.GetFunc(symbol)
 	if err != nil {
@@ -89,9 +89,9 @@ func cmdFlet(ctx context.Context, w *World, list Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		symbol, ok := name.(Symbol)
-		if !ok {
-			return nil, ErrExpectedSymbol
+		symbol, err := ExpectSymbol(name)
+		if err != nil {
+			return nil, err
 		}
 		lambda, err := newLambda(ctx, w, flist1, symbol)
 		if err != nil {
@@ -121,9 +121,9 @@ func cmdLabels(ctx context.Context, w *World, list Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		symbol, ok := name.(Symbol)
-		if !ok {
-			return nil, ErrExpectedSymbol
+		symbol, err := ExpectSymbol(name)
+		if err != nil {
+			return nil, err
 		}
 		lambda, err := newLambda(ctx, nw, flist1, symbol)
 		if err != nil {

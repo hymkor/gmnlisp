@@ -76,6 +76,10 @@ func ExpectType[T Node](_value Node, name string) (T, error) {
 	}
 }
 
+func ExpectSymbol(v Node) (Symbol, error) {
+	return ExpectType[Symbol](v, "<symbol>")
+}
+
 func ExpectString(_value Node) (String, error) {
 	return ExpectType[String](_value, "<string>")
 }
