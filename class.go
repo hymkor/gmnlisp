@@ -111,9 +111,9 @@ func readSlotSpec(ctx context.Context, w *World, list Node) (*_SlotSpec, error) 
 		if err != nil {
 			return nil, err
 		}
-		keyword, ok := _keyword.(Keyword)
-		if !ok {
-			return nil, fmt.Errorf("%v: %w", _keyword, ErrExpectedKeyword)
+		keyword, err := ExpectKeyword(_keyword)
+		if err != nil {
+			return nil, err
 		}
 		value, list, err = Shift(list)
 		if err != nil {

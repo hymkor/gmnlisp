@@ -80,6 +80,10 @@ func ExpectSymbol(v Node) (Symbol, error) {
 	return ExpectType[Symbol](v, "<symbol>")
 }
 
+func ExpectKeyword(v Node) (Keyword, error) {
+	return ExpectType[Keyword](v, "<keyword>")
+}
+
 func ExpectString(_value Node) (String, error) {
 	return ExpectType[String](_value, "<string>")
 }
