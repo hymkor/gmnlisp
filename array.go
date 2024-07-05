@@ -178,9 +178,9 @@ func (A *Array) Elt(n int) (Node, error) {
 }
 
 func funAref(ctx context.Context, w *World, args []Node) (Node, error) {
-	array, ok := args[0].(*Array)
-	if !ok {
-		return nil, MakeError(ErrExpectedArray, args[0])
+	array, err := ExpectArray(args[0])
+	if err != nil {
+		return nil, err
 	}
 	if len(args)-1 > len(array.dim) {
 		return nil, ErrTooManyArguments
@@ -208,9 +208,9 @@ func funAref(ctx context.Context, w *World, args []Node) (Node, error) {
 func funSetAref(ctx context.Context, w *World, args []Node) (Node, error) {
 	newValue := args[0]
 
-	array, ok := args[1].(*Array)
-	if !ok {
-		return nil, MakeError(ErrExpectedArray, args[0])
+	array, err := ExpectArray(args[1])
+	if err != nil {
+		return nil, err
 	}
 
 	if len(args)-2 > len(array.dim) {
@@ -232,18 +232,18 @@ func funSetAref(ctx context.Context, w *World, args []Node) (Node, error) {
 			dim:  array.dim[1:],
 		}
 	}
-	_newValue, ok := newValue.(*Array)
-	if !ok {
-		return nil, ErrExpectedArray
+	_newValue, err := ExpectArray(newValue)
+	if err != nil {
+		return nil, err
 	}
 	copy(array.list, _newValue.list)
 	return _newValue, nil
 }
 
 func funArrayDimensions(ctx context.Context, w *World, args []Node) (Node, error) {
-	array, ok := args[0].(*Array)
-	if !ok {
-		return nil, ErrExpectedArray
+	array, err := ExpectArray(args[0])
+	if err != nil {
+		return nil, err
 	}
 	var cons Node
 	for i := len(array.dim) - 1; i >= 0; i-- {
@@ -277,4 +277,8 @@ func funGeneralArray(_ context.Context, w *World, args []Node) (Node, error) {
 		return True, nil
 	}
 	return Null, nil
+}
+
+func ExpectArray(v Node) (*Array, error) {
+	return ExpectType[*Array](v, "<basic-array>")
 }

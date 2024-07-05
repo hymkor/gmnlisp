@@ -12,7 +12,6 @@ import (
 var (
 	ErrAbort            = errors.New("abort")
 	ErrDevisionByZero   = errors.New("devision by zeor")
-	ErrExpectedArray    = errors.New("expected array")
 	ErrExpectedClass    = errors.New("expected class")
 	ErrExpectedHash     = errors.New("expected hashtable")
 	ErrExpectedMacro    = errors.New("expected macro")
