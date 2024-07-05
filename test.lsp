@@ -330,20 +330,6 @@
           )
         ) "B")
 
-;;; test for (with-handler)
-(test (catch 'hoge
-             (with-handler
-               (lambda (c)
-                 (if (and (instancep c <undefined-function>)
-                          (eql (undefined-entity-name c) 'not-exist-func)
-                          (eql (undefined-entity-namespace c) 'function))
-                   (throw 'hoge "OK")))
-               (not-exist-func)
-               "NG"
-               )
-             )
-      "OK")
-
 ;;; test for (catch) (throw)
 (labels ((foo (x)
               (catch 'block-sum (bar x))

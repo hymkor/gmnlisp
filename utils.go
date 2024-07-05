@@ -22,7 +22,6 @@ var (
 	ErrNoMatchMethods   = errors.New("no match methods")
 	ErrNotSupportType   = errors.New("not support type")
 	ErrQuit             = errors.New("bye")
-	ErrVariableUnbound  = errors.New("unbound variable")
 
 	ErrCanNotParseNumber = parser.ErrCanNotParseNumber
 	ErrTooFewArguments   = parser.ErrTooFewArguments

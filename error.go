@@ -118,6 +118,44 @@ func ExpectCharacter(_value Node) (Rune, error) {
 	return ExpectType[Rune](_value, "<character>")
 }
 
+type _UndefinedVariable struct {
+	name Symbol
+}
+
+func (u _UndefinedVariable) Error() string {
+	return fmt.Sprintf("Undefined Variable: %#v", u.name)
+}
+
+func (u _UndefinedVariable) String() string {
+	return u.Error()
+}
+
+func (u _UndefinedVariable) GoString() string {
+	return u.Error()
+}
+
+func (u _UndefinedVariable) Eval(_ context.Context, _ *World) (Node, error) {
+	return u, nil
+}
+
+func (u _UndefinedVariable) PrintTo(w io.Writer, mode PrintMode) (int, error) {
+	return fmt.Fprintf(w, "Undefined Variable: %#v", u.name)
+}
+
+func (u _UndefinedVariable) Equals(other Node, mode EqlMode) bool {
+	o, ok := other.(_UndefinedVariable)
+	if !ok {
+		return false
+	}
+	return u.name.Equals(o.name, mode)
+}
+
+var undefinedVariableClass = registerNewBuiltInClass[_UndefinedVariable]("<undefined-variable>")
+
+func (u _UndefinedVariable) ClassOf() Class {
+	return undefinedVariableClass
+}
+
 type _UndefinedFunction struct {
 	name Symbol
 }
@@ -173,6 +211,19 @@ var undefinedEntityName = &_Generic{
 				return entity.name, nil
 			},
 		},
+		&_Method{
+			types: []Class{undefinedVariableClass},
+			method: func(_ context.Context, _ *World, args []Node) (Node, error) {
+				entity, ok := args[0].(_UndefinedVariable)
+				if !ok {
+					return nil, &DomainError{
+						Object:        args[0],
+						ExpectedClass: undefinedVariableClass,
+					}
+				}
+				return entity.name, nil
+			},
+		},
 	},
 }
 
@@ -184,6 +235,12 @@ var undefinedEntityNameSpace = &_Generic{
 			types: []Class{undefinedFunctionClass},
 			method: func(_ context.Context, _ *World, args []Node) (Node, error) {
 				return NewSymbol("function"), nil
+			},
+		},
+		&_Method{
+			types: []Class{undefinedVariableClass},
+			method: func(_ context.Context, _ *World, args []Node) (Node, error) {
+				return NewSymbol("variable"), nil
 			},
 		},
 	},

@@ -172,7 +172,7 @@ func (w *World) Get(name Symbol) (Node, error) {
 		}
 		w = w.parent
 	}
-	return Null, MakeError(ErrVariableUnbound, name)
+	return Null, _UndefinedVariable{name: name}
 }
 
 func (w *World) GetFunc(name Symbol) (Callable, error) {
@@ -202,7 +202,7 @@ func (w *World) Set(name Symbol, value Node) error {
 		}
 		w = w.parent
 	}
-	return ErrVariableUnbound
+	return _UndefinedVariable{name: name}
 }
 
 func cmdStandardOutput(ctx context.Context, w *World, list Node) (Node, error) {
@@ -249,7 +249,6 @@ var autoLoadVars = Variables{
 	NewSymbol("*err-too-few-arguments*"):  &ErrorNode{Value: ErrTooFewArguments},
 	NewSymbol("*err-too-many-arguments*"): &ErrorNode{Value: ErrTooManyArguments},
 	NewSymbol("*err-too-short-tokens*"):   &ErrorNode{Value: ErrTooShortTokens},
-	NewSymbol("*err-variable-unbound*"):   &ErrorNode{Value: ErrVariableUnbound},
 	NewSymbol("<error>"):                  errorClass,
 	NewSymbol("most-negative-fixnum"):     Integer(math.MinInt),
 	NewSymbol("most-positive-fixnum"):     Integer(math.MaxInt),
