@@ -13,7 +13,6 @@ var (
 	ErrAbort            = errors.New("abort")
 	ErrDevisionByZero   = errors.New("devision by zeor")
 	ErrExpectedClass    = errors.New("expected class")
-	ErrExpectedHash     = errors.New("expected hashtable")
 	ErrExpectedMacro    = errors.New("expected macro")
 	ErrExpectedSequence = errors.New("expected sequence")
 	ErrExpectedStream   = errors.New("expected stream")

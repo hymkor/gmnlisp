@@ -58,9 +58,9 @@ func canUseHashKey(value Node) bool {
 }
 
 func funGetHash(ctx context.Context, w *World, args []Node) (Node, error) {
-	hash, ok := args[1].(_Hash)
-	if !ok {
-		return nil, ErrExpectedHash
+	hash, err := ExpectHash(args[1])
+	if err != nil {
+		return nil, err
 	}
 	if !canUseHashKey(args[0]) {
 		return nil, ErrNotSupportType
@@ -73,9 +73,9 @@ func funGetHash(ctx context.Context, w *World, args []Node) (Node, error) {
 }
 
 func funSetHash(ctx context.Context, w *World, args []Node) (Node, error) {
-	hash, ok := args[2].(_Hash)
-	if !ok {
-		return nil, ErrExpectedHash
+	hash, err := ExpectHash(args[2])
+	if err != nil {
+		return nil, err
 	}
 	if !canUseHashKey(args[1]) {
 		return nil, ErrNotSupportType
@@ -85,17 +85,17 @@ func funSetHash(ctx context.Context, w *World, args []Node) (Node, error) {
 }
 
 func funHashTableCount(ctx context.Context, w *World, args []Node) (Node, error) {
-	hash, ok := args[0].(_Hash)
-	if !ok {
-		return nil, ErrExpectedHash
+	hash, err := ExpectHash(args[0])
+	if err != nil {
+		return nil, err
 	}
 	return Integer(len(hash)), nil
 }
 
 func funRemoveHash(ctx context.Context, w *World, args []Node) (Node, error) {
-	hash, ok := args[1].(_Hash)
-	if !ok {
-		return nil, ErrExpectedHash
+	hash, err := ExpectHash(args[1])
+	if err != nil {
+		return nil, err
 	}
 	if !canUseHashKey(args[0]) {
 		return nil, ErrNotSupportType
@@ -105,12 +105,16 @@ func funRemoveHash(ctx context.Context, w *World, args []Node) (Node, error) {
 }
 
 func funClearHash(ctx context.Context, w *World, args []Node) (Node, error) {
-	hash, ok := args[0].(_Hash)
-	if !ok {
-		return nil, ErrExpectedHash
+	hash, err := ExpectHash(args[0])
+	if err != nil {
+		return nil, err
 	}
 	for key := range hash {
 		delete(hash, key)
 	}
 	return Null, nil
+}
+
+func ExpectHash(v Node) (_Hash, error) {
+	return ExpectType[_Hash](v, "<hashtable>")
 }
