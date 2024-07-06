@@ -494,6 +494,17 @@ func (u Uneval) Eval(ctx context.Context, w *World) (Node, error) {
 	return u.Node, nil
 }
 
+func UnevalList(list ...Node) Node {
+	var result Node = Null
+	for i := len(list) - 1; i >= 0; i-- {
+		result = &Cons{
+			Car: Uneval{Node: list[i]},
+			Cdr: result,
+		}
+	}
+	return result
+}
+
 func cmdCreate(ctx context.Context, w *World, args Node) (Node, error) {
 	_class, args, err := w.ShiftAndEvalCar(ctx, args)
 	if err != nil {

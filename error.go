@@ -87,7 +87,7 @@ func ExpectClass[T Node](ctx context.Context, w *World, v Node) (T, error) {
 		ExpectedClass: class,
 	}
 	if w.handler != nil {
-		_, e := w.handler.Call(ctx, w, &Cons{Car: Uneval{Node: condition}, Cdr: Null})
+		_, e := w.handler.Call(ctx, w, UnevalList(condition))
 		var ce *_ErrContinueCondition
 		if errors.As(e, &ce) {
 			if v, ok := ce.Value.(T); ok {
