@@ -149,7 +149,7 @@ func cmdLambdaMacro(ctx context.Context, w *World, n Node) (Node, error) {
 }
 
 func lambdaMacro(ctx context.Context, w *World, n Node) (*_Macro, error) {
-	p, err := getParameterList(n)
+	p, err := getParameterList(ctx, w, n)
 	if err != nil {
 		return nil, err
 	}
@@ -172,7 +172,7 @@ func cmdDefMacro(ctx context.Context, w *World, n Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	macroName, err := ExpectSymbol(cons.Car)
+	macroName, err := ExpectClass[Symbol](ctx, w, cons.Car)
 	if err != nil {
 		return nil, err
 	}
@@ -193,7 +193,7 @@ func funMacroExpand(ctx context.Context, w *World, args []Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	name, err := ExpectSymbol(_name)
+	name, err := ExpectClass[Symbol](ctx, w, _name)
 	if err != nil {
 		return nil, err
 	}

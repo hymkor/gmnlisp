@@ -15,7 +15,7 @@ func cmdSetq(ctx context.Context, w *World, params Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		nameSymbol, err := ExpectSymbol(nameNode)
+		nameSymbol, err := ExpectClass[Symbol](ctx, w, nameNode)
 		if err != nil {
 			return nil, err
 		}
@@ -46,7 +46,7 @@ func cmdPSetq(ctx context.Context, w *World, params Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		nameSymbol, err := ExpectSymbol(nameNode)
+		nameSymbol, err := ExpectClass[Symbol](ctx, w, nameNode)
 		if err != nil {
 			return nil, err
 		}
@@ -82,7 +82,7 @@ func letValuesToVars(ctx context.Context, w *World, list Node, lexical map[Symbo
 		if err := ListToArray(item, argv[:]); err != nil {
 			return err
 		}
-		symbol, err := ExpectSymbol(argv[0])
+		symbol, err := ExpectClass[Symbol](ctx, w, argv[0])
 		if err != nil {
 			return err
 		}
@@ -146,7 +146,7 @@ func cmdDefglobal(ctx context.Context, w *World, list Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	symbol, err := ExpectSymbol(symbolNode)
+	symbol, err := ExpectClass[Symbol](ctx, w, symbolNode)
 	if err != nil {
 		return nil, err
 	}
@@ -169,7 +169,7 @@ func cmdDefDynamic(ctx context.Context, w *World, list Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	symbol, err := ExpectSymbol(symbolNode)
+	symbol, err := ExpectClass[Symbol](ctx, w, symbolNode)
 	if err != nil {
 		return nil, err
 	}
@@ -194,7 +194,7 @@ func cmdDynamic(ctx context.Context, w *World, list Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	symbol, err := ExpectSymbol(symbolNode)
+	symbol, err := ExpectClass[Symbol](ctx, w, symbolNode)
 	if err != nil {
 		return nil, err
 	}
@@ -271,7 +271,7 @@ func cmdDynamicLet(ctx context.Context, w *World, list Node) (Node, error) {
 			if err != nil {
 				return nil, err
 			}
-			symbol, err := ExpectSymbol(symbolNode)
+			symbol, err := ExpectClass[Symbol](ctx, w, symbolNode)
 			if err != nil {
 				return nil, err
 			}

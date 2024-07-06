@@ -40,7 +40,7 @@ func (f FunctionRef) Eval(ctx context.Context, w *World) (Node, error) {
 	return f, nil
 }
 
-func cmdFunction(_ context.Context, w *World, node Node) (Node, error) {
+func cmdFunction(ctx context.Context, w *World, node Node) (Node, error) {
 	_symbol, node, err := Shift(node)
 	if err != nil {
 		return nil, err
@@ -48,7 +48,7 @@ func cmdFunction(_ context.Context, w *World, node Node) (Node, error) {
 	if IsSome(node) {
 		return nil, ErrTooManyArguments
 	}
-	symbol, err := ExpectSymbol(_symbol)
+	symbol, err := ExpectClass[Symbol](ctx, w, _symbol)
 	if err != nil {
 		return nil, err
 	}
@@ -92,7 +92,7 @@ func cmdFlet(ctx context.Context, w *World, list Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		symbol, err := ExpectSymbol(name)
+		symbol, err := ExpectClass[Symbol](ctx, w, name)
 		if err != nil {
 			return nil, err
 		}
@@ -124,7 +124,7 @@ func cmdLabels(ctx context.Context, w *World, list Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		symbol, err := ExpectSymbol(name)
+		symbol, err := ExpectClass[Symbol](ctx, w, name)
 		if err != nil {
 			return nil, err
 		}

@@ -179,7 +179,7 @@ func cmdWithOpenInputFile(ctx context.Context, w *World, list Node) (Node, error
 	if err != nil {
 		return nil, err
 	}
-	symbol, err := ExpectSymbol(varName)
+	symbol, err := ExpectClass[Symbol](ctx, w, varName)
 	if err != nil {
 		return nil, err
 	}
@@ -232,7 +232,7 @@ func cmdWithOpenOutputFile(ctx context.Context, w *World, list Node) (Node, erro
 	if err != nil {
 		return nil, err
 	}
-	symbol, err := ExpectSymbol(varName)
+	symbol, err := ExpectClass[Symbol](ctx, w, varName)
 	if err != nil {
 		return nil, err
 	}

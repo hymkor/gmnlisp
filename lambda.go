@@ -28,7 +28,7 @@ type _Parameters struct {
 	code  Node
 }
 
-func getParameterList(node Node) (*_Parameters, error) {
+func getParameterList(ctx context.Context, w *World, node Node) (*_Parameters, error) {
 	list, code, err := Shift(node)
 	if err != nil {
 		return nil, err
@@ -47,12 +47,12 @@ func getParameterList(node Node) (*_Parameters, error) {
 			if err != nil {
 				return nil, err
 			}
-			rest, err = ExpectSymbol(nameNode)
+			rest, err = ExpectClass[Symbol](ctx, w, nameNode)
 			if err != nil {
 				return nil, err
 			}
 		} else {
-			nameSymbol, err := ExpectSymbol(nameNode)
+			nameSymbol, err := ExpectClass[Symbol](ctx, w, nameNode)
 			if err != nil {
 				return nil, err
 			}
@@ -130,7 +130,7 @@ func expandMacroInList(ctx context.Context, w *World, code Node) (Node, error) {
 }
 
 func newLambda(ctx context.Context, w *World, node Node, blockName Symbol) (Callable, error) {
-	p, err := getParameterList(node)
+	p, err := getParameterList(ctx, w, node)
 	if err != nil {
 		return nil, err
 	}
@@ -394,7 +394,7 @@ func cmdDefun(ctx context.Context, w *World, list Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	symbol, err := ExpectSymbol(_symbol)
+	symbol, err := ExpectClass[Symbol](ctx, w, _symbol)
 	if err != nil {
 		return nil, err
 	}
@@ -464,7 +464,7 @@ func (f SpecialF) Call(ctx context.Context, w *World, n Node) (Node, error) {
 	return f(ctx, w, n)
 }
 
-func cmdTrace(_ context.Context, _ *World, list Node) (Node, error) {
+func cmdTrace(ctx context.Context, w *World, list Node) (Node, error) {
 	// from CommonLisp
 	if len(trace) > 0 {
 		trace = map[Symbol]int{}
@@ -477,7 +477,7 @@ func cmdTrace(_ context.Context, _ *World, list Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		symbol, err := ExpectSymbol(symbolNode)
+		symbol, err := ExpectClass[Symbol](ctx, w, symbolNode)
 		if err != nil {
 			return nil, err
 		}
@@ -568,7 +568,7 @@ func cmdExpandDefun(ctx context.Context, w *World, n Node) (Node, error) {
 	if IsSome(n) {
 		return nil, ErrTooManyArguments
 	}
-	symbol, err := ExpectSymbol(v)
+	symbol, err := ExpectClass[Symbol](ctx, w, v)
 	if err != nil {
 		return nil, err
 	}

@@ -150,7 +150,7 @@ func (cons *Cons) Equals(n Node, m EqlMode) bool {
 }
 
 func (cons *Cons) Eval(ctx context.Context, w *World) (Node, error) {
-	symbol, err := ExpectSymbol(cons.Car)
+	symbol, err := ExpectClass[Symbol](ctx, w, cons.Car)
 	if err != nil {
 		return nil, err
 	}

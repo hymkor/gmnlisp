@@ -30,7 +30,7 @@ func cmdReturnFrom(ctx context.Context, w *World, n Node) (Node, error) {
 	if err := ListToArray(n, argv[:]); err != nil {
 		return nil, err
 	}
-	symbol, err := ExpectSymbol(argv[0])
+	symbol, err := ExpectClass[Symbol](ctx, w, argv[0])
 	if err != nil {
 		return nil, err
 	}
@@ -65,7 +65,7 @@ func cmdBlock(ctx context.Context, w *World, node Node) (Node, error) {
 	var nameSymbol Symbol
 
 	if IsSome(nameNode) {
-		nameSymbol, err = ExpectSymbol(nameNode)
+		nameSymbol, err = ExpectClass[Symbol](ctx, w, nameNode)
 		if err != nil {
 			return nil, err
 		}
@@ -301,7 +301,7 @@ func cmdGo(ctx context.Context, w *World, args Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	symbol, err := ExpectSymbol(tag)
+	symbol, err := ExpectClass[Symbol](ctx, w, tag)
 	if err != nil {
 		return nil, err
 	}
