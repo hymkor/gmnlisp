@@ -38,3 +38,15 @@
       (format (standard-output) (+ 1.0 "x")))
     "NOT HANDLED")
   "OK")
+
+(catch
+  'c
+  (with-handler
+    (lambda (con)
+      (if (instancep con <domain-error>)
+        (continue-condition con 'newfunc)))
+    (defun 1111 (v)
+      (+ v 1))))
+(test
+  (newfunc 1)
+  2)
