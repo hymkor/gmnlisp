@@ -176,8 +176,8 @@ func (r Rune) Equals(n Node, m EqlMode) bool {
 	return false
 }
 
-func (r Rune) Add(n Node) (Node, error) {
-	value, err := ExpectCharacter(n)
+func (r Rune) Add(ctx context.Context, w *World, n Node) (Node, error) {
+	value, err := ExpectClass[Rune](ctx, w, n)
 	if err == nil {
 		return r + value, nil
 	}
@@ -187,8 +187,8 @@ func (r Rune) Add(n Node) (Node, error) {
 	return nil, err
 }
 
-func (r Rune) Sub(n Node) (Node, error) {
-	value, err := ExpectCharacter(n)
+func (r Rune) Sub(ctx context.Context, w *World, n Node) (Node, error) {
+	value, err := ExpectClass[Rune](ctx, w, n)
 	if err == nil {
 		return r - value, nil
 	}
@@ -198,12 +198,12 @@ func (r Rune) Sub(n Node) (Node, error) {
 	return nil, err
 }
 
-func compareRune(argv []Node, f func(rune) bool) (Node, error) {
-	left, err := ExpectCharacter(argv[0])
+func compareRune(ctx context.Context, w *World, argv []Node, f func(rune) bool) (Node, error) {
+	left, err := ExpectClass[Rune](ctx, w, argv[0])
 	if err != nil {
 		return nil, err
 	}
-	right, err := ExpectCharacter(argv[1])
+	right, err := ExpectClass[Rune](ctx, w, argv[1])
 	if err != nil {
 		return nil, err
 	}
@@ -215,25 +215,25 @@ func compareRune(argv []Node, f func(rune) bool) (Node, error) {
 }
 
 func funRuneLt(ctx context.Context, w *World, argv []Node) (Node, error) {
-	return compareRune(argv, func(cmp rune) bool { return cmp < 0 })
+	return compareRune(ctx, w, argv, func(cmp rune) bool { return cmp < 0 })
 }
 func funRuneLe(ctx context.Context, w *World, argv []Node) (Node, error) {
-	return compareRune(argv, func(cmp rune) bool { return cmp <= 0 })
+	return compareRune(ctx, w, argv, func(cmp rune) bool { return cmp <= 0 })
 }
 func funRuneEq(ctx context.Context, w *World, argv []Node) (Node, error) {
-	return compareRune(argv, func(cmp rune) bool { return cmp == 0 })
+	return compareRune(ctx, w, argv, func(cmp rune) bool { return cmp == 0 })
 }
 func funRuneGt(ctx context.Context, w *World, argv []Node) (Node, error) {
-	return compareRune(argv, func(cmp rune) bool { return cmp > 0 })
+	return compareRune(ctx, w, argv, func(cmp rune) bool { return cmp > 0 })
 }
 func funRuneGe(ctx context.Context, w *World, argv []Node) (Node, error) {
-	return compareRune(argv, func(cmp rune) bool { return cmp >= 0 })
+	return compareRune(ctx, w, argv, func(cmp rune) bool { return cmp >= 0 })
 }
 func funRuneNe(ctx context.Context, w *World, argv []Node) (Node, error) {
-	return compareRune(argv, func(cmp rune) bool { return cmp != 0 })
+	return compareRune(ctx, w, argv, func(cmp rune) bool { return cmp != 0 })
 }
 func funRuneIndex(ctx context.Context, w *World, argv []Node) (Node, error) {
-	_char, err := ExpectCharacter(argv[0])
+	_char, err := ExpectClass[Rune](ctx, w, argv[0])
 	if err != nil {
 		return nil, err
 	}

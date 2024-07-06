@@ -36,8 +36,8 @@ func (i Integer) Equals(n Node, m EqlMode) bool {
 	}
 }
 
-func (i Integer) Add(n Node) (Node, error) {
-	_n, err := ExpectInteger(n)
+func (i Integer) Add(ctx context.Context, w *World, n Node) (Node, error) {
+	_n, err := ExpectClass[Integer](ctx, w, n)
 	if err == nil {
 		return i + _n, nil
 	}
@@ -126,8 +126,8 @@ func (f Float) Equals(n Node, m EqlMode) bool {
 	}
 }
 
-func (f Float) Add(n Node) (Node, error) {
-	_n, err := ExpectFloat(n)
+func (f Float) Add(ctx context.Context, w *World, n Node) (Node, error) {
+	_n, err := ExpectClass[Float](ctx, w, n)
 	if err == nil {
 		return f + _n, nil
 	}

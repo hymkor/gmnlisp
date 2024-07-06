@@ -17,13 +17,13 @@ func notNullToTrue(v Node, err error) (Node, error) {
 
 type canPlus interface {
 	Node
-	Add(Node) (Node, error)
+	Add(context.Context, *World, Node) (Node, error)
 }
 
 func funAdd(ctx context.Context, w *World, args []Node) (Node, error) {
 	return inject(args, func(left, right Node) (Node, error) {
 		if _left, ok := left.(canPlus); ok {
-			return _left.Add(right)
+			return _left.Add(ctx, w, right)
 		}
 		return nil, MakeError(ErrNotSupportType, left)
 	})

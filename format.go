@@ -58,9 +58,9 @@ func funFormatObject(_ context.Context, w *World, list []Node) (Node, error) {
 	})
 }
 
-func funFormatChar(_ context.Context, w *World, list []Node) (Node, error) {
+func funFormatChar(ctx context.Context, w *World, list []Node) (Node, error) {
 	return tAndNilToWriter(w, list, func(writer *_WriterNode, list []Node) error {
-		r, err := ExpectCharacter(list[0])
+		r, err := ExpectClass[Rune](ctx, w, list[0])
 		if err != nil {
 			return err
 		}

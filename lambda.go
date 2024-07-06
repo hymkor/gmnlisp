@@ -442,12 +442,12 @@ func cmdApply(ctx context.Context, w *World, list Node) (Node, error) {
 				return nil, err
 			}
 			SeqEach(value, func(n Node) error {
-				newargs.Add(Uneval{n})
+				newargs.Add(ctx, w, Uneval{n})
 				return nil
 			})
 			return f.Call(ctx, w, newargs.Sequence())
 		}
-		newargs.Add(value)
+		newargs.Add(ctx, w, value)
 	}
 }
 

@@ -10,7 +10,7 @@ type VectorBuilder struct {
 	list []Node
 }
 
-func (v *VectorBuilder) Add(value Node) error {
+func (v *VectorBuilder) Add(ctx context.Context, w *World, value Node) error {
 	v.list = append(v.list, value)
 	return nil
 }
@@ -22,10 +22,10 @@ func (v *VectorBuilder) Sequence() Node {
 	}
 }
 
-func NewVector(args ...Node) Node {
+func NewVector(ctx context.Context, w *World, args ...Node) Node {
 	var v VectorBuilder
 	for _, value := range args {
-		v.Add(value)
+		v.Add(ctx, w, value)
 	}
 	return v.Sequence()
 }

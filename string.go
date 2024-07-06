@@ -80,8 +80,8 @@ func (s String) FirstAndRest() (Node, Node, bool) {
 	return Rune(r), String(s[siz:]), true
 }
 
-func (s String) Add(n Node) (Node, error) {
-	value, err := ExpectString(n)
+func (s String) Add(ctx context.Context, w *World, n Node) (Node, error) {
+	value, err := ExpectClass[String](ctx, w, n)
 	if err != nil {
 		return nil, err
 	}
@@ -200,7 +200,7 @@ func funCreateString(ctx context.Context, w *World, list []Node) (Node, error) {
 	}
 	ch := Rune(' ')
 	if len(list) == 2 {
-		ch, err = ExpectCharacter(list[1])
+		ch, err = ExpectClass[Rune](ctx, w, list[1])
 		if err != nil {
 			return nil, err
 		}

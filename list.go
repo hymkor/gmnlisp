@@ -66,7 +66,7 @@ func funLast(_ context.Context, _ *World, list []Node) (Node, error) {
 }
 
 // funAppend implements (append LIST1 LIST2 ...)
-func funAppend(_ context.Context, _ *World, list []Node) (Node, error) {
+func funAppend(ctx context.Context, w *World, list []Node) (Node, error) {
 	var value Node
 	var err error
 	var buffer ListBuilder
@@ -83,7 +83,7 @@ func funAppend(_ context.Context, _ *World, list []Node) (Node, error) {
 			if err != nil {
 				return nil, err
 			}
-			buffer.Add(value)
+			buffer.Add(ctx, w, value)
 		}
 	}
 	head := buffer.Sequence()

@@ -55,13 +55,13 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 		case classList:
 			var buffer ListBuilder
 			for _, r := range val {
-				buffer.Add(Rune(r))
+				buffer.Add(ctx, w, Rune(r))
 			}
 			return buffer.Sequence(), nil
 		case classVector:
 			var buffer VectorBuilder
 			for _, r := range val {
-				buffer.Add(Rune(r))
+				buffer.Add(ctx, w, Rune(r))
 			}
 			return buffer.Sequence(), nil
 		}
@@ -92,7 +92,7 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 		case classVector:
 			var buffer VectorBuilder
 			for IsSome(val) {
-				buffer.Add(val.Car)
+				buffer.Add(ctx, w, val.Car)
 				var ok bool
 				val, ok = val.Cdr.(*Cons)
 				if !ok {

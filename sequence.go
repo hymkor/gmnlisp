@@ -35,7 +35,7 @@ type ListBuilder struct {
 	last  *Cons
 }
 
-func (L *ListBuilder) Add(n Node) error {
+func (L *ListBuilder) Add(ctx context.Context, w *World, n Node) error {
 	tmp := &Cons{
 		Car: n,
 		Cdr: Null,
@@ -60,8 +60,8 @@ type StringBuilder struct {
 	strings.Builder
 }
 
-func (S *StringBuilder) Add(n Node) error {
-	r, err := ExpectCharacter(n)
+func (S *StringBuilder) Add(ctx context.Context, w *World, n Node) error {
+	r, err := ExpectClass[Rune](ctx, w, n)
 	if err != nil {
 		return err
 	}
@@ -155,7 +155,7 @@ func funMapCar(ctx context.Context, w *World, argv []Node) (Node, error) {
 		return nil, ErrTooFewArguments
 	}
 	var buffer ListBuilder
-	err := MapCar(ctx, w, argv[0], argv[1:], func(node Node) { buffer.Add(node) })
+	err := MapCar(ctx, w, argv[0], argv[1:], func(node Node) { buffer.Add(ctx, w, node) })
 	return buffer.Sequence(), err
 }
 
@@ -232,7 +232,7 @@ func funMapList(ctx context.Context, w *World, argv []Node) (Node, error) {
 		return nil, ErrTooFewArguments
 	}
 	var buffer ListBuilder
-	err := mapList(ctx, w, argv[0], argv[1:], func(n Node) { buffer.Add(n) })
+	err := mapList(ctx, w, argv[0], argv[1:], func(n Node) { buffer.Add(ctx, w, n) })
 	return buffer.Sequence(), err
 }
 
@@ -300,7 +300,7 @@ func funNReverse(_ context.Context, _ *World, argv []Node) (Node, error) {
 }
 
 type SeqBuilder interface {
-	Add(Node) error
+	Add(context.Context, *World, Node) error
 	Sequence() Node
 }
 
@@ -325,7 +325,7 @@ func funSubSeq(ctx context.Context, w *World, args []Node) (Node, error) {
 			return io.EOF
 		}
 		if start <= count {
-			e = buffer.Add(value)
+			e = buffer.Add(ctx, w, value)
 		}
 		count++
 		return
