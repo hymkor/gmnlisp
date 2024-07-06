@@ -238,7 +238,7 @@ func funRuneIndex(ctx context.Context, w *World, argv []Node) (Node, error) {
 		return nil, err
 	}
 	char := rune(_char)
-	str, err := ExpectString(argv[1])
+	str, err := ExpectClass[String](ctx, w, argv[1])
 	if err != nil {
 		return nil, err
 	}

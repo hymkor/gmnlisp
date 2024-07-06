@@ -103,7 +103,7 @@ func funNot(_ context.Context, w *World, argv []Node) (Node, error) {
 }
 
 func funLoad(ctx context.Context, w *World, argv []Node) (Node, error) {
-	fname, err := ExpectString(argv[0])
+	fname, err := ExpectClass[String](ctx, w, argv[0])
 	if err != nil {
 		return nil, err
 	}
@@ -186,8 +186,8 @@ func funAnyTypep[T Node](_ context.Context, _ *World, args []Node) (Node, error)
 	return Null, nil
 }
 
-func funParseNumber(_ context.Context, _ *World, args []Node) (Node, error) {
-	s, err := ExpectString(args[0])
+func funParseNumber(ctx context.Context, w *World, args []Node) (Node, error) {
+	s, err := ExpectClass[String](ctx, w, args[0])
 	if err != nil {
 		return nil, err
 	}
