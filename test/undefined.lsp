@@ -3,7 +3,7 @@
     'c
      (with-handler
        (lambda (c)
-         (if (and (instancep c <undefined-variable>)
+         (if (and (instancep c <unbound-variable>)
                   (equal (undefined-entity-name c) 'undefined)
                   (equal (undefined-entity-namespace c) 'variable))
            (throw 'c "OK")

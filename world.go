@@ -14,6 +14,11 @@ import (
 	"unicode/utf8"
 )
 
+var (
+	symVariable = NewSymbol("variable")
+	symFunction = NewSymbol("function")
+)
+
 type Scope interface {
 	Get(Symbol) (Node, bool)
 	Set(Symbol, Node)
@@ -172,7 +177,7 @@ func (w *World) Get(name Symbol) (Node, error) {
 		}
 		w = w.parent
 	}
-	return Null, _UndefinedVariable{name: name}
+	return Null, &_UndefinedEntity{name: name, space: symVariable}
 }
 
 func (w *World) GetFunc(name Symbol) (Callable, error) {
@@ -184,7 +189,7 @@ func (w *World) GetFunc(name Symbol) (Callable, error) {
 		}
 		w = w.parent
 	}
-	return nil, _UndefinedFunction{name: name}
+	return nil, &_UndefinedEntity{name: name, space: symFunction}
 }
 
 // DefineGlobal implements (defglobal) of ISLisp or (defparameter) of CommonLisp.
@@ -202,7 +207,7 @@ func (w *World) Set(name Symbol, value Node) error {
 		}
 		w = w.parent
 	}
-	return _UndefinedVariable{name: name}
+	return &_UndefinedEntity{name: name, space: symVariable}
 }
 
 func cmdStandardOutput(ctx context.Context, w *World, list Node) (Node, error) {
@@ -438,8 +443,8 @@ var autoLoadFunc = Functions{
 	NewSymbol("with-standard-input"):         SpecialF(cmdWithStandardInput),
 	NewSymbol("zerop"):                       &Function{C: 1, F: funZerop},
 	symReportCondition:                       reportCondition,
-	undefinedEntityName.Symbol:               undefinedEntityName,
-	undefinedEntityNameSpace.Symbol:          undefinedEntityNameSpace,
+	NewSymbol("undefined-entity-name"):       &Function{C: 1, F: funUndefinedEntityName},
+	NewSymbol("undefined-entity-namespace"):  &Function{C: 1, F: funUndefinedEntityNamespace},
 	// *sort*end*
 }
 

@@ -200,7 +200,7 @@ func cmdDynamic(ctx context.Context, w *World, list Node) (Node, error) {
 	}
 	value, ok := w.dynamic.Get(symbol)
 	if !ok {
-		return nil, &_UndefinedVariable{name: symbol}
+		return nil, &_UndefinedEntity{name: symbol, space: symVariable}
 	}
 	return value, nil
 }

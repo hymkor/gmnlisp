@@ -46,7 +46,7 @@ func cmdFunction(_ context.Context, w *World, node Node) (Node, error) {
 		return nil, err
 	}
 	if IsSome(node) {
-		return nil,ErrTooManyArguments
+		return nil, ErrTooManyArguments
 	}
 	symbol, err := ExpectSymbol(_symbol)
 	if err != nil {

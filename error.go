@@ -75,6 +75,17 @@ func ExpectType[T Node](_value Node, name string) (T, error) {
 	}
 }
 
+func ExpectClass[T Node](v Node, class Class) (T, error) {
+	value, ok := v.(T)
+	if ok {
+		return value, nil
+	}
+	return value, &DomainError{
+		Object:        v,
+		ExpectedClass: class,
+	}
+}
+
 func ExpectCons(v Node) (*Cons, error) {
 	return ExpectType[*Cons](v, "<cons>")
 }
@@ -117,130 +128,65 @@ func ExpectCharacter(_value Node) (Rune, error) {
 	return ExpectType[Rune](_value, "<character>")
 }
 
-type _UndefinedVariable struct {
-	name Symbol
+type _UndefinedEntity struct {
+	name  Symbol
+	space Symbol
 }
 
-func (u _UndefinedVariable) Error() string {
-	return fmt.Sprintf("Undefined Variable: %#v", u.name)
+func (u *_UndefinedEntity) Error() string {
+	return fmt.Sprintf("undefined %s: %#v", u.space.String(), u.name.String())
 }
 
-func (u _UndefinedVariable) String() string {
+func (u *_UndefinedEntity) String() string {
 	return u.Error()
 }
 
-func (u _UndefinedVariable) GoString() string {
+func (u *_UndefinedEntity) GoString() string {
 	return u.Error()
 }
 
-func (u _UndefinedVariable) Eval(_ context.Context, _ *World) (Node, error) {
+func (u *_UndefinedEntity) Eval(_ context.Context, _ *World) (Node, error) {
 	return u, nil
 }
 
-func (u _UndefinedVariable) PrintTo(w io.Writer, mode PrintMode) (int, error) {
-	return fmt.Fprintf(w, "Undefined Variable: %#v", u.name)
+func (u *_UndefinedEntity) PrintTo(w io.Writer, mode PrintMode) (int, error) {
+	return fmt.Fprintf(w, "undefined %s: %#v", u.space, u.name)
 }
 
-func (u _UndefinedVariable) Equals(other Node, mode EqlMode) bool {
-	o, ok := other.(_UndefinedVariable)
+func (u *_UndefinedEntity) Equals(other Node, mode EqlMode) bool {
+	o, ok := other.(*_UndefinedEntity)
 	if !ok {
 		return false
 	}
-	return u.name.Equals(o.name, mode)
+	return u.space.Equals(o.space, mode) && u.name.Equals(o.name, mode)
 }
 
-var undefinedVariableClass = registerNewBuiltInClass[_UndefinedVariable]("<undefined-variable>")
+var (
+	undefinedEntityClass   = registerNewBuiltInClass[*_UndefinedEntity]("<undefined-entity>")
+	unboundVariableClass   = registerNewBuiltInClass[*_UndefinedEntity]("<unbound-variable>", undefinedEntityClass)
+	undefinedFunctionClass = registerNewBuiltInClass[*_UndefinedEntity]("<undefined-function>", undefinedEntityClass)
+)
 
-func (u _UndefinedVariable) ClassOf() Class {
-	return undefinedVariableClass
-}
-
-type _UndefinedFunction struct {
-	name Symbol
-}
-
-func (u _UndefinedFunction) Error() string {
-	return fmt.Sprintf("Undefined Function: %#v", u.name)
-}
-
-func (u _UndefinedFunction) String() string {
-	return u.Error()
-}
-
-func (u _UndefinedFunction) GoString() string {
-	return u.Error()
-}
-
-func (u _UndefinedFunction) Eval(_ context.Context, _ *World) (Node, error) {
-	return u, nil
-}
-
-func (u _UndefinedFunction) PrintTo(w io.Writer, mode PrintMode) (int, error) {
-	return fmt.Fprintf(w, "Undefined Function: %#v", u.name)
-}
-
-func (u _UndefinedFunction) Equals(other Node, mode EqlMode) bool {
-	o, ok := other.(_UndefinedFunction)
-	if !ok {
-		return false
+func (u *_UndefinedEntity) ClassOf() Class {
+	if u.space.Equals(symVariable, STRICT) {
+		return unboundVariableClass
 	}
-	return u.name.Equals(o.name, mode)
-}
-
-var undefinedFunctionClass = registerNewBuiltInClass[_UndefinedFunction]("<undefined-function>")
-
-func (u _UndefinedFunction) ClassOf() Class {
 	return undefinedFunctionClass
 }
 
-var undefinedEntityName = &_Generic{
-	Symbol: NewSymbol("undefined-entity-name"),
-	argc:   1,
-	methods: []*_Method{
-		&_Method{
-			types: []Class{undefinedFunctionClass},
-			method: func(_ context.Context, _ *World, args []Node) (Node, error) {
-				entity, ok := args[0].(_UndefinedFunction)
-				if !ok {
-					return nil, &DomainError{
-						Object:        args[0],
-						ExpectedClass: undefinedFunctionClass,
-					}
-				}
-				return entity.name, nil
-			},
-		},
-		&_Method{
-			types: []Class{undefinedVariableClass},
-			method: func(_ context.Context, _ *World, args []Node) (Node, error) {
-				entity, ok := args[0].(_UndefinedVariable)
-				if !ok {
-					return nil, &DomainError{
-						Object:        args[0],
-						ExpectedClass: undefinedVariableClass,
-					}
-				}
-				return entity.name, nil
-			},
-		},
-	},
+func funUndefinedEntityName(_ context.Context, _ *World, args []Node) (Node, error) {
+	entity, err := ExpectClass[*_UndefinedEntity](args[0], undefinedEntityClass)
+	if err != nil {
+		return nil, err
+	}
+	return entity.name, nil
 }
 
-var undefinedEntityNameSpace = &_Generic{
-	Symbol: NewSymbol("undefined-entity-namespace"),
-	argc:   1,
-	methods: []*_Method{
-		&_Method{
-			types: []Class{undefinedFunctionClass},
-			method: func(_ context.Context, _ *World, args []Node) (Node, error) {
-				return NewSymbol("function"), nil
-			},
-		},
-		&_Method{
-			types: []Class{undefinedVariableClass},
-			method: func(_ context.Context, _ *World, args []Node) (Node, error) {
-				return NewSymbol("variable"), nil
-			},
-		},
-	},
+func funUndefinedEntityNamespace(_ context.Context, _ *World, args []Node) (Node, error) {
+
+	entity, err := ExpectClass[*_UndefinedEntity](args[0], undefinedFunctionClass)
+	if err != nil {
+		return nil, err
+	}
+	return entity.space, nil
 }

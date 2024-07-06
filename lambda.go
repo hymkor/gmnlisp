@@ -574,11 +574,11 @@ func cmdExpandDefun(ctx context.Context, w *World, n Node) (Node, error) {
 	}
 	callable, ok := w.defun.Get(symbol)
 	if !ok {
-		return nil, _UndefinedFunction{name: symbol}
+		return nil, &_UndefinedEntity{name: symbol, space: symFunction}
 	}
 	f, ok := callable.(*_Lambda)
 	if !ok {
-		return nil, _UndefinedFunction{name: symbol}
+		return nil, &_UndefinedEntity{name: symbol, space: symFunction}
 	}
 	var param Node
 	for i := len(f.param) - 1; i >= 0; i-- {
