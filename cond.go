@@ -58,7 +58,7 @@ type _ErrContinueCondition struct {
 }
 
 func (e *_ErrContinueCondition) Error() string {
-	return e.Value.String()
+	return "continue-condition failed for " + e.Value.String()
 }
 
 var symReportCondition = NewSymbol("report-condition")

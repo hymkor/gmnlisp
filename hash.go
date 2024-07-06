@@ -116,5 +116,5 @@ func funClearHash(ctx context.Context, w *World, args []Node) (Node, error) {
 }
 
 func ExpectHash(v Node) (_Hash, error) {
-	return ExpectType[_Hash](v, "<hashtable>")
+	return ExpectType[_Hash](v)
 }

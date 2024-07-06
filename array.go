@@ -280,5 +280,5 @@ func funGeneralArray(_ context.Context, w *World, args []Node) (Node, error) {
 }
 
 func ExpectArray(v Node) (*Array, error) {
-	return ExpectType[*Array](v, "<basic-array>")
+	return ExpectType[*Array](v)
 }

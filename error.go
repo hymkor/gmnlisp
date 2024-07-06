@@ -2,6 +2,7 @@ package gmnlisp
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 )
@@ -64,46 +65,57 @@ func funDomainErrorExpectedClass(ctx context.Context, w *World, args []Node) (No
 	return e.ExpectedClass, nil
 }
 
-func ExpectType[T Node](_value Node, name string) (T, error) {
+func ExpectType[T Node](_value Node) (T, error) {
 	value, ok := _value.(T)
 	if ok {
 		return value, nil
 	}
 	return value, &DomainError{
 		Object:        _value,
-		ExpectedClass: newBuiltInClass[T](name),
+		ExpectedClass: value.ClassOf(),
 	}
 }
 
-func ExpectClass[T Node](v Node, class Class) (T, error) {
+func ExpectClass[T Node](ctx context.Context, w *World, v Node) (T, error) {
 	value, ok := v.(T)
 	if ok {
 		return value, nil
 	}
-	return value, &DomainError{
+	class := value.ClassOf() // .ClassOf must be called even when value is nil
+	condition := &DomainError{
 		Object:        v,
 		ExpectedClass: class,
 	}
+	if w.handler != nil {
+		_, e := w.handler.Call(ctx, w, &Cons{Car: Uneval{Node: condition}, Cdr: Null})
+		var ce *_ErrContinueCondition
+		if errors.As(e, &ce) {
+			if v, ok := ce.Value.(T); ok {
+				return v, nil
+			}
+		}
+	}
+	return value, condition
 }
 
 func ExpectCons(v Node) (*Cons, error) {
-	return ExpectType[*Cons](v, "<cons>")
+	return ExpectType[*Cons](v)
 }
 
 func ExpectSymbol(v Node) (Symbol, error) {
-	return ExpectType[Symbol](v, "<symbol>")
+	return ExpectType[Symbol](v)
 }
 
 func ExpectKeyword(v Node) (Keyword, error) {
-	return ExpectType[Keyword](v, "<keyword>")
+	return ExpectType[Keyword](v)
 }
 
 func ExpectString(_value Node) (String, error) {
-	return ExpectType[String](_value, "<string>")
+	return ExpectType[String](_value)
 }
 
 func ExpectInteger(_value Node) (Integer, error) {
-	value, err := ExpectType[Integer](_value, "<integer>")
+	value, err := ExpectType[Integer](_value)
 	if err == nil {
 		return value, nil
 	}
@@ -114,7 +126,7 @@ func ExpectInteger(_value Node) (Integer, error) {
 }
 
 func ExpectFloat(_value Node) (Float, error) {
-	value, err := ExpectType[Float](_value, "<float>")
+	value, err := ExpectType[Float](_value)
 	if err == nil {
 		return value, nil
 	}
@@ -125,7 +137,7 @@ func ExpectFloat(_value Node) (Float, error) {
 }
 
 func ExpectCharacter(_value Node) (Rune, error) {
-	return ExpectType[Rune](_value, "<character>")
+	return ExpectType[Rune](_value)
 }
 
 type _UndefinedEntity struct {
@@ -174,17 +186,17 @@ func (u *_UndefinedEntity) ClassOf() Class {
 	return undefinedFunctionClass
 }
 
-func funUndefinedEntityName(_ context.Context, _ *World, args []Node) (Node, error) {
-	entity, err := ExpectClass[*_UndefinedEntity](args[0], undefinedEntityClass)
+func funUndefinedEntityName(ctx context.Context, w *World, args []Node) (Node, error) {
+	entity, err := ExpectClass[*_UndefinedEntity](ctx, w, args[0])
 	if err != nil {
 		return nil, err
 	}
 	return entity.name, nil
 }
 
-func funUndefinedEntityNamespace(_ context.Context, _ *World, args []Node) (Node, error) {
+func funUndefinedEntityNamespace(ctx context.Context, w *World, args []Node) (Node, error) {
 
-	entity, err := ExpectClass[*_UndefinedEntity](args[0], undefinedFunctionClass)
+	entity, err := ExpectClass[*_UndefinedEntity](ctx, w, args[0])
 	if err != nil {
 		return nil, err
 	}
