@@ -98,10 +98,6 @@ func ExpectClass[T Node](ctx context.Context, w *World, v Node) (T, error) {
 	return value, condition
 }
 
-func ExpectSymbol(v Node) (Symbol, error) {
-	return ExpectType[Symbol](v)
-}
-
 func ExpectString(_value Node) (String, error) {
 	return ExpectType[String](_value)
 }
