@@ -138,7 +138,7 @@ func funCreateArray(ctx context.Context, w *World, args []Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		n, err := ExpectInteger(_n)
+		n, err := ExpectClass[Integer](ctx, w, _n)
 		if err != nil {
 			return nil, err
 		}
@@ -186,7 +186,7 @@ func funAref(ctx context.Context, w *World, args []Node) (Node, error) {
 		return nil, ErrTooManyArguments
 	}
 	for _, _nth := range args[1:] {
-		nth, err := ExpectInteger(_nth)
+		nth, err := ExpectClass[Integer](ctx, w, _nth)
 		if err != nil {
 			return nil, err
 		}
@@ -218,7 +218,7 @@ func funSetAref(ctx context.Context, w *World, args []Node) (Node, error) {
 	}
 
 	for _, _index := range args[2:] {
-		index, err := ExpectInteger(_index)
+		index, err := ExpectClass[Integer](ctx, w, _index)
 		if err != nil {
 			return nil, err
 		}

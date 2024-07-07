@@ -160,8 +160,8 @@ func funSetCdr(_ context.Context, _ *World, argv []Node) (Node, error) {
 	return cons, nil
 }
 
-func funCreateList(_ context.Context, _ *World, argv []Node) (Node, error) {
-	n, err := ExpectInteger(argv[0])
+func funCreateList(ctx context.Context, w *World, argv []Node) (Node, error) {
+	n, err := ExpectClass[Integer](ctx, w, argv[0])
 	if err != nil {
 		return nil, err
 	}

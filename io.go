@@ -270,7 +270,7 @@ func funFileLength(ctx context.Context, w *World, list []Node) (Node, error) {
 	}
 	fname := _fname.String()
 
-	_n, err := ExpectInteger(list[1])
+	_n, err := ExpectClass[Integer](ctx, w, list[1])
 	if err != nil {
 		return nil, err
 	}

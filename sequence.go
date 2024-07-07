@@ -77,13 +77,13 @@ func (S StringBuilder) GoString() string {
 	return strconv.Quote(S.String())
 }
 
-func funElt(_ context.Context, _ *World, args []Node) (Node, error) {
+func funElt(ctx context.Context, w *World, args []Node) (Node, error) {
 	type canElt interface {
 		Elt(int) (Node, error)
 	}
 	var value Node = args[0]
 	for _, indexArg := range args[1:] {
-		index, err := ExpectInteger(indexArg)
+		index, err := ExpectClass[Integer](ctx, w, indexArg)
 		if err != nil {
 			return nil, err
 		}
@@ -305,11 +305,11 @@ type SeqBuilder interface {
 }
 
 func funSubSeq(ctx context.Context, w *World, args []Node) (Node, error) {
-	start, err := ExpectInteger(args[1])
+	start, err := ExpectClass[Integer](ctx, w, args[1])
 	if err != nil {
 		return nil, err
 	}
-	end, err := ExpectInteger(args[2])
+	end, err := ExpectClass[Integer](ctx, w, args[2])
 	if err != nil {
 		return nil, err
 	}

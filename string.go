@@ -160,7 +160,7 @@ func funStringIndex(ctx context.Context, w *World, argv []Node) (Node, error) {
 	subStr := _subStr.String()
 	start := 0
 	if len(argv) >= 3 {
-		_start, err := ExpectInteger(argv[2])
+		_start, err := ExpectClass[Integer](ctx, w, argv[2])
 		if err != nil {
 			return nil, err
 		}
@@ -191,7 +191,7 @@ func funCreateString(ctx context.Context, w *World, list []Node) (Node, error) {
 	if len(list) < 1 {
 		return nil, ErrTooFewArguments
 	}
-	length, err := ExpectInteger(list[0])
+	length, err := ExpectClass[Integer](ctx, w, list[0])
 	if err != nil {
 		return nil, err
 	}
