@@ -65,17 +65,6 @@ func funDomainErrorExpectedClass(ctx context.Context, w *World, args []Node) (No
 	return e.ExpectedClass, nil
 }
 
-func ExpectType[T Node](_value Node) (T, error) {
-	value, ok := _value.(T)
-	if ok {
-		return value, nil
-	}
-	return value, &DomainError{
-		Object:        _value,
-		ExpectedClass: value.ClassOf(),
-	}
-}
-
 func ExpectClass[T Node](ctx context.Context, w *World, v Node) (T, error) {
 	value, ok := v.(T)
 	if ok {
