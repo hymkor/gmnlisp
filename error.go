@@ -65,6 +65,25 @@ func funDomainErrorExpectedClass(ctx context.Context, w *World, args []Node) (No
 	return e.ExpectedClass, nil
 }
 
+type errorAndNode interface {
+	error
+	Node
+}
+
+func callHandler[T Node](ctx context.Context, w *World, cont bool, condition errorAndNode) (T, error) {
+	if w.handler != nil {
+		_, e := w.handler.Call(ctx, w, UnevalList(condition))
+		var ce *_ErrContinueCondition
+		if cont && errors.As(e, &ce) {
+			if v, ok := ce.Value.(T); ok {
+				return v, nil
+			}
+		}
+	}
+	var zero T
+	return zero, condition
+}
+
 func ExpectInterface[T Node](ctx context.Context, w *World, v Node, class Class) (T, error) {
 	value, ok := v.(T)
 	if ok {
@@ -74,16 +93,7 @@ func ExpectInterface[T Node](ctx context.Context, w *World, v Node, class Class)
 		Object:        v,
 		ExpectedClass: class,
 	}
-	if w.handler != nil {
-		_, e := w.handler.Call(ctx, w, UnevalList(condition))
-		var ce *_ErrContinueCondition
-		if errors.As(e, &ce) {
-			if v, ok := ce.Value.(T); ok {
-				return v, nil
-			}
-		}
-	}
-	return value, condition
+	return callHandler[T](ctx, w, true, condition)
 }
 
 func ExpectClass[T Node](ctx context.Context, w *World, v Node) (T, error) {
