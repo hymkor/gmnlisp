@@ -105,7 +105,7 @@ func funStringAppend(ctx context.Context, w *World, list []Node) (Node, error) {
 	}
 	var buffer strings.Builder
 	for _, s := range list {
-		str, err := ExpectString(s)
+		str, err := ExpectClass[String](ctx, w, s)
 		if err != nil {
 			return nil, err
 		}
@@ -153,7 +153,7 @@ func funStringIndex(ctx context.Context, w *World, argv []Node) (Node, error) {
 	if len(argv) < 2 {
 		return nil, ErrTooFewArguments
 	}
-	_subStr, err := ExpectString(argv[0])
+	_subStr, err := ExpectClass[String](ctx, w, argv[0])
 	if err != nil {
 		return nil, err
 	}
@@ -169,7 +169,7 @@ func funStringIndex(ctx context.Context, w *World, argv []Node) (Node, error) {
 		}
 		start = int(_start)
 	}
-	_str, err := ExpectString(argv[1])
+	_str, err := ExpectClass[String](ctx, w, argv[1])
 	if err != nil {
 		return nil, err
 	}

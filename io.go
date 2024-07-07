@@ -130,7 +130,7 @@ func funClose(_ context.Context, _ *World, argv []Node) (Node, error) {
 }
 
 func funCreateStringInputStream(ctx context.Context, w *World, list []Node) (Node, error) {
-	s, err := ExpectString(list[0])
+	s, err := ExpectClass[String](ctx, w, list[0])
 	if err != nil {
 		return nil, err
 	}
@@ -251,7 +251,7 @@ func cmdWithOpenOutputFile(ctx context.Context, w *World, list Node) (Node, erro
 }
 
 func funProbeFile(ctx context.Context, w *World, list []Node) (Node, error) {
-	_fname, err := ExpectString(list[0])
+	_fname, err := ExpectClass[String](ctx, w, list[0])
 	if err != nil {
 		return nil, err
 	}
@@ -264,7 +264,7 @@ func funProbeFile(ctx context.Context, w *World, list []Node) (Node, error) {
 }
 
 func funFileLength(ctx context.Context, w *World, list []Node) (Node, error) {
-	_fname, err := ExpectString(list[0])
+	_fname, err := ExpectClass[String](ctx, w, list[0])
 	if err != nil {
 		return nil, err
 	}
