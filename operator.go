@@ -31,13 +31,13 @@ func funAdd(ctx context.Context, w *World, args []Node) (Node, error) {
 
 type canMinus interface {
 	Node
-	Sub(Node) (Node, error)
+	Sub(context.Context, *World, Node) (Node, error)
 }
 
 func funSub(ctx context.Context, w *World, args []Node) (Node, error) {
 	return inject(args, func(left, right Node) (Node, error) {
 		if _left, ok := left.(canMinus); ok {
-			return _left.Sub(right)
+			return _left.Sub(ctx, w, right)
 		}
 		return nil, MakeError(ErrNotSupportType, left)
 	})
@@ -46,11 +46,11 @@ func funSub(ctx context.Context, w *World, args []Node) (Node, error) {
 func funMulti(ctx context.Context, w *World, args []Node) (Node, error) {
 	type CanMulti interface {
 		Node
-		Multi(Node) (Node, error)
+		Multi(context.Context, *World, Node) (Node, error)
 	}
 	return inject(args, func(left, right Node) (Node, error) {
 		if _left, ok := left.(CanMulti); ok {
-			return _left.Multi(right)
+			return _left.Multi(ctx, w, right)
 		}
 		return nil, MakeError(ErrNotSupportType, left)
 	})
@@ -59,11 +59,11 @@ func funMulti(ctx context.Context, w *World, args []Node) (Node, error) {
 func funDevide(ctx context.Context, w *World, args []Node) (Node, error) {
 	type CanDevide interface {
 		Node
-		Divide(Node) (Node, error)
+		Divide(context.Context, *World, Node) (Node, error)
 	}
 	return inject(args, func(left, right Node) (Node, error) {
 		if _left, ok := left.(CanDevide); ok {
-			return _left.Divide(right)
+			return _left.Divide(ctx, w, right)
 		}
 		return nil, MakeError(ErrNotSupportType, left)
 	})

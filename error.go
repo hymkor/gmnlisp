@@ -98,28 +98,6 @@ func ExpectClass[T Node](ctx context.Context, w *World, v Node) (T, error) {
 	return value, condition
 }
 
-func ExpectInteger(_value Node) (Integer, error) {
-	value, err := ExpectType[Integer](_value)
-	if err == nil {
-		return value, nil
-	}
-	if v, ok := _value.(Float); ok {
-		return Integer(v), nil
-	}
-	return Integer(0), err
-}
-
-func ExpectFloat(_value Node) (Float, error) {
-	value, err := ExpectType[Float](_value)
-	if err == nil {
-		return value, nil
-	}
-	if v, ok := _value.(Integer); ok {
-		return Float(v), nil
-	}
-	return Float(0.), err
-}
-
 type _UndefinedEntity struct {
 	name  Symbol
 	space Symbol

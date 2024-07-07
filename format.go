@@ -69,9 +69,9 @@ func funFormatChar(ctx context.Context, w *World, list []Node) (Node, error) {
 	})
 }
 
-func funFormatInteger(_ context.Context, w *World, _args []Node) (Node, error) {
+func funFormatInteger(ctx context.Context, w *World, _args []Node) (Node, error) {
 	return tAndNilToWriter(w, _args, func(writer *_WriterNode, args []Node) error {
-		radix, err := ExpectInteger(args[1])
+		radix, err := ExpectClass[Integer](ctx, w, args[1])
 		if err != nil {
 			return err
 		}
@@ -186,7 +186,7 @@ func formatSub(ctx context.Context, world *World, w *_WriterNode, argv []Node) e
 				if len(argv) < 1 {
 					return ErrTooFewArguments
 				}
-				decimal, err := ExpectInteger(argv[0])
+				decimal, err := ExpectClass[Integer](ctx, world, argv[0])
 				if err != nil {
 					return err
 				}

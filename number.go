@@ -47,8 +47,8 @@ func (i Integer) Add(ctx context.Context, w *World, n Node) (Node, error) {
 	return nil, err
 }
 
-func (i Integer) Sub(n Node) (Node, error) {
-	_n, err := ExpectInteger(n)
+func (i Integer) Sub(ctx context.Context, w *World, n Node) (Node, error) {
+	_n, err := ExpectClass[Integer](ctx, w, n)
 	if err == nil {
 		return i - _n, nil
 	}
@@ -58,8 +58,8 @@ func (i Integer) Sub(n Node) (Node, error) {
 	return nil, err
 }
 
-func (i Integer) Multi(n Node) (Node, error) {
-	_n, err := ExpectInteger(n)
+func (i Integer) Multi(ctx context.Context, w *World, n Node) (Node, error) {
+	_n, err := ExpectClass[Integer](ctx, w, n)
 	if err == nil {
 		return i * _n, nil
 	}
@@ -69,8 +69,8 @@ func (i Integer) Multi(n Node) (Node, error) {
 	return nil, err
 }
 
-func (i Integer) Divide(n Node) (Node, error) {
-	_n, err := ExpectInteger(n)
+func (i Integer) Divide(ctx context.Context, w *World, n Node) (Node, error) {
+	_n, err := ExpectClass[Integer](ctx, w, n)
 	if err == nil {
 		if _n == 0 {
 			return nil, ErrDevisionByZero
@@ -137,8 +137,8 @@ func (f Float) Add(ctx context.Context, w *World, n Node) (Node, error) {
 	return nil, err
 }
 
-func (f Float) Sub(n Node) (Node, error) {
-	_n, err := ExpectFloat(n)
+func (f Float) Sub(ctx context.Context, w *World, n Node) (Node, error) {
+	_n, err := ExpectClass[Float](ctx, w, n)
 	if err == nil {
 		return f - _n, nil
 	}
@@ -148,8 +148,8 @@ func (f Float) Sub(n Node) (Node, error) {
 	return nil, err
 }
 
-func (f Float) Multi(n Node) (Node, error) {
-	_n, err := ExpectFloat(n)
+func (f Float) Multi(ctx context.Context, w *World, n Node) (Node, error) {
+	_n, err := ExpectClass[Float](ctx, w, n)
 	if err == nil {
 		return f * _n, nil
 	}
@@ -159,8 +159,8 @@ func (f Float) Multi(n Node) (Node, error) {
 	return nil, err
 }
 
-func (f Float) Divide(n Node) (Node, error) {
-	_n, err := ExpectFloat(n)
+func (f Float) Divide(ctx context.Context, w *World, n Node) (Node, error) {
+	_n, err := ExpectClass[Float](ctx, w, n)
 	if err == nil {
 		if _n == 0 {
 			return nil, ErrDevisionByZero
@@ -188,7 +188,7 @@ func (f Float) LessThan(ctx context.Context, w *World, n Node) (bool, error) {
 }
 
 func funSqrt(ctx context.Context, w *World, node []Node) (Node, error) {
-	n, err := ExpectFloat(node[0])
+	n, err := ExpectClass[Float](ctx, w, node[0])
 	if err != nil {
 		return nil, err
 	}
