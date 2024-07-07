@@ -436,6 +436,8 @@ var autoLoadFunc = Functions{
 	NewSymbol("throw"):                       &Function{C: 2, F: funThrow},
 	NewSymbol("trace"):                       SpecialF(cmdTrace),
 	NewSymbol("truncate"):                    &Function{C: 1, F: funTruncate},
+	NewSymbol("undefined-entity-name"):       &Function{C: 1, F: funUndefinedEntityName},
+	NewSymbol("undefined-entity-namespace"):  &Function{C: 1, F: funUndefinedEntityNamespace},
 	NewSymbol("unwind-protect"):              SpecialF(cmdUnwindProtect),
 	NewSymbol("vector"):                      &Function{F: funVector},
 	NewSymbol("while"):                       SpecialF(cmdWhile),
@@ -445,8 +447,6 @@ var autoLoadFunc = Functions{
 	NewSymbol("with-standard-input"):         SpecialF(cmdWithStandardInput),
 	NewSymbol("zerop"):                       &Function{C: 1, F: funZerop},
 	symReportCondition:                       reportCondition,
-	NewSymbol("undefined-entity-name"):       &Function{C: 1, F: funUndefinedEntityName},
-	NewSymbol("undefined-entity-namespace"):  &Function{C: 1, F: funUndefinedEntityNamespace},
 	// *sort*end*
 }
 
