@@ -120,8 +120,8 @@ func printSpaces(n int, w io.Writer) {
 	}
 }
 
-func formatSub(w *_WriterNode, argv []Node) error {
-	format, err := ExpectString(argv[0])
+func formatSub(ctx context.Context, world *World, w *_WriterNode, argv []Node) error {
+	format, err := ExpectClass[String](ctx, world, argv[0])
 	if err != nil {
 		return err
 	}
@@ -308,6 +308,8 @@ func tAndNilToWriter(w *World, argv []Node, f func(*_WriterNode, []Node) error) 
 	return nil, MakeError(ErrExpectedWriter, argv[0])
 }
 
-func funFormat(ctx context.Context, w *World, argv []Node) (Node, error) {
-	return tAndNilToWriter(w, argv, formatSub)
+func funFormat(ctx context.Context, world *World, argv []Node) (Node, error) {
+	return tAndNilToWriter(world, argv, func(_w *_WriterNode, _argv []Node) error {
+		return formatSub(ctx, world, _w, _argv)
+	})
 }

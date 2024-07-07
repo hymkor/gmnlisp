@@ -14,8 +14,8 @@ func init() {
 
 var regexpCache = map[string]*regexp.Regexp{}
 
-func getRegexpParam(list []Node) (*regexp.Regexp, string, error) {
-	_pattern, err := ExpectString(list[0])
+func getRegexpParam(ctx context.Context, w *World, list []Node) (*regexp.Regexp, string, error) {
+	_pattern, err := ExpectClass[String](ctx, w, list[0])
 	if err != nil {
 		return nil, "", err
 	}
@@ -28,7 +28,7 @@ func getRegexpParam(list []Node) (*regexp.Regexp, string, error) {
 			return nil, "", MakeError(err, pattern)
 		}
 	}
-	str, err := ExpectString(list[1])
+	str, err := ExpectClass[String](ctx, w, list[1])
 	if err != nil {
 		return nil, "", err
 	}
@@ -36,7 +36,7 @@ func getRegexpParam(list []Node) (*regexp.Regexp, string, error) {
 }
 
 func funFindAllStringSubmatch(ctx context.Context, w *World, list []Node) (Node, error) {
-	reg, str, err := getRegexpParam(list)
+	reg, str, err := getRegexpParam(ctx, w, list)
 	if err != nil {
 		return nil, err
 	}
@@ -62,7 +62,7 @@ func funFindAllStringSubmatch(ctx context.Context, w *World, list []Node) (Node,
 }
 
 func funFindAllStringSubmatchIndex(ctx context.Context, w *World, list []Node) (Node, error) {
-	reg, str, err := getRegexpParam(list)
+	reg, str, err := getRegexpParam(ctx, w, list)
 	if err != nil {
 		return nil, err
 	}

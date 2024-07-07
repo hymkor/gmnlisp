@@ -70,13 +70,13 @@ func funDevide(ctx context.Context, w *World, args []Node) (Node, error) {
 }
 
 type canLessThan interface {
-	LessThan(Node) (bool, error)
+	LessThan(context.Context, *World, Node) (bool, error)
 }
 
 func funLessThan(ctx context.Context, w *World, args []Node) (Node, error) {
 	return notNullToTrue(inject(args, func(left, right Node) (Node, error) {
 		if _left, ok := left.(canLessThan); ok {
-			result, err := _left.LessThan(right)
+			result, err := _left.LessThan(ctx, w, right)
 			if err != nil {
 				return Null, err
 			}
@@ -92,7 +92,7 @@ func funLessThan(ctx context.Context, w *World, args []Node) (Node, error) {
 func funGreaterThan(ctx context.Context, w *World, args []Node) (Node, error) {
 	return notNullToTrue(inject(args, func(left, right Node) (Node, error) {
 		if _right, ok := right.(canLessThan); ok {
-			result, err := _right.LessThan(left)
+			result, err := _right.LessThan(ctx, w, left)
 			if err != nil {
 				return Null, err
 			}
@@ -119,7 +119,7 @@ func funGreaterOrEqual(ctx context.Context, w *World, args []Node) (Node, error)
 		//     left >= right
 		// <=> not (left < right )
 		if _left, ok := left.(canLessThan); ok {
-			result, err := _left.LessThan(right)
+			result, err := _left.LessThan(ctx, w, right)
 			if err != nil {
 				return Null, err
 			}
@@ -137,7 +137,7 @@ func funLessOrEqual(ctx context.Context, w *World, args []Node) (Node, error) {
 		//     left <= right
 		// <=> not (right < left)
 		if _right, ok := right.(canLessThan); ok {
-			result, err := _right.LessThan(left)
+			result, err := _right.LessThan(ctx, w, left)
 			if err != nil {
 				return Null, err
 			}

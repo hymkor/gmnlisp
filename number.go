@@ -86,8 +86,8 @@ func (i Integer) Divide(n Node) (Node, error) {
 	return nil, err
 }
 
-func (i Integer) LessThan(n Node) (bool, error) {
-	_n, err := ExpectInteger(n)
+func (i Integer) LessThan(ctx context.Context, w *World, n Node) (bool, error) {
+	_n, err := ExpectClass[Integer](ctx, w, n)
 	if err == nil {
 		return i < _n, nil
 	}
@@ -176,8 +176,8 @@ func (f Float) Divide(n Node) (Node, error) {
 	return nil, err
 }
 
-func (f Float) LessThan(n Node) (bool, error) {
-	_n, err := ExpectFloat(n)
+func (f Float) LessThan(ctx context.Context, w *World, n Node) (bool, error) {
+	_n, err := ExpectClass[Float](ctx, w, n)
 	if err == nil {
 		return f < _n, nil
 	}

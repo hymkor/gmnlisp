@@ -12,8 +12,8 @@ func init() {
 	gmnlisp.Export(gmnlisp.NewSymbol("wildcard"), &gmnlisp.Function{F: funWildcard})
 }
 
-func funWildcard(_ context.Context, w *gmnlisp.World, list []gmnlisp.Node) (gmnlisp.Node, error) {
-	pattern, err := gmnlisp.ExpectString(list[0])
+func funWildcard(ctx context.Context, w *gmnlisp.World, list []gmnlisp.Node) (gmnlisp.Node, error) {
+	pattern, err := gmnlisp.ExpectClass[gmnlisp.String](ctx, w, list[0])
 	if err != nil {
 		return nil, err
 	}

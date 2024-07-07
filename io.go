@@ -154,8 +154,8 @@ type inputStream struct {
 	io.Closer
 }
 
-func openInputFile(fname Node) (*inputStream, error) {
-	filename, err := ExpectString(fname)
+func openInputFile(ctx context.Context, w *World, fname Node) (*inputStream, error) {
+	filename, err := ExpectClass[String](ctx, w, fname)
 	if err != nil {
 		return nil, err
 	}
@@ -167,7 +167,7 @@ func openInputFile(fname Node) (*inputStream, error) {
 }
 
 func funOpenInputFile(ctx context.Context, w *World, list []Node) (Node, error) {
-	return openInputFile(list[0])
+	return openInputFile(ctx, w, list[0])
 }
 
 func cmdWithOpenInputFile(ctx context.Context, w *World, list Node) (Node, error) {
@@ -187,7 +187,7 @@ func cmdWithOpenInputFile(ctx context.Context, w *World, list Node) (Node, error
 	if err != nil {
 		return nil, err
 	}
-	stream, err := openInputFile(filename)
+	stream, err := openInputFile(ctx, w, filename)
 	if err != nil {
 		return nil, err
 	}
@@ -207,8 +207,8 @@ func (o *_OutputFileStream) Close() error {
 	return o.closer.Close()
 }
 
-func openOutputFile(fnameNode Node) (*_OutputFileStream, error) {
-	filename, err := ExpectString(fnameNode)
+func openOutputFile(ctx context.Context, w *World, fnameNode Node) (*_OutputFileStream, error) {
+	filename, err := ExpectClass[String](ctx, w, fnameNode)
 	if err != nil {
 		return nil, err
 	}
@@ -220,7 +220,7 @@ func openOutputFile(fnameNode Node) (*_OutputFileStream, error) {
 }
 
 func funOpenOutputFile(ctx context.Context, w *World, list []Node) (Node, error) {
-	return openOutputFile(list[0])
+	return openOutputFile(ctx, w, list[0])
 }
 
 func cmdWithOpenOutputFile(ctx context.Context, w *World, list Node) (Node, error) {
@@ -240,7 +240,7 @@ func cmdWithOpenOutputFile(ctx context.Context, w *World, list Node) (Node, erro
 	if err != nil {
 		return nil, err
 	}
-	stream, err := openOutputFile(filename)
+	stream, err := openOutputFile(ctx, w, filename)
 	if err != nil {
 		return nil, err
 	}

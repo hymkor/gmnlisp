@@ -91,8 +91,8 @@ func (s String) Add(ctx context.Context, w *World, n Node) (Node, error) {
 	return String(news), nil
 }
 
-func (s String) LessThan(n Node) (bool, error) {
-	ns, err := ExpectString(n)
+func (s String) LessThan(ctx context.Context, w *World, n Node) (bool, error) {
+	ns, err := ExpectClass[String](ctx, w, n)
 	if err != nil {
 		return false, err
 	}
@@ -114,12 +114,12 @@ func funStringAppend(ctx context.Context, w *World, list []Node) (Node, error) {
 	return String(buffer.String()), nil
 }
 
-func compareString(argv []Node, f func(int) bool) (Node, error) {
-	left, err := ExpectString(argv[0])
+func compareString(ctx context.Context, w *World, argv []Node, f func(int) bool) (Node, error) {
+	left, err := ExpectClass[String](ctx, w, argv[0])
 	if err != nil {
 		return nil, err
 	}
-	right, err := ExpectString(argv[1])
+	right, err := ExpectClass[String](ctx, w, argv[1])
 	if err != nil {
 		return nil, err
 	}
@@ -131,22 +131,22 @@ func compareString(argv []Node, f func(int) bool) (Node, error) {
 }
 
 func funStringLt(ctx context.Context, w *World, argv []Node) (Node, error) {
-	return compareString(argv, func(cmp int) bool { return cmp < 0 })
+	return compareString(ctx, w, argv, func(cmp int) bool { return cmp < 0 })
 }
 func funStringLe(ctx context.Context, w *World, argv []Node) (Node, error) {
-	return compareString(argv, func(cmp int) bool { return cmp <= 0 })
+	return compareString(ctx, w, argv, func(cmp int) bool { return cmp <= 0 })
 }
 func funStringEq(ctx context.Context, w *World, argv []Node) (Node, error) {
-	return compareString(argv, func(cmp int) bool { return cmp == 0 })
+	return compareString(ctx, w, argv, func(cmp int) bool { return cmp == 0 })
 }
 func funStringGt(ctx context.Context, w *World, argv []Node) (Node, error) {
-	return compareString(argv, func(cmp int) bool { return cmp > 0 })
+	return compareString(ctx, w, argv, func(cmp int) bool { return cmp > 0 })
 }
 func funStringGe(ctx context.Context, w *World, argv []Node) (Node, error) {
-	return compareString(argv, func(cmp int) bool { return cmp >= 0 })
+	return compareString(ctx, w, argv, func(cmp int) bool { return cmp >= 0 })
 }
 func funStringNe(ctx context.Context, w *World, argv []Node) (Node, error) {
-	return compareString(argv, func(cmp int) bool { return cmp != 0 })
+	return compareString(ctx, w, argv, func(cmp int) bool { return cmp != 0 })
 }
 
 func funStringIndex(ctx context.Context, w *World, argv []Node) (Node, error) {
