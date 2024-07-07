@@ -111,7 +111,7 @@ func readSlotSpec(ctx context.Context, w *World, list Node) (*_SlotSpec, error) 
 		if err != nil {
 			return nil, err
 		}
-		keyword, err := ExpectKeyword(_keyword)
+		keyword, err := ExpectClass[Keyword](ctx, w, _keyword)
 		if err != nil {
 			return nil, err
 		}
