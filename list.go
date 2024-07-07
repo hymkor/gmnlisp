@@ -5,8 +5,8 @@ import (
 )
 
 // funGetCar implements (car X)
-func funGetCar(_ context.Context, _ *World, argv []Node) (Node, error) {
-	cons, err := ExpectCons(argv[0])
+func funGetCar(ctx context.Context, w *World, argv []Node) (Node, error) {
+	cons, err := ExpectClass[*Cons](ctx, w, argv[0])
 	if err != nil {
 		return nil, err
 	}
@@ -14,8 +14,8 @@ func funGetCar(_ context.Context, _ *World, argv []Node) (Node, error) {
 }
 
 // funGetCdr implements (cdr X)
-func funGetCdr(_ context.Context, _ *World, argv []Node) (Node, error) {
-	cons, err := ExpectCons(argv[0])
+func funGetCdr(ctx context.Context, w *World, argv []Node) (Node, error) {
+	cons, err := ExpectClass[*Cons](ctx, w, argv[0])
 	if err != nil {
 		return nil, err
 	}
@@ -34,12 +34,12 @@ func funList(_ context.Context, _ *World, list []Node) (Node, error) {
 	return cons, nil
 }
 
-func lastOfList(node Node) (*Cons, error) {
+func lastOfList(ctx context.Context, w *World, node Node) (*Cons, error) {
 	for {
 		if IsNone(node) {
 			return nil, nil
 		}
-		cons, err := ExpectCons(node)
+		cons, err := ExpectClass[*Cons](ctx, w, node)
 		if err != nil {
 			return nil, err
 		}
@@ -51,11 +51,11 @@ func lastOfList(node Node) (*Cons, error) {
 }
 
 // funLast implements (last LIST)
-func funLast(_ context.Context, _ *World, list []Node) (Node, error) {
+func funLast(ctx context.Context, w *World, list []Node) (Node, error) {
 	if IsNone(list[0]) {
 		return Null, nil
 	}
-	tail, err := lastOfList(list[0])
+	tail, err := lastOfList(ctx, w, list[0])
 	if err != nil {
 		return nil, err
 	}
@@ -87,7 +87,7 @@ func funAppend(ctx context.Context, w *World, list []Node) (Node, error) {
 		}
 	}
 	head := buffer.Sequence()
-	tail, err := lastOfList(head)
+	tail, err := lastOfList(ctx, w, head)
 	if err != nil {
 		return nil, err
 	}
@@ -116,7 +116,7 @@ func funListp(_ context.Context, _ *World, argv []Node) (Node, error) {
 
 // funAssoc implements (assoc KEY LIST)
 
-func Assoc(key Node, list Node) (Node, error) {
+func Assoc(ctx context.Context, w *World, key Node, list Node) (Node, error) {
 	for IsSome(list) {
 		var element Node
 		var err error
@@ -125,7 +125,7 @@ func Assoc(key Node, list Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		cons, err := ExpectCons(element)
+		cons, err := ExpectClass[*Cons](ctx, w, element)
 		if err != nil {
 			return nil, err
 		}
@@ -136,13 +136,13 @@ func Assoc(key Node, list Node) (Node, error) {
 	return Null, nil
 }
 
-func funAssoc(_ context.Context, _ *World, argv []Node) (Node, error) {
-	return Assoc(argv[0], argv[1])
+func funAssoc(ctx context.Context, w *World, argv []Node) (Node, error) {
+	return Assoc(ctx, w, argv[0], argv[1])
 }
 
 // funSetCar implements (set-car X Y) == (setf (car X) Y)
-func funSetCar(_ context.Context, _ *World, argv []Node) (Node, error) {
-	cons, err := ExpectCons(argv[1])
+func funSetCar(ctx context.Context, w *World, argv []Node) (Node, error) {
+	cons, err := ExpectClass[*Cons](ctx, w, argv[1])
 	if err != nil {
 		return nil, err
 	}
@@ -151,8 +151,8 @@ func funSetCar(_ context.Context, _ *World, argv []Node) (Node, error) {
 }
 
 // funSetCdr implements (replacd X Y) == (setf (cdr X) Y)
-func funSetCdr(_ context.Context, _ *World, argv []Node) (Node, error) {
-	cons, err := ExpectCons(argv[1])
+func funSetCdr(ctx context.Context, w *World, argv []Node) (Node, error) {
+	cons, err := ExpectClass[*Cons](ctx, w, argv[1])
 	if err != nil {
 		return nil, err
 	}

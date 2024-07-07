@@ -277,10 +277,10 @@ func Reverse(list Node) (Node, error) {
 	return result, nil
 }
 
-func NReverse(list Node) (Node, error) {
+func NReverse(ctx context.Context, w *World, list Node) (Node, error) {
 	var result Node = Null
 	for IsSome(list) {
-		cons, err := ExpectCons(list)
+		cons, err := ExpectClass[*Cons](ctx, w, list)
 		if err != nil {
 			return nil, err
 		}
@@ -295,8 +295,8 @@ func funReverse(_ context.Context, _ *World, argv []Node) (Node, error) {
 	return Reverse(argv[0])
 }
 
-func funNReverse(_ context.Context, _ *World, argv []Node) (Node, error) {
-	return NReverse(argv[0])
+func funNReverse(ctx context.Context, w *World, argv []Node) (Node, error) {
+	return NReverse(ctx, w, argv[0])
 }
 
 type SeqBuilder interface {

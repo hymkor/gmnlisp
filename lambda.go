@@ -126,7 +126,7 @@ func expandMacroInList(ctx context.Context, w *World, code Node) (Node, error) {
 		}
 		newCode = &Cons{Car: value, Cdr: newCode}
 	}
-	return NReverse(newCode)
+	return NReverse(ctx, w, newCode)
 }
 
 func newLambda(ctx context.Context, w *World, node Node, blockName Symbol) (Callable, error) {
@@ -251,7 +251,7 @@ func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
 			}
 		}
 		var err error
-		lexical[L.rest], err = NReverse(values)
+		lexical[L.rest], err = NReverse(ctx, w, values)
 		if err != nil {
 			return nil, err
 		}
@@ -326,7 +326,7 @@ func testCarIsCurrFunc(ctx context.Context, w *World, target Node, currFunc Symb
 		}
 		evaled = &Cons{Car: value, Cdr: evaled}
 	}
-	evaled, err = NReverse(evaled)
+	evaled, err = NReverse(ctx, w, evaled)
 	if err != nil {
 		panic(err.Error())
 	}
