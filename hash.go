@@ -58,7 +58,7 @@ func canUseHashKey(value Node) bool {
 }
 
 func funGetHash(ctx context.Context, w *World, args []Node) (Node, error) {
-	hash, err := ExpectHash(args[1])
+	hash, err := ExpectClass[_Hash](ctx, w, args[1])
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +73,7 @@ func funGetHash(ctx context.Context, w *World, args []Node) (Node, error) {
 }
 
 func funSetHash(ctx context.Context, w *World, args []Node) (Node, error) {
-	hash, err := ExpectHash(args[2])
+	hash, err := ExpectClass[_Hash](ctx, w, args[2])
 	if err != nil {
 		return nil, err
 	}
@@ -85,7 +85,7 @@ func funSetHash(ctx context.Context, w *World, args []Node) (Node, error) {
 }
 
 func funHashTableCount(ctx context.Context, w *World, args []Node) (Node, error) {
-	hash, err := ExpectHash(args[0])
+	hash, err := ExpectClass[_Hash](ctx, w, args[0])
 	if err != nil {
 		return nil, err
 	}
@@ -93,7 +93,7 @@ func funHashTableCount(ctx context.Context, w *World, args []Node) (Node, error)
 }
 
 func funRemoveHash(ctx context.Context, w *World, args []Node) (Node, error) {
-	hash, err := ExpectHash(args[1])
+	hash, err := ExpectClass[_Hash](ctx, w, args[1])
 	if err != nil {
 		return nil, err
 	}
@@ -105,7 +105,7 @@ func funRemoveHash(ctx context.Context, w *World, args []Node) (Node, error) {
 }
 
 func funClearHash(ctx context.Context, w *World, args []Node) (Node, error) {
-	hash, err := ExpectHash(args[0])
+	hash, err := ExpectClass[_Hash](ctx, w, args[0])
 	if err != nil {
 		return nil, err
 	}
@@ -113,8 +113,4 @@ func funClearHash(ctx context.Context, w *World, args []Node) (Node, error) {
 		delete(hash, key)
 	}
 	return Null, nil
-}
-
-func ExpectHash(v Node) (_Hash, error) {
-	return ExpectType[_Hash](v)
 }
