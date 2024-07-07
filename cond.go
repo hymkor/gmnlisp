@@ -11,7 +11,7 @@ func cmdWithHandler(ctx context.Context, w *World, node Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	handler, err := ExpectFunction(_handler)
+	handler, err := ExpectFunction(ctx, w, _handler)
 	if err != nil {
 		return nil, err
 	}

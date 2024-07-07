@@ -411,7 +411,7 @@ func cmdFunCall(ctx context.Context, w *World, node Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	_f, err := ExpectFunction(f)
+	_f, err := ExpectFunction(ctx, w, f)
 	if err != nil {
 		return nil, err
 	}
@@ -423,7 +423,7 @@ func cmdApply(ctx context.Context, w *World, list Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	f, err := ExpectFunction(funcNode)
+	f, err := ExpectFunction(ctx, w, funcNode)
 	if err != nil {
 		return nil, err
 	}
@@ -553,7 +553,7 @@ func (L *LispString) Call(ctx context.Context, w *World, n Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	f, err := ExpectFunction(compile)
+	f, err := ExpectFunction(ctx, w, compile)
 	if err != nil {
 		return nil, fmt.Errorf("(*LispString) Call: %w", err)
 	}

@@ -232,7 +232,7 @@ func cmdDefMethod(ctx context.Context, w *World, node Node) (Node, error) {
 }
 
 func funGenericFunctionP(ctx context.Context, w *World, node []Node) (Node, error) {
-	f, err := ExpectFunction(node[0])
+	f, err := ExpectFunction(ctx, w, node[0])
 	if err != nil {
 		return Null, nil
 	}

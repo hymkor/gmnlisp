@@ -121,7 +121,7 @@ func MapCar(ctx context.Context, w *World, funcNode Node, sourceSet []Node, stor
 	if err != nil {
 		return err
 	}
-	_f, err := ExpectFunction(f)
+	_f, err := ExpectFunction(ctx, w, f)
 	if err != nil {
 		return err
 	}
@@ -198,7 +198,7 @@ func mapList(ctx context.Context, w *World, funcNode Node, sourceSet []Node, sto
 	if err != nil {
 		return err
 	}
-	_f, err := ExpectFunction(f)
+	_f, err := ExpectFunction(ctx, w, f)
 	if err != nil {
 		return err
 	}

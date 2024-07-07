@@ -67,8 +67,8 @@ func cmdFunction(ctx context.Context, w *World, node Node) (Node, error) {
 	return FunctionRef{value: f}, nil
 }
 
-func ExpectFunction(value Node) (Callable, error) {
-	v, err := ExpectType[FunctionRef](value)
+func ExpectFunction(ctx context.Context, w *World, value Node) (Callable, error) {
+	v, err := ExpectClass[FunctionRef](ctx, w, value)
 	if err != nil {
 		return nil, err
 	}

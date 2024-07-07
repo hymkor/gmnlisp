@@ -206,7 +206,7 @@ func funMacroExpand(ctx context.Context, w *World, args []Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		macro, err = ExpectFunction(_macro)
+		macro, err = ExpectFunction(ctx, w, _macro)
 		if err != nil {
 			return nil, err
 		}
