@@ -9,15 +9,19 @@ import (
 
 type Sequence interface {
 	FirstAndRest() (Node, Node, bool)
+	Node
 }
 
-func SeqEach(list Node, f func(Node) error) error {
+var listClass = registerNewBuiltInClass[Sequence]("<list>")
+
+func SeqEach(ctx context.Context, w *World, list Node, f func(Node) error) error {
 	for IsSome(list) {
-		seq, ok := list.(Sequence)
-		if !ok {
-			return ErrExpectedSequence
+		seq, err := ExpectInterface[Sequence](ctx, w, list, listClass)
+		if err != nil {
+			return err
 		}
 		var value Node
+		var ok bool
 
 		value, list, ok = seq.FirstAndRest()
 		if !ok {
@@ -107,9 +111,9 @@ func funElt(ctx context.Context, w *World, args []Node) (Node, error) {
 	return value, nil
 }
 
-func funLength(_ context.Context, _ *World, argv []Node) (Node, error) {
+func funLength(ctx context.Context, w *World, argv []Node) (Node, error) {
 	length := 0
-	err := SeqEach(argv[0], func(_ Node) error {
+	err := SeqEach(ctx, w, argv[0], func(_ Node) error {
 		length++
 		return nil
 	})
@@ -320,7 +324,7 @@ func funSubSeq(ctx context.Context, w *World, args []Node) (Node, error) {
 		buffer = &ListBuilder{}
 	}
 	count := Integer(0)
-	err = SeqEach(args[0], func(value Node) (e error) {
+	err = SeqEach(ctx, w, args[0], func(value Node) (e error) {
 		if count >= end {
 			return io.EOF
 		}
@@ -333,14 +337,14 @@ func funSubSeq(ctx context.Context, w *World, args []Node) (Node, error) {
 	return buffer.Sequence(), ignoreEOF(err)
 }
 
-func funMember(c context.Context, w *World, argv []Node) (Node, error) {
+func funMember(ctx context.Context, w *World, argv []Node) (Node, error) {
 	expr := argv[0]
 	list := argv[1]
 
 	for IsSome(list) {
-		seq, ok := list.(Sequence)
-		if !ok {
-			return nil, ErrExpectedSequence
+		seq, err := ExpectInterface[Sequence](ctx, w, list, listClass)
+		if err != nil {
+			return nil, err
 		}
 		value, rest, ok := seq.FirstAndRest()
 		if !ok {

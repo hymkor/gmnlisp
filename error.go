@@ -65,12 +65,11 @@ func funDomainErrorExpectedClass(ctx context.Context, w *World, args []Node) (No
 	return e.ExpectedClass, nil
 }
 
-func ExpectClass[T Node](ctx context.Context, w *World, v Node) (T, error) {
+func ExpectInterface[T Node](ctx context.Context, w *World, v Node, class Class) (T, error) {
 	value, ok := v.(T)
 	if ok {
 		return value, nil
 	}
-	class := value.ClassOf() // .ClassOf must be called even when value is nil
 	condition := &DomainError{
 		Object:        v,
 		ExpectedClass: class,
@@ -85,6 +84,11 @@ func ExpectClass[T Node](ctx context.Context, w *World, v Node) (T, error) {
 		}
 	}
 	return value, condition
+}
+
+func ExpectClass[T Node](ctx context.Context, w *World, v Node) (T, error) {
+	class := v.ClassOf() // .ClassOf must be called even when value is nil
+	return ExpectInterface[T](ctx, w, v, class)
 }
 
 type _UndefinedEntity struct {
