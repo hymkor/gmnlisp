@@ -178,7 +178,7 @@ func (A *Array) Elt(n int) (Node, error) {
 }
 
 func funAref(ctx context.Context, w *World, args []Node) (Node, error) {
-	array, err := ExpectArray(args[0])
+	array, err := ExpectClass[*Array](ctx, w, args[0])
 	if err != nil {
 		return nil, err
 	}
@@ -208,7 +208,7 @@ func funAref(ctx context.Context, w *World, args []Node) (Node, error) {
 func funSetAref(ctx context.Context, w *World, args []Node) (Node, error) {
 	newValue := args[0]
 
-	array, err := ExpectArray(args[1])
+	array, err := ExpectClass[*Array](ctx, w, args[1])
 	if err != nil {
 		return nil, err
 	}
@@ -232,7 +232,7 @@ func funSetAref(ctx context.Context, w *World, args []Node) (Node, error) {
 			dim:  array.dim[1:],
 		}
 	}
-	_newValue, err := ExpectArray(newValue)
+	_newValue, err := ExpectClass[*Array](ctx, w, newValue)
 	if err != nil {
 		return nil, err
 	}
@@ -241,7 +241,7 @@ func funSetAref(ctx context.Context, w *World, args []Node) (Node, error) {
 }
 
 func funArrayDimensions(ctx context.Context, w *World, args []Node) (Node, error) {
-	array, err := ExpectArray(args[0])
+	array, err := ExpectClass[*Array](ctx, w, args[0])
 	if err != nil {
 		return nil, err
 	}
@@ -277,8 +277,4 @@ func funGeneralArray(_ context.Context, w *World, args []Node) (Node, error) {
 		return True, nil
 	}
 	return Null, nil
-}
-
-func ExpectArray(v Node) (*Array, error) {
-	return ExpectType[*Array](v)
 }
