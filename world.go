@@ -281,6 +281,8 @@ var autoLoadFunc = Functions{
 	NewSymbol("append"):                      &Function{F: funAppend},
 	NewSymbol("apply"):                       SpecialF(cmdApply),
 	NewSymbol("aref"):                        &Function{F: funAref},
+	NewSymbol("arithmetic-error-operands"):   &Function{F: funArithmeticErrorOperands},
+	NewSymbol("arithmetic-error-operation"):  &Function{F: funArithmeticErrorOperation},
 	NewSymbol("array-dimensions"):            &Function{C: 1, F: funArrayDimensions},
 	NewSymbol("assoc"):                       &Function{C: 2, F: funAssoc},
 	NewSymbol("assure"):                      &Function{F: funAssure},

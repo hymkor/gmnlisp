@@ -125,6 +125,22 @@ func raiseDivisionByZero(ctx context.Context, w *World, m, n Node) (Node, error)
 	})
 }
 
+func funArithmeticErrorOperation(ctx context.Context, w *World, n []Node) (Node, error) {
+	e, err := ExpectClass[*ArithmeticError](ctx, w, n[0])
+	if err != nil {
+		return nil, err
+	}
+	return e.Operation, nil
+}
+
+func funArithmeticErrorOperands(ctx context.Context, w *World, n []Node) (Node, error) {
+	e, err := ExpectClass[*ArithmeticError](ctx, w, n[0])
+	if err != nil {
+		return nil, err
+	}
+	return e.Operands, nil
+}
+
 func (i Integer) Divide(ctx context.Context, w *World, n Node) (Node, error) {
 	_n, err := ExpectClass[Integer](ctx, w, n)
 	if err == nil {
