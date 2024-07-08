@@ -1,8 +1,11 @@
 - `(equal)` でユーザ定義クラスのオジェクトの比較が常に不一致になる問題を修正
-- `(assure)`, `(the)`, `(max)`, `(min)` を実装
+- `(assure)`, `(the)`, `(max)`, `(min)`, `(eval)`, `(arithmetic-error-operation)`, `(arithmetic-error-operands)`
 - 任意の組み込みクラス CLASS において `(subclassp CLASS <built-in-class>)` , `(subclassp CLASS <object>)` がともに `t` になるようにした
 - 関数内のマクロは関数定義時に展開するようにした(今まで常に呼び出し時に行っていた)
 - `(defun)` 定義内容を表示する `(expand-defun)` を実装
+- 配列リテラルを評価した時に各要素全てを再評価すべきではなかった点を修正
+- cons を表示する時、car 成分が nil だとクラッシュする不具合を修正
+- `(for)` の結果が nil になってしまう場合がある不具合を修正
 
 v0.7.0
 ======
