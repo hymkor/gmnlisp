@@ -91,7 +91,11 @@ func (cons *Cons) writeToWithoutKakko(w io.Writer, m PrintMode) (int, error) {
 						return wc.Result()
 					}
 				}
-				if wc.Try(p.Car.PrintTo(w, m)) {
+				if IsNull(p.Car) {
+					if wc.Try(Null.PrintTo(w, m)) {
+						return wc.Result()
+					}
+				} else if wc.Try(p.Car.PrintTo(w, m)) {
 					return wc.Result()
 				}
 				lastCar = p.Car
