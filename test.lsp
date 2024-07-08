@@ -312,7 +312,7 @@
 ;;; test for elt
 (test (elt '(a b c) 2)
       'c)
-(test (elt #('a 'b 'c) 1)
+(test (elt #(a b c) 1)
       'b)
 (test (elt "abc" 0)
       #\a)
