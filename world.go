@@ -258,7 +258,6 @@ var autoLoadVars = Variables{
 	NewSymbol("most-negative-fixnum"):     Integer(math.MinInt),
 	NewSymbol("most-positive-fixnum"):     Integer(math.MaxInt),
 	NewSymbol("pi"):                       Float(math.Pi),
-	domainErrorClass.name:                 domainErrorClass,
 	objectClass.name:                      objectClass,
 	builtInClass.name:                     builtInClass,
 	standardClass.name:                    standardClass,
