@@ -710,12 +710,13 @@ Items without checkboxes are not standard functions
 #### 21.3 Data associated with condition classes
 ##### 21.3.1 Arithmetic errors
 
-- [ ] arithmetic-error-operands
+- [x] arithmetic-error-operation
+- [x] arithmetic-error-operands
 
 ##### 21.3.2 Domain errors
 
-- [ ] domain-error-object
-- [ ] domain-error-expected-class
+- [x] domain-error-object
+- [x] domain-error-expected-class
 
 ##### 21.3.3 Parse errors
 
@@ -750,12 +751,12 @@ Items without checkboxes are not standard functions
     - [ ] cannot-create-vector
 - [ ] \<parse-error\>, cannot-parse-number
 - [ ] \<control-error\>, control-error
-- [ ] \<devision-by-zero\>, division-by-zero
+- [x] \<devision-by-zero\>, division-by-zero
 - [ ] \<domain-error\>
     - not-an-input-stream
     - not-an-output-stream
 - [ ] \<end-of-stream\>, end-of-stream
-- [ ] \<undefined-entity\> , undefined-entity
+- [x] \<undefined-entity\> , undefined-entity
     - [x] \<unbound-variable\> , unbound-variable
     - [x] \<undefined-function\>, undefined-function
 
