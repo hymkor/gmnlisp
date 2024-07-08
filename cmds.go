@@ -57,39 +57,29 @@ func funAtom(_ context.Context, _ *World, arg Node) (Node, error) {
 	return True, nil
 }
 
-func equalSub(ctx context.Context, w *World, list Node, eq func(Node, Node) bool) (Node, error) {
-	first, rest, err := w.ShiftAndEvalCar(ctx, list)
-	if err != nil {
-		return nil, err
-	}
-	for IsSome(rest) {
-		var next Node
-
-		next, rest, err = w.ShiftAndEvalCar(ctx, rest)
-		if err != nil {
-			return nil, err
-		}
+func equalSub(ctx context.Context, w *World, list []Node, eq func(Node, Node) bool) (Node, error) {
+	first := list[0]
+	for _, next := range list[1:] {
 		if !eq(first, next) {
 			return Null, nil
 		}
 	}
 	return True, nil
-
 }
 
-func cmdEq(ctx context.Context, w *World, list Node) (Node, error) {
+func funEq(ctx context.Context, w *World, list []Node) (Node, error) {
 	return equalSub(ctx, w, list, func(left, right Node) bool {
 		return left == right
 	})
 }
 
-func cmdEql(ctx context.Context, w *World, list Node) (Node, error) {
+func funEql(ctx context.Context, w *World, list []Node) (Node, error) {
 	return equalSub(ctx, w, list, func(left, right Node) bool {
 		return left.Equals(right, STRICT)
 	})
 }
 
-func cmdEqual(ctx context.Context, w *World, list Node) (Node, error) {
+func funEqual(ctx context.Context, w *World, list []Node) (Node, error) {
 	return equalSub(ctx, w, list, func(left, right Node) bool {
 		return left.Equals(right, EQUAL)
 	})
