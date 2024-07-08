@@ -269,7 +269,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("="):                           &Function{F: funEqualOp},
 	NewSymbol(">"):                           &Function{F: funGreaterThan},
 	NewSymbol(">="):                          &Function{F: funGreaterOrEqual},
-	NewSymbol("abort"):                       Function0(cmdAbort),
+	NewSymbol("abort"):                       Function0(funAbort),
 	NewSymbol("and"):                         SpecialF(cmdAnd),
 	NewSymbol("append"):                      &Function{F: funAppend},
 	NewSymbol("apply"):                       SpecialF(cmdApply),
@@ -349,7 +349,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("gensym"):                      Function0(funGensym),
 	NewSymbol("get-output-stream-string"):    Function1(funGetOutputStreamString),
 	NewSymbol("gethash"):                     Function2(funGetHash),
-	NewSymbol("gmn:dump-session"):            SpecialF(cmdDumpSession),
+	NewSymbol("gmn:dump-session"):            Function0(funDumpSession),
 	NewSymbol("go"):                          SpecialF(cmdGo),
 	NewSymbol("hash-table-count"):            Function1(funHashTableCount),
 	NewSymbol("if"):                          SpecialF(cmdIf),
@@ -612,7 +612,7 @@ func (w *World) Range(f func(Symbol, Node) bool) {
 	}
 }
 
-func cmdDumpSession(_ context.Context, w *World, _ Node) (Node, error) {
+func funDumpSession(_ context.Context, w *World) (Node, error) {
 	out := w.stdout
 	var err error
 	w.Range(func(key Symbol, val Node) bool {

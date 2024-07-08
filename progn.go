@@ -233,7 +233,7 @@ func funQuit(context.Context, *World) (Node, error) {
 	return Null, ErrQuit
 }
 
-func cmdAbort(context.Context, *World) (Node, error) {
+func funAbort(context.Context, *World) (Node, error) {
 	return Null, ErrAbort
 }
 
