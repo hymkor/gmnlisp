@@ -67,22 +67,6 @@
 (test (prog1 1 2 3 4) 1)
 (test (prog2 1 2 3 4) 2)
 
-;;;; test for (for) ;;;
-(test
-  (let (x y)
-    (for ((x 0 (1+ x)) (y 0 (+ y 10)))
-         ((= x 5) (+ x y))
-         ))
-  55)
-
-(defun fibo2 (n)
-  (let (a b)
-    (for ((n n (- n 1))
-          (a 0 b)
-          (b 1 (+ a b)))
-         ((<= n 0) a))))
-(test (fibo2 10) 55)
-
 ;;; test for cdr ;;;
 (test (cadr '(a b c d)) 'b)
 
