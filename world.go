@@ -210,10 +210,7 @@ func (w *World) Set(name Symbol, value Node) error {
 	return &_UndefinedEntity{name: name, space: symVariable}
 }
 
-func cmdStandardOutput(ctx context.Context, w *World, list Node) (Node, error) {
-	if IsSome(list) {
-		return nil, ErrTooManyArguments
-	}
+func funStandardOutput(ctx context.Context, w *World) (Node, error) {
 	return w.stdout, nil
 }
 
@@ -225,10 +222,7 @@ func (w *World) SetStdout(writer io.Writer) {
 	w.stdout = &_WriterNode{_Writer: writer}
 }
 
-func cmdErrorOutput(ctx context.Context, w *World, list Node) (Node, error) {
-	if IsSome(list) {
-		return nil, ErrTooManyArguments
-	}
+func funErrorOutput(ctx context.Context, w *World) (Node, error) {
 	return w.errout, nil
 }
 
@@ -240,7 +234,7 @@ func (w *World) SetErrout(writer io.Writer) {
 	w.errout = &_WriterNode{_Writer: writer}
 }
 
-func cmdStandardInput(ctx context.Context, w *World, list Node) (Node, error) {
+func funStandardInput(ctx context.Context, w *World) (Node, error) {
 	return w.stdin, nil
 }
 func (w *World) Stdin() _ReaderNode {
@@ -275,7 +269,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("="):                           &Function{F: funEqualOp},
 	NewSymbol(">"):                           &Function{F: funGreaterThan},
 	NewSymbol(">="):                          &Function{F: funGreaterOrEqual},
-	NewSymbol("abort"):                       SpecialF(cmdAbort),
+	NewSymbol("abort"):                       Function0(cmdAbort),
 	NewSymbol("and"):                         SpecialF(cmdAnd),
 	NewSymbol("append"):                      &Function{F: funAppend},
 	NewSymbol("apply"):                       SpecialF(cmdApply),
@@ -316,7 +310,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("create-list"):                 &Function{Min: 2, F: funCreateList},
 	NewSymbol("create-string"):               &Function{F: funCreateString},
 	NewSymbol("create-string-input-stream"):  &Function{C: 1, F: funCreateStringInputStream},
-	NewSymbol("create-string-output-stream"): SpecialF(cmdCreateStringOutputStream),
+	NewSymbol("create-string-output-stream"): Function0(funCreateStringOutputStream),
 	NewSymbol("defclass"):                    SpecialF(cmdDefClass),
 	NewSymbol("defconstant"):                 SpecialF(cmdDefglobal),
 	NewSymbol("defdynamic"):                  SpecialF(cmdDefDynamic),
@@ -334,9 +328,9 @@ var autoLoadFunc = Functions{
 	NewSymbol("eql"):                         SpecialF(cmdEql),
 	NewSymbol("equal"):                       SpecialF(cmdEqual),
 	NewSymbol("equalp"):                      &Function{F: funEqualOp},
-	NewSymbol("error-output"):                SpecialF(cmdErrorOutput),
+	NewSymbol("error-output"):                Function0(funErrorOutput),
 	NewSymbol("evenp"):                       &Function{C: 1, F: funEvenp},
-	NewSymbol("exit"):                        SpecialF(cmdQuit),
+	NewSymbol("exit"):                        Function0(funQuit),
 	NewSymbol("expand-defun"):                SpecialF(cmdExpandDefun),
 	NewSymbol("file-length"):                 &Function{C: 2, F: funFileLength},
 	NewSymbol("flet"):                        SpecialF(cmdFlet),
@@ -352,7 +346,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("functionp"):                   &Function{C: 1, F: funAnyTypep[FunctionRef]},
 	NewSymbol("general-array*-p"):            &Function{C: 1, F: funGeneralArray},
 	NewSymbol("generic-function-p"):          &Function{C: 1, F: funGenericFunctionP},
-	NewSymbol("gensym"):                      SpecialF(cmdGensym),
+	NewSymbol("gensym"):                      Function0(funGensym),
 	NewSymbol("get-output-stream-string"):    &Function{C: 1, F: funGetOutputStreamString},
 	NewSymbol("gethash"):                     &Function{C: 2, F: funGetHash},
 	NewSymbol("gmn:dump-session"):            SpecialF(cmdDumpSession),
@@ -373,7 +367,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("listp"):                       &Function{C: 1, F: funListp},
 	NewSymbol("load"):                        &Function{C: 1, F: funLoad},
 	NewSymbol("macroexpand"):                 &Function{C: 1, F: funMacroExpand},
-	NewSymbol("make-hash-table"):             SpecialF(cmdMakeHashTable),
+	NewSymbol("make-hash-table"):             Function0(funMakeHashTable),
 	NewSymbol("mapc"):                        &Function{F: funMapC},
 	NewSymbol("mapcan"):                      &Function{F: funMapCan},
 	NewSymbol("mapcar"):                      &Function{F: funMapCar},
@@ -397,7 +391,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("progn"):                       SpecialF(cmdProgn),
 	NewSymbol("psetq"):                       SpecialF(cmdPSetq),
 	NewSymbol("quasiquote"):                  SpecialF(cmdQuasiQuote),
-	NewSymbol("quit"):                        SpecialF(cmdQuit),
+	NewSymbol("quit"):                        Function0(funQuit),
 	NewSymbol("quote"):                       SpecialF(cmdQuote),
 	NewSymbol("read"):                        &Function{Max: 3, F: funRead},
 	NewSymbol("read-char"):                   &Function{Max: 3, F: funReadChar},
@@ -416,8 +410,8 @@ var autoLoadFunc = Functions{
 	NewSymbol("setq"):                        SpecialF(cmdSetq),
 	NewSymbol("signal-condition"):            &Function{C: 2, F: funSignalCondition},
 	NewSymbol("sqrt"):                        &Function{C: 1, F: funSqrt},
-	NewSymbol("standard-input"):              SpecialF(cmdStandardInput),
-	NewSymbol("standard-output"):             SpecialF(cmdStandardOutput),
+	NewSymbol("standard-input"):              Function0(funStandardInput),
+	NewSymbol("standard-output"):             Function0(funStandardOutput),
 	NewSymbol("string-append"):               &Function{F: funStringAppend},
 	NewSymbol("string-index"):                &Function{F: funStringIndex},
 	NewSymbol("string/="):                    &Function{C: 2, F: funStringNe},

@@ -94,7 +94,7 @@ func genSym() Symbol {
 	return NewSymbol(fmt.Sprintf("-gensym-%d-", symbolManager.Count()))
 }
 
-func cmdGensym(ctx context.Context, w *World, node Node) (Node, error) {
+func funGensym(ctx context.Context, w *World) (Node, error) {
 	return genSym(), nil
 }
 

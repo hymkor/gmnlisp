@@ -486,6 +486,15 @@ func cmdTrace(ctx context.Context, w *World, list Node) (Node, error) {
 	return Null, nil
 }
 
+type Function0 func(context.Context, *World) (Node, error)
+
+func (f Function0) Call(ctx context.Context, w *World, list Node) (Node, error) {
+	if IsSome(list) {
+		return nil, ErrTooManyArguments
+	}
+	return f(ctx, w)
+}
+
 type Function struct {
 	C   int
 	F   func(context.Context, *World, []Node) (Node, error)

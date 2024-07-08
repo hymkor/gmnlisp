@@ -229,11 +229,11 @@ func cmdWhile(ctx context.Context, w *World, n Node) (Node, error) {
 	}
 }
 
-func cmdQuit(context.Context, *World, Node) (Node, error) {
+func funQuit(context.Context, *World) (Node, error) {
 	return Null, ErrQuit
 }
 
-func cmdAbort(context.Context, *World, Node) (Node, error) {
+func cmdAbort(context.Context, *World) (Node, error) {
 	return Null, ErrAbort
 }
 

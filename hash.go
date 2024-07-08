@@ -35,7 +35,7 @@ func (h _Hash) Eval(ctx context.Context, w *World) (Node, error) {
 	return h, nil
 }
 
-func cmdMakeHashTable(ctx context.Context, w *World, _ Node) (Node, error) {
+func funMakeHashTable(ctx context.Context, w *World) (Node, error) {
 	return make(_Hash), nil
 }
 

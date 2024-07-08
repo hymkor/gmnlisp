@@ -137,7 +137,7 @@ func funCreateStringInputStream(ctx context.Context, w *World, list []Node) (Nod
 	return _ReaderNode{_Reader: strings.NewReader(s.String())}, nil
 }
 
-func cmdCreateStringOutputStream(ctx context.Context, w *World, list Node) (Node, error) {
+func funCreateStringOutputStream(ctx context.Context, w *World) (Node, error) {
 	return &StringBuilder{}, nil
 }
 
