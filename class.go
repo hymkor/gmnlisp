@@ -505,14 +505,10 @@ func UnevalList(list ...Node) Node {
 	return result
 }
 
-func cmdCreate(ctx context.Context, w *World, args Node) (Node, error) {
-	_class, args, err := w.ShiftAndEvalCar(ctx, args)
+func funCreate(ctx context.Context, w *World, args []Node) (Node, error) {
+	class, err := ExpectClass[Class](ctx, w, args[0])
 	if err != nil {
 		return nil, err
-	}
-	class, ok := _class.(Class)
-	if !ok {
-		return nil, fmt.Errorf("%v: %w", _class, ErrExpectedClass)
 	}
 	_gen, err := w.GetFunc(symInitializeObject)
 	if err != nil {
@@ -524,7 +520,8 @@ func cmdCreate(ctx context.Context, w *World, args Node) (Node, error) {
 	}
 	rec := class.Create()
 	if _, ok := rec.(*_StandardObject); ok {
-		return gen.Call(ctx, w, &Cons{Car: Uneval{Node: rec}, Cdr: args})
+		newargs := append([]Node{rec}, args[1:]...)
+		return gen.Call(ctx, w, UnevalList(newargs...))
 	}
 	return rec, nil
 }
