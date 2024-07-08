@@ -125,16 +125,16 @@ func raiseDivisionByZero(ctx context.Context, w *World, m, n Node) (Node, error)
 	})
 }
 
-func funArithmeticErrorOperation(ctx context.Context, w *World, n []Node) (Node, error) {
-	e, err := ExpectClass[*ArithmeticError](ctx, w, n[0])
+func funArithmeticErrorOperation(ctx context.Context, w *World, n Node) (Node, error) {
+	e, err := ExpectClass[*ArithmeticError](ctx, w, n)
 	if err != nil {
 		return nil, err
 	}
 	return e.Operation, nil
 }
 
-func funArithmeticErrorOperands(ctx context.Context, w *World, n []Node) (Node, error) {
-	e, err := ExpectClass[*ArithmeticError](ctx, w, n[0])
+func funArithmeticErrorOperands(ctx context.Context, w *World, n Node) (Node, error) {
+	e, err := ExpectClass[*ArithmeticError](ctx, w, n)
 	if err != nil {
 		return nil, err
 	}
@@ -259,8 +259,8 @@ func (f Float) LessThan(ctx context.Context, w *World, n Node) (bool, error) {
 	return false, err
 }
 
-func funSqrt(ctx context.Context, w *World, node []Node) (Node, error) {
-	n, err := ExpectClass[Float](ctx, w, node[0])
+func funSqrt(ctx context.Context, w *World, arg Node) (Node, error) {
+	n, err := ExpectClass[Float](ctx, w, arg)
 	if err != nil {
 		return nil, err
 	}

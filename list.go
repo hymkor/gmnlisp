@@ -5,8 +5,8 @@ import (
 )
 
 // funGetCar implements (car X)
-func funGetCar(ctx context.Context, w *World, argv []Node) (Node, error) {
-	cons, err := ExpectClass[*Cons](ctx, w, argv[0])
+func funGetCar(ctx context.Context, w *World, arg Node) (Node, error) {
+	cons, err := ExpectClass[*Cons](ctx, w, arg)
 	if err != nil {
 		return nil, err
 	}
@@ -14,8 +14,8 @@ func funGetCar(ctx context.Context, w *World, argv []Node) (Node, error) {
 }
 
 // funGetCdr implements (cdr X)
-func funGetCdr(ctx context.Context, w *World, argv []Node) (Node, error) {
-	cons, err := ExpectClass[*Cons](ctx, w, argv[0])
+func funGetCdr(ctx context.Context, w *World, arg Node) (Node, error) {
+	cons, err := ExpectClass[*Cons](ctx, w, arg)
 	if err != nil {
 		return nil, err
 	}
@@ -51,11 +51,11 @@ func lastOfList(ctx context.Context, w *World, node Node) (*Cons, error) {
 }
 
 // funLast implements (last LIST)
-func funLast(ctx context.Context, w *World, list []Node) (Node, error) {
-	if IsNone(list[0]) {
+func funLast(ctx context.Context, w *World, arg Node) (Node, error) {
+	if IsNone(arg) {
 		return Null, nil
 	}
-	tail, err := lastOfList(ctx, w, list[0])
+	tail, err := lastOfList(ctx, w, arg)
 	if err != nil {
 		return nil, err
 	}
@@ -104,11 +104,11 @@ func funCons(_ context.Context, _ *World, argv []Node) (Node, error) {
 }
 
 // funLispp implements (listp VALUE)
-func funListp(_ context.Context, _ *World, argv []Node) (Node, error) {
-	if IsNone(argv[0]) {
+func funListp(_ context.Context, _ *World, arg Node) (Node, error) {
+	if IsNone(arg) {
 		return True, nil
 	}
-	if _, ok := argv[0].(*Cons); ok {
+	if _, ok := arg.(*Cons); ok {
 		return True, nil
 	}
 	return Null, nil

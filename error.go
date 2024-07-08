@@ -49,18 +49,18 @@ func (e *DomainError) Error() string {
 	return e.String()
 }
 
-func funDomainErrorObject(ctx context.Context, w *World, args []Node) (Node, error) {
-	e, ok := args[0].(*DomainError)
-	if !ok {
-		return nil, &DomainError{Object: args[0], ExpectedClass: domainErrorClass}
+func funDomainErrorObject(ctx context.Context, w *World, arg Node) (Node, error) {
+	e, err := ExpectClass[*DomainError](ctx, w, arg)
+	if err != nil {
+		return nil, err
 	}
 	return e.Object, nil
 }
 
-func funDomainErrorExpectedClass(ctx context.Context, w *World, args []Node) (Node, error) {
-	e, ok := args[0].(*DomainError)
-	if !ok {
-		return nil, &DomainError{e, domainErrorClass}
+func funDomainErrorExpectedClass(ctx context.Context, w *World, arg Node) (Node, error) {
+	e, err := ExpectClass[*DomainError](ctx, w, arg)
+	if err != nil {
+		return nil, err
 	}
 	return e.ExpectedClass, nil
 }
@@ -147,17 +147,17 @@ func (u *_UndefinedEntity) ClassOf() Class {
 	return undefinedFunctionClass
 }
 
-func funUndefinedEntityName(ctx context.Context, w *World, args []Node) (Node, error) {
-	entity, err := ExpectClass[*_UndefinedEntity](ctx, w, args[0])
+func funUndefinedEntityName(ctx context.Context, w *World, arg Node) (Node, error) {
+	entity, err := ExpectClass[*_UndefinedEntity](ctx, w, arg)
 	if err != nil {
 		return nil, err
 	}
 	return entity.name, nil
 }
 
-func funUndefinedEntityNamespace(ctx context.Context, w *World, args []Node) (Node, error) {
+func funUndefinedEntityNamespace(ctx context.Context, w *World, arg Node) (Node, error) {
 
-	entity, err := ExpectClass[*_UndefinedEntity](ctx, w, args[0])
+	entity, err := ExpectClass[*_UndefinedEntity](ctx, w, arg)
 	if err != nil {
 		return nil, err
 	}

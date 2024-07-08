@@ -186,33 +186,33 @@ func cmdOr(ctx context.Context, w *World, param Node) (Node, error) {
 	}
 }
 
-func floatToInteger(argv []Node, f func(float64) float64) (Node, error) {
-	if value, ok := argv[0].(Integer); ok {
+func floatToInteger(arg Node, f func(float64) float64) (Node, error) {
+	if value, ok := arg.(Integer); ok {
 		return value, nil
 	}
-	if value, ok := argv[0].(Float); ok {
+	if value, ok := arg.(Float); ok {
 		return Integer(int(f(float64(value)))), nil
 	}
-	return nil, MakeError(ErrNotSupportType, argv[0])
+	return nil, MakeError(ErrNotSupportType, arg)
 }
 
 // funTruncate implements (truncte X). It returns the integer value of X.
-func funTruncate(ctx context.Context, w *World, argv []Node) (Node, error) {
-	return floatToInteger(argv, math.Trunc)
+func funTruncate(ctx context.Context, w *World, arg Node) (Node, error) {
+	return floatToInteger(arg, math.Trunc)
 }
 
 // funFloor implements (truncte X). It returns the greatest integer value less than or equal to x.
-func funFloor(ctx context.Context, w *World, argv []Node) (Node, error) {
-	return floatToInteger(argv, math.Floor)
+func funFloor(ctx context.Context, w *World, arg Node) (Node, error) {
+	return floatToInteger(arg, math.Floor)
 }
 
 // funCeiling implements (ceiling X). It returns the least integer value greater than or equal to x.
-func funCeiling(ctx context.Context, w *World, argv []Node) (Node, error) {
-	return floatToInteger(argv, math.Ceil)
+func funCeiling(ctx context.Context, w *World, arg Node) (Node, error) {
+	return floatToInteger(arg, math.Ceil)
 }
 
-func funRound(ctx context.Context, w *World, argv []Node) (Node, error) {
-	return floatToInteger(argv, math.Round)
+func funRound(ctx context.Context, w *World, arg Node) (Node, error) {
+	return floatToInteger(arg, math.Round)
 }
 
 func funMod(ctx context.Context, w *World, list []Node) (Node, error) {

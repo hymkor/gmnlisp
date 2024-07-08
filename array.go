@@ -240,8 +240,8 @@ func funSetAref(ctx context.Context, w *World, args []Node) (Node, error) {
 	return _newValue, nil
 }
 
-func funArrayDimensions(ctx context.Context, w *World, args []Node) (Node, error) {
-	array, err := ExpectClass[*Array](ctx, w, args[0])
+func funArrayDimensions(ctx context.Context, w *World, arg Node) (Node, error) {
+	array, err := ExpectClass[*Array](ctx, w, arg)
 	if err != nil {
 		return nil, err
 	}
@@ -262,18 +262,18 @@ func funVector(_ context.Context, w *World, args []Node) (Node, error) {
 	}, nil
 }
 
-func funBasicArray(_ context.Context, w *World, args []Node) (Node, error) {
-	if _, ok := args[0].(*Array); ok {
+func funBasicArray(_ context.Context, w *World, arg Node) (Node, error) {
+	if _, ok := arg.(*Array); ok {
 		return True, nil
 	}
-	if _, ok := args[0].(String); ok {
+	if _, ok := arg.(String); ok {
 		return True, nil
 	}
 	return Null, nil
 }
 
-func funGeneralArray(_ context.Context, w *World, args []Node) (Node, error) {
-	if array, ok := args[0].(*Array); ok && len(array.dim) >= 2 {
+func funGeneralArray(_ context.Context, w *World, arg Node) (Node, error) {
+	if array, ok := arg.(*Array); ok && len(array.dim) >= 2 {
 		return True, nil
 	}
 	return Null, nil

@@ -111,9 +111,9 @@ func funElt(ctx context.Context, w *World, args []Node) (Node, error) {
 	return value, nil
 }
 
-func funLength(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funLength(ctx context.Context, w *World, arg Node) (Node, error) {
 	length := 0
-	err := SeqEach(ctx, w, argv[0], func(_ Node) error {
+	err := SeqEach(ctx, w, arg, func(_ Node) error {
 		length++
 		return nil
 	})
@@ -295,12 +295,8 @@ func NReverse(ctx context.Context, w *World, list Node) (Node, error) {
 	return result, nil
 }
 
-func funReverse(_ context.Context, _ *World, argv []Node) (Node, error) {
-	return Reverse(argv[0])
-}
-
-func funNReverse(ctx context.Context, w *World, argv []Node) (Node, error) {
-	return NReverse(ctx, w, argv[0])
+func funReverse(_ context.Context, _ *World, arg Node) (Node, error) {
+	return Reverse(arg)
 }
 
 type SeqBuilder interface {

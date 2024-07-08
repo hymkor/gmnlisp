@@ -121,16 +121,16 @@ func funReadChar(_ context.Context, w *World, argv []Node) (Node, error) {
 	return Rune(ch), err
 }
 
-func funClose(_ context.Context, _ *World, argv []Node) (Node, error) {
-	c, ok := argv[0].(io.Closer)
+func funClose(_ context.Context, _ *World, arg Node) (Node, error) {
+	c, ok := arg.(io.Closer)
 	if !ok {
-		return nil, fmt.Errorf("expected Closer %#v", argv[0])
+		return nil, fmt.Errorf("expected Closer %#v", arg)
 	}
 	return Null, c.Close()
 }
 
-func funCreateStringInputStream(ctx context.Context, w *World, list []Node) (Node, error) {
-	s, err := ExpectClass[String](ctx, w, list[0])
+func funCreateStringInputStream(ctx context.Context, w *World, arg Node) (Node, error) {
+	s, err := ExpectClass[String](ctx, w, arg)
 	if err != nil {
 		return nil, err
 	}
@@ -141,8 +141,8 @@ func funCreateStringOutputStream(ctx context.Context, w *World) (Node, error) {
 	return &StringBuilder{}, nil
 }
 
-func funGetOutputStreamString(ctx context.Context, w *World, list []Node) (Node, error) {
-	stringer, ok := list[0].(fmt.Stringer) // expect StringBuilder
+func funGetOutputStreamString(ctx context.Context, w *World, arg Node) (Node, error) {
+	stringer, ok := arg.(fmt.Stringer) // expect StringBuilder
 	if !ok {
 		return nil, ErrNotSupportType
 	}
@@ -166,8 +166,8 @@ func openInputFile(ctx context.Context, w *World, fname Node) (*inputStream, err
 	return &inputStream{_Reader: bufio.NewReader(reader), Closer: reader}, nil
 }
 
-func funOpenInputFile(ctx context.Context, w *World, list []Node) (Node, error) {
-	return openInputFile(ctx, w, list[0])
+func funOpenInputFile(ctx context.Context, w *World, arg Node) (Node, error) {
+	return openInputFile(ctx, w, arg)
 }
 
 func cmdWithOpenInputFile(ctx context.Context, w *World, list Node) (Node, error) {
@@ -219,8 +219,8 @@ func openOutputFile(ctx context.Context, w *World, fnameNode Node) (*_OutputFile
 	return &_OutputFileStream{Writer: bufio.NewWriter(writer), closer: writer}, nil
 }
 
-func funOpenOutputFile(ctx context.Context, w *World, list []Node) (Node, error) {
-	return openOutputFile(ctx, w, list[0])
+func funOpenOutputFile(ctx context.Context, w *World, arg Node) (Node, error) {
+	return openOutputFile(ctx, w, arg)
 }
 
 func cmdWithOpenOutputFile(ctx context.Context, w *World, list Node) (Node, error) {
@@ -250,8 +250,8 @@ func cmdWithOpenOutputFile(ctx context.Context, w *World, list Node) (Node, erro
 	return Progn(ctx, nw, list)
 }
 
-func funProbeFile(ctx context.Context, w *World, list []Node) (Node, error) {
-	_fname, err := ExpectClass[String](ctx, w, list[0])
+func funProbeFile(ctx context.Context, w *World, arg Node) (Node, error) {
+	_fname, err := ExpectClass[String](ctx, w, arg)
 	if err != nil {
 		return nil, err
 	}

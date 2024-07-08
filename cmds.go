@@ -50,8 +50,8 @@ func cmdQuasiQuote(ctx context.Context, w *World, n Node) (Node, error) {
 	return quasiQuote(ctx, w, value)
 }
 
-func funAtom(_ context.Context, _ *World, argv []Node) (Node, error) {
-	if _, ok := argv[0].(*Cons); ok {
+func funAtom(_ context.Context, _ *World, arg Node) (Node, error) {
+	if _, ok := arg.(*Cons); ok {
 		return Null, nil
 	}
 	return True, nil
@@ -95,15 +95,15 @@ func cmdEqual(ctx context.Context, w *World, list Node) (Node, error) {
 	})
 }
 
-func funNot(_ context.Context, w *World, argv []Node) (Node, error) {
-	if IsNone(argv[0]) {
+func funNot(_ context.Context, w *World, arg Node) (Node, error) {
+	if IsNone(arg) {
 		return True, nil
 	}
 	return Null, nil
 }
 
-func funLoad(ctx context.Context, w *World, argv []Node) (Node, error) {
-	fname, err := ExpectClass[String](ctx, w, argv[0])
+func funLoad(ctx context.Context, w *World, arg Node) (Node, error) {
+	fname, err := ExpectClass[String](ctx, w, arg)
 	if err != nil {
 		return nil, err
 	}
@@ -121,12 +121,12 @@ func funNotEqual(_ context.Context, _ *World, argv []Node) (Node, error) {
 	return True, nil
 }
 
-func xxxxP(args []Node, f1 func(Integer) bool, f2 func(Float) bool) (Node, error) {
-	if value, ok := args[0].(Integer); ok {
+func xxxxP(arg Node, f1 func(Integer) bool, f2 func(Float) bool) (Node, error) {
+	if value, ok := arg.(Integer); ok {
 		if f1(value) {
 			return True, nil
 		}
-	} else if value, ok := args[0].(Float); ok {
+	} else if value, ok := arg.(Float); ok {
 		if f2(value) {
 			return True, nil
 		}
@@ -134,60 +134,60 @@ func xxxxP(args []Node, f1 func(Integer) bool, f2 func(Float) bool) (Node, error
 	return Null, nil
 }
 
-func funZerop(_ context.Context, _ *World, args []Node) (Node, error) {
-	return xxxxP(args,
+func funZerop(_ context.Context, _ *World, arg Node) (Node, error) {
+	return xxxxP(arg,
 		func(value Integer) bool { return value == 0 },
 		func(value Float) bool { return value == 0 })
 }
 
-func funNumberp(_ context.Context, _ *World, args []Node) (Node, error) {
-	return xxxxP(args,
+func funNumberp(_ context.Context, _ *World, arg Node) (Node, error) {
+	return xxxxP(arg,
 		func(Integer) bool { return true },
 		func(Float) bool { return true })
 }
 
-func funPlusp(_ context.Context, _ *World, args []Node) (Node, error) {
-	return xxxxP(args,
+func funPlusp(_ context.Context, _ *World, arg Node) (Node, error) {
+	return xxxxP(arg,
 		func(value Integer) bool { return value > 0 },
 		func(value Float) bool { return value > 0 })
 }
 
-func funMinusp(_ context.Context, _ *World, args []Node) (Node, error) {
-	return xxxxP(args,
+func funMinusp(_ context.Context, _ *World, arg Node) (Node, error) {
+	return xxxxP(arg,
 		func(value Integer) bool { return value < 0 },
 		func(value Float) bool { return value < 0 })
 }
 
-func funOddp(_ context.Context, _ *World, args []Node) (Node, error) {
-	if value, ok := args[0].(Integer); ok && value%2 == 1 {
+func funOddp(_ context.Context, _ *World, arg Node) (Node, error) {
+	if value, ok := arg.(Integer); ok && value%2 == 1 {
 		return True, nil
 	}
 	return Null, nil
 }
 
-func funEvenp(_ context.Context, _ *World, args []Node) (Node, error) {
-	if value, ok := args[0].(Integer); ok && value%2 == 0 {
+func funEvenp(_ context.Context, _ *World, arg Node) (Node, error) {
+	if value, ok := arg.(Integer); ok && value%2 == 0 {
 		return True, nil
 	}
 	return Null, nil
 }
 
-func funNullp(_ context.Context, _ *World, args []Node) (Node, error) {
-	if IsNone(args[0]) {
+func funNullp(_ context.Context, _ *World, arg Node) (Node, error) {
+	if IsNone(arg) {
 		return True, nil
 	}
 	return Null, nil
 }
 
-func funAnyTypep[T Node](_ context.Context, _ *World, args []Node) (Node, error) {
-	if _, ok := args[0].(T); ok {
+func funAnyTypep[T Node](_ context.Context, _ *World, arg Node) (Node, error) {
+	if _, ok := arg.(T); ok {
 		return True, nil
 	}
 	return Null, nil
 }
 
-func funParseNumber(ctx context.Context, w *World, args []Node) (Node, error) {
-	s, err := ExpectClass[String](ctx, w, args[0])
+func funParseNumber(ctx context.Context, w *World, arg Node) (Node, error) {
+	s, err := ExpectClass[String](ctx, w, arg)
 	if err != nil {
 		return nil, err
 	}

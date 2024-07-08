@@ -495,6 +495,19 @@ func (f Function0) Call(ctx context.Context, w *World, list Node) (Node, error) 
 	return f(ctx, w)
 }
 
+type Function1 func(context.Context, *World, Node) (Node, error)
+
+func (f Function1) Call(ctx context.Context, w *World, list Node) (Node, error) {
+	v, list, err := w.ShiftAndEvalCar(ctx, list)
+	if err != nil {
+		return nil, err
+	}
+	if IsSome(list) {
+		return nil, ErrTooManyArguments
+	}
+	return f(ctx, w, v)
+}
+
 type Function struct {
 	C   int
 	F   func(context.Context, *World, []Node) (Node, error)

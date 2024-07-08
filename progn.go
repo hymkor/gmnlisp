@@ -19,9 +19,9 @@ func (e *_ErrEarlyReturns) Error() string {
 	return fmt.Sprintf("Unexpected (return-from %s)", e.Name)
 }
 
-func funReturn(ctx context.Context, w *World, argv []Node) (Node, error) {
+func funReturn(ctx context.Context, w *World, arg Node) (Node, error) {
 	// from CommonLisp
-	return nil, &_ErrEarlyReturns{Value: argv[0], Name: nulSymbol}
+	return nil, &_ErrEarlyReturns{Value: arg, Name: nulSymbol}
 }
 
 func cmdReturnFrom(ctx context.Context, w *World, n Node) (Node, error) {

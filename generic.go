@@ -231,8 +231,8 @@ func cmdDefMethod(ctx context.Context, w *World, node Node) (Node, error) {
 	return name, nil
 }
 
-func funGenericFunctionP(ctx context.Context, w *World, node []Node) (Node, error) {
-	f, err := ExpectFunction(ctx, w, node[0])
+func funGenericFunctionP(ctx context.Context, w *World, arg Node) (Node, error) {
+	f, err := ExpectFunction(ctx, w, arg)
 	if err != nil {
 		return Null, nil
 	}

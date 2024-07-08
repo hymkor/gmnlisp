@@ -188,8 +188,8 @@ func cmdDefMacro(ctx context.Context, w *World, n Node) (Node, error) {
 	return macroName, nil
 }
 
-func funMacroExpand(ctx context.Context, w *World, args []Node) (Node, error) {
-	_name, param, err := Shift(args[0])
+func funMacroExpand(ctx context.Context, w *World, arg Node) (Node, error) {
+	_name, param, err := Shift(arg)
 	if err != nil {
 		return nil, err
 	}

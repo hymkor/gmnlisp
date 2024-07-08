@@ -84,8 +84,8 @@ func funSetHash(ctx context.Context, w *World, args []Node) (Node, error) {
 	return args[0], nil
 }
 
-func funHashTableCount(ctx context.Context, w *World, args []Node) (Node, error) {
-	hash, err := ExpectClass[_Hash](ctx, w, args[0])
+func funHashTableCount(ctx context.Context, w *World, arg Node) (Node, error) {
+	hash, err := ExpectClass[_Hash](ctx, w, arg)
 	if err != nil {
 		return nil, err
 	}
@@ -104,8 +104,8 @@ func funRemoveHash(ctx context.Context, w *World, args []Node) (Node, error) {
 	return Null, nil
 }
 
-func funClearHash(ctx context.Context, w *World, args []Node) (Node, error) {
-	hash, err := ExpectClass[_Hash](ctx, w, args[0])
+func funClearHash(ctx context.Context, w *World, arg Node) (Node, error) {
+	hash, err := ExpectClass[_Hash](ctx, w, arg)
 	if err != nil {
 		return nil, err
 	}

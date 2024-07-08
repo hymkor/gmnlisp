@@ -108,8 +108,8 @@ func (e *_BuiltInClass) Eval(context.Context, *World) (Node, error) {
 	return e, nil
 }
 
-func funClassOf(_ context.Context, _ *World, argv []Node) (Node, error) {
-	return argv[0].ClassOf(), nil
+func funClassOf(_ context.Context, _ *World, arg Node) (Node, error) {
+	return arg.ClassOf(), nil
 }
 
 type Node interface {
