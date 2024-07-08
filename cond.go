@@ -68,9 +68,7 @@ var reportCondition = &_Generic{
 	methods: []*_Method{},
 }
 
-func funSignalCondition(ctx context.Context, w *World, args []Node) (Node, error) {
-	cond := args[0]
-	continueable := args[1]
+func funSignalCondition(ctx context.Context, w *World, cond, continueable Node) (Node, error) {
 	if w.handler == nil {
 		buffer := &StringBuilder{}
 		if _, err := reportCondition.Call(ctx, w, UnevalList(cond, buffer)); err == nil {
@@ -78,10 +76,10 @@ func funSignalCondition(ctx context.Context, w *World, args []Node) (Node, error
 		} else if !errors.Is(err, ErrNoMatchMethods) {
 			return nil, fmt.Errorf("%w in (report-condition)", err)
 		}
-		if err, ok := args[0].(error); ok {
+		if err, ok := cond.(error); ok {
 			return nil, err
 		}
-		return nil, errors.New(args[0].String())
+		return nil, errors.New(cond.String())
 	}
 	rv, err := w.handler.Call(ctx, w, &Cons{Car: cond})
 	var e *_ErrContinueCondition

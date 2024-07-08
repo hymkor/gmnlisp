@@ -263,14 +263,14 @@ func funProbeFile(ctx context.Context, w *World, arg Node) (Node, error) {
 	return True, nil
 }
 
-func funFileLength(ctx context.Context, w *World, list []Node) (Node, error) {
-	_fname, err := ExpectClass[String](ctx, w, list[0])
+func funFileLength(ctx context.Context, w *World, first, second Node) (Node, error) {
+	_fname, err := ExpectClass[String](ctx, w, first)
 	if err != nil {
 		return nil, err
 	}
 	fname := _fname.String()
 
-	_n, err := ExpectClass[Integer](ctx, w, list[1])
+	_n, err := ExpectClass[Integer](ctx, w, second)
 	if err != nil {
 		return nil, err
 	}

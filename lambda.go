@@ -508,6 +508,23 @@ func (f Function1) Call(ctx context.Context, w *World, list Node) (Node, error) 
 	return f(ctx, w, v)
 }
 
+type Function2 func(context.Context, *World, Node, Node) (Node, error)
+
+func (f Function2) Call(ctx context.Context, w *World, list Node) (Node, error) {
+	first, list, err := w.ShiftAndEvalCar(ctx, list)
+	if err != nil {
+		return nil, err
+	}
+	second, list, err := w.ShiftAndEvalCar(ctx, list)
+	if err != nil {
+		return nil, err
+	}
+	if IsSome(list) {
+		return nil, ErrTooManyArguments
+	}
+	return f(ctx, w, first, second)
+}
+
 type Function struct {
 	C   int
 	F   func(context.Context, *World, []Node) (Node, error)

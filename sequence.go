@@ -333,10 +333,7 @@ func funSubSeq(ctx context.Context, w *World, args []Node) (Node, error) {
 	return buffer.Sequence(), ignoreEOF(err)
 }
 
-func funMember(ctx context.Context, w *World, argv []Node) (Node, error) {
-	expr := argv[0]
-	list := argv[1]
-
+func funMember(ctx context.Context, w *World, expr, list Node) (Node, error) {
 	for IsSome(list) {
 		seq, err := ExpectInterface[Sequence](ctx, w, list, listClass)
 		if err != nil {

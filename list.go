@@ -99,8 +99,8 @@ func funAppend(ctx context.Context, w *World, list []Node) (Node, error) {
 }
 
 // funCons implements (cons CAR CDR)
-func funCons(_ context.Context, _ *World, argv []Node) (Node, error) {
-	return &Cons{Car: argv[0], Cdr: argv[1]}, nil
+func funCons(_ context.Context, _ *World, first, second Node) (Node, error) {
+	return &Cons{Car: first, Cdr: second}, nil
 }
 
 // funLispp implements (listp VALUE)
@@ -136,27 +136,23 @@ func Assoc(ctx context.Context, w *World, key Node, list Node) (Node, error) {
 	return Null, nil
 }
 
-func funAssoc(ctx context.Context, w *World, argv []Node) (Node, error) {
-	return Assoc(ctx, w, argv[0], argv[1])
-}
-
-// funSetCar implements (set-car X Y) == (setf (car X) Y)
-func funSetCar(ctx context.Context, w *World, argv []Node) (Node, error) {
-	cons, err := ExpectClass[*Cons](ctx, w, argv[1])
+// funSetCar implements (set-car X Y) == (setf (car Y) X)
+func funSetCar(ctx context.Context, w *World, first, second Node) (Node, error) {
+	cons, err := ExpectClass[*Cons](ctx, w, second)
 	if err != nil {
 		return nil, err
 	}
-	cons.Car = argv[0]
+	cons.Car = first
 	return cons, nil
 }
 
-// funSetCdr implements (replacd X Y) == (setf (cdr X) Y)
-func funSetCdr(ctx context.Context, w *World, argv []Node) (Node, error) {
-	cons, err := ExpectClass[*Cons](ctx, w, argv[1])
+// funSetCdr implements (replacd X Y) == (setf (cdr X) Y) = (set-cdr Y X)
+func funSetCdr(ctx context.Context, w *World, first, second Node) (Node, error) {
+	cons, err := ExpectClass[*Cons](ctx, w, second)
 	if err != nil {
 		return nil, err
 	}
-	cons.Cdr = argv[0]
+	cons.Cdr = first
 	return cons, nil
 }
 

@@ -215,25 +215,25 @@ func funRound(ctx context.Context, w *World, arg Node) (Node, error) {
 	return floatToInteger(arg, math.Round)
 }
 
-func funMod(ctx context.Context, w *World, list []Node) (Node, error) {
+func funMod(ctx context.Context, w *World, first, second Node) (Node, error) {
 	var left float64
 	var right float64
 	bits := 0
 
-	if _left, ok := list[0].(Float); ok {
+	if _left, ok := first.(Float); ok {
 		left = float64(_left)
 	} else {
-		_left, ok := list[0].(Integer)
+		_left, ok := first.(Integer)
 		if !ok {
 			return nil, ErrNotSupportType
 		}
 		left = float64(int(_left))
 		bits = 1
 	}
-	if _right, ok := list[1].(Float); ok {
+	if _right, ok := second.(Float); ok {
 		right = float64(_right)
 	} else {
-		_right, ok := list[1].(Integer)
+		_right, ok := second.(Integer)
 		if !ok {
 			return nil, ErrNotSupportType
 		}
@@ -247,17 +247,17 @@ func funMod(ctx context.Context, w *World, list []Node) (Node, error) {
 	return Float(value), nil
 }
 
-func funRem(ctx context.Context, w *World, list []Node) (Node, error) {
-	if left, ok := list[0].(Integer); ok {
-		if right, ok := list[1].(Integer); ok {
+func funRem(ctx context.Context, w *World, first, second Node) (Node, error) {
+	if left, ok := first.(Integer); ok {
+		if right, ok := second.(Integer); ok {
 			return Integer(left % right), nil
 		}
 	}
-	if left, ok := list[0].(Float); ok {
-		if right, ok := list[1].(Float); ok {
+	if left, ok := first.(Float); ok {
+		if right, ok := second.(Float); ok {
 			return Float(math.Mod(float64(left), float64(right))), nil
 		}
-		if right, ok := list[1].(Integer); ok {
+		if right, ok := second.(Integer); ok {
 			return Float(math.Mod(float64(left), float64(int(right)))), nil
 		}
 	}

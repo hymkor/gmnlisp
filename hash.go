@@ -57,15 +57,15 @@ func canUseHashKey(value Node) bool {
 	return false
 }
 
-func funGetHash(ctx context.Context, w *World, args []Node) (Node, error) {
-	hash, err := ExpectClass[_Hash](ctx, w, args[1])
+func funGetHash(ctx context.Context, w *World, first, second Node) (Node, error) {
+	hash, err := ExpectClass[_Hash](ctx, w, second)
 	if err != nil {
 		return nil, err
 	}
-	if !canUseHashKey(args[0]) {
+	if !canUseHashKey(first) {
 		return nil, ErrNotSupportType
 	}
-	value, ok := hash[args[0]]
+	value, ok := hash[first]
 	if !ok {
 		return Null, nil
 	}
@@ -92,15 +92,15 @@ func funHashTableCount(ctx context.Context, w *World, arg Node) (Node, error) {
 	return Integer(len(hash)), nil
 }
 
-func funRemoveHash(ctx context.Context, w *World, args []Node) (Node, error) {
-	hash, err := ExpectClass[_Hash](ctx, w, args[1])
+func funRemoveHash(ctx context.Context, w *World, first, second Node) (Node, error) {
+	hash, err := ExpectClass[_Hash](ctx, w, second)
 	if err != nil {
 		return nil, err
 	}
-	if !canUseHashKey(args[0]) {
+	if !canUseHashKey(first) {
 		return nil, ErrNotSupportType
 	}
-	delete(hash, args[0])
+	delete(hash, first)
 	return Null, nil
 }
 
