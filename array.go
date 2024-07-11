@@ -108,10 +108,6 @@ func (A *Array) Equals(_B Node, mode EqlMode) bool {
 	return true
 }
 
-func (A *Array) Eval(ctx context.Context, w *World) (Node, error) {
-	return A, nil
-}
-
 func funCreateArray(ctx context.Context, w *World, args []Node) (Node, error) {
 	dim := args[0]
 	ini := args[1]

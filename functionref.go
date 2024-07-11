@@ -36,10 +36,6 @@ func (f FunctionRef) GoString() string {
 	return fmt.Sprintf("function to %#v)", f.value)
 }
 
-func (f FunctionRef) Eval(ctx context.Context, w *World) (Node, error) {
-	return f, nil
-}
-
 func cmdFunction(ctx context.Context, w *World, node Node) (Node, error) {
 	_symbol, node, err := Shift(node)
 	if err != nil {

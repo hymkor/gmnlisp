@@ -20,10 +20,6 @@ func (i Integer) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	return fmt.Fprintf(w, "%d", int64(i))
 }
 
-func (i Integer) Eval(context.Context, *World) (Node, error) {
-	return i, nil
-}
-
 func (i Integer) Equals(n Node, m EqlMode) bool {
 	if m == EQUALP {
 		if _n, ok := n.(Integer); ok && i == _n {
@@ -78,10 +74,6 @@ type ArithmeticError struct {
 
 func (e *ArithmeticError) ClassOf() Class {
 	return e.Class
-}
-
-func (e *ArithmeticError) Eval(context.Context, *World) (Node, error) {
-	return e, nil
 }
 
 func (e *ArithmeticError) Equals(other Node, mode EqlMode) bool {
@@ -179,10 +171,6 @@ func (Float) ClassOf() Class {
 
 func (f Float) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	return fmt.Fprintf(w, "%f", float64(f))
-}
-
-func (f Float) Eval(context.Context, *World) (Node, error) {
-	return f, nil
 }
 
 func (f Float) Equals(n Node, m EqlMode) bool {

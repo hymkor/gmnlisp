@@ -104,10 +104,6 @@ func (e *_BuiltInClass) Equals(_other Node, _ EqlMode) bool {
 	return ok && other.String() == e.String()
 }
 
-func (e *_BuiltInClass) Eval(context.Context, *World) (Node, error) {
-	return e, nil
-}
-
 func funClassOf(_ context.Context, _ *World, arg Node) (Node, error) {
 	return arg.ClassOf(), nil
 }

@@ -33,10 +33,6 @@ func (s String) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	}
 }
 
-func (s String) Eval(context.Context, *World) (Node, error) {
-	return s, nil
-}
-
 func (s String) Equals(n Node, m EqlMode) bool {
 	ns, ok := n.(String)
 	if !ok {

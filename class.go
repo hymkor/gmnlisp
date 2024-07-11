@@ -208,10 +208,6 @@ func (class1 *_StandardClass) InheritP(class2 Class) bool {
 	return false
 }
 
-func (c *_StandardClass) Eval(ctx context.Context, w *World) (Node, error) {
-	return c, nil
-}
-
 func (c *_StandardClass) String() string {
 	return "{*_UserClass}" + c.Symbol.String()
 }
@@ -391,10 +387,6 @@ func (r *_StandardObject) Equals(o Node, m EqlMode) bool {
 		}
 	}
 	return true
-}
-
-func (r *_StandardObject) Eval(ctx context.Context, w *World) (Node, error) {
-	return r, nil
 }
 
 func (c *_StandardObject) ClassOf() Class {

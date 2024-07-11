@@ -29,10 +29,6 @@ func (e *DomainError) Equals(_other Node, mode EqlMode) bool {
 		e.ExpectedClass.Equals(other.ExpectedClass, mode)
 }
 
-func (e *DomainError) Eval(context.Context, *World) (Node, error) {
-	return e, nil
-}
-
 func (e *DomainError) PrintTo(w io.Writer, mode PrintMode) (int, error) {
 	return io.WriteString(w, e.String())
 }
@@ -116,10 +112,6 @@ func (u *_UndefinedEntity) String() string {
 
 func (u *_UndefinedEntity) GoString() string {
 	return u.Error()
-}
-
-func (u *_UndefinedEntity) Eval(_ context.Context, _ *World) (Node, error) {
-	return u, nil
 }
 
 func (u *_UndefinedEntity) PrintTo(w io.Writer, mode PrintMode) (int, error) {

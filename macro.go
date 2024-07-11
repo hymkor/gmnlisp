@@ -47,10 +47,6 @@ func (j _JoinedForm) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	return wc.Result()
 }
 
-func (j _JoinedForm) Eval(ctx context.Context, w *World) (Node, error) {
-	return j, nil
-}
-
 func (j _JoinedForm) Equals(_other Node, m EqlMode) bool {
 	other, ok := _other.(_JoinedForm)
 	if !ok {

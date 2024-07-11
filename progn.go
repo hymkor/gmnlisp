@@ -261,10 +261,6 @@ func (e *ErrorNode) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	return io.WriteString(w, e.Value.Error())
 }
 
-func (e *ErrorNode) Eval(context.Context, *World) (Node, error) {
-	return e, nil
-}
-
 func (e *ErrorNode) Equals(n Node, m EqlMode) bool {
 	f, ok := n.(*ErrorNode)
 	if !ok {

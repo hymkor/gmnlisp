@@ -19,10 +19,6 @@ func (_TrueType) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	return io.WriteString(w, "t")
 }
 
-func (t _TrueType) Eval(context.Context, *World) (Node, error) {
-	return t, nil
-}
-
 var True Node = _TrueType{}
 
 func (_TrueType) Equals(n Node, m EqlMode) bool {
@@ -40,10 +36,6 @@ func (_NullType) ClassOf() Class {
 
 func (_NullType) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	return io.WriteString(w, "nil")
-}
-
-func (nt _NullType) Eval(context.Context, *World) (Node, error) {
-	return nt, nil
 }
 
 func (nt _NullType) Equals(n Node, m EqlMode) bool {
@@ -154,10 +146,6 @@ func (r Rune) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	} else {
 		return fmt.Fprintf(w, "%c", rune(r))
 	}
-}
-
-func (r Rune) Eval(_ context.Context, w *World) (Node, error) {
-	return r, nil
 }
 
 func (r Rune) Equals(n Node, m EqlMode) bool {
@@ -276,10 +264,6 @@ func (Keyword) ClassOf() Class {
 
 func (k Keyword) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	return io.WriteString(w, keywordManager.IdToName(k))
-}
-
-func (k Keyword) Eval(context.Context, *World) (Node, error) {
-	return k, nil
 }
 
 func (k Keyword) Equals(n Node, m EqlMode) bool {
