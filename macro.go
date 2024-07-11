@@ -137,7 +137,7 @@ func (m *_Macro) Call(ctx context.Context, w *World, n Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	return newCode.Eval(ctx, w)
+	return w.Eval(ctx, newCode)
 }
 
 func cmdLambdaMacro(ctx context.Context, w *World, n Node) (Node, error) {

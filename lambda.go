@@ -365,7 +365,7 @@ func evalWithTailRecOpt(ctx context.Context, w *World, target Node, currFunc Sym
 			}
 		}
 	}
-	return target.Eval(ctx, w)
+	return w.Eval(ctx, target)
 }
 
 func prognWithTailRecOpt(ctx context.Context, w *World, n Node, sym Symbol) (value Node, err error) {
@@ -380,7 +380,7 @@ func prognWithTailRecOpt(ctx context.Context, w *World, n Node, sym Symbol) (val
 		if sym >= 0 && IsNone(n) {
 			value, err = evalWithTailRecOpt(ctx, w, first, sym)
 		} else {
-			value, err = first.Eval(ctx, w)
+			value, err = w.Eval(ctx, first)
 		}
 		if err != nil {
 			return nil, err
@@ -437,7 +437,7 @@ func cmdApply(ctx context.Context, w *World, list Node) (Node, error) {
 		}
 		if IsNone(list) {
 			// value is the last argument = array
-			value, err := value.Eval(ctx, w)
+			value, err := w.Eval(ctx, value)
 			if err != nil {
 				return nil, err
 			}

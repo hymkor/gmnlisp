@@ -113,7 +113,6 @@ func funClassOf(_ context.Context, _ *World, arg Node) (Node, error) {
 }
 
 type Node interface {
-	Eval(context.Context, *World) (Node, error)
 	Equals(Node, EqlMode) bool
 	PrintTo(io.Writer, PrintMode) (int, error)
 	String() string
@@ -232,5 +231,5 @@ func MakeError(e error, s any) error {
 }
 
 func funEval(ctx context.Context, w *World, arg Node) (Node, error) {
-	return arg.Eval(ctx, w)
+	return w.Eval(ctx, arg)
 }

@@ -121,7 +121,7 @@ func funLength(ctx context.Context, w *World, arg Node) (Node, error) {
 }
 
 func MapCar(ctx context.Context, w *World, funcNode Node, sourceSet []Node, store func(Node)) error {
-	f, err := funcNode.Eval(ctx, w)
+	f, err := w.Eval(ctx, funcNode)
 	if err != nil {
 		return err
 	}
@@ -198,7 +198,7 @@ func listToQuotedList(list []Node) Node {
 }
 
 func mapList(ctx context.Context, w *World, funcNode Node, sourceSet []Node, store func(Node)) error {
-	f, err := funcNode.Eval(ctx, w)
+	f, err := w.Eval(ctx, funcNode)
 	if err != nil {
 		return err
 	}

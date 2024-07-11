@@ -502,12 +502,22 @@ func New() *World {
 	return w
 }
 
+func (w *World) Eval(ctx context.Context, node Node) (Node, error) {
+	type canEval interface {
+		Eval(context.Context, *World) (Node, error)
+	}
+	if e, ok := node.(canEval); ok {
+		return e.Eval(ctx, w)
+	}
+	return node, nil
+}
+
 func (w *World) ShiftAndEvalCar(ctx context.Context, list Node) (Node, Node, error) {
 	first, list, err := Shift(list)
 	if err != nil {
 		return nil, list, err
 	}
-	value, err := first.Eval(ctx, w)
+	value, err := w.Eval(ctx, first)
 	if err != nil {
 		return nil, list, err
 	}
@@ -545,7 +555,7 @@ func (w *World) InterpretNodes(ctx context.Context, ns []Node) (Node, error) {
 	var err error
 
 	for _, c := range ns {
-		result, err = c.Eval(ctx, w)
+		result, err = w.Eval(ctx, c)
 		if err != nil {
 			return result, err
 		}

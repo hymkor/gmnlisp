@@ -34,7 +34,7 @@ func cmdReturnFrom(ctx context.Context, w *World, n Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	value, err := argv[1].Eval(ctx, w)
+	value, err := w.Eval(ctx, argv[1])
 	if err != nil {
 		return nil, err
 	}
@@ -215,7 +215,7 @@ func cmdWhile(ctx context.Context, w *World, n Node) (Node, error) {
 		if err := checkContext(ctx); err != nil {
 			return nil, err
 		}
-		cont, err := cond.Eval(ctx, w)
+		cont, err := w.Eval(ctx, cond)
 		if err != nil {
 			return nil, err
 		}
@@ -324,7 +324,7 @@ mainloop:
 			tag[symbol] = args
 			continue
 		}
-		_, err = current.Eval(ctx, w)
+		_, err = w.Eval(ctx, current)
 		if err == nil {
 			continue
 		}

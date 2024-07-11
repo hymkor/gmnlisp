@@ -145,7 +145,7 @@ func readSlotSpec(ctx context.Context, w *World, list Node) (*_SlotSpec, error) 
 				return nil, fmt.Errorf("%#v: %w", keyword.String(), err)
 			}
 		case kwInitForm:
-			slotSpec.initform = func() (Node, error) { return value.Eval(ctx, w) }
+			slotSpec.initform = func() (Node, error) { return w.Eval(ctx, value) }
 		case kwInitArg:
 			if v, err := ExpectClass[Symbol](ctx, w, value); err == nil {
 				slotSpec.initarg = append(slotSpec.initarg, v)

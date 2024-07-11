@@ -17,7 +17,7 @@ func quasiQuote(ctx context.Context, w *World, n Node) (Node, error) {
 	if cons, ok := n.(*Cons); ok {
 		if cons.Car == commaSymbol {
 			if cdrCons, ok := cons.Cdr.(*Cons); ok {
-				newCar, err := cdrCons.Car.Eval(ctx, w)
+				newCar, err := w.Eval(ctx, cdrCons.Car)
 				if err != nil {
 					return nil, err
 				}
@@ -27,7 +27,7 @@ func quasiQuote(ctx context.Context, w *World, n Node) (Node, error) {
 				}
 				return &Cons{Car: newCar, Cdr: newCdr}, nil
 			}
-			return cons.Cdr.Eval(ctx, w)
+			return w.Eval(ctx, cons.Cdr)
 		}
 		newCar, err := quasiQuote(ctx, w, cons.Car)
 		if err != nil {

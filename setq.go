@@ -86,7 +86,7 @@ func letValuesToVars(ctx context.Context, w *World, list Node, lexical map[Symbo
 		if err != nil {
 			return err
 		}
-		value, err := argv[1].Eval(ctx, w)
+		value, err := w.Eval(ctx, argv[1])
 		if err != nil {
 			return err
 		}
