@@ -136,7 +136,7 @@ func formatSub(ctx context.Context, world *World, w *_WriterNode, argv []Node) e
 			break
 		}
 		if c != '~' {
-			c.PrintTo(w, PRINC)
+			tryPrintTo(w, c, PRINC)
 			continue
 		}
 		if IsNone(format) {

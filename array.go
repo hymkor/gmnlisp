@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"strings"
 )
 
 type VectorBuilder struct {
@@ -82,6 +83,18 @@ func (A *Array) PrintTo(w io.Writer, mode PrintMode) (int, error) {
 	}
 	_, n, err = A.printTo(w, mode, A.list, A.dim)
 	return n, err
+}
+
+func (t Array) String() string {
+	var buffer strings.Builder
+	t.PrintTo(&buffer, PRINC)
+	return buffer.String()
+}
+
+func (t Array) GoString() string {
+	var buffer strings.Builder
+	t.PrintTo(&buffer, PRINT)
+	return buffer.String()
 }
 
 func (A *Array) Equals(_B Node, mode EqlMode) bool {

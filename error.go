@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"io"
 )
 
 type DomainError struct {
@@ -29,16 +28,8 @@ func (e *DomainError) Equals(_other Node, mode EqlMode) bool {
 		e.ExpectedClass.Equals(other.ExpectedClass, mode)
 }
 
-func (e *DomainError) PrintTo(w io.Writer, mode PrintMode) (int, error) {
-	return io.WriteString(w, e.String())
-}
-
 func (e *DomainError) String() string {
 	return fmt.Sprintf("%#v: Expected %#v", e.Object, e.ExpectedClass)
-}
-
-func (e *DomainError) GoString() string {
-	return e.String()
 }
 
 func (e *DomainError) Error() string {
@@ -108,14 +99,6 @@ func (u *_UndefinedEntity) Error() string {
 
 func (u *_UndefinedEntity) String() string {
 	return u.Error()
-}
-
-func (u *_UndefinedEntity) GoString() string {
-	return u.Error()
-}
-
-func (u *_UndefinedEntity) PrintTo(w io.Writer, mode PrintMode) (int, error) {
-	return fmt.Fprintf(w, "undefined %s: %#v", u.space, u.name)
 }
 
 func (u *_UndefinedEntity) Equals(other Node, mode EqlMode) bool {

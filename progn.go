@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"io"
 )
 
 type _ErrEarlyReturns struct {
@@ -257,8 +256,8 @@ func (*ErrorNode) ClassOf() Class {
 	return errorClass
 }
 
-func (e *ErrorNode) PrintTo(w io.Writer, m PrintMode) (int, error) {
-	return io.WriteString(w, e.Value.Error())
+func (e *ErrorNode) String() string {
+	return e.Value.Error()
 }
 
 func (e *ErrorNode) Equals(n Node, m EqlMode) bool {

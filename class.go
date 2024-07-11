@@ -212,14 +212,6 @@ func (c *_StandardClass) String() string {
 	return "{*_UserClass}" + c.Symbol.String()
 }
 
-func (c *_StandardClass) GoString() string {
-	return "{*_UserClass}" + c.Symbol.String()
-}
-
-func (c *_StandardClass) PrintTo(w io.Writer, mode PrintMode) (int, error) {
-	return io.WriteString(w, c.Symbol.String())
-}
-
 func (c *_StandardClass) Name() Symbol {
 	return c.Symbol
 }
@@ -394,7 +386,7 @@ func (c *_StandardObject) ClassOf() Class {
 }
 
 func (c *_StandardObject) PrintTo(w io.Writer, mode PrintMode) (int, error) {
-	n, err := c._StandardClass.Symbol.PrintTo(w, mode)
+	n, err := tryPrintTo(w, c._StandardClass.Symbol, mode)
 	if err != nil {
 		return n, err
 	}
@@ -405,7 +397,7 @@ func (c *_StandardObject) PrintTo(w io.Writer, mode PrintMode) (int, error) {
 		if err != nil {
 			return n, err
 		}
-		n1, err = key.PrintTo(w, mode)
+		n1, err = tryPrintTo(w, key, mode)
 		n += n1
 		if err != nil {
 			return n, err

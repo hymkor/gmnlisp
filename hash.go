@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"strings"
 )
 
 type _Hash map[Node]Node
@@ -113,4 +114,16 @@ func funClearHash(ctx context.Context, w *World, arg Node) (Node, error) {
 		delete(hash, key)
 	}
 	return Null, nil
+}
+
+func (t _Hash) String() string {
+	var buffer strings.Builder
+	t.PrintTo(&buffer, PRINC)
+	return buffer.String()
+}
+
+func (t _Hash) GoString() string {
+	var buffer strings.Builder
+	t.PrintTo(&buffer, PRINT)
+	return buffer.String()
 }

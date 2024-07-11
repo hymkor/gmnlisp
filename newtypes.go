@@ -1,9 +1,5 @@
 package gmnlisp
 
-import (
-	"io"
-)
-
 var stringBuilderClass = registerNewBuiltInClass[*StringBuilder]("<string-builder>")
 
 func (*StringBuilder) ClassOf() Class {
@@ -12,10 +8,6 @@ func (*StringBuilder) ClassOf() Class {
 
 func (t *StringBuilder) Equals(Node, EqlMode) bool {
 	return false
-}
-
-func (t *StringBuilder) PrintTo(w io.Writer, m PrintMode) (int, error) {
-	return io.WriteString(w, "(*StringBuilder)")
 }
 
 var inputStreamClass = registerNewBuiltInClass[*inputStream]("<input-stream>")
@@ -28,8 +20,8 @@ func (t *inputStream) Equals(Node, EqlMode) bool {
 	return false
 }
 
-func (t *inputStream) PrintTo(w io.Writer, m PrintMode) (int, error) {
-	return io.WriteString(w, "(*inputStream)")
+func (t *inputStream) String() string {
+	return "(*inputStream)"
 }
 
 var outputFileStreamClass = registerNewBuiltInClass[*_OutputFileStream]("<output-file-stream>")
@@ -42,16 +34,16 @@ func (t *_OutputFileStream) Equals(Node, EqlMode) bool {
 	return false
 }
 
-func (t *_OutputFileStream) PrintTo(w io.Writer, m PrintMode) (int, error) {
-	return io.WriteString(w, "(*_OutputFileStream)")
+func (t *_OutputFileStream) String() string {
+	return "(*_OutputFileStream)"
 }
 
 func (t *_Macro) Equals(Node, EqlMode) bool {
 	return false
 }
 
-func (t *_Macro) PrintTo(w io.Writer, m PrintMode) (int, error) {
-	return io.WriteString(w, "(*_Macro)")
+func (t *_Macro) String() string {
+	return "(*_Macro)"
 }
 
 var readerNodeClass = registerNewBuiltInClass[_ReaderNode]("<reader>")
@@ -64,8 +56,8 @@ func (t _ReaderNode) Equals(Node, EqlMode) bool {
 	return false
 }
 
-func (t _ReaderNode) PrintTo(w io.Writer, m PrintMode) (int, error) {
-	return io.WriteString(w, "(_ReaderNode)")
+func (t _ReaderNode) String() string {
+	return "(_ReaderNode)"
 }
 
 var writerNodeClass = registerNewBuiltInClass[_WriterNode]("<_WriterNode>")
@@ -78,6 +70,6 @@ func (t _WriterNode) Equals(Node, EqlMode) bool {
 	return false
 }
 
-func (t _WriterNode) PrintTo(w io.Writer, m PrintMode) (int, error) {
-	return io.WriteString(w, "(_WriterNode)")
+func (t _WriterNode) String() string {
+	return "(_WriterNode)"
 }

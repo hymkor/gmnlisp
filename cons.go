@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"strings"
 )
 
 type Cons struct {
@@ -153,6 +154,18 @@ func (cons *Cons) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	}
 	wc.Try(io.WriteString(w, ")"))
 	return wc.Result()
+}
+
+func (t Cons) String() string {
+	var buffer strings.Builder
+	t.PrintTo(&buffer, PRINC)
+	return buffer.String()
+}
+
+func (t Cons) GoString() string {
+	var buffer strings.Builder
+	t.PrintTo(&buffer, PRINT)
+	return buffer.String()
 }
 
 func (cons *Cons) Equals(n Node, m EqlMode) bool {

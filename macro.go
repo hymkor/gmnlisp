@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 )
 
 const macro_trace = false
@@ -61,6 +62,12 @@ func (j _JoinedForm) Equals(_other Node, m EqlMode) bool {
 		}
 	}
 	return true
+}
+
+func (t _JoinedForm) String() string {
+	var buffer strings.Builder
+	t.PrintTo(&buffer, PRINC)
+	return buffer.String()
 }
 
 func expandJoinedForm(n Node) Node {

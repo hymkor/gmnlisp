@@ -91,14 +91,6 @@ func (e *_BuiltInClass) String() string {
 	return e.Name().String()
 }
 
-func (e *_BuiltInClass) GoString() string {
-	return e.Name().String()
-}
-
-func (e *_BuiltInClass) PrintTo(w io.Writer, m PrintMode) (int, error) {
-	return io.WriteString(w, e.String())
-}
-
 func (e *_BuiltInClass) Equals(_other Node, _ EqlMode) bool {
 	other, ok := _other.(*_BuiltInClass)
 	return ok && other.String() == e.String()
@@ -110,9 +102,7 @@ func funClassOf(_ context.Context, _ *World, arg Node) (Node, error) {
 
 type Node interface {
 	Equals(Node, EqlMode) bool
-	// PrintTo(io.Writer, PrintMode) (int, error)
 	String() string
-	// GoString() string
 	ClassOf() Class
 }
 

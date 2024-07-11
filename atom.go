@@ -3,7 +3,6 @@ package gmnlisp
 import (
 	"context"
 	"fmt"
-	"io"
 	"unicode"
 )
 
@@ -15,8 +14,8 @@ func (t _TrueType) ClassOf() Class {
 	return trueClass
 }
 
-func (_TrueType) PrintTo(w io.Writer, m PrintMode) (int, error) {
-	return io.WriteString(w, "t")
+func (_TrueType) String() string {
+	return "t"
 }
 
 var True Node = _TrueType{}
@@ -34,8 +33,8 @@ func (_NullType) ClassOf() Class {
 	return nullClass
 }
 
-func (_NullType) PrintTo(w io.Writer, m PrintMode) (int, error) {
-	return io.WriteString(w, "nil")
+func (_NullType) String() string {
+	return "nil"
 }
 
 func (nt _NullType) Equals(n Node, m EqlMode) bool {
@@ -96,10 +95,6 @@ func (Symbol) ClassOf() Class {
 	return symbolClass
 }
 
-func (s Symbol) PrintTo(w io.Writer, m PrintMode) (int, error) {
-	return io.WriteString(w, symbolManager.IdToName(s))
-}
-
 func (s Symbol) Eval(_ context.Context, w *World) (Node, error) {
 	return w.Get(s)
 }
@@ -113,10 +108,6 @@ func (s Symbol) String() string {
 	return symbolManager.IdToName(s)
 }
 
-func (s Symbol) GoString() string {
-	return symbolManager.IdToName(s)
-}
-
 type Rune rune
 
 var characterClass = registerNewBuiltInClass[Rune]("<character>")
@@ -125,27 +116,27 @@ func (Rune) ClassOf() Class {
 	return characterClass
 }
 
-func (r Rune) PrintTo(w io.Writer, m PrintMode) (int, error) {
-	if m == PRINT {
-		switch r {
-		case '\t':
-			return io.WriteString(w, `#\tab`)
-		case '\n':
-			return io.WriteString(w, `#\linefeed`)
-		case '\r':
-			return io.WriteString(w, `#\return`)
-		case ' ':
-			return io.WriteString(w, `#\space`)
-		default:
-			if unicode.IsLetter(rune(r)) {
-				return fmt.Fprintf(w, `#\%c`, rune(r))
-			} else {
-				return fmt.Fprintf(w, `#\U%04X`, rune(r))
-			}
+func (r Rune) GoString() string {
+	switch r {
+	case '\t':
+		return `#\tab`
+	case '\n':
+		return `#\linefeed`
+	case '\r':
+		return `#\return`
+	case ' ':
+		return `#\space`
+	default:
+		if unicode.IsLetter(rune(r)) {
+			return fmt.Sprintf(`#\%c`, rune(r))
+		} else {
+			return fmt.Sprintf(`#\U%04X`, rune(r))
 		}
-	} else {
-		return fmt.Fprintf(w, "%c", rune(r))
 	}
+}
+
+func (r Rune) String() string {
+	return string(rune(r))
 }
 
 func (r Rune) Equals(n Node, m EqlMode) bool {
@@ -262,8 +253,8 @@ func (Keyword) ClassOf() Class {
 	return keywordClass
 }
 
-func (k Keyword) PrintTo(w io.Writer, m PrintMode) (int, error) {
-	return io.WriteString(w, keywordManager.IdToName(k))
+func (k Keyword) String() string {
+	return keywordManager.IdToName(k)
 }
 
 func (k Keyword) Equals(n Node, m EqlMode) bool {

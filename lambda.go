@@ -7,6 +7,7 @@ import (
 	"io"
 	"math"
 	"os"
+	"strings"
 )
 
 type _Lambda struct {
@@ -159,7 +160,7 @@ func (L *_Lambda) PrintTo(w io.Writer, m PrintMode) (int, error) {
 		if wc.Try(io.WriteString(w, dem)) {
 			return wc.Result()
 		}
-		if wc.Try(name.PrintTo(w, PRINC)) {
+		if wc.Try(tryPrintTo(w, name, PRINC)) {
 			return wc.Result()
 		}
 		dem = " "
@@ -179,6 +180,12 @@ func (L *_Lambda) PrintTo(w io.Writer, m PrintMode) (int, error) {
 	}
 	wc.Try(io.WriteString(w, ")"))
 	return wc.Result()
+}
+
+func (t _Lambda) String() string {
+	var buffer strings.Builder
+	t.PrintTo(&buffer, PRINC)
+	return buffer.String()
 }
 
 var trace = map[Symbol]int{}

@@ -2,8 +2,6 @@ package gmnlisp
 
 import (
 	"context"
-	"fmt"
-	"io"
 	"strconv"
 	"strings"
 	"unicode/utf8"
@@ -23,14 +21,6 @@ func (s String) String() string {
 
 func (s String) GoString() string {
 	return strconv.Quote(string(s))
-}
-
-func (s String) PrintTo(w io.Writer, m PrintMode) (int, error) {
-	if m == PRINC {
-		return io.WriteString(w, string(s))
-	} else {
-		return fmt.Fprintf(w, "%#v", string(s))
-	}
 }
 
 func (s String) Equals(n Node, m EqlMode) bool {

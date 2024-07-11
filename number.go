@@ -3,9 +3,7 @@ package gmnlisp
 import (
 	"context"
 	"fmt"
-	"io"
 	"math"
-	"strings"
 )
 
 type Integer int64
@@ -16,8 +14,8 @@ func (i Integer) ClassOf() Class {
 	return integerClass
 }
 
-func (i Integer) PrintTo(w io.Writer, m PrintMode) (int, error) {
-	return fmt.Fprintf(w, "%d", int64(i))
+func (i Integer) String() string {
+	return fmt.Sprintf("%d", int64(i))
 }
 
 func (i Integer) Equals(n Node, m EqlMode) bool {
@@ -86,21 +84,11 @@ func (e *ArithmeticError) Equals(other Node, mode EqlMode) bool {
 		e.Class.Equals(o.Class, mode)
 }
 
-func (e *ArithmeticError) PrintTo(w io.Writer, mode PrintMode) (int, error) {
-	return fmt.Fprintf(w, "%s: (%#v %#v)",
+func (e *ArithmeticError) String() string {
+	return fmt.Sprintf("%s: (%#v %#v)",
 		e.Class.String(),
 		e.Operation.String(),
 		e.Operands.String())
-}
-
-func (e *ArithmeticError) String() string {
-	var buffer strings.Builder
-	e.PrintTo(&buffer, PRINC)
-	return buffer.String()
-}
-
-func (e *ArithmeticError) GoString() string {
-	return e.String()
 }
 
 func (e *ArithmeticError) Error() string {
@@ -169,8 +157,8 @@ func (Float) ClassOf() Class {
 	return floatClass
 }
 
-func (f Float) PrintTo(w io.Writer, m PrintMode) (int, error) {
-	return fmt.Fprintf(w, "%f", float64(f))
+func (f Float) String() string {
+	return fmt.Sprintf("%f", float64(f))
 }
 
 func (f Float) Equals(n Node, m EqlMode) bool {
