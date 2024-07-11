@@ -173,7 +173,7 @@ func (L *_Lambda) PrintTo(w io.Writer, m PrintMode) (int, error) {
 			return wc.Result()
 		}
 	} else {
-		if wc.Try(L.code.PrintTo(w, m)) {
+		if wc.Try(tryPrintTo(w, L.code, m)) {
 			return wc.Result()
 		}
 	}

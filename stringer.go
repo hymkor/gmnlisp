@@ -10,33 +10,15 @@ func (t ErrorNode) String() string {
 	return buffer.String()
 }
 
-func (t ErrorNode) GoString() string {
-	var buffer strings.Builder
-	t.PrintTo(&buffer, PRINT)
-	return buffer.String()
-}
-
 func (t Float) String() string {
 	var buffer strings.Builder
 	t.PrintTo(&buffer, PRINC)
 	return buffer.String()
 }
 
-func (t Float) GoString() string {
-	var buffer strings.Builder
-	t.PrintTo(&buffer, PRINT)
-	return buffer.String()
-}
-
 func (t Integer) String() string {
 	var buffer strings.Builder
 	t.PrintTo(&buffer, PRINC)
-	return buffer.String()
-}
-
-func (t Integer) GoString() string {
-	var buffer strings.Builder
-	t.PrintTo(&buffer, PRINT)
 	return buffer.String()
 }
 

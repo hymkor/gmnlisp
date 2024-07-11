@@ -68,6 +68,20 @@ func (w *writeCounter) Result() (int, error) {
 	return w.n, w.err
 }
 
+func tryPrintTo(w io.Writer, node Node, m PrintMode) (int, error) {
+	if p, ok := node.(interface {
+		PrintTo(io.Writer, PrintMode) (int, error)
+	}); ok {
+		return p.PrintTo(w, m)
+	}
+	if m == PRINT {
+		if p, ok := node.(fmt.GoStringer); ok {
+			return io.WriteString(w, p.GoString())
+		}
+	}
+	return io.WriteString(w, node.String())
+}
+
 func (cons *Cons) writeToWithoutKakko(w io.Writer, m PrintMode) (int, error) {
 	var wc writeCounter
 	var lastCar Node = cons.Car
@@ -76,7 +90,7 @@ func (cons *Cons) writeToWithoutKakko(w io.Writer, m PrintMode) (int, error) {
 			return wc.Result()
 		}
 	} else {
-		if wc.Try(cons.Car.PrintTo(w, m)) {
+		if wc.Try(tryPrintTo(w, cons.Car, m)) {
 			return wc.Result()
 		}
 	}
@@ -92,10 +106,10 @@ func (cons *Cons) writeToWithoutKakko(w io.Writer, m PrintMode) (int, error) {
 					}
 				}
 				if IsNull(p.Car) {
-					if wc.Try(Null.PrintTo(w, m)) {
+					if wc.Try(io.WriteString(w, "nil")) {
 						return wc.Result()
 					}
-				} else if wc.Try(p.Car.PrintTo(w, m)) {
+				} else if wc.Try(tryPrintTo(w, p.Car, m)) {
 					return wc.Result()
 				}
 				lastCar = p.Car
@@ -105,7 +119,7 @@ func (cons *Cons) writeToWithoutKakko(w io.Writer, m PrintMode) (int, error) {
 			if wc.Try(io.WriteString(w, " . ")) {
 				return wc.Result()
 			}
-			if wc.Try(cons.getCdr().PrintTo(w, m)) {
+			if wc.Try(tryPrintTo(w, cons.getCdr(), m)) {
 				return wc.Result()
 			}
 		}
@@ -120,7 +134,7 @@ func (cons *Cons) PrintTo(w io.Writer, m PrintMode) (int, error) {
 			if wc.Try(w.Write([]byte{'\''})) {
 				return wc.Result()
 			}
-			wc.Try(cdr.Car.PrintTo(w, m))
+			wc.Try(tryPrintTo(w, cdr.Car, m))
 			return wc.Result()
 		}
 	}
@@ -129,7 +143,7 @@ func (cons *Cons) PrintTo(w io.Writer, m PrintMode) (int, error) {
 			if wc.Try(w.Write([]byte{'`'})) {
 				return wc.Result()
 			}
-			wc.Try(cdr.Car.PrintTo(w, m))
+			wc.Try(tryPrintTo(w, cdr.Car, m))
 			return wc.Result()
 		}
 	}

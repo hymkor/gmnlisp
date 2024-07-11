@@ -110,9 +110,9 @@ func funClassOf(_ context.Context, _ *World, arg Node) (Node, error) {
 
 type Node interface {
 	Equals(Node, EqlMode) bool
-	PrintTo(io.Writer, PrintMode) (int, error)
+	// PrintTo(io.Writer, PrintMode) (int, error)
 	String() string
-	GoString() string
+	// GoString() string
 	ClassOf() Class
 }
 

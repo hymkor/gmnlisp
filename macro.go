@@ -39,7 +39,7 @@ func (j _JoinedForm) PrintTo(w io.Writer, m PrintMode) (int, error) {
 		}
 		dem = " "
 
-		if wc.Try(e.PrintTo(w, m)) {
+		if wc.Try(tryPrintTo(w, e, m)) {
 			return wc.Result()
 		}
 	}
@@ -105,7 +105,7 @@ func (m *_Macro) expand(ctx context.Context, w *World, n Node) (Node, error) {
 	newWorld := m.lexical.Let(lexical)
 
 	if macro_trace {
-		m.code.PrintTo(os.Stderr, PRINT)
+		tryPrintTo(os.Stderr, m.code, PRINT)
 		fmt.Fprintln(os.Stderr, "\n----")
 	}
 
@@ -115,14 +115,14 @@ func (m *_Macro) expand(ctx context.Context, w *World, n Node) (Node, error) {
 	}
 
 	if macro_trace {
-		newCode.PrintTo(os.Stderr, PRINT)
+		tryPrintTo(os.Stderr, newCode, PRINT)
 		fmt.Fprintln(os.Stderr, "\n----")
 	}
 
 	newCode = expandJoinedForm(newCode)
 
 	if macro_trace {
-		newCode.PrintTo(os.Stderr, PRINT)
+		tryPrintTo(os.Stderr, newCode, PRINT)
 		fmt.Fprintln(os.Stderr, "\n----")
 	}
 	return newCode, nil

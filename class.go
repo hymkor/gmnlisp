@@ -415,7 +415,7 @@ func (c *_StandardObject) PrintTo(w io.Writer, mode PrintMode) (int, error) {
 		if err != nil {
 			return n, err
 		}
-		n1, err = val.PrintTo(w, mode)
+		n1, err = tryPrintTo(w, val, mode)
 		n += n1
 		if err != nil {
 			return n, err

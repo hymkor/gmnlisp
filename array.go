@@ -56,7 +56,7 @@ func (A *Array) printTo(w io.Writer, mode PrintMode, list []Node, dim []int) ([]
 			list, _n, err = A.printTo(w, mode, list, dim[1:])
 			n += _n
 		} else {
-			_n, err = list[0].PrintTo(w, mode)
+			_n, err = tryPrintTo(w, list[0], mode)
 			n += _n
 			list = list[1:]
 		}

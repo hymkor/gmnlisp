@@ -50,9 +50,9 @@ func funFormatObject(_ context.Context, w *World, list []Node) (Node, error) {
 	return tAndNilToWriter(w, list, func(writer *_WriterNode, list []Node) error {
 		var err error
 		if IsNone(list[1]) { // ~a (AS-IS)
-			_, err = list[0].PrintTo(writer, PRINC)
+			_, err = tryPrintTo(writer, list[0], PRINC)
 		} else { // ~s (S expression)
-			_, err = list[0].PrintTo(writer, PRINT)
+			_, err = tryPrintTo(writer, list[0], PRINT)
 		}
 		return err
 	})
@@ -259,7 +259,7 @@ func formatSub(ctx context.Context, world *World, w *_WriterNode, argv []Node) e
 		case 'g', 'G':
 			err = printFloat(w, value, 'g', parameter...)
 		case 'a', 'A':
-			n, err := value.PrintTo(w, PRINC)
+			n, err := tryPrintTo(w, value, PRINC)
 			if err != nil {
 				return err
 			}
@@ -267,7 +267,7 @@ func formatSub(ctx context.Context, world *World, w *_WriterNode, argv []Node) e
 				printSpaces(parameter[0]-n, w)
 			}
 		case 's', 'S':
-			n, err := value.PrintTo(w, PRINT)
+			n, err := tryPrintTo(w, value, PRINT)
 			if err != nil {
 				return err
 			}

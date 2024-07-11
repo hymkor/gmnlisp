@@ -154,7 +154,7 @@ func interactive(lisp *gmnlisp.World) error {
 			continue
 		}
 		if gmnlisp.IsSome(result) {
-			result.PrintTo(os.Stdout, gmnlisp.PRINT)
+			fmt.Fprintf(os.Stdout, "%#v", result)
 		}
 		fmt.Println()
 	}
