@@ -1,11 +1,14 @@
 - Fix: `(equal USER-DEFINED-CLASS-OBJECT...)` was always false.
-- Implement `(assure)`, `(the)`, `(max)`, `(min)`, `(eval)`, `(arithmetic-error-operands)`, and `(arithmetic-error-operation)`
+- Implement `(assure)`, `(the)`, `(max)`, `(min)`, `(eval)`, `(arithmetic-error-operands)`, `(arithmetic-error-operation)`, and `<program-error>`
 - On any built-in-class CLASS, both `(subclassp CLASS <built-in-class>)` and `(subclassp CLASS <object>)` are `t`
 - Macros within functions are now expanded when the function is defined (previously it was always done when the function was called).
 - Implement `(expand-defun)` which displays the definition of the function
 - Fix the problem each element of array literal should not be evaluated, but it was
 - Fix crashed when print cons whose car-part is nil
 - Fix the result of `(for)` was sometimes nil
+- Remove Eval() from requirements of Node interface, and let user's program use the receiver itself instead if Eval() does not exist
+- Remove PrintTo() and GoString() from the requirements of Node interface, and let user's program call String() if they do not exist
+- Fix: not handled where quote(`'`) occurs immediately before unquote(`,`)
 
 v0.7.0
 ======
