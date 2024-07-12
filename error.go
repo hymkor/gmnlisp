@@ -87,6 +87,9 @@ func callHandler[T Node](ctx context.Context, w *World, cont bool, condition err
 }
 
 func ExpectInterface[T Node](ctx context.Context, w *World, v Node, class Class) (T, error) {
+	if _v, ok := v.(Uneval); ok {
+		v = _v.Node
+	}
 	value, ok := v.(T)
 	if ok {
 		return value, nil
