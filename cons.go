@@ -181,15 +181,26 @@ func (cons *Cons) Equals(n Node, m EqlMode) bool {
 }
 
 func (cons *Cons) Eval(ctx context.Context, w *World) (Node, error) {
-	symbol, err := ExpectClass[Symbol](ctx, w, cons.Car)
-	if err != nil {
-		return nil, err
+	var rc Node
+	var err error
+	symbol, ok := cons.Car.(Symbol)
+	if !ok {
+		f, _err := w.Eval(ctx, cons.Car)
+		if _err != nil {
+			return nil, _err
+		}
+		function, _err := ExpectFunction(ctx, w, f)
+		if _err != nil {
+			return nil, _err
+		}
+		rc, err = function.Call(ctx, w, cons.Cdr)
+	} else {
+		function, _err := w.GetFunc(symbol)
+		if _err != nil {
+			return nil, _err
+		}
+		rc, err = function.Call(ctx, w, cons.Cdr)
 	}
-	function, err := w.GetFunc(symbol)
-	if err != nil {
-		return nil, err
-	}
-	rc, err := function.Call(ctx, w, cons.Cdr)
 	if err != nil {
 		return nil, fmt.Errorf("%w\n\tat %v", err, symbol)
 	}
