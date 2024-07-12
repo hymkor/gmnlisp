@@ -70,8 +70,13 @@ type ArithmeticError struct {
 	Class     Class
 }
 
+var arithmeticErrorClass = registerNewBuiltInClass[*ArithmeticError]("<arithmetic-error-class>")
+
 func (e *ArithmeticError) ClassOf() Class {
-	return e.Class
+	if e != nil && e.Class != nil {
+		return e.Class
+	}
+	return arithmeticErrorClass
 }
 
 func (e *ArithmeticError) Equals(other Node, mode EqlMode) bool {
