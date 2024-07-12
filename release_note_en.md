@@ -10,6 +10,7 @@
 - Remove PrintTo() and GoString() from the requirements of Node interface, and let user's program call String() if they do not exist
 - Fix: not handled where quote(`'`) occurs immediately before unquote(`,`)
 - Enable to call `((lambda ...) ...)`
+- Fix: the result to evalute `(1 2)` was `<domain-error>`, now it is `<undefined-function>`
 
 v0.7.0
 ======

@@ -10,6 +10,7 @@
 - Node interface の要件から PrintTo(), GoString() を外し、存在しなければ利用側で String() を使わせるようにした
 - `'` (quote) の直後に `,` (unquote) が来るケースをうまく読み込めない不具合を修正
 - `((lambda ...) )` という呼び出しを出来るようにした
+- `(1 2)` の評価結果が `<domain-error>` だったのを `<undefined-function>` に修正した
 
 v0.7.0
 ======
