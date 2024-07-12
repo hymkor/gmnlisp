@@ -15,17 +15,13 @@ func cmdQuote(_ context.Context, _ *World, n Node) (Node, error) {
 
 func quasiQuote(ctx context.Context, w *World, n Node) (Node, error) {
 	if cons, ok := n.(*Cons); ok {
-		if cons.Car == commaSymbol {
+		if cons.Car == symUnquote {
 			if cdrCons, ok := cons.Cdr.(*Cons); ok {
 				newCar, err := w.Eval(ctx, cdrCons.Car)
 				if err != nil {
 					return nil, err
 				}
-				newCdr, err := quasiQuote(ctx, w, cdrCons.Cdr)
-				if err != nil {
-					return nil, err
-				}
-				return &Cons{Car: newCar, Cdr: newCdr}, nil
+				return newCar, nil //&Cons{Car: newCar, Cdr: newCdr}, nil
 			}
 			return w.Eval(ctx, cons.Cdr)
 		}

@@ -9,6 +9,7 @@ import (
 var (
 	ampRest         = NewSymbol("&rest")
 	commaSymbol     = NewSymbol(",")
+	symUnquote      = NewSymbol("unquote")
 	nulSymbol       = NewSymbol("")
 	quoteSymbol     = NewSymbol("quote")
 	backQuoteSymbol = NewSymbol("quasiquote")

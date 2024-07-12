@@ -234,6 +234,16 @@ func (p *_Parser[N]) ReadNode(rs io.RuneScanner) (N, error) {
 		}
 		return p.newQuote(quoted), nil
 	}
+	if token == "," {
+		quoted, err := p.ReadNode(rs)
+		if err != nil {
+			if err == io.EOF {
+				return p.Null(), ErrTooShortTokens
+			}
+			return p.Null(), err
+		}
+		return p.Cons(p.Symbol("unquote"), p.Cons(quoted, p.Null())), nil
+	}
 	if token == "#'" {
 		function, err := p.ReadNode(rs)
 		if err != nil {
