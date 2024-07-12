@@ -134,6 +134,9 @@ var (
 )
 
 func (u *_UndefinedEntity) ClassOf() Class {
+	if u == nil {
+		return undefinedEntityClass
+	}
 	if u.space.Equals(symVariable, STRICT) {
 		return unboundVariableClass
 	}
