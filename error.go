@@ -6,14 +6,29 @@ import (
 	"fmt"
 )
 
+type ProgramError struct{}
+
 type DomainError struct {
 	Object        Node
 	ExpectedClass Class
 }
 
 var (
-	domainErrorClass = registerNewBuiltInClass[*DomainError]("<domain-error>")
+	programErrorClass = registerNewBuiltInClass[ProgramError]("<program-error>")
+	domainErrorClass  = registerNewBuiltInClass[*DomainError]("<domain-error>", programErrorClass)
 )
+
+func (e ProgramError) ClassOf() Class {
+	return programErrorClass
+}
+
+func (e ProgramError) Equals(_ Node, _ EqlMode) bool {
+	return false
+}
+
+func (e ProgramError) String() string {
+	return "<program-error>"
+}
 
 func (e *DomainError) ClassOf() Class {
 	return domainErrorClass
@@ -110,7 +125,7 @@ func (u *_UndefinedEntity) Equals(other Node, mode EqlMode) bool {
 }
 
 var (
-	undefinedEntityClass   = registerNewBuiltInClass[*_UndefinedEntity]("<undefined-entity>")
+	undefinedEntityClass   = registerNewBuiltInClass[*_UndefinedEntity]("<undefined-entity>", programErrorClass)
 	unboundVariableClass   = registerNewBuiltInClass[*_UndefinedEntity]("<unbound-variable>", undefinedEntityClass)
 	undefinedFunctionClass = registerNewBuiltInClass[*_UndefinedEntity]("<undefined-function>", undefinedEntityClass)
 )
