@@ -44,7 +44,7 @@ func (e *DomainError) Equals(_other Node, mode EqlMode) bool {
 }
 
 func (e *DomainError) String() string {
-	return fmt.Sprintf("%#v: Expected %#v", e.Object, e.ExpectedClass)
+	return fmt.Sprintf("%#v: Expected %#v", e.Object.String(), e.ExpectedClass.Name().String())
 }
 
 func (e *DomainError) Error() string {
