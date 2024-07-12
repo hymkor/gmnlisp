@@ -490,7 +490,7 @@ func UnevalList(list ...Node) Node {
 }
 
 func funCreate(ctx context.Context, w *World, args []Node) (Node, error) {
-	class, err := ExpectClass[Class](ctx, w, args[0])
+	class, err := ExpectInterface[Class](ctx, w, args[0], classClass)
 	if err != nil {
 		return nil, err
 	}
