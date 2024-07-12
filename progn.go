@@ -86,7 +86,7 @@ type _ErrThrown struct {
 }
 
 func (e *_ErrThrown) Error() string {
-	return fmt.Sprintf("Thrown tag-form %#v was not caught", e.TagForm)
+	return fmt.Sprintf("Thrown tag-form %#v was not caught", e.TagForm.String())
 }
 func cmdCatch(ctx context.Context, w *World, node Node) (Node, error) {
 	// from ISLisp
