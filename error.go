@@ -102,7 +102,8 @@ func ExpectInterface[T Node](ctx context.Context, w *World, v Node, class Class)
 }
 
 func ExpectClass[T Node](ctx context.Context, w *World, v Node) (T, error) {
-	class := v.ClassOf() // .ClassOf must be called even when value is nil
+	var zero T
+	class := zero.ClassOf() // .ClassOf must be called even when value is nil
 	return ExpectInterface[T](ctx, w, v, class)
 }
 
