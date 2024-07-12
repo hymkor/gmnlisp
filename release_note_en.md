@@ -9,6 +9,7 @@
 - Remove Eval() from requirements of Node interface, and let user's program use the receiver itself instead if Eval() does not exist
 - Remove PrintTo() and GoString() from the requirements of Node interface, and let user's program call String() if they do not exist
 - Fix: not handled where quote(`'`) occurs immediately before unquote(`,`)
+- Enable to call `((lambda ...) ...)`
 
 v0.7.0
 ======
