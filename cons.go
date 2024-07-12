@@ -189,11 +189,15 @@ func (cons *Cons) Eval(ctx context.Context, w *World) (Node, error) {
 		if _err != nil {
 			return nil, _err
 		}
-		function, _err := ExpectFunction(ctx, w, f)
-		if _err != nil {
-			return nil, _err
+		function, ok := f.(FunctionRef)
+		if !ok {
+			rc, err = callHandler[FunctionRef](ctx, w, true, &_UndefinedEntity{
+				name:  NewSymbol(f.String()),
+				space: symFunction,
+			})
+		} else {
+			rc, err = function.value.Call(ctx, w, cons.Cdr)
 		}
-		rc, err = function.Call(ctx, w, cons.Cdr)
 	} else {
 		function, _err := w.GetFunc(symbol)
 		if _err != nil {
