@@ -6,7 +6,9 @@ import (
 	"fmt"
 )
 
-type ProgramError struct{}
+type ProgramError struct {
+	err error
+}
 
 type DomainError struct {
 	Object        Node
@@ -22,12 +24,24 @@ func (e ProgramError) ClassOf() Class {
 	return programErrorClass
 }
 
-func (e ProgramError) Equals(_ Node, _ EqlMode) bool {
-	return false
+func (e ProgramError) Equals(n Node, _ EqlMode) bool {
+	_n, ok := n.(ProgramError)
+	if !ok {
+		return false
+	}
+	return errors.Is(e.err, _n.err) || errors.Is(_n.err, e.err)
 }
 
 func (e ProgramError) String() string {
-	return "<program-error>"
+	return e.err.Error()
+}
+
+func (e ProgramError) Error() string {
+	return e.err.Error()
+}
+
+func (e ProgramError) Unwrap() error {
+	return e.err
 }
 
 func (e *DomainError) ClassOf() Class {

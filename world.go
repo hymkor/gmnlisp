@@ -515,6 +515,7 @@ func (w *World) Eval(ctx context.Context, node Node) (Node, error) {
 func (w *World) ShiftAndEvalCar(ctx context.Context, list Node) (Node, Node, error) {
 	first, list, err := Shift(list)
 	if err != nil {
+		_, err = raiseError(ctx, w, err)
 		return nil, list, err
 	}
 	value, err := w.Eval(ctx, first)

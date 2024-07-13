@@ -493,11 +493,16 @@ func cmdTrace(ctx context.Context, w *World, list Node) (Node, error) {
 	return Null, nil
 }
 
+func raiseError(ctx context.Context, w *World, e error) (Node, error) {
+	condition := &ProgramError{err: e}
+	return callHandler[Node](ctx, w, false, condition)
+}
+
 type Function0 func(context.Context, *World) (Node, error)
 
 func (f Function0) Call(ctx context.Context, w *World, list Node) (Node, error) {
 	if IsSome(list) {
-		return nil, ErrTooManyArguments
+		return raiseError(ctx, w, ErrTooManyArguments)
 	}
 	return f(ctx, w)
 }
@@ -510,7 +515,7 @@ func (f Function1) Call(ctx context.Context, w *World, list Node) (Node, error) 
 		return nil, err
 	}
 	if IsSome(list) {
-		return nil, ErrTooManyArguments
+		return raiseError(ctx, w, ErrTooManyArguments)
 	}
 	return f(ctx, w, v)
 }
@@ -527,7 +532,7 @@ func (f Function2) Call(ctx context.Context, w *World, list Node) (Node, error) 
 		return nil, err
 	}
 	if IsSome(list) {
-		return nil, ErrTooManyArguments
+		return raiseError(ctx, w, ErrTooManyArguments)
 	}
 	return f(ctx, w, first, second)
 }
@@ -570,10 +575,10 @@ func (f *Function) Call(ctx context.Context, w *World, list Node) (Node, error) 
 	}
 
 	if len(args) > max {
-		return nil, ErrTooManyArguments
+		return raiseError(ctx, w, ErrTooManyArguments)
 	}
 	if len(args) < min {
-		return nil, ErrTooFewArguments
+		return raiseError(ctx, w, ErrTooFewArguments)
 	}
 	return f.F(ctx, w, args)
 }
