@@ -78,4 +78,15 @@ manifest:
 release:
 	gh release create -d --notes "" -t $(VERSION) $(VERSION) $(wildcard $(NAME)-$(VERSION)-*.zip)
 
+download-verify:
+	mkdir "$(CURDIR)/__verify" && \
+	cd __verify && \
+	curl -O http://islisp.org/program/Verify.zip && \
+	unzip Verify.zip && \
+	unzip tp-ipa.zip
+
+verify:
+	cd "$(CURDIR)/__verify/tp-ipa" && \
+	"$(CURDIR)/gmnlisp" -e "(load \"tp.lsp\") (tp-all)"
+
 .PHONY: generate test clean clean-gen sort-world _dist dist manifest
