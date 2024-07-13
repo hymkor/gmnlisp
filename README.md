@@ -448,7 +448,7 @@ Items without checkboxes are not standard functions
 - [x] defmacro
 - [x] 'form
 - [x] \`form
-- [ ] ,@form
+- [x] ,@form
 
 ### 9 Declarations and Coercions
 
@@ -736,8 +736,8 @@ Items without checkboxes are not standard functions
 
 #### 21.4 Error identification
 
-- [ ] \<program-error\>
-    - [ ] arity-error
+- [x] \<program-error\>
+    - [x] arity-error
     - [ ] immutable-binding
     - [ ] improper-argument-binding
     - [ ] index-out-of-range
@@ -752,7 +752,7 @@ Items without checkboxes are not standard functions
 - [ ] \<parse-error\>, cannot-parse-number
 - [ ] \<control-error\>, control-error
 - [x] \<devision-by-zero\>, division-by-zero
-- [ ] \<domain-error\>
+- [x] \<domain-error\>
     - not-an-input-stream
     - not-an-output-stream
 - [ ] \<end-of-stream\>, end-of-stream
