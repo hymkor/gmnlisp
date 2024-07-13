@@ -37,6 +37,7 @@ func getParameterList(ctx context.Context, w *World, node Node) (*_Parameters, e
 	if err != nil {
 		return nil, err
 	}
+	dupCheck := make(map[Symbol]struct{})
 	params := []Symbol{}
 	rest := nulSymbol
 	for IsSome(list) {
@@ -55,11 +56,21 @@ func getParameterList(ctx context.Context, w *World, node Node) (*_Parameters, e
 			if err != nil {
 				return nil, err
 			}
+			if _, ok := dupCheck[rest]; ok {
+				_, err = raiseError(ctx, w, fmt.Errorf("%s: same name parameter already exists", rest.String()))
+				return nil, err
+			}
+			dupCheck[rest] = struct{}{}
 		} else {
 			nameSymbol, err := ExpectClass[Symbol](ctx, w, nameNode)
 			if err != nil {
 				return nil, err
 			}
+			if _, ok := dupCheck[nameSymbol]; ok {
+				_, err = raiseError(ctx, w, fmt.Errorf("%s: same name parameter already exists", nameSymbol.String()))
+				return nil, err
+			}
+			dupCheck[nameSymbol] = struct{}{}
 			params = append(params, nameSymbol)
 		}
 
@@ -497,6 +508,9 @@ func cmdTrace(ctx context.Context, w *World, list Node) (Node, error) {
 }
 
 func raiseProgramerror(ctx context.Context, w *World, e error) (Node, error) {
+	if _, ok := e.(interface{ ClassOf() Class }); ok {
+		return nil, e
+	}
 	condition := ProgramError{err: e}
 	return callHandler[Node](ctx, w, false, condition)
 }
