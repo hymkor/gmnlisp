@@ -242,12 +242,12 @@ func (w *World) Stdin() _ReaderNode {
 }
 
 var autoLoadVars = Variables{
-	NewSymbol("*err-exist*"):              &ErrorNode{Value: os.ErrExist},
-	NewSymbol("*err-not-exist*"):          &ErrorNode{Value: os.ErrNotExist},
-	NewSymbol("*err-quit*"):               &ErrorNode{Value: ErrQuit},
-	NewSymbol("*err-too-few-arguments*"):  &ErrorNode{Value: ErrTooFewArguments},
-	NewSymbol("*err-too-many-arguments*"): &ErrorNode{Value: ErrTooManyArguments},
-	NewSymbol("*err-too-short-tokens*"):   &ErrorNode{Value: ErrTooShortTokens},
+	NewSymbol("*err-exist*"):              ErrorNode{Value: os.ErrExist},
+	NewSymbol("*err-not-exist*"):          ErrorNode{Value: os.ErrNotExist},
+	NewSymbol("*err-quit*"):               ErrorNode{Value: ErrQuit},
+	NewSymbol("*err-too-few-arguments*"):  ErrorNode{Value: ErrTooFewArguments},
+	NewSymbol("*err-too-many-arguments*"): ErrorNode{Value: ErrTooManyArguments},
+	NewSymbol("*err-too-short-tokens*"):   ErrorNode{Value: ErrTooShortTokens},
 	NewSymbol("<error>"):                  errorClass,
 	NewSymbol("most-negative-fixnum"):     Integer(math.MinInt),
 	NewSymbol("most-positive-fixnum"):     Integer(math.MaxInt),

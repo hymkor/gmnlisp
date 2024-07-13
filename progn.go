@@ -252,16 +252,16 @@ var errorClass = &_BuiltInClass{
 	super: []Class{objectClass},
 }
 
-func (*ErrorNode) ClassOf() Class {
+func (ErrorNode) ClassOf() Class {
 	return errorClass
 }
 
-func (e *ErrorNode) String() string {
+func (e ErrorNode) String() string {
 	return e.Value.Error()
 }
 
-func (e *ErrorNode) Equals(n Node, m EqlMode) bool {
-	f, ok := n.(*ErrorNode)
+func (e ErrorNode) Equals(n Node, m EqlMode) bool {
+	f, ok := n.(ErrorNode)
 	if !ok {
 		return false
 	}
