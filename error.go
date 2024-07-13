@@ -16,8 +16,8 @@ type DomainError struct {
 }
 
 var (
-	programErrorClass = registerNewBuiltInClass[ProgramError]("<program-error>")
-	domainErrorClass  = registerNewBuiltInClass[*DomainError]("<domain-error>", programErrorClass)
+	programErrorClass = registerNewBuiltInClass[ProgramError]("<program-error>", errorClass)
+	domainErrorClass  = registerNewBuiltInClass[*DomainError]("<domain-error>", programErrorClass, errorClass)
 )
 
 func (e ProgramError) ClassOf() Class {
