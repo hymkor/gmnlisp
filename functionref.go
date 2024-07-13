@@ -38,14 +38,14 @@ func (f FunctionRef) GoString() string {
 
 func cmdFunction(ctx context.Context, w *World, node Node) (Node, error) {
 	if IsNone(node) {
-		return raiseError(ctx, w, ErrTooFewArguments)
+		return raiseProgramerror(ctx, w, ErrTooFewArguments)
 	}
 	_symbol, node, err := Shift(node)
 	if err != nil {
 		return nil, err
 	}
 	if IsSome(node) {
-		return raiseError(ctx, w, ErrTooManyArguments)
+		return raiseProgramerror(ctx, w, ErrTooManyArguments)
 	}
 	symbol, err := ExpectClass[Symbol](ctx, w, _symbol)
 	if err != nil {
