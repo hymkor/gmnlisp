@@ -493,8 +493,8 @@ func cmdTrace(ctx context.Context, w *World, list Node) (Node, error) {
 	return Null, nil
 }
 
-	condition := &ProgramError{err: e}
 func raiseProgramerror(ctx context.Context, w *World, e error) (Node, error) {
+	condition := ProgramError{err: e}
 	return callHandler[Node](ctx, w, false, condition)
 }
 
