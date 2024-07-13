@@ -1,5 +1,5 @@
 - `(equal)` でユーザ定義クラスのオジェクトの比較が常に不一致になる問題を修正
-- `(assure)`, `(the)`, `(max)`, `(min)`, `(eval)`, `(arithmetic-error-operation)`, `(arithmetic-error-operands)`, `<program-error>`
+- `(assure)`, `(the)`, `(max)`, `(min)`, `(eval)`, `(arithmetic-error-operation)`, `(arithmetic-error-operands)`, `<program-error>`, `arity-error` を実装
 - 任意の組み込みクラス CLASS において `(subclassp CLASS <built-in-class>)` , `(subclassp CLASS <object>)` がともに `t` になるようにした
 - 関数内のマクロは関数定義時に展開するようにした(今まで常に呼び出し時に行っていた)
 - `(defun)` 定義内容を表示する `(expand-defun)` を実装
