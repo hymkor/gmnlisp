@@ -35,6 +35,15 @@ type canMinus interface {
 }
 
 func funSub(ctx context.Context, w *World, args []Node) (Node, error) {
+	if len(args) == 1 {
+		class := args[0].ClassOf()
+		zero := class.Create()
+		z, err := ExpectInterface[canMinus](ctx, w, zero, class)
+		if err != nil {
+			return nil, err
+		}
+		return z.Sub(ctx, w, args[0])
+	}
 	return inject(args, func(left, right Node) (Node, error) {
 		if _left, ok := left.(canMinus); ok {
 			return _left.Sub(ctx, w, right)
