@@ -84,7 +84,7 @@ func (e *_BuiltInClass) Name() Symbol {
 }
 
 func (e *_BuiltInClass) InstanceP(n Node) bool {
-	return e.instanceP(n)
+	return e.instanceP(n) || n.ClassOf().InheritP(e)
 }
 
 func (e *_BuiltInClass) String() string {
