@@ -15,16 +15,20 @@ func (e *_ErrEarlyReturns) Error() string {
 	if e.Name == nulSymbol {
 		return "Unexpected (return)"
 	}
-	return fmt.Sprintf("Unexpected (return-from %s)", e.Name)
+	return fmt.Sprintf("Unexpected (return-from %s)", e.Name.String())
 }
 
 func funReturn(ctx context.Context, w *World, arg Node) (Node, error) {
-	// from CommonLisp
+	if w.blockName == nil {
+		w.blockName = make(map[Symbol]struct{})
+	}
+	if _, ok := w.blockName[nulSymbol]; !ok {
+		return raiseControlError(ctx, w, fmt.Errorf("block name '%s' not found", nulSymbol.String()))
+	}
 	return nil, &_ErrEarlyReturns{Value: arg, Name: nulSymbol}
 }
 
 func cmdReturnFrom(ctx context.Context, w *World, n Node) (Node, error) {
-	// from CommonLisp
 	var argv [2]Node
 	if err := ListToArray(n, argv[:]); err != nil {
 		return nil, err
@@ -38,6 +42,12 @@ func cmdReturnFrom(ctx context.Context, w *World, n Node) (Node, error) {
 		}
 	} else {
 		symbol = nulSymbol
+	}
+	if w.blockName == nil {
+		w.blockName = make(map[Symbol]struct{})
+	}
+	if _, ok := w.blockName[symbol]; !ok {
+		return raiseControlError(ctx, w, fmt.Errorf("block name '%s' not found", symbol.String()))
 	}
 	value, err := w.Eval(ctx, argv[1])
 	if err != nil {
@@ -77,7 +87,13 @@ func cmdBlock(ctx context.Context, w *World, node Node) (Node, error) {
 	} else {
 		nameSymbol = nulSymbol
 	}
-
+	if w.blockName == nil {
+		w.blockName = make(map[Symbol]struct{})
+	}
+	if _, ok := w.blockName[nameSymbol]; !ok {
+		defer delete(w.blockName, nameSymbol)
+		w.blockName[nameSymbol] = struct{}{}
+	}
 	var errEarlyReturns *_ErrEarlyReturns
 	rv, err := Progn(ctx, w, statements)
 	if errors.As(err, &errEarlyReturns) && errEarlyReturns.Name == nameSymbol {

@@ -97,15 +97,16 @@ func (m *Pair) Range(f func(Symbol, Node) bool) {
 }
 
 type shared struct {
-	macro   map[Symbol]*_Macro
-	handler Callable
-	global  Scope
-	defun   FuncScope
-	dynamic Variables
-	stdout  *_WriterNode
-	errout  *_WriterNode
-	stdin   _ReaderNode
-	startup sync.Once
+	macro     map[Symbol]*_Macro
+	handler   Callable
+	global    Scope
+	defun     FuncScope
+	dynamic   Variables
+	stdout    *_WriterNode
+	errout    *_WriterNode
+	stdin     _ReaderNode
+	startup   sync.Once
+	blockName map[Symbol]struct{}
 }
 
 type World struct {
