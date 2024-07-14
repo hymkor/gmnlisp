@@ -21,7 +21,7 @@ type _Lambda struct {
 func cmdLambda(ctx context.Context, w *World, node Node) (Node, error) {
 	value, err := newLambda(ctx, w, node, nulSymbol)
 	if err != nil {
-		return raiseProgramerror(ctx, w, err)
+		return raiseProgramError(ctx, w, err)
 	}
 	return FunctionRef{value: value}, err
 }
@@ -253,7 +253,7 @@ func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
 	}
 
 	if IsSome(n) && L.rest == nulSymbol {
-		return raiseProgramerror(ctx, w, ErrTooManyArguments)
+		return raiseProgramError(ctx, w, ErrTooManyArguments)
 	}
 	if L.rest != nulSymbol {
 		var values Node = nil
@@ -506,7 +506,7 @@ func cmdTrace(ctx context.Context, w *World, list Node) (Node, error) {
 	return Null, nil
 }
 
-func raiseProgramerror(ctx context.Context, w *World, e error) (Node, error) {
+func raiseProgramError(ctx context.Context, w *World, e error) (Node, error) {
 	if _, ok := e.(interface{ ClassOf() Class }); ok {
 		return nil, e
 	}
@@ -518,7 +518,7 @@ type Function0 func(context.Context, *World) (Node, error)
 
 func (f Function0) Call(ctx context.Context, w *World, list Node) (Node, error) {
 	if IsSome(list) {
-		return raiseProgramerror(ctx, w, ErrTooManyArguments)
+		return raiseProgramError(ctx, w, ErrTooManyArguments)
 	}
 	return f(ctx, w)
 }
@@ -531,7 +531,7 @@ func (f Function1) Call(ctx context.Context, w *World, list Node) (Node, error) 
 		return nil, err
 	}
 	if IsSome(list) {
-		return raiseProgramerror(ctx, w, ErrTooManyArguments)
+		return raiseProgramError(ctx, w, ErrTooManyArguments)
 	}
 	return f(ctx, w, v)
 }
@@ -548,7 +548,7 @@ func (f Function2) Call(ctx context.Context, w *World, list Node) (Node, error) 
 		return nil, err
 	}
 	if IsSome(list) {
-		return raiseProgramerror(ctx, w, ErrTooManyArguments)
+		return raiseProgramError(ctx, w, ErrTooManyArguments)
 	}
 	return f(ctx, w, first, second)
 }
@@ -591,10 +591,10 @@ func (f *Function) Call(ctx context.Context, w *World, list Node) (Node, error) 
 	}
 
 	if len(args) > max {
-		return raiseProgramerror(ctx, w, ErrTooManyArguments)
+		return raiseProgramError(ctx, w, ErrTooManyArguments)
 	}
 	if len(args) < min {
-		return raiseProgramerror(ctx, w, ErrTooFewArguments)
+		return raiseProgramError(ctx, w, ErrTooFewArguments)
 	}
 	return f.F(ctx, w, args)
 }

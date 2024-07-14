@@ -191,7 +191,7 @@ func cmdIfWithTailRecOpt(ctx context.Context, w *World, params Node, tailOptSym 
 			return nil, err
 		}
 		if IsSome(params) {
-			return nil, ErrTooManyArguments
+			return raiseProgramError(ctx, w, ErrTooManyArguments)
 		}
 	}
 	if IsSome(cond) {

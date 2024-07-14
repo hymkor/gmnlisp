@@ -38,14 +38,14 @@ func (f FunctionRef) GoString() string {
 
 func cmdFunction(ctx context.Context, w *World, node Node) (Node, error) {
 	if IsNone(node) {
-		return raiseProgramerror(ctx, w, ErrTooFewArguments)
+		return raiseProgramError(ctx, w, ErrTooFewArguments)
 	}
 	_symbol, node, err := Shift(node)
 	if err != nil {
 		return nil, err
 	}
 	if IsSome(node) {
-		return raiseProgramerror(ctx, w, ErrTooManyArguments)
+		return raiseProgramError(ctx, w, ErrTooManyArguments)
 	}
 	symbol, err := ExpectClass[Symbol](ctx, w, _symbol)
 	if err != nil {
@@ -77,7 +77,7 @@ func ExpectFunction(ctx context.Context, w *World, value Node) (Callable, error)
 func cmdFlet(ctx context.Context, w *World, list Node) (Node, error) {
 	flist, list, err := Shift(list)
 	if err != nil {
-		return raiseProgramerror(ctx, w, err)
+		return raiseProgramError(ctx, w, err)
 	}
 	lexical := Functions{}
 	for HasValue(flist) {
@@ -109,7 +109,7 @@ func cmdFlet(ctx context.Context, w *World, list Node) (Node, error) {
 func cmdLabels(ctx context.Context, w *World, list Node) (Node, error) {
 	flist, list, err := Shift(list)
 	if err != nil {
-		return raiseProgramerror(ctx, w, err)
+		return raiseProgramError(ctx, w, err)
 	}
 	lexical := Functions{}
 	nw := w.Flet(lexical)
