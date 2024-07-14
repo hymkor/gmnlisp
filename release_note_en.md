@@ -17,6 +17,8 @@
 - Fix: function defined at `(flet)` could call itself recursively
 - `(defun)` can not re-define the special operator like `if`
 - Fix: `(return-from nil ...)` failes
+- `(return-from NOT-EXIST-BLOCK)` raises `<control-error>`
+- `(throw NOT-EXIST-TAG)` raises `<control-error>`
 
 v0.7.0
 ======
