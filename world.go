@@ -107,6 +107,7 @@ type shared struct {
 	stdin     _ReaderNode
 	startup   sync.Once
 	blockName map[Symbol]struct{}
+	catchTag  map[Node]struct{}
 }
 
 type World struct {
@@ -428,7 +429,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("symbolp"):                     Function1(funAnyTypep[Symbol]),
 	NewSymbol("tagbody"):                     SpecialF(cmdTagBody),
 	NewSymbol("the"):                         Function2(funAssure),
-	NewSymbol("throw"):                       &Function{C: 2, F: funThrow},
+	NewSymbol("throw"):                       Function2(funThrow),
 	NewSymbol("trace"):                       SpecialF(cmdTrace),
 	NewSymbol("truncate"):                    Function1(funTruncate),
 	NewSymbol("undefined-entity-name"):       Function1(funUndefinedEntityName),

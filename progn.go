@@ -117,6 +117,14 @@ func cmdCatch(ctx context.Context, w *World, node Node) (Node, error) {
 		return nil, err
 	}
 
+	if w.catchTag == nil {
+		w.catchTag = make(map[Node]struct{})
+	}
+	if _, ok := w.catchTag[tagForm]; !ok {
+		w.catchTag[tagForm] = struct{}{}
+		defer delete(w.catchTag, tagForm)
+	}
+
 	var errThrown *_ErrThrown
 	rv, err := Progn(ctx, w, statements)
 	if errors.As(err, &errThrown) && errThrown.TagForm.Equals(tagForm, EQUALP) {
@@ -125,9 +133,14 @@ func cmdCatch(ctx context.Context, w *World, node Node) (Node, error) {
 	return rv, err
 }
 
-func funThrow(ctx context.Context, w *World, list []Node) (Node, error) {
-	// from ISLisp
-	return nil, &_ErrThrown{Value: list[1], TagForm: list[0]}
+func funThrow(ctx context.Context, w *World, tagForm, value Node) (Node, error) {
+	if w.catchTag == nil {
+		w.catchTag = make(map[Node]struct{})
+	}
+	if _, ok := w.catchTag[tagForm]; !ok {
+		return raiseControlError(ctx, w, fmt.Errorf("catch-tag '%s' not found", tagForm.String()))
+	}
+	return nil, &_ErrThrown{TagForm: tagForm, Value: value}
 }
 
 func cmdCond(ctx context.Context, w *World, list Node) (Node, error) {
