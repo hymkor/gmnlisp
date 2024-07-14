@@ -511,6 +511,14 @@ func cmdTrace(ctx context.Context, w *World, list Node) (Node, error) {
 	return Null, nil
 }
 
+func raiseControlError(ctx context.Context, w *World, e error) (Node, error) {
+	if _, ok := e.(interface{ ClassOf() Class }); ok {
+		return nil, e
+	}
+	condition := ControlError{err: e}
+	return callHandler[Node](ctx, w, false, condition)
+}
+
 func raiseProgramError(ctx context.Context, w *World, e error) (Node, error) {
 	if _, ok := e.(interface{ ClassOf() Class }); ok {
 		return nil, e

@@ -10,6 +10,10 @@ type ProgramError struct {
 	err error
 }
 
+type ControlError struct {
+	err error
+}
+
 type DomainError struct {
 	Object        Node
 	ExpectedClass Class
@@ -18,6 +22,7 @@ type DomainError struct {
 var (
 	programErrorClass = registerNewBuiltInClass[ProgramError]("<program-error>", errorClass)
 	domainErrorClass  = registerNewBuiltInClass[*DomainError]("<domain-error>", programErrorClass, errorClass)
+	controlErrorClass = registerNewBuiltInClass[ControlError]("<control-error>", errorClass)
 )
 
 func (e ProgramError) ClassOf() Class {
@@ -41,6 +46,30 @@ func (e ProgramError) Error() string {
 }
 
 func (e ProgramError) Unwrap() error {
+	return e.err
+}
+
+func (e ControlError) ClassOf() Class {
+	return controlErrorClass
+}
+
+func (e ControlError) Equals(n Node, _ EqlMode) bool {
+	_n, ok := n.(ControlError)
+	if !ok {
+		return false
+	}
+	return errors.Is(e.err, _n.err) || errors.Is(_n.err, e.err)
+}
+
+func (e ControlError) String() string {
+	return e.err.Error()
+}
+
+func (e ControlError) Error() string {
+	return e.err.Error()
+}
+
+func (e ControlError) Unwrap() error {
 	return e.err
 }
 
