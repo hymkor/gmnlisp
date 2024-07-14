@@ -95,7 +95,8 @@ func cmdFlet(ctx context.Context, w *World, list Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		lambda, err := newLambda(ctx, w, flist1, symbol)
+		// to disable tail recursion optimize, do not use `symbol`
+		lambda, err := newLambda(ctx, w, flist1, nulSymbol)
 		if err != nil {
 			return nil, err
 		}
