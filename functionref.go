@@ -77,7 +77,7 @@ func ExpectFunction(ctx context.Context, w *World, value Node) (Callable, error)
 func cmdFlet(ctx context.Context, w *World, list Node) (Node, error) {
 	flist, list, err := Shift(list)
 	if err != nil {
-		return nil, err
+		return raiseProgramerror(ctx, w, err)
 	}
 	lexical := Functions{}
 	for HasValue(flist) {
@@ -108,7 +108,7 @@ func cmdFlet(ctx context.Context, w *World, list Node) (Node, error) {
 func cmdLabels(ctx context.Context, w *World, list Node) (Node, error) {
 	flist, list, err := Shift(list)
 	if err != nil {
-		return nil, err
+		return raiseProgramerror(ctx, w, err)
 	}
 	lexical := Functions{}
 	nw := w.Flet(lexical)
