@@ -422,6 +422,11 @@ func cmdDefun(ctx context.Context, w *World, list Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
+	if f, ok := w.defun.Get(symbol); ok {
+		if _, ok := f.(SpecialF); ok {
+			return raiseProgramError(ctx, w, fmt.Errorf("%s: special operator can not be changed", symbol.String()))
+		}
+	}
 	w.defun.Set(symbol, lambda)
 	return symbol, nil
 }
