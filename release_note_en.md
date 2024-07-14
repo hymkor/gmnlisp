@@ -11,6 +11,12 @@
 - Fix: not handled where quote(`'`) occurs immediately before unquote(`,`)
 - Enable to call `((lambda ...) ...)`
 - Fix: the result to evalute `(1 2)` was `<domain-error>`, now it is `<undefined-function>`
+- Raise `<error>` when the parameters of `(lambda)` are duplicated now.
+- Fix: `(instancep (create <domain-error>) <program-error>` was false 
+- The word starting with `&` is treated same as `:`
+- Fix: function defined at `(flet)` could call itself recursively
+- `(defun)` can not re-define the special operator like `if`
+- Fix: `(return-from nil ...)` failes
 
 v0.7.0
 ======
