@@ -29,9 +29,15 @@ func cmdReturnFrom(ctx context.Context, w *World, n Node) (Node, error) {
 	if err := ListToArray(n, argv[:]); err != nil {
 		return nil, err
 	}
-	symbol, err := ExpectClass[Symbol](ctx, w, argv[0])
-	if err != nil {
-		return nil, err
+	var symbol Symbol
+	var err error
+	if IsSome(argv[0]) {
+		symbol, err = ExpectClass[Symbol](ctx, w, argv[0])
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		symbol = nulSymbol
 	}
 	value, err := w.Eval(ctx, argv[1])
 	if err != nil {
