@@ -793,6 +793,8 @@ References
 
 + [ISLISP - Wikipedia](https://en.wikipedia.org/wiki/ISLISP)
 + [ISLisp Home Page][ISLisp]
++ [www.islisp.info: Home](http://www.islisp.info/)
++ [Programming Language ISLISP Working Draft 23.0](https://nenbutsu.github.io/ISLispHyperDraft/islisp-v23.html)
 
 ### Documents (Japanese)
 
