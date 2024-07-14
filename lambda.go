@@ -253,8 +253,7 @@ func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
 	}
 
 	if IsSome(n) && L.rest == nulSymbol {
-		// return nil, fmt.Errorf("%s: %w", L.name, ErrTooManyArguments)
-		return nil, ErrTooManyArguments
+		return raiseProgramerror(ctx, w, ErrTooManyArguments)
 	}
 	if L.rest != nulSymbol {
 		var values Node = nil
