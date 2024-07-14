@@ -271,7 +271,7 @@ func (p *_Parser[N]) ReadNode(rs io.RuneScanner) (N, error) {
 		}
 		return p.nodes2cons(nodes), nil
 	}
-	if len(token) > 0 && token[0] == ':' {
+	if len(token) > 0 && (token[0] == ':' || token[0] == '&') {
 		return p.Keyword(token), nil
 	}
 	if val, ok, err := p.tryParseAsNumber(token); ok {

@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	ampRest         = NewSymbol("&rest")
+	ampRest         = NewKeyword("&rest")
 	commaSymbol     = NewSymbol(",")
 	symUnquote      = NewSymbol("unquote")
 	nulSymbol       = NewSymbol("")
