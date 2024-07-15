@@ -19,6 +19,8 @@
 - `(return-from nil ...)` がエラーになってしまう不具合を修正
 - 存在しないblock名に return-from しようとした時、`<control-error>` にするようにした
 - 存在しないtag名にthrow しようとした時、`<control-error>` にするようにした
+- 存在しないtag名に go しようとした時、`<controle-error>` にするようにした
+- `(unwind-protect)` の CLEANUP-FORM で `(go)` などを使おうとしたら、`<control-error>` にするようにした。
 
 v0.7.0
 ======

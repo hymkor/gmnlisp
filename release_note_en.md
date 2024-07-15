@@ -19,6 +19,8 @@
 - Fix: `(return-from nil ...)` failes
 - `(return-from NOT-EXIST-BLOCK)` raises `<control-error>`
 - `(throw NOT-EXIST-TAG)` raises `<control-error>`
+- `(go)` raises `<controle-error>`
+- When `(go)`, `(throw)` or `(return-from)` is called on CLEANUP-FORM of `(unwind-protect FORM (go) ..)`, raise `<control-error>`
 
 v0.7.0
 ======
