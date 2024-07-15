@@ -347,12 +347,36 @@ func cmdGo(ctx context.Context, w *World, args Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
+	if w.goTag == nil {
+		w.goTag = make(map[Symbol]struct{})
+	}
+	if _, ok := w.goTag[symbol]; !ok {
+		return raiseControlError(ctx, w, fmt.Errorf("go-tag: %s not found", symbol.String()))
+	}
 	return Null, &_ErrTagBody{tag: symbol}
 }
 
 func cmdTagBody(ctx context.Context, w *World, args Node) (Node, error) {
 	tag := map[Symbol]Node{}
 
+	if w.goTag == nil {
+		w.goTag = make(map[Symbol]struct{})
+	}
+	for _args := args; IsSome(_args); {
+		var current Node
+		var err error
+
+		current, _args, err = Shift(_args)
+		if err != nil {
+			return nil, err
+		}
+		if symbol, ok := current.(Symbol); ok {
+			if _, ok := w.goTag[symbol]; !ok {
+				w.goTag[symbol] = struct{}{}
+				defer delete(w.goTag, symbol)
+			}
+		}
+	}
 mainloop:
 	for IsSome(args) {
 		var current Node

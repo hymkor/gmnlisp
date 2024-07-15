@@ -108,6 +108,7 @@ type shared struct {
 	startup   sync.Once
 	blockName map[Symbol]struct{}
 	catchTag  map[Node]struct{}
+	goTag     map[Symbol]struct{}
 }
 
 type World struct {
