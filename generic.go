@@ -120,7 +120,10 @@ func (c *_Generic) Call(ctx context.Context, w *World, node Node) (Node, error) 
 			return m.method(ctx, w, values)
 		}
 	}
-	return nil, ErrNoMatchMethods
+	return callHandler[FunctionRef](ctx, w, false, &_UndefinedEntity{
+		name:  c.Symbol,
+		space: symFunction,
+	})
 }
 
 func ExpectGeneric(c Callable) (*_Generic, error) {
