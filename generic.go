@@ -59,6 +59,11 @@ func cmdDefGeneric(ctx context.Context, w *World, node Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
+	if f, ok := w.defun.Get(name); ok {
+		if _, ok := f.(SpecialF); ok {
+			return raiseProgramError(ctx, w, fmt.Errorf("%s: special operator can not be changed", name.String()))
+		}
+	}
 	types, node, err := Shift(node)
 	if err != nil {
 		return nil, err
