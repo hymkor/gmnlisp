@@ -72,6 +72,9 @@ func (idm *idMap[T]) Count() int {
 type Symbol int
 
 func (idm *idMap[T]) IdToName(id T) string {
+	if id < 0 || int(id) >= len(idm.id2name) {
+		return "(undefined)"
+	}
 	return idm.id2name[id]
 }
 
