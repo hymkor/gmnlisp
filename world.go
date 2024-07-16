@@ -308,7 +308,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("consp"):                       Function1(funAnyTypep[*Cons]),
 	NewSymbol("continue-condition"):          SpecialF(cmdContinueCondition),
 	NewSymbol("convert"):                     SpecialF(cmdConvert),
-	NewSymbol("create"):                      &Function{F: funCreate},
+	NewSymbol("create"):                      &Function{Min: 1, F: funCreate},
 	NewSymbol("create-array"):                &Function{F: funCreateArray},
 	NewSymbol("create-list"):                 &Function{Min: 2, F: funCreateList},
 	NewSymbol("create-string"):               &Function{F: funCreateString},
