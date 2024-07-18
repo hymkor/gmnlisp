@@ -39,13 +39,19 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 		case integerClass.name:
 			i, err := strconv.ParseInt(val.String(), 10, 64)
 			if err != nil {
-				return nil, err
+				return callHandler[*ParseError](ctx, w, true, &ParseError{
+					str:           String(val.String()),
+					ExpectedClass: integerClass,
+				})
 			}
 			return Integer(int(i)), nil
 		case floatClass.name:
 			f, err := strconv.ParseFloat(val.String(), 64)
 			if err != nil {
-				return nil, err
+				return callHandler[*ParseError](ctx, w, true, &ParseError{
+					str:           String(val.String()),
+					ExpectedClass: floatClass,
+				})
 			}
 			return Float(f), nil
 		case symbolClass.name:

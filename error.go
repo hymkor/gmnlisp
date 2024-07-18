@@ -19,10 +19,16 @@ type DomainError struct {
 	ExpectedClass Class
 }
 
+type ParseError struct {
+	str           String
+	ExpectedClass Class
+}
+
 var (
 	programErrorClass = registerNewAbstractClass[ProgramError]("<program-error>", errorClass)
 	domainErrorClass  = registerNewAbstractClass[*DomainError]("<domain-error>", programErrorClass, errorClass)
 	controlErrorClass = registerNewAbstractClass[ControlError]("<control-error>", errorClass)
+	parseErrorClass   = registerNewAbstractClass[*ParseError]("<parse-error>", errorClass)
 )
 
 func (e ProgramError) ClassOf() Class {
@@ -202,4 +208,36 @@ func funUndefinedEntityNamespace(ctx context.Context, w *World, arg Node) (Node,
 		return nil, err
 	}
 	return entity.space, nil
+}
+
+func funParseErrorString(ctx context.Context, w *World, arg Node) (Node, error) {
+	entity, err := ExpectClass[*ParseError](ctx, w, arg)
+	if err != nil {
+		return nil, err
+	}
+	return String(entity.str), nil
+}
+
+func funParseErrorExpectedClass(ctx context.Context, w *World, arg Node) (Node, error) {
+	entity, err := ExpectClass[*ParseError](ctx, w, arg)
+	if err != nil {
+		return nil, err
+	}
+	return entity.ExpectedClass, nil
+}
+
+func (p *ParseError) ClassOf() Class {
+	return parseErrorClass
+}
+
+func (p *ParseError) String() string {
+	return fmt.Sprintf("ParseError: %s: %s", String(p.str), p.ExpectedClass.String())
+}
+
+func (p *ParseError) Equals(n Node, _ EqlMode) bool {
+	return false
+}
+
+func (p *ParseError) Error() string {
+	return p.String()
 }

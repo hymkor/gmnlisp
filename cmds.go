@@ -178,8 +178,11 @@ func funParseNumber(ctx context.Context, w *World, arg Node) (Node, error) {
 		return nil, err
 	}
 	val, ok, err := tryParseAsNumber(s.String())
-	if !ok {
-		return nil, ErrCanNotParseNumber
+	if !ok || err != nil {
+		return callHandler[*ParseError](ctx, w, true, &ParseError{
+			str:           s,
+			ExpectedClass: numberClass,
+		})
 	}
 	return val, err
 }
