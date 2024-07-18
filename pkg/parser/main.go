@@ -148,13 +148,13 @@ func (p *_Parser[N]) tryParseAsInt(token string) (N, bool, error) {
 	var val int64
 	var err error
 	if rxInteger.MatchString(token) {
-		val, err = strconv.ParseInt(token, 10, 63)
+		val, err = strconv.ParseInt(token, 10, 64)
 	} else if rxHexInteger.MatchString(token) {
-		val, err = strconv.ParseInt(token[2:], 16, 63)
+		val, err = strconv.ParseInt(token[2:], 16, 64)
 	} else if rxOctInteger.MatchString(token) {
-		val, err = strconv.ParseInt(token[2:], 8, 63)
+		val, err = strconv.ParseInt(token[2:], 8, 64)
 	} else if rxBinInteger.MatchString(token) {
-		val, err = strconv.ParseInt(token[2:], 2, 63)
+		val, err = strconv.ParseInt(token[2:], 2, 64)
 	} else {
 		return p.Null(), false, nil
 	}
