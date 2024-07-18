@@ -141,7 +141,7 @@ func (p *_Parser[N]) tryParseAsFloat(token string) (N, bool, error) {
 	}
 	val, err := strconv.ParseFloat(token, 64)
 	if err != nil {
-		return p.Null(), true, fmt.Errorf("%s: %w", token, err)
+		return p.Null(), true, err
 	}
 	return p.Float(val), true, nil
 }

@@ -2,7 +2,10 @@ package gmnlisp
 
 import (
 	"context"
+	"errors"
 	"os"
+	"strconv"
+	"strings"
 )
 
 func cmdQuote(_ context.Context, _ *World, n Node) (Node, error) {
@@ -172,6 +175,11 @@ func funAnyTypep[T Node](_ context.Context, _ *World, arg Node) (Node, error) {
 	return Null, nil
 }
 
+var (
+	floatingPointOverflowClass  = registerNewAbstractClass[Node]("<floating-point-overflow>", arithmeticErrorClass)
+	floatingPointUnderflowClass = registerNewAbstractClass[Node]("<floating-point-underflow>", arithmeticErrorClass)
+)
+
 func funParseNumber(ctx context.Context, w *World, arg Node) (Node, error) {
 	s, err := ExpectClass[String](ctx, w, arg)
 	if err != nil {
@@ -179,6 +187,21 @@ func funParseNumber(ctx context.Context, w *World, arg Node) (Node, error) {
 	}
 	val, ok, err := tryParseAsNumber(s.String())
 	if !ok || err != nil {
+		var numError *strconv.NumError
+		if errors.As(err, &numError) {
+			if numError.Func == "ParseFloat" {
+				class := floatingPointOverflowClass
+				if strings.Contains(numError.Num, "E-") || strings.Contains(numError.Num, "e-") {
+					class = floatingPointUnderflowClass
+				}
+
+				return callHandler[*ArithmeticError](ctx, w, true, &ArithmeticError{
+					Operation: FunctionRef{value: Function1(funParseNumber)},
+					Operands:  s,
+					Class:     class,
+				})
+			}
+		}
 		return callHandler[*ParseError](ctx, w, true, &ParseError{
 			str:           s,
 			ExpectedClass: numberClass,
