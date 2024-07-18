@@ -3,9 +3,11 @@ package gmnlisp
 import (
 	"bufio"
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -94,7 +96,7 @@ func funReadLine(_ context.Context, w *World, argv []Node) (Node, error) {
 	return String(chomp(s)), err
 }
 
-func funRead(_ context.Context, w *World, argv []Node) (Node, error) {
+func funRead(ctx context.Context, w *World, argv []Node) (Node, error) {
 	stream, err := newStreamInput(w, argv)
 	if err != nil {
 		return nil, err
@@ -102,6 +104,15 @@ func funRead(_ context.Context, w *World, argv []Node) (Node, error) {
 	value, err := ReadNode(stream.reader)
 	if err == io.EOF && !stream.eofFlag {
 		return stream.eofValue, nil
+	}
+	if err != nil {
+		var numError *strconv.NumError
+		if errors.As(err, &numError) {
+			return callHandler[*ParseError](ctx, w, true, &ParseError{
+				str:           String(numError.Num),
+				ExpectedClass: numberClass,
+			})
+		}
 	}
 	return value, err
 }
