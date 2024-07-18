@@ -123,7 +123,10 @@ func (A *Array) Equals(_B Node, mode EqlMode) bool {
 
 func funCreateArray(ctx context.Context, w *World, args []Node) (Node, error) {
 	dim := args[0]
-	ini := args[1]
+	var ini Node = Null
+	if len(args) >= 2 {
+		ini = args[1]
+	}
 
 	_dim := make([]int, 0, 2)
 	size := 1

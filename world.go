@@ -309,7 +309,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("continue-condition"):          SpecialF(cmdContinueCondition),
 	NewSymbol("convert"):                     SpecialF(cmdConvert),
 	NewSymbol("create"):                      &Function{Min: 1, F: funCreate},
-	NewSymbol("create-array"):                &Function{F: funCreateArray},
+	NewSymbol("create-array"):                &Function{Min: 1, Max: 2, F: funCreateArray},
 	NewSymbol("create-list"):                 &Function{Min: 2, F: funCreateList},
 	NewSymbol("create-string"):               &Function{F: funCreateString},
 	NewSymbol("create-string-input-stream"):  Function1(funCreateStringInputStream),
