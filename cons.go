@@ -12,7 +12,7 @@ type Cons struct {
 	Cdr Node
 }
 
-var consClass = registerNewBuiltInClass[*Cons]("<cons>")
+var consClass = registerNewAbstractClass[*Cons]("<cons>")
 
 func (*Cons) ClassOf() Class {
 	return consClass

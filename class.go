@@ -507,6 +507,9 @@ func funCreate(ctx context.Context, w *World, args []Node) (Node, error) {
 		newargs := append([]Node{rec}, args[1:]...)
 		return gen.Call(ctx, w, UnevalList(newargs...))
 	}
+	if rec == nil {
+		return raiseProgramError(ctx, w, fmt.Errorf("Can not create instance for %s", class.Name()))
+	}
 	return rec, nil
 }
 

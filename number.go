@@ -100,7 +100,7 @@ func (e *ArithmeticError) Error() string {
 	return e.String()
 }
 
-var divisionByZeroClass = registerNewBuiltInClass[*ArithmeticError]("<division-by-zero>")
+var divisionByZeroClass = registerNewAbstractClass[*ArithmeticError]("<division-by-zero>")
 
 func raiseDivisionByZero(ctx context.Context, w *World, m, n Node) (Node, error) {
 	return callHandler[Node](ctx, w, true, &ArithmeticError{

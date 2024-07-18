@@ -20,9 +20,9 @@ type DomainError struct {
 }
 
 var (
-	programErrorClass = registerNewBuiltInClass[ProgramError]("<program-error>", errorClass)
-	domainErrorClass  = registerNewBuiltInClass[*DomainError]("<domain-error>", programErrorClass, errorClass)
-	controlErrorClass = registerNewBuiltInClass[ControlError]("<control-error>", errorClass)
+	programErrorClass = registerNewAbstractClass[ProgramError]("<program-error>", errorClass)
+	domainErrorClass  = registerNewAbstractClass[*DomainError]("<domain-error>", programErrorClass, errorClass)
+	controlErrorClass = registerNewAbstractClass[ControlError]("<control-error>", errorClass)
 )
 
 func (e ProgramError) ClassOf() Class {
@@ -172,9 +172,9 @@ func (u *_UndefinedEntity) Equals(other Node, mode EqlMode) bool {
 }
 
 var (
-	undefinedEntityClass   = registerNewBuiltInClass[*_UndefinedEntity]("<undefined-entity>", programErrorClass)
-	unboundVariableClass   = registerNewBuiltInClass[*_UndefinedEntity]("<unbound-variable>", undefinedEntityClass)
-	undefinedFunctionClass = registerNewBuiltInClass[*_UndefinedEntity]("<undefined-function>", undefinedEntityClass)
+	undefinedEntityClass   = registerNewAbstractClass[*_UndefinedEntity]("<undefined-entity>", programErrorClass)
+	unboundVariableClass   = registerNewAbstractClass[*_UndefinedEntity]("<unbound-variable>", undefinedEntityClass)
+	undefinedFunctionClass = registerNewAbstractClass[*_UndefinedEntity]("<undefined-function>", undefinedEntityClass)
 )
 
 func (u *_UndefinedEntity) ClassOf() Class {

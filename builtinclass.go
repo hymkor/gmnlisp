@@ -34,7 +34,7 @@ func (e *_BuiltInClass) Create() Node {
 
 var classClass = registerNewBuiltInClass[Class]("<class>")
 
-var builtInClass = newBuiltInClass[*_BuiltInClass]("<built-in-class>")
+var builtInClass = newAbstractClass[*_BuiltInClass]("<built-in-class>")
 
 func (e *_BuiltInClass) ClassOf() Class {
 	return builtInClass
@@ -64,7 +64,7 @@ func funClassOf(_ context.Context, _ *World, arg Node) (Node, error) {
 var objectClass = &_BuiltInClass{
 	name:      NewSymbol("<object>"),
 	instanceP: func(Node) bool { return true },
-	create:    func() Node { return Null },
+	create:    func() Node { return nil },
 }
 
 func newBuiltInClass[T Node](name string) *_BuiltInClass {
@@ -82,8 +82,29 @@ func newBuiltInClass[T Node](name string) *_BuiltInClass {
 	}
 }
 
+func newAbstractClass[T Node](name string) *_BuiltInClass {
+	symbol := NewSymbol(name)
+	return &_BuiltInClass{
+		name: symbol,
+		instanceP: func(n Node) bool {
+			_, ok := n.(T)
+			return ok
+		},
+		create: func() Node {
+			return nil
+		},
+	}
+}
+
 func registerNewBuiltInClass[T Node](name string, super ...Class) *_BuiltInClass {
 	class := newBuiltInClass[T](name)
+	class.super = append(super, objectClass, builtInClass)
+	autoLoadVars[class.name] = class
+	return class
+}
+
+func registerNewAbstractClass[T Node](name string, super ...Class) *_BuiltInClass {
+	class := newAbstractClass[T](name)
 	class.super = append(super, objectClass, builtInClass)
 	autoLoadVars[class.name] = class
 	return class
