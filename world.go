@@ -258,6 +258,7 @@ var autoLoadVars = Variables{
 	objectClass.name:                      objectClass,
 	builtInClass.name:                     builtInClass,
 	standardClass.name:                    standardClass,
+	numberClass.name:                      numberClass,
 }
 
 var autoLoadFunc = Functions{

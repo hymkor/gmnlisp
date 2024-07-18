@@ -6,9 +6,28 @@ import (
 	"math"
 )
 
+var numberClass = &_BuiltInClass{
+	name: NewSymbol("number"),
+	instanceP: func(n Node) bool {
+		if _, ok := n.(Integer); ok {
+			return true
+		}
+		if _, ok := n.(Float); ok {
+			return true
+		}
+		return false
+	},
+	create: func() Node {
+		return nil
+	},
+	super: []Class{
+		objectClass,
+	},
+}
+
 type Integer int64
 
-var integerClass = registerNewBuiltInClass[Integer]("<integer>")
+var integerClass = registerNewBuiltInClass[Integer]("<integer>", numberClass)
 
 func (i Integer) ClassOf() Class {
 	return integerClass
