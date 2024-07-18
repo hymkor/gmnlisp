@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"math/big"
 	"regexp"
 	"strconv"
 	"strings"
@@ -30,6 +31,7 @@ var (
 type Factory[N comparable] interface {
 	Cons(car, cdr N) N
 	Int(int64) N
+	BigInt(*big.Int) N
 	Float(float64) N
 	String(string) N
 	Symbol(string) N
@@ -147,18 +149,31 @@ func (p *_Parser[N]) tryParseAsFloat(token string) (N, bool, error) {
 func (p *_Parser[N]) tryParseAsInt(token string) (N, bool, error) {
 	var val int64
 	var err error
+	var base = 10
 	if rxInteger.MatchString(token) {
 		val, err = strconv.ParseInt(token, 10, 64)
 	} else if rxHexInteger.MatchString(token) {
+		base = 16
 		val, err = strconv.ParseInt(token[2:], 16, 64)
 	} else if rxOctInteger.MatchString(token) {
+		base = 8
 		val, err = strconv.ParseInt(token[2:], 8, 64)
 	} else if rxBinInteger.MatchString(token) {
+		base = 2
 		val, err = strconv.ParseInt(token[2:], 2, 64)
 	} else {
 		return p.Null(), false, nil
 	}
 	if err != nil {
+		var numError *strconv.NumError
+		if errors.As(err, &numError) {
+			if errors.Is(numError.Err, strconv.ErrRange) {
+				var v big.Int
+				if _, ok := v.SetString(numError.Num, base); ok {
+					return p.BigInt(&v), true, nil
+				}
+			}
+		}
 		return p.Null(), true, fmt.Errorf("%s: %w", token, err)
 	}
 	return p.Int(val), true, nil

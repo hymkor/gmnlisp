@@ -2,6 +2,7 @@ package gmnlisp
 
 import (
 	"io"
+	"math/big"
 
 	"github.com/hymkor/gmnlisp/pkg/parser"
 )
@@ -21,6 +22,7 @@ type stdFactory struct{}
 
 func (stdFactory) Cons(car, cdr Node) Node           { return &Cons{Car: car, Cdr: cdr} }
 func (stdFactory) Int(n int64) Node                  { return Integer(n) }
+func (stdFactory) BigInt(n *big.Int) Node            { return BigInt{Int: n} }
 func (stdFactory) Float(f float64) Node              { return Float(f) }
 func (stdFactory) String(s string) Node              { return String(s) }
 func (stdFactory) Array(list []Node, dim []int) Node { return &Array{list: list, dim: dim} }

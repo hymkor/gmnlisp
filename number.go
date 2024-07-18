@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"math"
+	"math/big"
 )
 
 var numberClass = &_BuiltInClass{
@@ -266,4 +267,23 @@ func funSqrt(ctx context.Context, w *World, arg Node) (Node, error) {
 	}
 	v := math.Sqrt(float64(n))
 	return Float(v), nil
+}
+
+type BigInt struct {
+	*big.Int
+}
+
+func (b BigInt) Equals(n Node, m EqlMode) bool {
+	if bi, ok := n.(BigInt); ok {
+		return b.Int.Cmp(bi.Int) == 0
+	}
+	if _n, ok := n.(Integer); ok {
+		bi := big.NewInt(int64(_n))
+		return b.Int.Cmp(bi) == 0
+	}
+	return false
+}
+
+func (b BigInt) ClassOf() Class {
+	return integerClass
 }
