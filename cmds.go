@@ -80,6 +80,9 @@ func funEql(ctx context.Context, w *World, list []Node) (Node, error) {
 
 func funEqual(ctx context.Context, w *World, list []Node) (Node, error) {
 	return equalSub(ctx, w, list, func(left, right Node) bool {
+		if IsNone(left) {
+			return IsNone(right)
+		}
 		return left.Equals(right, EQUAL)
 	})
 }
