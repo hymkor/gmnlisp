@@ -36,7 +36,7 @@ type Array struct {
 	dim  []int
 }
 
-var arrayClass = registerNewBuiltInClass[*Array]("<array>")
+var arrayClass = registerNewAbstractClass[*Array]("<array>")
 
 func (*Array) ClassOf() Class {
 	return arrayClass
