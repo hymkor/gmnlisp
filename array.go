@@ -45,24 +45,28 @@ func (*Array) ClassOf() Class {
 func (A *Array) printTo(w io.Writer, mode PrintMode, list []Node, dim []int) ([]Node, int, error) {
 	dem := byte('(')
 	n := 0
-	for i := 0; i < dim[0]; i++ {
-		_n, err := w.Write([]byte{dem})
-		n += _n
-		if err != nil {
-			return nil, n, err
-		}
-		dem = ' '
+	if len(dim) < 1 {
+		w.Write([]byte{dem})
+	} else {
+		for i := 0; i < dim[0]; i++ {
+			_n, err := w.Write([]byte{dem})
+			n += _n
+			if err != nil {
+				return nil, n, err
+			}
+			dem = ' '
 
-		if len(dim) >= 2 {
-			list, _n, err = A.printTo(w, mode, list, dim[1:])
-			n += _n
-		} else {
-			_n, err = tryPrintTo(w, list[0], mode)
-			n += _n
-			list = list[1:]
-		}
-		if err != nil {
-			return nil, n, err
+			if len(dim) >= 2 {
+				list, _n, err = A.printTo(w, mode, list, dim[1:])
+				n += _n
+			} else {
+				_n, err = tryPrintTo(w, list[0], mode)
+				n += _n
+				list = list[1:]
+			}
+			if err != nil {
+				return nil, n, err
+			}
 		}
 	}
 	_n, err := w.Write([]byte{')'})
