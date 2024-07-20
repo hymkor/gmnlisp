@@ -24,11 +24,14 @@ type ParseError struct {
 	ExpectedClass Class
 }
 
+type StorageExhausted struct{}
+
 var (
-	programErrorClass = registerNewAbstractClass[ProgramError]("<program-error>", errorClass)
-	domainErrorClass  = registerNewAbstractClass[*DomainError]("<domain-error>", programErrorClass, errorClass)
-	controlErrorClass = registerNewAbstractClass[ControlError]("<control-error>", errorClass)
-	parseErrorClass   = registerNewAbstractClass[*ParseError]("<parse-error>", errorClass)
+	programErrorClass     = registerNewAbstractClass[ProgramError]("<program-error>", errorClass)
+	domainErrorClass      = registerNewAbstractClass[*DomainError]("<domain-error>", programErrorClass, errorClass)
+	controlErrorClass     = registerNewAbstractClass[ControlError]("<control-error>", errorClass)
+	parseErrorClass       = registerNewAbstractClass[*ParseError]("<parse-error>", errorClass)
+	storageExhaustedClass = registerNewAbstractClass[StorageExhausted]("<storage-exhausted>", errorClass)
 )
 
 func (e ProgramError) ClassOf() Class {
@@ -240,4 +243,21 @@ func (p *ParseError) Equals(n Node, _ EqlMode) bool {
 
 func (p *ParseError) Error() string {
 	return p.String()
+}
+
+func (s StorageExhausted) ClassOf() Class {
+	return storageExhaustedClass
+}
+
+func (s StorageExhausted) Equals(n Node, _ EqlMode) bool {
+	_, ok := n.(StorageExhausted)
+	return ok
+}
+
+func (s StorageExhausted) String() string {
+	return "storage exhausted"
+}
+
+func (s StorageExhausted) Error() string {
+	return "storage exhausted"
 }
