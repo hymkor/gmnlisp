@@ -11,30 +11,6 @@ It is developed to embbed to the applications for customizing.
 
 ![Example image](factorial.png)
 
-Install
--------
-
-Download the binary package from [Releases](https://github.com/hymkor/gmnlisp/releases) and extract the executable.
-
-### via golang-installer
-
-```
-go install github.com/hymkor/gmnlisp/cmd/gmnlisp@latest
-```
-
-### via scoop-installer
-
-```
-scoop install https://raw.githubusercontent.com/hymkor/gmnlisp/master/gmnlisp.json
-```
-
-or
-
-```
-scoop bucket add hymkor https://github.com/hymkor/scoop-bucket
-scoop install gmnlisp
-```
-
 Examples
 --------
 
