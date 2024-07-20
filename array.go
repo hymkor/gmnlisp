@@ -146,8 +146,17 @@ func funCreateArray(ctx context.Context, w *World, args []Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
+		if n <= 0 {
+			return callHandler[Node](ctx, w, false, &DomainError{
+				Object:        Integer(n),
+				ExpectedClass: integerClass,
+			})
+		}
 		_dim = append(_dim, int(n))
 		size *= int(n)
+	}
+	if size >= 1234567890 {
+		return callHandler[Node](ctx, w, false, StorageExhausted{})
 	}
 	_list := make([]Node, size)
 	for i := range _list {
