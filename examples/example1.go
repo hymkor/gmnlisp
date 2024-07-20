@@ -22,6 +22,5 @@ func main() {
 		fmt.Fprintln(os.Stderr, err.Error())
 		return
 	}
-	value.PrintTo(os.Stdout, gmnlisp.PRINT)
-	fmt.Println()
+	fmt.Println(value.String())
 }

@@ -40,7 +40,7 @@ Examples
 
 ### 1. Execute Lisp code in string with parameters
 
-```go
+```examples/example1.go
 package main
 
 import (
@@ -62,8 +62,7 @@ func main() {
         fmt.Fprintln(os.Stderr, err.Error())
         return
     }
-    value.PrintTo(os.Stdout, gmnlisp.PRINT)
-    fmt.Println()
+    fmt.Println(value.String())
 }
 ```
 
