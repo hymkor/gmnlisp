@@ -15,12 +15,19 @@
 - Fix: `(instancep (create <domain-error>) <program-error>` was false 
 - The word starting with `&` is treated same as `:`
 - Fix: function defined at `(flet)` could call itself recursively
-- `(defun)` can not re-define the special operator like `if`
+- `(defun)`,`(defgeneric)` can not re-define the special operator like `if`
 - Fix: `(return-from nil ...)` failes
 - `(return-from NOT-EXIST-BLOCK)` raises `<control-error>`
 - `(throw NOT-EXIST-TAG)` raises `<control-error>`
 - `(go)` raises `<controle-error>`
 - When `(go)`, `(throw)` or `(return-from)` is called on CLEANUP-FORM of `(unwind-protect FORM (go) ..)`, raise `<control-error>`
+- Implement `<strage-exhausted>`
+- `(create <array>)` without arugments raises an error now
+- Fix: `(create-array ()...)` crashed
+- `(read)` can throw `<parse-error>` now
+- Implement BigInt minimally to read integer overflow with int65
+- Implement `<number>` as the base class for `<integer>` and `<float>`
+- Fix: `(create-array)` crashed when one argument
 
 v0.7.0
 ======

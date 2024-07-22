@@ -15,12 +15,19 @@
 - `(instancep (create <domain-error>) <program-error>` が false になっていたのを修正
 - `&` で始まる単語は `:` と同様に扱うようにした
 - `(flet)` の中の関数が自分自身を再帰呼び出しできてしまう不具合を修正
-- `(defun)` で if などの特殊演算子を上書きできないようにした
+- `(defun)`,`(defgeneric)`  で if などの特殊演算子を上書きできないようにした
 - `(return-from nil ...)` がエラーになってしまう不具合を修正
 - 存在しないblock名に return-from しようとした時、`<control-error>` にするようにした
 - 存在しないtag名にthrow しようとした時、`<control-error>` にするようにした
 - 存在しないtag名に go しようとした時、`<controle-error>` にするようにした
 - `(unwind-protect)` の CLEANUP-FORM で `(go)` などを使おうとしたら、`<control-error>` にするようにした。
+- `<storage-exhausted>` を実装
+- 引数なしの `(create <array>)` をエラーとするようにした
+- `(create-array ()...)` がクラッシュしてしまう不具合を修正
+- `(read)` で `<parse-error>`  を投げるようにした
+- int64 を越える整数を読み取れるように BigInt 型を必要最小限に実装した
+- `<integer>`と`float`のベースクラスとなる`<number>` を実装
+- `(create-array)` の引数が1個の時にクラッシュする不具合を修正
 
 v0.7.0
 ======
