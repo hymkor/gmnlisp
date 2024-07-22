@@ -11,11 +11,6 @@ import (
 	"github.com/hymkor/gmnlisp"
 )
 
-//    `a,err := gmnlisp.ExpectClass[gmnlisp.Integer](ctx,w,x)`
-// is similar as
-//    `a,ok := x.(gmnlisp.Integer)`
-// but, ExpectClass can call error-handler defined by user when x is not Integer
-
 func sum(ctx context.Context, w *gmnlisp.World, args []gmnlisp.Node) (gmnlisp.Node, error) {
 	a, err := gmnlisp.ExpectClass[gmnlisp.Integer](ctx, w, args[0])
 	if err != nil {

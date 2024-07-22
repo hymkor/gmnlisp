@@ -74,11 +74,6 @@ import (
     "github.com/hymkor/gmnlisp"
 )
 
-//    `a,err := gmnlisp.ExpectClass[gmnlisp.Integer](ctx,w,x)`
-// is similar as
-//    `a,ok := x.(gmnlisp.Integer)`
-// but, ExpectClass can call error-handler defined by user when x is not Integer
-
 func sum(ctx context.Context, w *gmnlisp.World, args []gmnlisp.Node) (gmnlisp.Node, error) {
     a, err := gmnlisp.ExpectClass[gmnlisp.Integer](ctx, w, args[0])
     if err != nil {
@@ -111,6 +106,11 @@ func main() {
 $ go run examples/example2.go
 (sum 1 2)=3
 ```
+
++ `a,err := gmnlisp.ExpectClass[gmnlisp.Integer](ctx,w,x)`  
+  is similar as  
+  `a,ok := x.(gmnlisp.Integer)`  
+  but, ExpectClass can call error-handler defined by user when x is not Integer
 
 The user defined normal functions have to get the three parameters.
 
