@@ -1,3 +1,7 @@
+v0.7.1
+======
+Jul 23, 2024
+
 - Fix: `(equal USER-DEFINED-CLASS-OBJECT...)` was always false.
 - Implement `(assure)`, `(the)`, `(max)`, `(min)`, `(eval)`, `(arithmetic-error-operands)`, `(arithmetic-error-operation)`, `<program-error>`, and `arity-error`
 - On any built-in-class CLASS, both `(subclassp CLASS <built-in-class>)` and `(subclassp CLASS <object>)` are `t`

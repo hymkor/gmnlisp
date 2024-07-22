@@ -1,3 +1,7 @@
+v0.7.1
+======
+Jul 23, 2024
+
 - `(equal)` でユーザ定義クラスのオジェクトの比較が常に不一致になる問題を修正
 - `(assure)`, `(the)`, `(max)`, `(min)`, `(eval)`, `(arithmetic-error-operation)`, `(arithmetic-error-operands)`, `<program-error>`, `arity-error` を実装
 - 任意の組み込みクラス CLASS において `(subclassp CLASS <built-in-class>)` , `(subclassp CLASS <object>)` がともに `t` になるようにした
