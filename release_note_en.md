@@ -1,3 +1,5 @@
+- Fix: `(aref)`: the number and range of parameters were not checked
+
 v0.7.1
 ======
 Jul 23, 2024
