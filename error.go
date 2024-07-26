@@ -26,12 +26,17 @@ type ParseError struct {
 
 type StorageExhausted struct{}
 
+type StreamError struct {
+	Stream Node
+}
+
 var (
 	programErrorClass     = registerNewAbstractClass[ProgramError]("<program-error>", errorClass)
 	domainErrorClass      = registerNewAbstractClass[*DomainError]("<domain-error>", programErrorClass, errorClass)
 	controlErrorClass     = registerNewAbstractClass[ControlError]("<control-error>", errorClass)
 	parseErrorClass       = registerNewAbstractClass[*ParseError]("<parse-error>", errorClass)
 	storageExhaustedClass = registerNewAbstractClass[StorageExhausted]("<storage-exhausted>", errorClass)
+	streamErrorClass      = registerNewAbstractClass[StreamError]("<stream-error>", errorClass)
 )
 
 func (e ProgramError) ClassOf() Class {
@@ -260,4 +265,21 @@ func (s StorageExhausted) String() string {
 
 func (s StorageExhausted) Error() string {
 	return "storage exhausted"
+}
+
+func (s StreamError) ClassOf() Class {
+	return streamErrorClass
+}
+
+func (s StreamError) Equals(n Node, _ EqlMode) bool {
+	_, ok := n.(StreamError)
+	return ok
+}
+
+func (s StreamError) String() string {
+	return "stream error"
+}
+
+func (s StreamError) Error() string {
+	return "stream error"
 }
