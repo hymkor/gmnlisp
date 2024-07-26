@@ -86,9 +86,6 @@ func (s String) LessThan(ctx context.Context, w *World, n Node) (bool, error) {
 }
 
 func funStringAppend(ctx context.Context, w *World, list []Node) (Node, error) {
-	if len(list) <= 0 {
-		return Null, nil
-	}
 	var buffer strings.Builder
 	for _, s := range list {
 		str, err := ExpectClass[String](ctx, w, s)
