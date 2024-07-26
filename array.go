@@ -235,11 +235,18 @@ func funSetAref(ctx context.Context, w *World, args []Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
+		elementSize := dim2size(array.dim[1:])
+		if int(index)*elementSize >= len(array.list) || index < 0 {
+			condition := &DomainError{
+				Object:        index,
+				ExpectedClass: integerClass,
+			}
+			return callHandler[Node](ctx, w, false, condition)
+		}
 		if len(array.dim) == 1 {
 			array.list[index] = newValue
 			return newValue, nil
 		}
-		elementSize := dim2size(array.dim[1:])
 		array = &Array{
 			list: array.list[int(index)*elementSize : int(index+1)*elementSize],
 			dim:  array.dim[1:],
