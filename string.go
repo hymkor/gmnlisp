@@ -174,15 +174,9 @@ func funStringIndex(ctx context.Context, w *World, argv []Node) (Node, error) {
 }
 
 func funCreateString(ctx context.Context, w *World, list []Node) (Node, error) {
-	if len(list) < 1 {
-		return nil, ErrTooFewArguments
-	}
 	length, err := ExpectClass[Integer](ctx, w, list[0])
 	if err != nil {
 		return nil, err
-	}
-	if len(list) > 2 {
-		return nil, ErrTooManyArguments
 	}
 	ch := Rune(' ')
 	if len(list) == 2 {
@@ -190,6 +184,13 @@ func funCreateString(ctx context.Context, w *World, list []Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
+	}
+	if length < 0 || length >= 1234567890 {
+		condition := &DomainError{
+			Object:        length,
+			ExpectedClass: integerClass,
+		}
+		return callHandler[Node](ctx, w, false, condition)
 	}
 	return String(strings.Repeat(string(ch), int(length))), nil
 }
