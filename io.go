@@ -132,10 +132,10 @@ func funReadChar(_ context.Context, w *World, argv []Node) (Node, error) {
 	return Rune(ch), err
 }
 
-func funClose(_ context.Context, _ *World, arg Node) (Node, error) {
+func funClose(ctx context.Context, w *World, arg Node) (Node, error) {
 	c, ok := arg.(io.Closer)
 	if !ok {
-		return nil, fmt.Errorf("expected Closer %#v", arg)
+		return callHandler[Node](ctx, w, true, StreamError{Stream: arg})
 	}
 	return Null, c.Close()
 }
