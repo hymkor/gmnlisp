@@ -1,4 +1,5 @@
 - Fix: `(aref)`: the number and range of parameters were not checked
+- Fix: `(create-string`): the range of parameter was not checked
 
 v0.7.1
 ======
