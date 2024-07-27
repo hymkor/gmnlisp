@@ -70,7 +70,7 @@ func readString(r io.ByteReader, delim byte) (string, error) {
 	}
 }
 
-func funReadLine(_ context.Context, w *World, argv []Node) (Node, error) {
+func funReadLine(ctx context.Context, w *World, argv []Node) (Node, error) {
 	stream, err := newStreamInput(w, argv)
 	if err != nil {
 		return nil, err
@@ -89,7 +89,9 @@ func funReadLine(_ context.Context, w *World, argv []Node) (Node, error) {
 	}
 	if err == io.EOF {
 		if stream.eofFlag {
-			return Null, io.EOF
+			return callHandler[Node](ctx, w, true, EndOfStream{
+				Stream: argv[0],
+			})
 		}
 		return stream.eofValue, nil
 	}
@@ -102,8 +104,13 @@ func funRead(ctx context.Context, w *World, argv []Node) (Node, error) {
 		return nil, err
 	}
 	value, err := ReadNode(stream.reader)
-	if err == io.EOF && !stream.eofFlag {
-		return stream.eofValue, nil
+	if err == io.EOF {
+		if !stream.eofFlag {
+			return stream.eofValue, nil
+		}
+		return callHandler[Node](ctx, w, true, EndOfStream{
+			Stream: argv[0],
+		})
 	}
 	if err != nil {
 		var numError *strconv.NumError
@@ -117,7 +124,7 @@ func funRead(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return value, err
 }
 
-func funReadChar(_ context.Context, w *World, argv []Node) (Node, error) {
+func funReadChar(ctx context.Context, w *World, argv []Node) (Node, error) {
 	stream, err := newStreamInput(w, argv)
 	if err != nil {
 		return nil, err
@@ -125,7 +132,9 @@ func funReadChar(_ context.Context, w *World, argv []Node) (Node, error) {
 	ch, _, err := stream.reader.ReadRune()
 	if err == io.EOF {
 		if stream.eofFlag {
-			return Null, io.EOF
+			return callHandler[Node](ctx, w, true, EndOfStream{
+				Stream: argv[0],
+			})
 		}
 		return stream.eofValue, nil
 	}

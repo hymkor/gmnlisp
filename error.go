@@ -30,6 +30,10 @@ type StreamError struct {
 	Stream Node
 }
 
+type EndOfStream struct {
+	Stream Node
+}
+
 var (
 	programErrorClass     = registerNewAbstractClass[ProgramError]("<program-error>", errorClass)
 	domainErrorClass      = registerNewAbstractClass[*DomainError]("<domain-error>", programErrorClass, errorClass)
@@ -37,6 +41,7 @@ var (
 	parseErrorClass       = registerNewAbstractClass[*ParseError]("<parse-error>", errorClass)
 	storageExhaustedClass = registerNewAbstractClass[StorageExhausted]("<storage-exhausted>", errorClass)
 	streamErrorClass      = registerNewAbstractClass[StreamError]("<stream-error>", errorClass)
+	endOfStreamClass      = registerNewAbstractClass[EndOfStream]("<end-of-stream>", streamErrorClass, errorClass)
 )
 
 func (e ProgramError) ClassOf() Class {
@@ -282,4 +287,21 @@ func (s StreamError) String() string {
 
 func (s StreamError) Error() string {
 	return "stream error"
+}
+
+func (e EndOfStream) ClassOf() Class {
+	return endOfStreamClass
+}
+
+func (e EndOfStream) Equals(n Node, _ EqlMode) bool {
+	_, ok := n.(EndOfStream)
+	return ok
+}
+
+func (e EndOfStream) String() string {
+	return "end of stream"
+}
+
+func (e EndOfStream) Error() string {
+	return "end of stream"
 }
