@@ -2,6 +2,7 @@ package gmnlisp
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"strconv"
@@ -14,6 +15,9 @@ type runeWriter interface {
 }
 
 func printInt(w io.Writer, value Node, base int, args ...int) error {
+	if base < 2 || base > 36 {
+		return errors.New("domain error")
+	}
 	width := -1
 	padding := -1
 	if argc := len(args); argc >= 3 {
