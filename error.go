@@ -134,8 +134,15 @@ type errorAndNode interface {
 	Node
 }
 
+type callHandlerLimitter struct{}
+
 func callHandler[T Node](ctx context.Context, w *World, cont bool, condition errorAndNode) (T, error) {
+	var zero T
 	if w.handler != nil {
+		if v := ctx.Value(callHandlerLimitter{}); v != nil {
+			return zero, condition
+		}
+		ctx = context.WithValue(ctx, callHandlerLimitter{}, 1)
 		_, e := w.handler.Call(ctx, w, UnevalList(condition))
 		var ce *_ErrContinueCondition
 		if cont && errors.As(e, &ce) {
@@ -144,7 +151,6 @@ func callHandler[T Node](ctx context.Context, w *World, cont bool, condition err
 			}
 		}
 	}
-	var zero T
 	return zero, condition
 }
 
