@@ -2,6 +2,11 @@
 - Fix: `(create-string)`: the range of parameter was not checked
 - Fix: `(string-append)` was `nil`, but should be `""`
 - Implement `<end-of-stream>`
+- Fix: `(format)` paniced when base number is less than 2 or greater than 36.
+- Prevent signal handlers from going into infinite loop
+
+The ISLisp verification program now runs without crashing until the final test.
+The current score is `TP Result: OK = 7889, NG = 8522`
 
 v0.7.1
 ======
