@@ -1,3 +1,7 @@
+v0.7.2
+======
+Jul 29, 2024
+
 - Fix: `(aref)`: the number and range of parameters were not checked
 - Fix: `(create-string)`: the range of parameter was not checked
 - Fix: `(string-append)` was `nil`, but should be `""`
