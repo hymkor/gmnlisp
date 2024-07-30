@@ -93,4 +93,8 @@ verify-verbose:
 	cd "$(CURDIR)/__verify/tp-ipa" && \
 	"$(CURDIR)/gmnlisp" -e "(load \"tp.lsp\") (tp-all 'verbose)"
 
+verify-formeval:
+	cd "$(CURDIR)/__verify/tp-ipa" && \
+	"$(CURDIR)/gmnlisp" -e "(load \"tp.lsp\") (tp \"data/formeval.lsp\")"
+
 .PHONY: generate test clean clean-gen sort-world _dist dist manifest
