@@ -414,6 +414,9 @@ func cmdDefun(ctx context.Context, w *World, list Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
+	if IsNone(list) {
+		return raiseProgramError(ctx, w, ErrTooFewArguments)
+	}
 	symbol, err := ExpectClass[Symbol](ctx, w, _symbol)
 	if err != nil {
 		return nil, err
