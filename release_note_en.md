@@ -1,3 +1,5 @@
+- Fix: `NG: (defun foo) -> #<Error> <error> [#<Error> <program-error>]`
+
 v0.7.2
 ======
 Jul 29, 2024
