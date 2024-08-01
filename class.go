@@ -95,7 +95,7 @@ func readSlotSpec(ctx context.Context, w *World, list Node) (*_SlotSpec, error) 
 	if err != nil {
 		return nil, err
 	}
-	identifier, err := ExpectClass[Symbol](ctx, w, _identifier)
+	identifier, err := ExpectSymbol(ctx, w, _identifier)
 	if err != nil {
 		return nil, err
 	}
@@ -121,25 +121,25 @@ func readSlotSpec(ctx context.Context, w *World, list Node) (*_SlotSpec, error) 
 		}
 		switch keyword {
 		case kwReader:
-			if v, err := ExpectClass[Symbol](ctx, w, value); err == nil {
+			if v, err := ExpectSymbol(ctx, w, value); err == nil {
 				slotSpec.reader = append(slotSpec.reader, v)
 			} else {
 				return nil, fmt.Errorf("%#v: %w", keyword.String(), err)
 			}
 		case kwWriter:
-			if v, err := ExpectClass[Symbol](ctx, w, value); err == nil {
+			if v, err := ExpectSymbol(ctx, w, value); err == nil {
 				slotSpec.writer = append(slotSpec.writer, v)
 			} else {
 				return nil, fmt.Errorf("%#v: %w", keyword.String(), err)
 			}
 		case kwAccessor:
-			if v, err := ExpectClass[Symbol](ctx, w, value); err == nil {
+			if v, err := ExpectSymbol(ctx, w, value); err == nil {
 				slotSpec.accessor = append(slotSpec.accessor, v)
 			} else {
 				return nil, fmt.Errorf("%#v: %w", keyword.String(), err)
 			}
 		case kwBoundp:
-			if v, err := ExpectClass[Symbol](ctx, w, value); err == nil {
+			if v, err := ExpectSymbol(ctx, w, value); err == nil {
 				slotSpec.boundp = append(slotSpec.boundp, v)
 			} else {
 				return nil, fmt.Errorf("%#v: %w", keyword.String(), err)
@@ -147,7 +147,7 @@ func readSlotSpec(ctx context.Context, w *World, list Node) (*_SlotSpec, error) 
 		case kwInitForm:
 			slotSpec.initform = func() (Node, error) { return w.Eval(ctx, value) }
 		case kwInitArg:
-			if v, err := ExpectClass[Symbol](ctx, w, value); err == nil {
+			if v, err := ExpectSymbol(ctx, w, value); err == nil {
 				slotSpec.initarg = append(slotSpec.initarg, v)
 			} else {
 				return nil, fmt.Errorf("%#v: %w", keyword.String(), err)
@@ -262,7 +262,7 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 	if err != nil {
 		return nil, fmt.Errorf("[1] %w", err)
 	}
-	className, err := ExpectClass[Symbol](ctx, w, _className)
+	className, err := ExpectSymbol(ctx, w, _className)
 	if err != nil {
 		return nil, err
 	}
@@ -525,7 +525,7 @@ func defaultInitializeObject(ctx context.Context, w *World, args []Node) (Node, 
 	for len(args) > 0 {
 		var _initArg Node
 		_initArg, args = args[0], args[1:]
-		initArg, err := ExpectClass[Symbol](ctx, w, _initArg)
+		initArg, err := ExpectSymbol(ctx, w, _initArg)
 		if !ok {
 			return nil, fmt.Errorf("defaultInitializeObject: initArg: %w: %v", err, _initArg)
 		}

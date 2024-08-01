@@ -36,7 +36,7 @@ func cmdReturnFrom(ctx context.Context, w *World, n Node) (Node, error) {
 	var symbol Symbol
 	var err error
 	if IsSome(argv[0]) {
-		symbol, err = ExpectClass[Symbol](ctx, w, argv[0])
+		symbol, err = ExpectSymbol(ctx, w, argv[0])
 		if err != nil {
 			return nil, err
 		}
@@ -80,7 +80,7 @@ func cmdBlock(ctx context.Context, w *World, node Node) (Node, error) {
 	var nameSymbol Symbol
 
 	if IsSome(nameNode) {
-		nameSymbol, err = ExpectClass[Symbol](ctx, w, nameNode)
+		nameSymbol, err = ExpectSymbol(ctx, w, nameNode)
 		if err != nil {
 			return nil, err
 		}
@@ -144,7 +144,7 @@ func funThrow(ctx context.Context, w *World, tagForm, value Node) (Node, error) 
 }
 
 func cmdCond(ctx context.Context, w *World, list Node) (Node, error) {
-	return cmdCondWithTailRecOpt(ctx, w, list, -1)
+	return cmdCondWithTailRecOpt(ctx, w, list, _Symbol(-1))
 }
 
 func cmdCondWithTailRecOpt(ctx context.Context, w *World, list Node, currFunc Symbol) (Node, error) {
@@ -207,7 +207,7 @@ func cmdCase(ctx context.Context, w *World, list Node) (Node, error) {
 }
 
 func cmdIf(ctx context.Context, w *World, params Node) (Node, error) {
-	return cmdIfWithTailRecOpt(ctx, w, params, -1)
+	return cmdIfWithTailRecOpt(ctx, w, params, _Symbol(-1))
 }
 
 func cmdIfWithTailRecOpt(ctx context.Context, w *World, params Node, tailOptSym Symbol) (Node, error) {
@@ -349,7 +349,7 @@ func cmdGo(ctx context.Context, w *World, args Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	symbol, err := ExpectClass[Symbol](ctx, w, tag)
+	symbol, err := ExpectSymbol(ctx, w, tag)
 	if err != nil {
 		return nil, err
 	}

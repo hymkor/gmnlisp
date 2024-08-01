@@ -39,7 +39,7 @@ func getParameterList(ctx context.Context, w *World, node Node) (*_Parameters, e
 	}
 	dupCheck := make(map[Symbol]struct{})
 	params := []Symbol{}
-	rest := nulSymbol
+	var rest Symbol = nulSymbol
 	for IsSome(list) {
 		var nameNode Node
 
@@ -52,7 +52,7 @@ func getParameterList(ctx context.Context, w *World, node Node) (*_Parameters, e
 			if err != nil {
 				return nil, err
 			}
-			rest, err = ExpectClass[Symbol](ctx, w, nameNode)
+			rest, err = ExpectSymbol(ctx, w, nameNode)
 			if err != nil {
 				return nil, err
 			}
@@ -62,7 +62,7 @@ func getParameterList(ctx context.Context, w *World, node Node) (*_Parameters, e
 			}
 			dupCheck[rest] = struct{}{}
 		} else {
-			nameSymbol, err := ExpectClass[Symbol](ctx, w, nameNode)
+			nameSymbol, err := ExpectSymbol(ctx, w, nameNode)
 			if err != nil {
 				return nil, err
 			}
@@ -327,7 +327,7 @@ func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
 
 // If target.Car is current function symbol, then make and return an instance of _ErrTailRecOpt
 func testCarIsCurrFunc(ctx context.Context, w *World, target Node, currFunc Symbol) (err error) {
-	if currFunc < 0 {
+	if currFunc.Id() < 0 {
 		return nil
 	}
 	cons, ok := target.(*Cons)
@@ -363,7 +363,7 @@ var (
 
 // Evaluate the target considering the tail call optimization.
 func evalWithTailRecOpt(ctx context.Context, w *World, target Node, currFunc Symbol) (Node, error) {
-	if currFunc >= 0 {
+	if currFunc.Id() >= 0 {
 		if err := testCarIsCurrFunc(ctx, w, target, currFunc); err != nil {
 			return nil, err
 		}
@@ -397,7 +397,7 @@ func prognWithTailRecOpt(ctx context.Context, w *World, n Node, sym Symbol) (val
 		if err != nil {
 			return nil, err
 		}
-		if sym >= 0 && IsNone(n) {
+		if sym.Id() >= 0 && IsNone(n) {
 			value, err = evalWithTailRecOpt(ctx, w, first, sym)
 		} else {
 			value, err = w.Eval(ctx, first)
@@ -417,7 +417,7 @@ func cmdDefun(ctx context.Context, w *World, list Node) (Node, error) {
 	if IsNone(list) {
 		return raiseProgramError(ctx, w, ErrTooFewArguments)
 	}
-	symbol, err := ExpectClass[Symbol](ctx, w, _symbol)
+	symbol, err := ExpectSymbol(ctx, w, _symbol)
 	if err != nil {
 		return nil, err
 	}
@@ -505,7 +505,7 @@ func cmdTrace(ctx context.Context, w *World, list Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		symbol, err := ExpectClass[Symbol](ctx, w, symbolNode)
+		symbol, err := ExpectSymbol(ctx, w, symbolNode)
 		if err != nil {
 			return nil, err
 		}
@@ -651,7 +651,7 @@ func cmdExpandDefun(ctx context.Context, w *World, n Node) (Node, error) {
 	if IsSome(n) {
 		return nil, ErrTooManyArguments
 	}
-	symbol, err := ExpectClass[Symbol](ctx, w, v)
+	symbol, err := ExpectSymbol(ctx, w, v)
 	if err != nil {
 		return nil, err
 	}

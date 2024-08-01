@@ -55,7 +55,7 @@ func cmdDefGeneric(ctx context.Context, w *World, node Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	name, err := ExpectClass[Symbol](ctx, w, _name)
+	name, err := ExpectSymbol(ctx, w, _name)
 	if err != nil {
 		return nil, err
 	}
@@ -85,7 +85,7 @@ func cmdDefGeneric(ctx context.Context, w *World, node Node) (Node, error) {
 			if err != nil {
 				return nil, err
 			}
-			if _, err := ExpectClass[Symbol](ctx, w, type2); err != nil {
+			if _, err := ExpectSymbol(ctx, w, type2); err != nil {
 				return nil, fmt.Errorf("after %s %w", type1.String(), err)
 			}
 			if IsSome(types) {
@@ -94,7 +94,7 @@ func cmdDefGeneric(ctx context.Context, w *World, node Node) (Node, error) {
 			hasRest = true
 			break
 		}
-		_, err = ExpectClass[Symbol](ctx, w, type1)
+		_, err = ExpectSymbol(ctx, w, type1)
 		if err != nil {
 			return nil, fmt.Errorf("%s: %w", type1.String(), err)
 		}
@@ -139,7 +139,7 @@ func cmdDefMethod(ctx context.Context, w *World, node Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	name, err := ExpectClass[Symbol](ctx, w, _name)
+	name, err := ExpectSymbol(ctx, w, _name)
 	if err != nil {
 		return nil, err
 	}
@@ -178,7 +178,7 @@ func cmdDefMethod(ctx context.Context, w *World, node Node) (Node, error) {
 			if err != nil {
 				return nil, err
 			}
-			restName, err = ExpectClass[Symbol](ctx, w, _name)
+			restName, err = ExpectSymbol(ctx, w, _name)
 			if err != nil {
 				return nil, err
 			}
@@ -201,7 +201,7 @@ func cmdDefMethod(ctx context.Context, w *World, node Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		pn1, err := ExpectClass[Symbol](ctx, w, _pn1)
+		pn1, err := ExpectSymbol(ctx, w, _pn1)
 		if err != nil {
 			return nil, err
 		}

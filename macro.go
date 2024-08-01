@@ -175,7 +175,7 @@ func cmdDefMacro(ctx context.Context, w *World, n Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	macroName, err := ExpectClass[Symbol](ctx, w, cons.Car)
+	macroName, err := ExpectSymbol(ctx, w, cons.Car)
 	if err != nil {
 		return nil, err
 	}
@@ -196,7 +196,7 @@ func funMacroExpand(ctx context.Context, w *World, arg Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	name, err := ExpectClass[Symbol](ctx, w, _name)
+	name, err := ExpectSymbol(ctx, w, _name)
 	if err != nil {
 		return nil, err
 	}

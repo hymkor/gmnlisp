@@ -27,7 +27,7 @@ func (_TrueType) Equals(n Node, m EqlMode) bool {
 
 type _NullType struct{}
 
-var nullClass = registerNewBuiltInClass[_NullType]("<null>")
+var nullClass = registerNewBuiltInClass[_NullType]("<null>", symbolClass, listClass)
 
 func (_NullType) ClassOf() Class {
 	return nullClass
@@ -43,6 +43,10 @@ func (nt _NullType) Equals(n Node, m EqlMode) bool {
 	}
 	_, ok := n.(_NullType)
 	return ok
+}
+
+func (nt _NullType) Id() int {
+	return int(NewSymbol("nil"))
 }
 
 var Null Node = _NullType{}
@@ -69,7 +73,16 @@ func (idm *idMap[T]) Count() int {
 	return len(idm.name2id)
 }
 
-type Symbol int
+type Symbol interface {
+	Id() int
+	Node
+}
+
+type _Symbol int
+
+func (s _Symbol) Id() int {
+	return int(s)
+}
 
 func (idm *idMap[T]) IdToName(id T) string {
 	if id < 0 || int(id) >= len(idm.id2name) {
@@ -78,13 +91,13 @@ func (idm *idMap[T]) IdToName(id T) string {
 	return idm.id2name[id]
 }
 
-var symbolManager = &idMap[Symbol]{}
+var symbolManager = &idMap[_Symbol]{}
 
-func NewSymbol(s string) Symbol {
+func NewSymbol(s string) _Symbol {
 	return symbolManager.NameToId(s)
 }
 
-func genSym() Symbol {
+func genSym() _Symbol {
 	return NewSymbol(fmt.Sprintf("-gensym-%d-", symbolManager.Count()))
 }
 
@@ -94,20 +107,20 @@ func funGensym(ctx context.Context, w *World) (Node, error) {
 
 var symbolClass = registerNewBuiltInClass[Symbol]("<symbol>")
 
-func (Symbol) ClassOf() Class {
+func (_Symbol) ClassOf() Class {
 	return symbolClass
 }
 
-func (s Symbol) Eval(_ context.Context, w *World) (Node, error) {
+func (s _Symbol) Eval(_ context.Context, w *World) (Node, error) {
 	return w.Get(s)
 }
 
-func (s Symbol) Equals(n Node, m EqlMode) bool {
-	ns, ok := n.(Symbol)
+func (s _Symbol) Equals(n Node, m EqlMode) bool {
+	ns, ok := n.(_Symbol)
 	return ok && s == ns
 }
 
-func (s Symbol) String() string {
+func (s _Symbol) String() string {
 	return symbolManager.IdToName(s)
 }
 

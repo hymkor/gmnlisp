@@ -175,6 +175,10 @@ func ExpectClass[T Node](ctx context.Context, w *World, v Node) (T, error) {
 	return ExpectInterface[T](ctx, w, v, class)
 }
 
+func ExpectSymbol(ctx context.Context, w *World, v Node) (Symbol, error) {
+	return ExpectInterface[Symbol](ctx, w, v, symbolClass)
+}
+
 type _UndefinedEntity struct {
 	name  Symbol
 	space Symbol
