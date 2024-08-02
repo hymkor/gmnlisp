@@ -8,7 +8,7 @@ import (
 
 type _TrueType struct{}
 
-var trueClass = registerNewBuiltInClass[_TrueType]("<truetype>")
+var trueClass = registerNewBuiltInClass[_TrueType]("<truetype>", symbolClass)
 
 func (t _TrueType) ClassOf() Class {
 	return trueClass
@@ -23,6 +23,10 @@ var True Node = _TrueType{}
 func (_TrueType) Equals(n Node, m EqlMode) bool {
 	_, ok := n.(_TrueType)
 	return ok
+}
+
+func (nt _TrueType) Id() int {
+	return int(NewSymbol("t"))
 }
 
 type _NullType struct{}
