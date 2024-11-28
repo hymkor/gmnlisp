@@ -209,6 +209,9 @@ func (class1 *_StandardClass) InheritP(class2 Class) bool {
 }
 
 func (c *_StandardClass) String() string {
+	if c.Symbol == nil {
+		return "{*_UserClass} nil"
+	}
 	return "{*_UserClass}" + c.Symbol.String()
 }
 
