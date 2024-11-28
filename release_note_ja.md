@@ -1,6 +1,13 @@
+v0.7.3
+======
+Nov 29, 2024
+
 - Fix: `NG: (defun foo) -> #<Error> <error> [#<Error> <program-error>]`
 - Fix: `NG: (defun t nil) -> #<Error> <domain-error> [t]`
 - Fix: `NG: (defun nil nil) -> nil`
+- Fix: `NG: (create (class <standard-class>)) -> panic: runtime error`
+
+TP Result: OK = 7891, NG = 8520
 
 v0.7.2
 ======
