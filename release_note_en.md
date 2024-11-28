@@ -1,4 +1,6 @@
 - Fix: `NG: (defun foo) -> #<Error> <error> [#<Error> <program-error>]`
+- Fix: `NG: (defun t nil) -> #<Error> <domain-error> [t]`
+- Fix: `NG: (defun nil nil) -> nil`
 
 v0.7.2
 ======
