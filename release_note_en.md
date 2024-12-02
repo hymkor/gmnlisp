@@ -1,3 +1,5 @@
+- Add `NewLineOnFormat` as the character for `~%` (default: `[]byte{'\n'}`)
+
 v0.7.3
 ======
 Nov 29, 2024
