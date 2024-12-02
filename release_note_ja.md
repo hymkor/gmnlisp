@@ -1,4 +1,5 @@
 - `~%` に用いる文字として `NewLineOnFormat` を追加(デフォルトは `[]byte{'\n'}`)
+- CommonLisp のような Unicode 文字リテラル(`#\U3042`) をサポート
 
 v0.7.3
 ======

@@ -1,4 +1,5 @@
 - Add `NewLineOnFormat` as the character for `~%` (default: `[]byte{'\n'}`)
+- Support unicode character literal `#\U3042` like CommonLisp
 
 v0.7.3
 ======
