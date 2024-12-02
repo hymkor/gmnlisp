@@ -124,6 +124,8 @@ func printSpaces(n int, w io.Writer) {
 	}
 }
 
+var NewLineOnFormat = []byte{'\n'}
+
 func formatSub(ctx context.Context, world *World, w *_WriterNode, argv []Node) error {
 	format, err := ExpectClass[String](ctx, world, argv[0])
 	if err != nil {
@@ -224,17 +226,17 @@ func formatSub(ctx context.Context, world *World, w *_WriterNode, argv []Node) e
 				continue
 			}
 			for ; n >= 1; n-- {
-				w.Write([]byte{'\n'})
+				w.Write(NewLineOnFormat)
 			}
 			continue
 		}
 		if c == '%' {
 			if len(parameter) >= 1 {
 				for n := parameter[0]; n >= 1; n-- {
-					w.Write([]byte{'\n'})
+					w.Write(NewLineOnFormat)
 				}
 			} else {
-				w.Write([]byte{'\n'})
+				w.Write(NewLineOnFormat)
 			}
 			continue
 		}
