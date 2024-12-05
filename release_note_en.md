@@ -1,5 +1,6 @@
 - Add `NewLineOnFormat` as the character for `~%` (default: `[]byte{'\n'}`)
 - Support unicode character literal `#\U3042` like CommonLisp
+- Implement: `(get-universal-time)`, `(get-internal-real-time)`, `(get-internal-run-time)` and `(internal-time-units-per-secon)`
 
 v0.7.3
 ======

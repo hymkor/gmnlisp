@@ -1,5 +1,6 @@
 - `~%` に用いる文字として `NewLineOnFormat` を追加(デフォルトは `[]byte{'\n'}`)
 - CommonLisp のような Unicode 文字リテラル(`#\U3042`) をサポート
+- `(get-universal-time)`, `(get-internal-real-time)`, `(get-internal-run-time)`, `(internal-time-units-per-secon)` を実装
 
 v0.7.3
 ======
