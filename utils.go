@@ -24,7 +24,7 @@ var (
 
 	ErrCanNotParseNumber = parser.ErrCanNotParseNumber
 	ErrTooFewArguments   = parser.ErrTooFewArguments
-	ErrTooManyArguments  = parser.ErrTooManyArguments
+	ErrTooManyArguments  = &ProgramError{err: parser.ErrTooManyArguments}
 	ErrTooShortTokens    = parser.ErrTooShortTokens
 )
 
