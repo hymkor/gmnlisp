@@ -304,7 +304,7 @@ func (p *_Parser[N]) ReadNode(rs io.RuneScanner) (N, error) {
 		case "space":
 			val = ' '
 		default:
-			if token[2] == 'U' && len(token[2:]) > 1 {
+			if len(token) >= 3 && token[2] == 'U' && len(token[2:]) > 1 {
 				if _val, err := strconv.ParseUint(token[3:], 16, 32); err == nil {
 					val = rune(_val)
 					break
