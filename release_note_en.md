@@ -1,6 +1,12 @@
+v0.7.4
+======
+Dec 8, 2024
+
 - Add `NewLineOnFormat` as the character for `~%` (default: `[]byte{'\n'}`)
 - Support unicode character literal `#\U3042` like CommonLisp
 - Implement: `(get-universal-time)`, `(get-internal-real-time)`, `(get-internal-run-time)` and `(internal-time-units-per-secon)`
+
+TP Result: OK = 7903, NG = 8508
 
 v0.7.3
 ======

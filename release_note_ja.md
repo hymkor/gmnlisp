@@ -1,6 +1,12 @@
+v0.7.4
+======
+Dec 8, 2024
+
 - `~%` に用いる文字として `NewLineOnFormat` を追加(デフォルトは `[]byte{'\n'}`)
 - CommonLisp のような Unicode 文字リテラル(`#\U3042`) をサポート
 - `(get-universal-time)`, `(get-internal-real-time)`, `(get-internal-run-time)`, `(internal-time-units-per-secon)` を実装
+
+TP Result: OK = 7903, NG = 8508
 
 v0.7.3
 ======
