@@ -360,6 +360,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("gmn:dump-session"):               Function0(funDumpSession),
 	NewSymbol("go"):                             SpecialF(cmdGo),
 	NewSymbol("hash-table-count"):               Function1(funHashTableCount),
+	NewSymbol("identity"):                       Function1(funIdentity),
 	NewSymbol("if"):                             SpecialF(cmdIf),
 	NewSymbol("ignore-errors"):                  SpecialF(cmdIgnoreErrors),
 	NewSymbol("instancep"):                      SpecialF(defInstanceP),

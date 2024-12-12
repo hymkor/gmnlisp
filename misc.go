@@ -5,6 +5,10 @@ import (
 	"time"
 )
 
+func funIdentity(ctx context.Context, w *World, node Node) (Node, error) {
+	return node, nil
+}
+
 func funUniversalTime(ctx context.Context, w *World) (Node, error) {
 	start := time.Date(1900, time.Month(1), 1, 0, 0, 0, 0, time.UTC)
 	now := time.Now()
