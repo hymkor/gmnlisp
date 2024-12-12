@@ -1,4 +1,5 @@
-- `(identity)` を実装
+- `(file-position)`, `(identity)`, `(read-byte)`, `(set-file-position)`, `(write-byte)` を実装
+- `(open-input-file)`, `(open-output-file)` で引数が二つの時にエラーになる問題を修正
 
 v0.7.4
 ======

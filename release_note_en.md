@@ -1,4 +1,5 @@
-- Implement `(identity)`
+- Implement `(file-position)`, `(identity)`, `(read-byte)`, `(set-file-position)`, and  `(write-byte)`
+- Fix: `(open-input-file)`, and `(open-output-file)`: error when two arguments were given
 
 v0.7.4
 ======
