@@ -305,19 +305,26 @@ func funFilePosition(ctx context.Context, w *World, node Node) (Node, error) {
 	}
 }
 
+type setFilePositioner interface {
+	SetFilePosition(int64) (int64, error)
+	Node
+}
+
+var setFilePositionerClass = registerNewAbstractClass[setFilePositioner]("<stream-set-file-position>")
+
 func funSetFilePosition(ctx context.Context, w *World, stream, z Node) (Node, error) {
-	type FPer interface {
-		SetFilePosition(int64) (int64, error)
-	}
 	offset, err := ExpectClass[Integer](ctx, w, z)
 	if err != nil {
 		return nil, err
 	}
-	if f, ok := stream.(FPer); ok {
+	if f, ok := stream.(setFilePositioner); ok {
 		ret, err := f.SetFilePosition(int64(offset))
 		return Integer(ret), err
 	}
-	return nil, errors.New("not support")
+	return nil, &DomainError{
+		Object:        stream,
+		ExpectedClass: setFilePositionerClass,
+	}
 }
 
 func openOutputFile(ctx context.Context, w *World, fnameNode Node) (*_OutputFileStream, error) {
