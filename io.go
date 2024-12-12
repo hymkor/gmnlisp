@@ -305,8 +305,8 @@ func openOutputFile(ctx context.Context, w *World, fnameNode Node) (*_OutputFile
 	return &_OutputFileStream{Writer: bufio.NewWriter(writer), file: writer}, nil
 }
 
-func funOpenOutputFile(ctx context.Context, w *World, arg Node) (Node, error) {
-	return openOutputFile(ctx, w, arg)
+func funOpenOutputFile(ctx context.Context, w *World, args []Node) (Node, error) {
+	return openOutputFile(ctx, w, args[0])
 }
 
 func cmdWithOpenOutputFile(ctx context.Context, w *World, list Node) (Node, error) {
