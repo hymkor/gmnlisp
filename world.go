@@ -450,6 +450,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("with-open-input-file"):           SpecialF(cmdWithOpenInputFile),
 	NewSymbol("with-open-output-file"):          SpecialF(cmdWithOpenOutputFile),
 	NewSymbol("with-standard-input"):            SpecialF(cmdWithStandardInput),
+	NewSymbol("write-byte"):                     Function2(funWriteByte),
 	NewSymbol("zerop"):                          Function1(funZerop),
 	symReportCondition:                          reportCondition,
 	// *sort*end*

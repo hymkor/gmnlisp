@@ -252,6 +252,10 @@ type _OutputFileStream struct {
 	file *os.File
 }
 
+func (o *_OutputFileStream) WriteByte(b byte) error {
+	return o.Writer.WriteByte(b)
+}
+
 func (o *_OutputFileStream) Close() error {
 	o.Writer.Flush()
 	return o.file.Close()
@@ -265,6 +269,22 @@ func (o *_OutputFileStream) FilePosition() (int64, error) {
 func (o *_OutputFileStream) SetFilePosition(n int64) (int64, error) {
 	o.Writer.Flush()
 	return o.file.Seek(n, os.SEEK_SET)
+}
+
+func funWriteByte(ctx context.Context, w *World, z, stream Node) (Node, error) {
+	data, err := ExpectClass[Integer](ctx, w, z)
+	if err != nil {
+		return nil, err
+	}
+	if w, ok := stream.(io.ByteWriter); ok {
+		w.WriteByte(byte(int(data)))
+		return data, nil
+	}
+	if w, ok := stream.(io.Writer); ok {
+		w.Write([]byte{byte(int(data))})
+		return data, nil
+	}
+	return nil, errors.New("not stream")
 }
 
 func funFilePosition(ctx context.Context, w *World, node Node) (Node, error) {
