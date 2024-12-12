@@ -1,3 +1,5 @@
+- Implement `(identity)`
+
 v0.7.4
 ======
 Dec 8, 2024
