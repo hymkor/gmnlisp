@@ -219,12 +219,12 @@ func cmdWithOpenInputFile(ctx context.Context, w *World, list Node) (Node, error
 
 type _OutputFileStream struct {
 	*bufio.Writer
-	closer io.Closer
+	file *os.File
 }
 
 func (o *_OutputFileStream) Close() error {
 	o.Writer.Flush()
-	return o.closer.Close()
+	return o.file.Close()
 }
 
 func openOutputFile(ctx context.Context, w *World, fnameNode Node) (*_OutputFileStream, error) {
@@ -236,7 +236,7 @@ func openOutputFile(ctx context.Context, w *World, fnameNode Node) (*_OutputFile
 	if err != nil {
 		return nil, err
 	}
-	return &_OutputFileStream{Writer: bufio.NewWriter(writer), closer: writer}, nil
+	return &_OutputFileStream{Writer: bufio.NewWriter(writer), file: writer}, nil
 }
 
 func funOpenOutputFile(ctx context.Context, w *World, arg Node) (Node, error) {
