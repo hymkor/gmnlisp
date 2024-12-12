@@ -170,8 +170,38 @@ func funGetOutputStreamString(ctx context.Context, w *World, arg Node) (Node, er
 }
 
 type inputStream struct {
-	_Reader
-	io.Closer
+	_Reader *bufio.Reader
+	file    *os.File
+}
+
+func (i *inputStream) ReadByte() (byte, error) {
+	return i._Reader.ReadByte()
+}
+
+func (i *inputStream) ReadRune() (r rune, size int, err error) {
+	return i._Reader.ReadRune()
+}
+
+func (i *inputStream) UnreadRune() error {
+	return i._Reader.UnreadRune()
+}
+
+func (i *inputStream) Close() error {
+	return i.file.Close()
+}
+
+func (i *inputStream) FilePosition() (int64, error) {
+	z, err := i.file.Seek(0, os.SEEK_CUR)
+	if err != nil {
+		return 0, err
+	}
+	return z - int64(i._Reader.Buffered()), nil
+}
+
+func (i *inputStream) SetFilePosition(n int64) (int64, error) {
+	ret, err := i.file.Seek(n, os.SEEK_SET)
+	i._Reader.Reset(i.file)
+	return ret, err
 }
 
 func openInputFile(ctx context.Context, w *World, fname Node) (*inputStream, error) {
@@ -183,7 +213,7 @@ func openInputFile(ctx context.Context, w *World, fname Node) (*inputStream, err
 	if err != nil {
 		return nil, err
 	}
-	return &inputStream{_Reader: bufio.NewReader(reader), Closer: reader}, nil
+	return &inputStream{_Reader: bufio.NewReader(reader), file: reader}, nil
 }
 
 func funOpenInputFile(ctx context.Context, w *World, arg Node) (Node, error) {
@@ -225,6 +255,42 @@ type _OutputFileStream struct {
 func (o *_OutputFileStream) Close() error {
 	o.Writer.Flush()
 	return o.file.Close()
+}
+
+func (o *_OutputFileStream) FilePosition() (int64, error) {
+	o.Writer.Flush()
+	return o.file.Seek(0, os.SEEK_CUR)
+}
+
+func (o *_OutputFileStream) SetFilePosition(n int64) (int64, error) {
+	o.Writer.Flush()
+	return o.file.Seek(n, os.SEEK_SET)
+}
+
+func funFilePosition(ctx context.Context, w *World, node Node) (Node, error) {
+	type FPer interface {
+		FilePosition() (int64, error)
+	}
+	if f, ok := node.(FPer); ok {
+		ret, err := f.FilePosition()
+		return Integer(ret), err
+	}
+	return nil, errors.New("not support")
+}
+
+func funSetFilePosition(ctx context.Context, w *World, stream, z Node) (Node, error) {
+	type FPer interface {
+		SetFilePosition(int64) (int64, error)
+	}
+	offset, err := ExpectClass[Integer](ctx, w, z)
+	if err != nil {
+		return nil, err
+	}
+	if f, ok := stream.(FPer); ok {
+		ret, err := f.SetFilePosition(int64(offset))
+		return Integer(ret), err
+	}
+	return nil, errors.New("not support")
 }
 
 func openOutputFile(ctx context.Context, w *World, fnameNode Node) (*_OutputFileStream, error) {
