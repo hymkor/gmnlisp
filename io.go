@@ -48,7 +48,10 @@ func newStreamInput(w *World, argv []Node) (*_StreamInput, error) {
 		var ok bool
 		this.reader, ok = argv[0].(_Reader)
 		if !ok {
-			return nil, fmt.Errorf("expected Reader %#v", argv[0])
+			return nil, &DomainError{
+				Object:        argv[0],
+				ExpectedClass: readerNodeClass,
+			}
 		}
 	case 0:
 		this.reader = w.Stdin()
@@ -122,6 +125,23 @@ func funRead(ctx context.Context, w *World, argv []Node) (Node, error) {
 		}
 	}
 	return value, err
+}
+
+func funReadByte(ctx context.Context, w *World, argv []Node) (Node, error) {
+	stream, err := newStreamInput(w, argv)
+	if err != nil {
+		return nil, err
+	}
+	ch, err := stream.reader.ReadByte()
+	if err == io.EOF {
+		if stream.eofFlag {
+			return callHandler[Node](ctx, w, true, EndOfStream{
+				Stream: argv[0],
+			})
+		}
+		return stream.eofValue, nil
+	}
+	return Integer(ch), err
 }
 
 func funReadChar(ctx context.Context, w *World, argv []Node) (Node, error) {

@@ -405,6 +405,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("quit"):                           Function0(funQuit),
 	NewSymbol("quote"):                          SpecialF(cmdQuote),
 	NewSymbol("read"):                           &Function{Max: 3, F: funRead},
+	NewSymbol("read-byte"):                      &Function{Min: 1, Max: 3, F: funReadByte},
 	NewSymbol("read-char"):                      &Function{Max: 3, F: funReadChar},
 	NewSymbol("read-line"):                      &Function{Max: 3, F: funReadLine},
 	NewSymbol("rem"):                            Function2(funRem),
