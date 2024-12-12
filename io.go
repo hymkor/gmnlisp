@@ -287,15 +287,22 @@ func funWriteByte(ctx context.Context, w *World, z, stream Node) (Node, error) {
 	return nil, errors.New("not stream")
 }
 
+type filePositioner interface {
+	FilePosition() (int64, error)
+	Node
+}
+
+var filePositionerClass = registerNewAbstractClass[filePositioner]("<stream-file-position>")
+
 func funFilePosition(ctx context.Context, w *World, node Node) (Node, error) {
-	type FPer interface {
-		FilePosition() (int64, error)
-	}
-	if f, ok := node.(FPer); ok {
+	if f, ok := node.(filePositioner); ok {
 		ret, err := f.FilePosition()
 		return Integer(ret), err
 	}
-	return nil, errors.New("not support")
+	return nil, &DomainError{
+		Object:        node,
+		ExpectedClass: filePositionerClass,
+	}
 }
 
 func funSetFilePosition(ctx context.Context, w *World, stream, z Node) (Node, error) {
