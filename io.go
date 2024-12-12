@@ -216,8 +216,8 @@ func openInputFile(ctx context.Context, w *World, fname Node) (*inputStream, err
 	return &inputStream{_Reader: bufio.NewReader(reader), file: reader}, nil
 }
 
-func funOpenInputFile(ctx context.Context, w *World, arg Node) (Node, error) {
-	return openInputFile(ctx, w, arg)
+func funOpenInputFile(ctx context.Context, w *World, args []Node) (Node, error) {
+	return openInputFile(ctx, w, args[0])
 }
 
 func cmdWithOpenInputFile(ctx context.Context, w *World, list Node) (Node, error) {

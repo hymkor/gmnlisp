@@ -393,7 +393,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("null"):                           Function1(funNullp),
 	NewSymbol("numberp"):                        Function1(funNumberp),
 	NewSymbol("oddp"):                           Function1(funOddp),
-	NewSymbol("open-input-file"):                Function1(funOpenInputFile),
+	NewSymbol("open-input-file"):                &Function{Min: 1, F: funOpenInputFile},
 	NewSymbol("open-output-file"):               &Function{Min: 1, F: funOpenOutputFile},
 	NewSymbol("or"):                             SpecialF(cmdOr),
 	NewSymbol("parse-number"):                   Function1(funParseNumber),
