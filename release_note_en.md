@@ -1,6 +1,7 @@
 - Implement `(file-position)`, `(identity)`, `(read-byte)`, `(set-file-position)`, and  `(write-byte)`
 - Fix: `(open-input-file)`, and `(open-output-file)`: error when two arguments were given
 - When `(with-handler)` returns normally without non-local-exists, it occurs `<control-error>`(`Handler return normally`) and it can be handled with higher-level handlers
+- Rename the command name of division from `(/ Z1 Z2)` to `(div Z1 Z2)` same as ISLisp
 
 v0.7.4
 ======
