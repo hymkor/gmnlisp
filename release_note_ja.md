@@ -1,5 +1,6 @@
 - `(file-position)`, `(identity)`, `(read-byte)`, `(set-file-position)`, `(write-byte)` を実装
 - `(open-input-file)`, `(open-output-file)` で引数が二つの時にエラーになる問題を修正
+- `(with-handler)` のハンドラーが非局所脱出せずに普通に終了した時、`Handler return normally` という `<control-error>` を発生して、上位のハンドラーで処理できるようにした。
 
 v0.7.4
 ======
