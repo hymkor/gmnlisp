@@ -1,12 +1,9 @@
 (test
-  'ok
   (block main
-      (with-handler
-          (lambda (c)
-              (return-from main 'ok))
-          (with-handler
-              (lambda (c))
-              (/ 2 0)
-          )
-      )
-  ))
+    (with-handler
+      (lambda (c)
+        (if (instancep c (class <division-by-zero>))
+          (return-from main 'ok)
+          (return-from main (class-of c))))
+        (div 2 0)))
+  'ok)
