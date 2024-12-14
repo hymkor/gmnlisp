@@ -136,20 +136,32 @@ type errorAndNode interface {
 
 type callHandlerLimitter struct{}
 
+var errHandlerReturnNormally = errors.New("Handler return normally")
+
 func callHandler[T Node](ctx context.Context, w *World, cont bool, condition errorAndNode) (T, error) {
 	var zero T
-	if w.handler != nil {
+	if len(w.handler) > 0 {
 		if v := ctx.Value(callHandlerLimitter{}); v != nil {
 			return zero, condition
 		}
 		ctx = context.WithValue(ctx, callHandlerLimitter{}, 1)
-		_, e := w.handler.Call(ctx, w, UnevalList(condition))
-		var ce *_ErrContinueCondition
-		if cont && errors.As(e, &ce) {
-			if v, ok := ce.Value.(T); ok {
-				return v, nil
+		for h := w.handler; len(h) > 0; h = h[:len(h)-1] {
+			_, e := h[len(h)-1].Call(ctx, w, UnevalList(condition))
+			var ce *_ErrContinueCondition
+			if cont && errors.As(e, &ce) {
+				if v, ok := ce.Value.(T); ok {
+					return v, nil
+				}
 			}
+			if IsNonLocalExists(e) {
+				return zero, e
+			}
+			if e != nil {
+				return zero, condition
+			}
+			condition = &ControlError{err: errHandlerReturnNormally}
 		}
+		return zero, &ControlError{err: errHandlerReturnNormally}
 	}
 	return zero, condition
 }

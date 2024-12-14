@@ -6,6 +6,14 @@ import (
 	"fmt"
 )
 
+func IsNonLocalExists(err error) bool {
+	var e1 *_ErrEarlyReturns // block & return-from
+	var e2 *_ErrThrown       // catch & throw
+	var e3 *_ErrTagBody      // tagbody & go
+
+	return errors.As(err, &e1) || errors.As(err, &e2) || errors.As(err, &e3)
+}
+
 func cmdWithHandler(ctx context.Context, w *World, node Node) (Node, error) {
 	_handler, node, err := w.ShiftAndEvalCar(ctx, node)
 	if err != nil {
@@ -15,10 +23,13 @@ func cmdWithHandler(ctx context.Context, w *World, node Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	oldHandler := w.handler
-	defer func() { w.handler = oldHandler }()
-	w.handler = handler
+	w.handler = append(w.handler, handler)
+
 	value, err := Progn(ctx, w, node)
+
+	if L := len(w.handler); L > 0 {
+		w.handler = w.handler[:L-1]
+	}
 
 	// 本来、場合によっては継続処理があるため、ハンドラー関数はエラーが起きた場所で
 	// 呼ばなければいけないが、 古いコードは error を返して、error の処理元で
@@ -29,13 +40,9 @@ func cmdWithHandler(ctx context.Context, w *World, node Node) (Node, error) {
 	// ようにしている
 	// (将来的にはエラーが起きた場所で呼ぶよう変更しなくてはいけない)
 
-	var e1 *_ErrEarlyReturns // block & return-from
-	var e2 *_ErrThrown       // catch & throw
-	var e3 *_ErrTagBody      // tagbody & go
-	if err == nil || errors.As(err, &e1) || errors.As(err, &e2) || errors.As(err, &e3) {
+	if err == nil || IsNonLocalExists(err) || errors.Is(err, errHandlerReturnNormally) {
 		return value, err
 	}
-
 	var errorValue interface {
 		Node
 		Error() string
@@ -49,7 +56,7 @@ func cmdWithHandler(ctx context.Context, w *World, node Node) (Node, error) {
 	if err2 != nil {
 		return nil, err2
 	}
-	return nil, err
+	return raiseControlError(ctx, w, errors.New("Handler return normally"))
 }
 
 type _ErrContinueCondition struct {
@@ -69,7 +76,7 @@ var reportCondition = &_Generic{
 }
 
 func funSignalCondition(ctx context.Context, w *World, cond, continueable Node) (Node, error) {
-	if w.handler == nil {
+	if len(w.handler) <= 0 {
 		buffer := &StringBuilder{}
 		if _, err := reportCondition.Call(ctx, w, UnevalList(cond, buffer)); err == nil {
 			return nil, errors.New(buffer.String())
@@ -81,7 +88,7 @@ func funSignalCondition(ctx context.Context, w *World, cond, continueable Node) 
 		}
 		return nil, errors.New(cond.String())
 	}
-	rv, err := w.handler.Call(ctx, w, &Cons{Car: cond})
+	rv, err := w.handler[len(w.handler)-1].Call(ctx, w, &Cons{Car: cond})
 	var e *_ErrContinueCondition
 	if IsSome(continueable) && errors.As(err, &e) {
 		return e.Value, nil

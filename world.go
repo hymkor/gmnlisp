@@ -98,7 +98,7 @@ func (m *Pair) Range(f func(Symbol, Node) bool) {
 
 type shared struct {
 	macro     map[Symbol]*_Macro
-	handler   Callable
+	handler   []Callable
 	global    Scope
 	defun     FuncScope
 	dynamic   Variables
