@@ -267,30 +267,6 @@ func cmdWithOpenInputFile(ctx context.Context, w *World, list Node) (Node, error
 	return Progn(ctx, nw, list)
 }
 
-type _OutputFileStream struct {
-	*bufio.Writer
-	file *os.File
-}
-
-func (o *_OutputFileStream) WriteByte(b byte) error {
-	return o.Writer.WriteByte(b)
-}
-
-func (o *_OutputFileStream) Close() error {
-	o.Writer.Flush()
-	return o.file.Close()
-}
-
-func (o *_OutputFileStream) FilePosition() (int64, error) {
-	o.Writer.Flush()
-	return o.file.Seek(0, os.SEEK_CUR)
-}
-
-func (o *_OutputFileStream) SetFilePosition(n int64) (int64, error) {
-	o.Writer.Flush()
-	return o.file.Seek(n, os.SEEK_SET)
-}
-
 func funWriteByte(ctx context.Context, w *World, z, stream Node) (Node, error) {
 	data, err := ExpectClass[Integer](ctx, w, z)
 	if err != nil {
@@ -356,7 +332,7 @@ func openOutputFile(ctx context.Context, w *World, fnameNode Node) (*_OutputFile
 	if err != nil {
 		return nil, err
 	}
-	return &_OutputFileStream{Writer: bufio.NewWriter(writer), file: writer}, nil
+	return newOutputFileStream(writer), nil
 }
 
 func funOpenOutputFile(ctx context.Context, w *World, args []Node) (Node, error) {
