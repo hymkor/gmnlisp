@@ -145,6 +145,8 @@ func interactive(lisp *gmnlisp.World) error {
 
 		history.Add(code)
 
+		lisp.SetStdout(os.Stdout) // reset the flag for `~&` in (format)
+		lisp.SetErrout(os.Stderr) // reset the flag for `~&` in (format)
 		result, err := lisp.Interpret(ctx, code)
 		if err != nil {
 			if errors.Is(err, gmnlisp.ErrQuit) {
