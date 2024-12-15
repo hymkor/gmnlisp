@@ -2,6 +2,7 @@
 - Fix: `(open-input-file)`, and `(open-output-file)`: error when two arguments were given
 - When `(with-handler)` returns normally without non-local-exists, it occurs `<control-error>`(`Handler return normally`) and it can be handled with higher-level handlers
 - Rename the command name of division from `(/ Z1 Z2)` to `(div Z1 Z2)` same as ISLisp
+- gmnlisp.exe: set the position of the standard-output and the error-output to the top of the line for `~&` of `(format)`
 
 v0.7.4
 ======

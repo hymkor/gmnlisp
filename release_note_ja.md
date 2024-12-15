@@ -2,6 +2,7 @@
 - `(open-input-file)`, `(open-output-file)` で引数が二つの時にエラーになる問題を修正
 - `(with-handler)` のハンドラーが非局所脱出せずに普通に終了した時、`Handler return normally` という `<control-error>` を発生して、上位のハンドラーで処理できるようにした。
 - `(/ Z1 Z2)` だった除算を `(div Z1 Z2)` にリネーム (ISLisp 対応)
+- gmnlisp.exe: コマンド入力の直後に、`(format)` の `~&` のためにカウントしている標準出力と標準エラー出力の桁位置を行頭扱いにセットするようにした
 
 v0.7.4
 ======
