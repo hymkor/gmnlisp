@@ -380,6 +380,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("sqrt"):                           Function1(funSqrt),
 	NewSymbol("standard-input"):                 Function0(funStandardInput),
 	NewSymbol("standard-output"):                Function0(funStandardOutput),
+	NewSymbol("stream-error-stream"):            Function1(funStreamErrorStream),
 	NewSymbol("string-append"):                  &Function{F: funStringAppend},
 	NewSymbol("string-index"):                   &Function{F: funStringIndex},
 	NewSymbol("string/="):                       &Function{C: 2, F: funStringNe},

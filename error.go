@@ -311,6 +311,14 @@ func (s StreamError) Error() string {
 	return "stream error"
 }
 
+func funStreamErrorStream(ctx context.Context, w *World, node Node) (Node, error) {
+	streamError, err := ExpectClass[StreamError](ctx, w, node)
+	if err != nil {
+		return nil, err
+	}
+	return streamError.Stream, nil
+}
+
 func (e EndOfStream) ClassOf() Class {
 	return endOfStreamClass
 }
