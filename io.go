@@ -428,3 +428,17 @@ func funStreamP(ctx context.Context, w *World, node Node) (Node, error) {
 	}
 	return Null, nil
 }
+
+func funInputStreamP(ctx context.Context, w *World, node Node) (Node, error) {
+	if _, ok := node.(io.Reader); ok {
+		return True, nil
+	}
+	return Null, nil
+}
+
+func funOutputStreamP(ctx context.Context, w *World, node Node) (Node, error) {
+	if _, ok := node.(io.Writer); ok {
+		return True, nil
+	}
+	return Null, nil
+}
