@@ -67,3 +67,34 @@ func funOpenIoFile(ctx context.Context, w *World, args []Node) (Node, error) {
 	}
 	return newIoFile(string(fname))
 }
+
+func cmdWithOpenIoFile(ctx context.Context, w *World, list Node) (Node, error) {
+	param, list, err := Shift(list)
+	if err != nil {
+		return nil, err
+	}
+	varName, param, err := Shift(param)
+	if err != nil {
+		return nil, err
+	}
+	symbol, err := ExpectSymbol(ctx, w, varName)
+	if err != nil {
+		return nil, err
+	}
+	filenameNode, _, err := w.ShiftAndEvalCar(ctx, param)
+	if err != nil {
+		return nil, err
+	}
+	filename, err := ExpectClass[String](ctx, w, filenameNode)
+	if err != nil {
+		return nil, err
+	}
+	stream, err := newIoFile(string(filename))
+	if err != nil {
+		return nil, err
+	}
+	defer stream.Close()
+
+	nw := w.Let(&Pair{Key: symbol, Value: stream})
+	return Progn(ctx, nw, list)
+}

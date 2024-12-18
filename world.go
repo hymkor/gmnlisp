@@ -407,6 +407,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("while"):                          SpecialF(cmdWhile),
 	NewSymbol("with-handler"):                   SpecialF(cmdWithHandler),
 	NewSymbol("with-open-input-file"):           SpecialF(cmdWithOpenInputFile),
+	NewSymbol("with-open-io-file"):              SpecialF(cmdWithOpenIoFile),
 	NewSymbol("with-open-output-file"):          SpecialF(cmdWithOpenOutputFile),
 	NewSymbol("with-standard-input"):            SpecialF(cmdWithStandardInput),
 	NewSymbol("write-byte"):                     Function2(funWriteByte),
