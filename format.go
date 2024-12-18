@@ -7,12 +7,8 @@ import (
 	"io"
 	"strconv"
 	"strings"
+	"unicode/utf8"
 )
-
-type runeWriter interface {
-	io.Writer
-	WriteRune(r rune) (int, error)
-}
 
 func printInt(w io.Writer, value Node, base int, args ...int) error {
 	if base < 2 || base > 36 {
@@ -68,7 +64,7 @@ func funFormatChar(ctx context.Context, w *World, list []Node) (Node, error) {
 		if err != nil {
 			return err
 		}
-		_, err = writer.WriteRune(rune(r))
+		_, err = writeRune(writer, rune(r))
 		return err
 	})
 }
@@ -95,17 +91,17 @@ func funFormatTab(ctx context.Context, w *World, writer, column Node) (Node, err
 		}
 		i := writer.Column()
 		if i >= int(n) {
-			writer.WriteByte(' ')
+			writeByte(writer, ' ')
 			return nil
 		}
 		for ; i < int(n); i++ {
-			writer.WriteByte(' ')
+			writeByte(writer, ' ')
 		}
 		return nil
 	})
 }
 
-func printFloat(w runeWriter, value Node, mark byte, args ...int) error {
+func printFloat(w io.Writer, value Node, mark byte, args ...int) error {
 	width := -1
 	prec := -1
 	if argc := len(args); argc >= 3 {
@@ -126,7 +122,7 @@ func printFloat(w runeWriter, value Node, mark byte, args ...int) error {
 	}
 	if len(body) < width {
 		for i := len(body); i < width; i++ {
-			w.WriteRune(' ')
+			writeRune(w, ' ')
 		}
 	}
 	io.WriteString(w, body)
@@ -148,12 +144,26 @@ func printSpaces(n int, w io.Writer) {
 
 var NewLineOnFormat = []byte{'\n'}
 
+func writeByte(w io.Writer, b byte) error {
+	if W, ok := w.(io.ByteWriter); ok {
+		return W.WriteByte(b)
+	}
+	_, err := w.Write([]byte{b})
+	return err
+}
+
+func writeRune(w io.Writer, r rune) (int, error) {
+	if W, ok := w.(interface{ WriteRune(rune) (int, error) }); ok {
+		return W.WriteRune(r)
+	}
+	var buffer [utf8.UTFMax]byte
+	size := utf8.EncodeRune(buffer[:], r)
+	return w.Write(buffer[:size])
+}
+
 type Formatter interface {
 	Column() int
 	Write([]byte) (int, error)
-	WriteByte(byte) error
-	WriteRune(rune) (int, error)
-	WriteString(string) (int, error)
 }
 
 func formatSub(ctx context.Context, world *World, w Formatter, argv []Node) error {
@@ -176,7 +186,7 @@ func formatSub(ctx context.Context, world *World, w Formatter, argv []Node) erro
 			continue
 		}
 		if IsNone(format) {
-			w.WriteRune('~')
+			writeRune(w, '~')
 			break
 		}
 		c, format, ok = format.firstRuneAndRestString()
@@ -249,7 +259,7 @@ func formatSub(ctx context.Context, world *World, w Formatter, argv []Node) erro
 				n = parameter[0]
 			}
 			for i := w.Column(); i < n; i++ {
-				w.WriteByte(' ')
+				writeByte(w, ' ')
 			}
 			continue
 		}

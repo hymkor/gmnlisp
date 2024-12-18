@@ -5,8 +5,6 @@ import (
 	"bytes"
 	"io"
 	"os"
-	"strings"
-	"unicode/utf8"
 )
 
 type _Writer = io.Writer
@@ -30,39 +28,6 @@ func (w *_WriterNode) Write(p []byte) (nn int, err error) {
 		}
 	}
 	return nn, err
-}
-
-func (w *_WriterNode) WriteByte(c byte) error {
-	if c == '\n' {
-		w.column = 0
-	} else {
-		w.column++
-	}
-	_, err := w._Writer.Write([]byte{c})
-	return err
-}
-
-func (w *_WriterNode) WriteRune(c rune) (int, error) {
-	var buffer [utf8.UTFMax]byte
-	size := utf8.EncodeRune(buffer[:], c)
-	if c == '\n' {
-		w.column = 0
-	} else {
-		w.column++
-	}
-	return w._Writer.Write(buffer[:size])
-}
-
-func (w *_WriterNode) WriteString(s string) (size int, err error) {
-	n, err := io.WriteString(w._Writer, s)
-	if n > 0 {
-		if pos := strings.LastIndexByte(s[:n], '\n'); pos >= 0 {
-			w.column = n - pos
-		} else {
-			w.column += n
-		}
-	}
-	return n, err
 }
 
 type _OutputFileStream struct {
