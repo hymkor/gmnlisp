@@ -47,7 +47,7 @@ func (t *IOFile) String() string {
 }
 
 func newIoFile(fname string) (*IOFile, error) {
-	f, err := os.OpenFile(fname, os.O_RDWR, 0644)
+	f, err := os.OpenFile(fname, os.O_RDWR|os.O_CREATE, 0644)
 	if err != nil {
 		return nil, err
 	}
