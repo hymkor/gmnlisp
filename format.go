@@ -47,7 +47,7 @@ func printInt(w io.Writer, value Node, base int, args ...int) error {
 }
 
 func funFormatObject(ctx context.Context, w *World, list []Node) (Node, error) {
-	return tAndNilToWriter(ctx, w, list, func(writer Formatter, list []Node) error {
+	return tAndNilToWriter(ctx, w, list, func(writer io.Writer, list []Node) error {
 		var err error
 		if IsNone(list[1]) { // ~a (AS-IS)
 			_, err = tryPrintTo(writer, list[0], PRINC)
@@ -59,7 +59,7 @@ func funFormatObject(ctx context.Context, w *World, list []Node) (Node, error) {
 }
 
 func funFormatChar(ctx context.Context, w *World, list []Node) (Node, error) {
-	return tAndNilToWriter(ctx, w, list, func(writer Formatter, list []Node) error {
+	return tAndNilToWriter(ctx, w, list, func(writer io.Writer, list []Node) error {
 		r, err := ExpectClass[Rune](ctx, w, list[0])
 		if err != nil {
 			return err
@@ -70,7 +70,7 @@ func funFormatChar(ctx context.Context, w *World, list []Node) (Node, error) {
 }
 
 func funFormatInteger(ctx context.Context, w *World, _args []Node) (Node, error) {
-	return tAndNilToWriter(ctx, w, _args, func(writer Formatter, args []Node) error {
+	return tAndNilToWriter(ctx, w, _args, func(writer io.Writer, args []Node) error {
 		radix, err := ExpectClass[Integer](ctx, w, args[1])
 		if err != nil {
 			return err
@@ -80,7 +80,7 @@ func funFormatInteger(ctx context.Context, w *World, _args []Node) (Node, error)
 }
 
 func funFormatTab(ctx context.Context, w *World, writer, column Node) (Node, error) {
-	return tAndNilToWriter(ctx, w, []Node{writer, column}, func(writer Formatter, args []Node) error {
+	return tAndNilToWriter(ctx, w, []Node{writer, column}, func(writer io.Writer, args []Node) error {
 		n, err := ExpectClass[Integer](ctx, w, args[0])
 		if err != nil {
 			return err
@@ -89,12 +89,16 @@ func funFormatTab(ctx context.Context, w *World, writer, column Node) (Node, err
 			_, err := raiseProgramError(ctx, w, ErrIndexOutOfRange)
 			return err
 		}
-		i := writer.Column()
-		if i >= int(n) {
-			writeByte(writer, ' ')
-			return nil
-		}
-		for ; i < int(n); i++ {
+		if W, ok := writer.(interface{ Column() int }); ok {
+			i := W.Column()
+			if i >= int(n) {
+				writeByte(writer, ' ')
+				return nil
+			}
+			for ; i < int(n); i++ {
+				writeByte(writer, ' ')
+			}
+		} else {
 			writeByte(writer, ' ')
 		}
 		return nil
@@ -130,7 +134,7 @@ func printFloat(w io.Writer, value Node, mark byte, args ...int) error {
 }
 
 func funFormatFloat(ctx context.Context, w *World, args []Node) (Node, error) {
-	return tAndNilToWriter(ctx, w, args, func(_writer Formatter, args []Node) error {
+	return tAndNilToWriter(ctx, w, args, func(_writer io.Writer, args []Node) error {
 		return printFloat(_writer, args[0], 'f')
 	})
 }
@@ -161,12 +165,7 @@ func writeRune(w io.Writer, r rune) (int, error) {
 	return w.Write(buffer[:size])
 }
 
-type Formatter interface {
-	Column() int
-	Write([]byte) (int, error)
-}
-
-func formatSub(ctx context.Context, world *World, w Formatter, argv []Node) error {
+func formatSub(ctx context.Context, world *World, w io.Writer, argv []Node) error {
 	format, err := ExpectClass[String](ctx, world, argv[0])
 	if err != nil {
 		return err
@@ -258,7 +257,11 @@ func formatSub(ctx context.Context, world *World, w Formatter, argv []Node) erro
 			if len(parameter) > 0 {
 				n = parameter[0]
 			}
-			for i := w.Column(); i < n; i++ {
+			if W, ok := w.(interface{ Column() int }); ok {
+				for i := W.Column(); i < n; i++ {
+					writeByte(w, ' ')
+				}
+			} else {
 				writeByte(w, ' ')
 			}
 			continue
@@ -268,8 +271,10 @@ func formatSub(ctx context.Context, world *World, w Formatter, argv []Node) erro
 			if len(parameter) >= 1 {
 				n = parameter[0]
 			}
-			if w.Column() == 0 {
-				n--
+			if W, ok := w.(interface{ Column() int }); ok {
+				if W.Column() == 0 {
+					n--
+				}
 			}
 			if n > 0 {
 				for ; n >= 1; n-- {
@@ -338,21 +343,21 @@ func formatSub(ctx context.Context, world *World, w Formatter, argv []Node) erro
 	return nil
 }
 
-func tAndNilToWriter(ctx context.Context, w *World, argv []Node, f func(Formatter, []Node) error) (Node, error) {
+func tAndNilToWriter(ctx context.Context, w *World, argv []Node, f func(io.Writer, []Node) error) (Node, error) {
 	if IsNone(argv[0]) {
 		var buffer StringBuilder
 		err := f(&buffer, argv[1:])
 		return buffer.Sequence(), err
 	}
 	if True.Equals(argv[0], STRICT) {
-		if W, ok := w.stdout._Writer.(Formatter); ok {
+		if W, ok := w.stdout._Writer.(io.Writer); ok {
 			return Null, f(W, argv[1:])
 		}
 		return Null, f(&_WriterNode{_Writer: w.stdout._Writer}, argv[1:])
 	}
 	type writerType interface {
 		Node
-		Formatter
+		io.Writer
 	}
 	writer, err := ExpectInterface[writerType](ctx, w, argv[0], outputFileStreamClass)
 	if err != nil {
@@ -362,7 +367,7 @@ func tAndNilToWriter(ctx context.Context, w *World, argv []Node, f func(Formatte
 }
 
 func funFormat(ctx context.Context, world *World, argv []Node) (Node, error) {
-	return tAndNilToWriter(ctx, world, argv, func(_w Formatter, _argv []Node) error {
+	return tAndNilToWriter(ctx, world, argv, func(_w io.Writer, _argv []Node) error {
 		return formatSub(ctx, world, _w, _argv)
 	})
 }
