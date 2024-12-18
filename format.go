@@ -350,10 +350,7 @@ func tAndNilToWriter(ctx context.Context, w *World, argv []Node, f func(io.Write
 		return buffer.Sequence(), err
 	}
 	if True.Equals(argv[0], STRICT) {
-		if W, ok := w.stdout._Writer.(io.Writer); ok {
-			return Null, f(W, argv[1:])
-		}
-		return Null, f(&_WriterNode{_Writer: w.stdout._Writer}, argv[1:])
+		return Null, f(w.stdout, argv[1:])
 	}
 	type writerType interface {
 		Node
