@@ -445,6 +445,26 @@ func cmdWithStandardOutput(ctx context.Context, w *World, node Node) (Node, erro
 	return result, err
 }
 
+func cmdWithErrorOutput(ctx context.Context, w *World, node Node) (Node, error) {
+	_stream, node, err := w.ShiftAndEvalCar(ctx, node)
+	if err != nil {
+		return nil, err
+	}
+	type writer interface {
+		Node
+		io.Writer
+	}
+	stream, err := ExpectInterface[writer](ctx, w, _stream, outputFileStreamClass)
+	if err != nil {
+		return nil, err
+	}
+	save := w.errout
+	w.errout = stream
+	result, err := Progn(ctx, w, node)
+	w.errout = save
+	return result, err
+}
+
 func funStreamP(ctx context.Context, w *World, node Node) (Node, error) {
 	if _, ok := node.(io.Writer); ok {
 		return True, nil

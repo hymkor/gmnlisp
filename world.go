@@ -110,7 +110,10 @@ type shared struct {
 		io.Writer
 		Node
 	}
-	errout    *_WriterNode
+	errout interface {
+		io.Writer
+		Node
+	}
 	stdin     _ReaderNode
 	startup   sync.Once
 	blockName map[Symbol]struct{}
@@ -418,6 +421,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("unwind-protect"):                 SpecialF(cmdUnwindProtect),
 	NewSymbol("vector"):                         &Function{F: funVector},
 	NewSymbol("while"):                          SpecialF(cmdWhile),
+	NewSymbol("with-error-output"):              SpecialF(cmdWithErrorOutput),
 	NewSymbol("with-handler"):                   SpecialF(cmdWithHandler),
 	NewSymbol("with-open-input-file"):           SpecialF(cmdWithOpenInputFile),
 	NewSymbol("with-open-io-file"):              SpecialF(cmdWithOpenIoFile),
