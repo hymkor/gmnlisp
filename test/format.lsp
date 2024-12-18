@@ -73,3 +73,7 @@
         (format s "B")
         (get-output-stream-string s))
       "A   B")
+
+(test (format nil "[~3T]")   "[  ]")
+(test (format nil "[x~3T]")  "[x ]")
+(test (format nil "[xy~3T]") "[xy]")
