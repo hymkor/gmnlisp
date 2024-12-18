@@ -1,5 +1,9 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+v0.7.5
+======
+Dec 18, 2024
+
 - Implement `(file-position)`, `(identity)`, `(read-byte)`, `(set-file-position)`, `(write-byte)`, and `(stream-error-stream)`
 - Fix: `(open-input-file)`, and `(open-output-file)`: error when two arguments were given
 - When `(with-handler)` returns normally without non-local-exists, it occurs `<control-error>`(`Handler return normally`) and it can be handled with higher-level handlers
