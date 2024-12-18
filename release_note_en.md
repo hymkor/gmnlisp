@@ -1,5 +1,9 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+- `(format W)` throws `<domain-error>` when W is not io.Writer
+- Implement `(format-tab W COLUMN)`
+- `(format)` supports `~nT`
+
 v0.7.5
 ======
 Dec 18, 2024

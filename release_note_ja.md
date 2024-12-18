@@ -1,5 +1,9 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+- `(format W)` は W が Writer でない時に `<domain-error>` を発生するようにした
+- `(format-tab W COLUMN)` を実装
+- `(format)` で `~nT` をサポート
+
 v0.7.5
 ======
 Dec 18, 2024
