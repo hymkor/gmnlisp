@@ -23,7 +23,7 @@ var (
 	ErrQuit            = errors.New("bye")
 
 	ErrCanNotParseNumber = parser.ErrCanNotParseNumber
-	ErrTooFewArguments   = parser.ErrTooFewArguments
+	ErrTooFewArguments   = &ProgramError{err: parser.ErrTooFewArguments}
 	ErrTooManyArguments  = &ProgramError{err: parser.ErrTooManyArguments}
 	ErrTooShortTokens    = parser.ErrTooShortTokens
 )
