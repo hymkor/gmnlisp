@@ -7,11 +7,9 @@ import (
 	"os"
 )
 
-type _Writer = io.Writer
-
 type _WriterNode struct {
-	_Writer
-	column int
+	_Writer io.Writer
+	column  int
 }
 
 func (w *_WriterNode) Column() int {
