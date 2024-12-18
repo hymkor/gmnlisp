@@ -1,8 +1,12 @@
+[TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
+
 - Implement `(file-position)`, `(identity)`, `(read-byte)`, `(set-file-position)`, `(write-byte)`, and `(stream-error-stream)`
 - Fix: `(open-input-file)`, and `(open-output-file)`: error when two arguments were given
 - When `(with-handler)` returns normally without non-local-exists, it occurs `<control-error>`(`Handler return normally`) and it can be handled with higher-level handlers
 - Rename the command name of division from `(/ Z1 Z2)` to `(div Z1 Z2)` same as ISLisp
 - gmnlisp.exe: set the position of the standard-output and the error-output to the top of the line for `~&` of `(format)`
+
+[TP Result] : OK = 8214, NG = 8197
 
 v0.7.4
 ======
@@ -12,7 +16,7 @@ Dec 8, 2024
 - Support unicode character literal `#\U3042` like CommonLisp
 - Implement: `(get-universal-time)`, `(get-internal-real-time)`, `(get-internal-run-time)` and `(internal-time-units-per-secon)`
 
-TP Result: OK = 7903, NG = 8508
+[TP Result] : OK = 7903, NG = 8508
 
 v0.7.3
 ======
@@ -23,7 +27,7 @@ Nov 29, 2024
 - Fix: `NG: (defun nil nil) -> nil`
 - Fix: `NG: (create (class <standard-class>)) -> panic: runtime error`
 
-TP Result: OK = 7891, NG = 8520
+[TP Result] : OK = 7891, NG = 8520
 
 v0.7.2
 ======

@@ -1,8 +1,12 @@
+[TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
+
 - `(file-position)`, `(identity)`, `(read-byte)`, `(set-file-position)`, `(write-byte)`, `(stream-error-stream)` を実装
 - `(open-input-file)`, `(open-output-file)` で引数が二つの時にエラーになる問題を修正
 - `(with-handler)` のハンドラーが非局所脱出せずに普通に終了した時、`Handler return normally` という `<control-error>` を発生して、上位のハンドラーで処理できるようにした。
 - `(/ Z1 Z2)` だった除算を `(div Z1 Z2)` にリネーム (ISLisp 対応)
 - gmnlisp.exe: コマンド入力の直後に、`(format)` の `~&` のためにカウントしている標準出力と標準エラー出力の桁位置を行頭扱いにセットするようにした
+
+[TP Result] : OK = 8214, NG = 8197
 
 v0.7.4
 ======
@@ -12,7 +16,7 @@ Dec 8, 2024
 - CommonLisp のような Unicode 文字リテラル(`#\U3042`) をサポート
 - `(get-universal-time)`, `(get-internal-real-time)`, `(get-internal-run-time)`, `(internal-time-units-per-secon)` を実装
 
-TP Result: OK = 7903, NG = 8508
+[TP Result] : OK = 7903, NG = 8508
 
 v0.7.3
 ======
@@ -23,7 +27,7 @@ Nov 29, 2024
 - Fix: `NG: (defun nil nil) -> nil`
 - Fix: `NG: (create (class <standard-class>)) -> panic: runtime error`
 
-TP Result: OK = 7891, NG = 8520
+[TP Result] : OK = 7891, NG = 8520
 
 v0.7.2
 ======
