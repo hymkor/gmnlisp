@@ -2,8 +2,10 @@ package gmnlisp
 
 import (
 	"bufio"
+	"bytes"
 	"io"
 	"os"
+	"strings"
 	"unicode/utf8"
 )
 
@@ -11,27 +13,31 @@ type _Writer = io.Writer
 
 type _WriterNode struct {
 	_Writer
-	lastOutputIsNotLf bool
+	column int
 }
 
-type CanKnowLastOutput interface {
-	IsLastOutputLf() bool
-}
-
-func (w *_WriterNode) IsLastOutputLf() bool {
-	return !w.lastOutputIsNotLf
+func (w *_WriterNode) Column() int {
+	return w.column
 }
 
 func (w *_WriterNode) Write(p []byte) (nn int, err error) {
 	nn, err = w._Writer.Write(p)
 	if nn >= 1 {
-		w.lastOutputIsNotLf = (p[nn-1] != '\n')
+		if pos := bytes.LastIndexByte(p[:nn], '\n'); pos >= 0 {
+			w.column = nn - pos
+		} else {
+			w.column += nn
+		}
 	}
 	return nn, err
 }
 
 func (w *_WriterNode) WriteByte(c byte) error {
-	w.lastOutputIsNotLf = (c != '\n')
+	if c == '\n' {
+		w.column = 0
+	} else {
+		w.column++
+	}
 	_, err := w._Writer.Write([]byte{c})
 	return err
 }
@@ -39,14 +45,22 @@ func (w *_WriterNode) WriteByte(c byte) error {
 func (w *_WriterNode) WriteRune(c rune) (int, error) {
 	var buffer [utf8.UTFMax]byte
 	size := utf8.EncodeRune(buffer[:], c)
-	w.lastOutputIsNotLf = (c != '\n')
+	if c == '\n' {
+		w.column = 0
+	} else {
+		w.column++
+	}
 	return w._Writer.Write(buffer[:size])
 }
 
 func (w *_WriterNode) WriteString(s string) (size int, err error) {
 	n, err := io.WriteString(w._Writer, s)
 	if n > 0 {
-		w.lastOutputIsNotLf = (s[n-1] != '\n')
+		if pos := strings.LastIndexByte(s[:n], '\n'); pos >= 0 {
+			w.column = n - pos
+		} else {
+			w.column += n
+		}
 	}
 	return n, err
 }

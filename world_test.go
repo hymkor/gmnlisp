@@ -126,8 +126,6 @@ func TestIf(t *testing.T) {
 	}
 }
 
-var _ CanKnowLastOutput = &_WriterNode{}
-
 func testFloat(t *testing.T, text string, expected float64) {
 	t.Helper()
 

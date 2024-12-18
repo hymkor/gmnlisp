@@ -302,6 +302,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("format-float"):                   &Function{C: 2, F: funFormatFloat},
 	NewSymbol("format-integer"):                 &Function{C: 3, F: funFormatInteger},
 	NewSymbol("format-object"):                  &Function{C: 3, F: funFormatObject},
+	NewSymbol("format-tab"):                     Function2(funFormatTab),
 	NewSymbol("funcall"):                        SpecialF(cmdFunCall),
 	NewSymbol("function"):                       SpecialF(cmdFunction),
 	NewSymbol("functionp"):                      Function1(funAnyTypep[FunctionRef]),

@@ -83,6 +83,28 @@ func funFormatInteger(ctx context.Context, w *World, _args []Node) (Node, error)
 	})
 }
 
+func funFormatTab(ctx context.Context, w *World, writer, column Node) (Node, error) {
+	return tAndNilToWriter(ctx, w, []Node{writer, column}, func(writer *_WriterNode, args []Node) error {
+		n, err := ExpectClass[Integer](ctx, w, args[0])
+		if err != nil {
+			return err
+		}
+		if n < 0 || n > 1024 {
+			_, err := raiseProgramError(ctx, w, ErrIndexOutOfRange)
+			return err
+		}
+		i := writer.Column()
+		if i >= int(n) {
+			writer.WriteByte(' ')
+			return nil
+		}
+		for ; i < int(n); i++ {
+			writer.WriteByte(' ')
+		}
+		return nil
+	})
+}
+
 func printFloat(w runeWriter, value Node, mark byte, args ...int) error {
 	width := -1
 	prec := -1
@@ -219,14 +241,13 @@ func formatSub(ctx context.Context, world *World, w *_WriterNode, argv []Node) e
 			if len(parameter) >= 1 {
 				n = parameter[0]
 			}
-			if w.IsLastOutputLf() {
+			if w.Column() == 0 {
 				n--
 			}
-			if n <= 0 {
-				continue
-			}
-			for ; n >= 1; n-- {
-				w.Write(NewLineOnFormat)
+			if n > 0 {
+				for ; n >= 1; n-- {
+					w.Write(NewLineOnFormat)
+				}
 			}
 			continue
 		}
