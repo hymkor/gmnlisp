@@ -194,6 +194,10 @@ type inputStream struct {
 	file    *os.File
 }
 
+func (i *inputStream) Read(b []byte) (int, error) {
+	return i._Reader.Read(b)
+}
+
 func (i *inputStream) ReadByte() (byte, error) {
 	return i._Reader.ReadByte()
 }
@@ -413,4 +417,14 @@ func cmdWithStandardInput(ctx context.Context, w *World, node Node) (Node, error
 	result, err := Progn(ctx, w, node)
 	w.stdin = save
 	return result, err
+}
+
+func funStreamP(ctx context.Context, w *World, node Node) (Node, error) {
+	if _, ok := node.(io.Writer); ok {
+		return True, nil
+	}
+	if _, ok := node.(io.Reader); ok {
+		return True, nil
+	}
+	return Null, nil
 }
