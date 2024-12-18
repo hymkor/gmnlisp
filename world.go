@@ -95,13 +95,21 @@ func (m *Pair) Range(f func(Symbol, Node) bool) {
 	f(m.Key, m.Value)
 }
 
+type Writer interface {
+	io.Writer
+	Node
+}
+
 type shared struct {
-	macro     map[Symbol]*_Macro
-	handler   []Callable
-	global    Scope
-	defun     FuncScope
-	dynamic   Variables
-	stdout    *_WriterNode
+	macro   map[Symbol]*_Macro
+	handler []Callable
+	global  Scope
+	defun   FuncScope
+	dynamic Variables
+	stdout  interface {
+		io.Writer
+		Node
+	}
 	errout    *_WriterNode
 	stdin     _ReaderNode
 	startup   sync.Once
@@ -415,6 +423,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("with-open-io-file"):              SpecialF(cmdWithOpenIoFile),
 	NewSymbol("with-open-output-file"):          SpecialF(cmdWithOpenOutputFile),
 	NewSymbol("with-standard-input"):            SpecialF(cmdWithStandardInput),
+	NewSymbol("with-standard-output"):           SpecialF(cmdWithStandardOutput),
 	NewSymbol("write-byte"):                     Function2(funWriteByte),
 	NewSymbol("zerop"):                          Function1(funZerop),
 	symReportCondition:                          reportCondition,
