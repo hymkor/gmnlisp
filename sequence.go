@@ -64,6 +64,15 @@ type StringBuilder struct {
 	strings.Builder
 }
 
+func (S *StringBuilder) Column() int {
+	s := S.String()
+	pos := strings.LastIndexByte(s, '\n')
+	if pos >= 0 {
+		return len(s) - pos
+	}
+	return len(s)
+}
+
 func (S *StringBuilder) Add(ctx context.Context, w *World, n Node) error {
 	r, err := ExpectClass[Rune](ctx, w, n)
 	if err != nil {
