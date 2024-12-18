@@ -1,8 +1,9 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
 - `(format W)` は W が Writer でない時に `<domain-error>` を発生するようにした
-- `(format-tab W COLUMN)` を実装
 - `(format)` で `~nT` をサポート
+- `(format-tab W COLUMN)`,`(streamp)`,`(input-stream-p)`,`(output-stream-p)`,`(open-stream-p)`, `(open-io-file)`, `(with-open-io-file)`, `(with-standard-output)`, `(with-error-output)` を実装
+- `(dynamic)` が返す `<undefined-entity>` に対する `(undefined-entity-namespace)` は `'dynamic-variable` を返すようにした
 
 v0.7.5
 ======

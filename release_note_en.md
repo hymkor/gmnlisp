@@ -1,8 +1,9 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
 - `(format W)` throws `<domain-error>` when W is not io.Writer
-- Implement `(format-tab W COLUMN)`
 - `(format)` supports `~nT`
+- Implement `(format-tab W COLUMN)`, `(streamp)`, `(input-stream-p)`, `(output-stream-p)`, `(open-stream-p)`, `(open-io-file)`, `(with-open-io-file)`, `(with-standard-output)`, and `(with-error-output)`
+- `(undefined-entity-namespace)` returns `'dynamic-variables` now for `<undefined-entity>` returned by `(dynamic)`
 
 v0.7.5
 ======
