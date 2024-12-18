@@ -14,8 +14,9 @@ import (
 )
 
 var (
-	symVariable = NewSymbol("variable")
-	symFunction = NewSymbol("function")
+	symVariable        = NewSymbol("variable")
+	symFunction        = NewSymbol("function")
+	symDynamicVariable = NewSymbol("dynamic-variable")
 )
 
 type Scope interface {
