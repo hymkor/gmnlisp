@@ -65,3 +65,11 @@
 (test (format nil "~&ahaha") "ahaha")
 (test (format nil "~2&ahaha") (format nil "~%ahaha"))
 (test (format nil "ahaha~&ahaha") (format nil "ahaha~%ahaha"))
+
+;;; test for (format-tab)
+(test (let ((s (create-string-output-stream)))
+        (format s "A")
+        (format-tab s 4)
+        (format s "B")
+        (get-output-stream-string s))
+      "A   B")
