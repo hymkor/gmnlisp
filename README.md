@@ -508,7 +508,7 @@ Items without checkboxes are not standard functions
 #### 11.3 Integer class
 
 - [x] integerp
-- [ ] div
+- [x] div
 - [x] mod
 - [ ] gcd
 - [ ] lcm
@@ -659,14 +659,14 @@ Items without checkboxes are not standard functions
 
 #### 19.3 Binary I/O
 
-- [ ] read-byte
-- [ ] write-byte
+- [x] read-byte
+- [x] write-byte
 
 ### 20 Files
 
 - [x] probe-file
-- [ ] file-position
-- [ ] set-file-position
+- [x] file-position
+- [x] set-file-position
 - [x] file-length
 
 ### 21 Condition System
@@ -683,7 +683,7 @@ Items without checkboxes are not standard functions
 
 - [x] ignore-error
 - [x] report-condition
-- [ ] condition-continuable
+- [x] condition-continuable
 - [x] continue-condition
 - [x] with-handler
 
@@ -730,7 +730,7 @@ Items without checkboxes are not standard functions
     - [ ] cannot-create-string
     - [ ] cannot-create-vector
 - [ ] \<parse-error\>, cannot-parse-number
-- [ ] \<control-error\>, control-error
+- [x] \<control-error\>, control-error
 - [x] \<devision-by-zero\>, division-by-zero
 - [x] \<domain-error\>
     - not-an-input-stream
@@ -742,11 +742,11 @@ Items without checkboxes are not standard functions
 
 ### 22 Miscellaneous
 
-- [ ] identify
-- [ ] get-universal-time
-- [ ] get-internal-real-time
-- [ ] get-internal-run-time
-- [ ] internal-time-units-per-second
+- [x] identify
+- [x] get-universal-time
+- [x] get-internal-real-time
+- [x] get-internal-run-time
+- [x] internal-time-units-per-second
 
 #### Hash-table
 
