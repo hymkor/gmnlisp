@@ -38,7 +38,18 @@
       (format (standard-output) (+ 1.0 "x")))
     "NOT HANDLED")
   "OK")
-
+; <output-stream-writer>
+(test
+  (catch
+    'c
+    (with-handler
+      (lambda (c)
+        (if (instancep c (class <domain-error>))
+          (throw 'c "OK")
+          (throw 'c "NOT DOMAIN ERROR")))
+      (format "HOGE" "FUGA"))
+    "NOT HANDLED")
+  "OK")
 (catch
   'c
   (with-handler
