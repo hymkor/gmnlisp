@@ -30,7 +30,8 @@ func (w *_WriterNode) Write(p []byte) (nn int, err error) {
 
 type _OutputFileStream struct {
 	_WriterNode
-	file *os.File
+	file     *os.File
+	isClosed bool
 }
 
 func newOutputFileStream(f *os.File) *_OutputFileStream {
@@ -42,8 +43,13 @@ func newOutputFileStream(f *os.File) *_OutputFileStream {
 	}
 }
 
+func (o *_OutputFileStream) IsClosed() bool {
+	return o.isClosed
+}
+
 func (o *_OutputFileStream) Close() error {
 	o._WriterNode._Writer.(*bufio.Writer).Flush()
+	o.isClosed = true
 	return o.file.Close()
 }
 

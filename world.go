@@ -354,6 +354,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("open-input-file"):                &Function{Min: 1, Max: 2, F: funOpenInputFile},
 	NewSymbol("open-io-file"):                   &Function{Min: 1, Max: 2, F: funOpenIoFile},
 	NewSymbol("open-output-file"):               &Function{Min: 1, Max: 2, F: funOpenOutputFile},
+	NewSymbol("open-stream-p"):                  Function1(funOpenStreamP),
 	NewSymbol("or"):                             SpecialF(cmdOr),
 	NewSymbol("output-stream-p"):                Function1(funOutputStreamP),
 	NewSymbol("parse-number"):                   Function1(funParseNumber),

@@ -190,8 +190,9 @@ func funGetOutputStreamString(ctx context.Context, w *World, arg Node) (Node, er
 }
 
 type inputStream struct {
-	_Reader *bufio.Reader
-	file    *os.File
+	_Reader  *bufio.Reader
+	file     *os.File
+	isClosed bool
 }
 
 func (i *inputStream) Read(b []byte) (int, error) {
@@ -211,7 +212,12 @@ func (i *inputStream) UnreadRune() error {
 }
 
 func (i *inputStream) Close() error {
+	i.isClosed = true
 	return i.file.Close()
+}
+
+func (i *inputStream) IsClosed() bool {
+	return i.isClosed
 }
 
 func (i *inputStream) FilePosition() (int64, error) {
@@ -441,4 +447,18 @@ func funOutputStreamP(ctx context.Context, w *World, node Node) (Node, error) {
 		return True, nil
 	}
 	return Null, nil
+}
+
+func funOpenStreamP(ctx context.Context, w *World, node Node) (Node, error) {
+	if _, ok := node.(io.Writer); ok {
+
+	} else if _, ok := node.(io.Reader); ok {
+
+	} else {
+		return Null, nil
+	}
+	if t, ok := node.(interface{ IsClosed() bool }); ok && t.IsClosed() {
+		return Null, nil
+	}
+	return True, nil
 }
