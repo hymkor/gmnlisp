@@ -225,6 +225,9 @@ func (u *_UndefinedEntity) ClassOf() Class {
 	if u.space.Equals(symVariable, STRICT) {
 		return unboundVariableClass
 	}
+	if u.space.Equals(symDynamicVariable, STRICT) {
+		return unboundVariableClass
+	}
 	return undefinedFunctionClass
 }
 
