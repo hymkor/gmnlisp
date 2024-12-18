@@ -5,7 +5,7 @@
     (with-handler
       (lambda (c)
         ;(format (standard-output) "condition=~S~%~S" c (class-of c))
-        (if (instancep c <domain-error>)
+        (if (instancep c (class <domain-error>))
           (throw 'c "OK")
           (throw 'c "NOT DOMAIN ERROR")))
       (format (standard-output) 1))
@@ -19,7 +19,7 @@
     (with-handler
       (lambda (c)
         ;(format (standard-output) "condition=~S~%~S" c (class-of c))
-        (if (instancep c <domain-error>)
+        (if (instancep c (class <domain-error>))
           (throw 'c "OK")
           (throw 'c "NOT DOMAIN ERROR")))
       (format (standard-output) (+ 1 "x")))
@@ -32,7 +32,7 @@
     (with-handler
       (lambda (c)
         ;(format (standard-output) "condition=~S~%~S" c (class-of c))
-        (if (instancep c <domain-error>)
+        (if (instancep c (class <domain-error>))
           (throw 'c "OK")
           (throw 'c "NOT DOMAIN ERROR")))
       (format (standard-output) (+ 1.0 "x")))
@@ -43,10 +43,11 @@
   'c
   (with-handler
     (lambda (con)
-      (if (instancep con <domain-error>)
+      (if (instancep con (class <domain-error>))
         (continue-condition con 'newfunc)))
     (defun 1111 (v)
       (+ v 1))))
 (test
   (newfunc 1)
   2)
+
