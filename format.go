@@ -243,7 +243,16 @@ func formatSub(ctx context.Context, world *World, w Formatter, argv []Node) erro
 				break
 			}
 		}
-
+		if c == 'T' {
+			n := 8
+			if len(parameter) > 0 {
+				n = parameter[0]
+			}
+			for i := w.Column(); i < n; i++ {
+				w.WriteByte(' ')
+			}
+			continue
+		}
 		if c == '&' {
 			n := 1
 			if len(parameter) >= 1 {
