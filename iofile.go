@@ -32,10 +32,8 @@ func (iof *IOFile) Write(b []byte) (int, error) {
 	return n, err
 }
 
-var inputOutputStreamClass = registerNewBuiltInClass[*IOFile]("<input-output-stream>")
-
 func (t *IOFile) ClassOf() Class {
-	return inputOutputStreamClass
+	return streamClass
 }
 
 func (t *IOFile) Equals(Node, EqlMode) bool {

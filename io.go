@@ -50,7 +50,7 @@ func newStreamInput(w *World, argv []Node) (*_StreamInput, error) {
 		if !ok {
 			return nil, &DomainError{
 				Object:        argv[0],
-				ExpectedClass: readerNodeClass,
+				ExpectedClass: streamClass,
 			}
 		}
 	case 0:
@@ -298,8 +298,6 @@ type filePositioner interface {
 	Node
 }
 
-var filePositionerClass = registerNewAbstractClass[filePositioner]("<stream-file-position>")
-
 func funFilePosition(ctx context.Context, w *World, node Node) (Node, error) {
 	if f, ok := node.(filePositioner); ok {
 		ret, err := f.FilePosition()
@@ -307,7 +305,7 @@ func funFilePosition(ctx context.Context, w *World, node Node) (Node, error) {
 	}
 	return nil, &DomainError{
 		Object:        node,
-		ExpectedClass: filePositionerClass,
+		ExpectedClass: streamClass,
 	}
 }
 
@@ -315,8 +313,6 @@ type setFilePositioner interface {
 	SetFilePosition(int64) (int64, error)
 	Node
 }
-
-var setFilePositionerClass = registerNewAbstractClass[setFilePositioner]("<stream-set-file-position>")
 
 func funSetFilePosition(ctx context.Context, w *World, stream, z Node) (Node, error) {
 	offset, err := ExpectClass[Integer](ctx, w, z)
@@ -329,7 +325,7 @@ func funSetFilePosition(ctx context.Context, w *World, stream, z Node) (Node, er
 	}
 	return nil, &DomainError{
 		Object:        stream,
-		ExpectedClass: setFilePositionerClass,
+		ExpectedClass: streamClass,
 	}
 }
 
@@ -434,7 +430,7 @@ func cmdWithStandardOutput(ctx context.Context, w *World, node Node) (Node, erro
 		Node
 		io.Writer
 	}
-	stream, err := ExpectInterface[writer](ctx, w, _stream, outputFileStreamClass)
+	stream, err := ExpectInterface[writer](ctx, w, _stream, streamClass)
 	if err != nil {
 		return nil, err
 	}
@@ -454,7 +450,7 @@ func cmdWithErrorOutput(ctx context.Context, w *World, node Node) (Node, error) 
 		Node
 		io.Writer
 	}
-	stream, err := ExpectInterface[writer](ctx, w, _stream, outputFileStreamClass)
+	stream, err := ExpectInterface[writer](ctx, w, _stream, streamClass)
 	if err != nil {
 		return nil, err
 	}

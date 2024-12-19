@@ -64,6 +64,13 @@ type StringBuilder struct {
 	strings.Builder
 }
 
+func (S *StringBuilder) String() string {
+	if S == nil {
+		return ""
+	}
+	return S.Builder.String()
+}
+
 func (S *StringBuilder) Column() int {
 	s := S.String()
 	pos := strings.LastIndexByte(s, '\n')

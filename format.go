@@ -356,7 +356,7 @@ func tAndNilToWriter(ctx context.Context, w *World, argv []Node, f func(io.Write
 		Node
 		io.Writer
 	}
-	writer, err := ExpectInterface[writerType](ctx, w, argv[0], outputFileStreamClass)
+	writer, err := ExpectInterface[writerType](ctx, w, argv[0], streamClass)
 	if err != nil {
 		return nil, err
 	}

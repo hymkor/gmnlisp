@@ -1,19 +1,33 @@
 package gmnlisp
 
-var stringBuilderClass = registerNewBuiltInClass[*StringBuilder]("<string-builder>")
+import (
+	"io"
+)
+
+var streamClass = registerClass(&_BuiltInClass{
+	name: NewSymbol("<stream>"),
+	instanceP: func(value Node) bool {
+		if _, ok := value.(io.Reader); ok {
+			return true
+		}
+		_, ok := value.(io.Writer)
+		return ok
+	},
+	create: func() Node {
+		return &StringBuilder{}
+	},
+})
 
 func (*StringBuilder) ClassOf() Class {
-	return stringBuilderClass
+	return streamClass
 }
 
 func (t *StringBuilder) Equals(Node, EqlMode) bool {
 	return false
 }
 
-var inputStreamClass = registerNewBuiltInClass[*inputStream]("<input-stream>")
-
 func (t *inputStream) ClassOf() Class {
-	return inputStreamClass
+	return streamClass
 }
 
 func (t *inputStream) Equals(Node, EqlMode) bool {
@@ -24,10 +38,8 @@ func (t *inputStream) String() string {
 	return "(*inputStream)"
 }
 
-var outputFileStreamClass = registerNewBuiltInClass[*_OutputFileStream]("<output-file-stream>")
-
 func (*_OutputFileStream) ClassOf() Class {
-	return outputFileStreamClass
+	return streamClass
 }
 
 func (t *_OutputFileStream) Equals(Node, EqlMode) bool {
@@ -46,10 +58,8 @@ func (t *_Macro) String() string {
 	return "(*_Macro)"
 }
 
-var readerNodeClass = registerNewBuiltInClass[_ReaderNode]("<reader>")
-
 func (_ReaderNode) ClassOf() Class {
-	return readerNodeClass
+	return streamClass
 }
 
 func (t _ReaderNode) Equals(Node, EqlMode) bool {
@@ -63,7 +73,7 @@ func (t _ReaderNode) String() string {
 var writerNodeClass = registerNewBuiltInClass[_WriterNode]("<_WriterNode>")
 
 func (_WriterNode) ClassOf() Class {
-	return writerNodeClass
+	return streamClass
 }
 
 func (t _WriterNode) Equals(Node, EqlMode) bool {
