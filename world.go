@@ -115,7 +115,10 @@ type shared struct {
 		io.Writer
 		Node
 	}
-	stdin     _ReaderNode
+	stdin interface {
+		_Reader
+		Node
+	}
 	startup   sync.Once
 	blockName map[Symbol]struct{}
 	catchTag  map[Node]struct{}
@@ -208,7 +211,8 @@ func (w *World) SetErrout(writer io.Writer) {
 func funStandardInput(ctx context.Context, w *World) (Node, error) {
 	return w.stdin, nil
 }
-func (w *World) Stdin() _ReaderNode {
+
+func (w *World) Stdin() _Reader {
 	return w.stdin
 }
 
@@ -399,6 +403,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("standard-input"):                 Function0(funStandardInput),
 	NewSymbol("standard-output"):                Function0(funStandardOutput),
 	NewSymbol("stream-error-stream"):            Function1(funStreamErrorStream),
+	NewSymbol("stream-ready-p"):                 Function1(funStreamReadyP),
 	NewSymbol("streamp"):                        Function1(funStreamP),
 	NewSymbol("string-append"):                  &Function{F: funStringAppend},
 	NewSymbol("string-index"):                   &Function{F: funStringIndex},
@@ -483,7 +488,7 @@ func New() *World {
 			global:  rwvars,
 			defun:   rwfuncs,
 			dynamic: Variables{},
-			stdin:   _ReaderNode{_Reader: bufio.NewReader(os.Stdin)},
+			stdin:   &inputStream{_Reader: bufio.NewReader(os.Stdin), file: os.Stdin},
 			stdout:  &_WriterNode{_Writer: os.Stdout},
 			errout:  &_WriterNode{_Writer: os.Stderr},
 		},

@@ -169,12 +169,35 @@ func funClose(ctx context.Context, w *World, arg Node) (Node, error) {
 	return Null, c.Close()
 }
 
+type StringReader struct {
+	*strings.Reader
+}
+
+func (sr StringReader) QueryStreamReady() (Node, error) {
+	if sr.Reader.Len() <= 0 {
+		return Null, nil
+	}
+	return True, nil
+}
+
+func (sr StringReader) ClassOf() Class {
+	return streamClass
+}
+
+func (sr StringReader) Equals(Node, EqlMode) bool {
+	return false
+}
+
+func (sr StringReader) String() string {
+	return "<stream> for string"
+}
+
 func funCreateStringInputStream(ctx context.Context, w *World, arg Node) (Node, error) {
 	s, err := ExpectClass[String](ctx, w, arg)
 	if err != nil {
 		return nil, err
 	}
-	return _ReaderNode{_Reader: strings.NewReader(s.String())}, nil
+	return StringReader{Reader: strings.NewReader(s.String())}, nil
 }
 
 func funCreateStringOutputStream(ctx context.Context, w *World) (Node, error) {
@@ -232,6 +255,16 @@ func (i *inputStream) SetFilePosition(n int64) (int64, error) {
 	ret, err := i.file.Seek(n, os.SEEK_SET)
 	i._Reader.Reset(i.file)
 	return ret, err
+}
+
+func (i *inputStream) QueryStreamReady() (Node, error) {
+	if i.isClosed {
+		return Null, StreamError{Stream: i}
+	}
+	if _, err := i.file.Seek(0, os.SEEK_CUR); err != nil {
+		return Null, nil
+	}
+	return True, nil
 }
 
 func openInputFile(ctx context.Context, w *World, fname Node) (*inputStream, error) {
@@ -410,7 +443,10 @@ func cmdWithStandardInput(ctx context.Context, w *World, node Node) (Node, error
 	if err != nil {
 		return nil, err
 	}
-	stream, ok := _stream.(_ReaderNode)
+	stream, ok := _stream.(interface {
+		_Reader
+		Node
+	})
 	if !ok {
 		return nil, fmt.Errorf("%v: %w", _stream, ErrExpectedStream)
 	}
@@ -497,4 +533,16 @@ func funOpenStreamP(ctx context.Context, w *World, node Node) (Node, error) {
 		return Null, nil
 	}
 	return True, nil
+}
+
+func funStreamReadyP(ctx context.Context, w *World, node Node) (Node, error) {
+	type queryable interface {
+		QueryStreamReady() (Node, error)
+		Node
+	}
+	x, err := ExpectInterface[queryable](ctx, w, node, streamClass)
+	if err != nil {
+		return Null, err
+	}
+	return x.QueryStreamReady()
 }
