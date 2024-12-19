@@ -2,8 +2,9 @@
 
 - `(format W)` は W が Writer でない時に `<domain-error>` を発生するようにした
 - `(format)` で `~nT` をサポート
-- `(format-tab W COLUMN)`,`(streamp)`,`(input-stream-p)`,`(output-stream-p)`,`(open-stream-p)`, `(open-io-file)`, `(with-open-io-file)`, `(with-standard-output)`, `(with-error-output)` を実装
+- `(format-tab W COLUMN)`,`(streamp)`,`(input-stream-p)`,`(output-stream-p)`,`(open-stream-p)`, `(open-io-file)`, `(with-open-io-file)`, `(with-standard-output)`, `(with-error-output)`, `(stream-ready-p)` を実装
 - `(dynamic)` が返す `<undefined-entity>` に対する `(undefined-entity-namespace)` は `'dynamic-variable` を返すようにした
+- クラス名 `<_WriterNode>`, `<reader>`, `<output-file-stream>`, `<input-stream>`, `<input-output-stream>`, `<stream-file-position>`, `<stream-set-file-position>` を廃止し、`<stream>` を追加
 
 v0.7.5
 ======

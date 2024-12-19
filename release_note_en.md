@@ -2,8 +2,9 @@
 
 - `(format W)` throws `<domain-error>` when W is not io.Writer
 - `(format)` supports `~nT`
-- Implement `(format-tab W COLUMN)`, `(streamp)`, `(input-stream-p)`, `(output-stream-p)`, `(open-stream-p)`, `(open-io-file)`, `(with-open-io-file)`, `(with-standard-output)`, and `(with-error-output)`
+- Implement `(format-tab W COLUMN)`, `(streamp)`, `(input-stream-p)`, `(output-stream-p)`, `(open-stream-p)`, `(open-io-file)`, `(with-open-io-file)`, `(with-standard-output)`, `(with-error-output)`, and `(stream-ready-p)`
 - `(undefined-entity-namespace)` returns `'dynamic-variables` now for `<undefined-entity>` returned by `(dynamic)`
+- Remove class-names `<_WriterNode>`, `<reader>`, `<output-file-stream>`, `<input-stream>`, `<stream-set-file-position>` and `<input-output-stream>`, and add `<stream>`
 
 v0.7.5
 ======
