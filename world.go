@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"context"
 	"embed"
+	"errors"
 	"fmt"
 	"io"
 	"math"
@@ -21,7 +22,7 @@ var (
 
 type Scope interface {
 	Get(Symbol) (Node, bool)
-	Set(Symbol, Node)
+	Set(Symbol, Node) error
 	Range(func(Symbol, Node) bool)
 }
 
@@ -38,8 +39,24 @@ func (m Variables) Get(key Symbol) (Node, bool) {
 	return value, ok
 }
 
-func (m Variables) Set(key Symbol, value Node) {
+func (m Variables) Set(key Symbol, value Node) error {
 	m[key] = value
+	return nil
+}
+
+type Constants map[Symbol]Node
+
+func (m Constants) Get(key Symbol) (Node, bool) {
+	value, ok := m[key]
+	return value, ok
+}
+
+func (m Constants) Set(key Symbol, value Node) error {
+	if _, ok := m[key]; ok {
+		return fmt.Errorf("Can't modify Constant: %v", key)
+	}
+	m[key] = value
+	return nil
 }
 
 func (m Variables) Range(f func(Symbol, Node) bool) {
@@ -85,11 +102,11 @@ func (m *Pair) Get(key Symbol) (Node, bool) {
 	return Null, false
 }
 
-func (m *Pair) Set(key Symbol, value Node) {
+func (m *Pair) Set(key Symbol, value Node) error {
 	if key == m.Key {
 		m.Value = value
 	}
-	panic("Pair can be set value")
+	return errors.New("Pair can be set value")
 }
 
 func (m *Pair) Range(f func(Symbol, Node) bool) {
@@ -102,12 +119,13 @@ type Writer interface {
 }
 
 type shared struct {
-	macro   map[Symbol]*_Macro
-	handler []Callable
-	global  Scope
-	defun   FuncScope
-	dynamic Variables
-	stdout  interface {
+	macro     map[Symbol]*_Macro
+	handler   []Callable
+	global    Scope
+	defun     FuncScope
+	dynamic   Variables
+	constants Constants
+	stdout    interface {
 		io.Writer
 		Node
 	}
@@ -143,13 +161,16 @@ type _ReaderNode struct {
 }
 
 func (w *World) Get(name Symbol) (Node, error) {
-	for w != nil {
-		if w.vars != nil {
-			if value, ok := w.vars.Get(name); ok {
+	for W := w; W != nil; {
+		if W.vars != nil {
+			if value, ok := W.vars.Get(name); ok {
 				return value, nil
 			}
 		}
-		w = w.parent
+		W = W.parent
+	}
+	if value, ok := w.constants.Get(name); ok {
+		return value, nil
 	}
 	return Null, &_UndefinedEntity{name: name, space: symVariable}
 }
@@ -175,8 +196,7 @@ func (w *World) Set(name Symbol, value Node) error {
 	for w != nil {
 		if w.vars != nil {
 			if _, ok := w.vars.Get(name); ok {
-				w.vars.Set(name, value)
-				return nil
+				return w.vars.Set(name, value)
 			}
 		}
 		w = w.parent
@@ -216,7 +236,9 @@ func (w *World) Stdin() _Reader {
 	return w.stdin
 }
 
-var autoLoadVars = Variables{
+var autoLoadVars = Variables{}
+
+var autoLoadConstants = Constants{
 	NewSymbol("*err-exist*"):              ErrorNode{Value: os.ErrExist},
 	NewSymbol("*err-not-exist*"):          ErrorNode{Value: os.ErrNotExist},
 	NewSymbol("*err-quit*"):               ErrorNode{Value: ErrQuit},
@@ -485,12 +507,13 @@ func New() *World {
 	rwfuncs := _RootWorld{}
 	w := &World{
 		shared: &shared{
-			global:  rwvars,
-			defun:   rwfuncs,
-			dynamic: Variables{},
-			stdin:   &inputStream{_Reader: bufio.NewReader(os.Stdin), file: os.Stdin},
-			stdout:  &_WriterNode{_Writer: os.Stdout},
-			errout:  &_WriterNode{_Writer: os.Stderr},
+			global:    rwvars,
+			defun:     rwfuncs,
+			dynamic:   Variables{},
+			constants: autoLoadConstants,
+			stdin:     &inputStream{_Reader: bufio.NewReader(os.Stdin), file: os.Stdin},
+			stdout:    &_WriterNode{_Writer: os.Stdout},
+			errout:    &_WriterNode{_Writer: os.Stderr},
 		},
 		vars:  rwvars,
 		funcs: rwfuncs,
