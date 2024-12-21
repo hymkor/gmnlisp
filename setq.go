@@ -135,6 +135,30 @@ func cmdLetXWithTailRecOpt(ctx context.Context, w *World, params Node, tailOptSy
 	return prognWithTailRecOpt(ctx, newWorld, params, tailOptSym)
 }
 
+func cmdDefConstant(ctx context.Context, w *World, list Node) (Node, error) {
+	var symbolNode Node
+	var value Node
+	var err error
+
+	symbolNode, list, err = Shift(list)
+	if err != nil {
+		return nil, err
+	}
+	symbol, err := ExpectSymbol(ctx, w, symbolNode)
+	if err != nil {
+		return nil, err
+	}
+	value, list, err = w.ShiftAndEvalCar(ctx, list)
+	if err != nil {
+		return nil, err
+	}
+	if IsSome(list) {
+		return nil, ErrTooManyArguments
+	}
+	w.constants[symbol] = value
+	return symbol, nil
+}
+
 // cmdDefglobal implements (defglobal) of ISLisp and (defparameter) of CommonLisp
 func cmdDefglobal(ctx context.Context, w *World, list Node) (Node, error) {
 	// from CommonLisp
