@@ -52,34 +52,34 @@ func (i Integer) Equals(n Node, m EqlMode) bool {
 }
 
 func (i Integer) Add(ctx context.Context, w *World, n Node) (Node, error) {
+	if _n, ok := n.(Float); ok {
+		return Float(i) + _n, nil
+	}
 	_n, err := ExpectClass[Integer](ctx, w, n)
 	if err == nil {
 		return i + _n, nil
-	}
-	if _n, ok := n.(Float); ok {
-		return Float(i) + _n, nil
 	}
 	return nil, err
 }
 
 func (i Integer) Sub(ctx context.Context, w *World, n Node) (Node, error) {
+	if _n, ok := n.(Float); ok {
+		return Float(i) - _n, nil
+	}
 	_n, err := ExpectClass[Integer](ctx, w, n)
 	if err == nil {
 		return i - _n, nil
-	}
-	if _n, ok := n.(Float); ok {
-		return Float(i) - _n, nil
 	}
 	return nil, err
 }
 
 func (i Integer) Multi(ctx context.Context, w *World, n Node) (Node, error) {
+	if _n, ok := n.(Float); ok {
+		return Float(i) * _n, nil
+	}
 	_n, err := ExpectClass[Integer](ctx, w, n)
 	if err == nil {
 		return i * _n, nil
-	}
-	if _n, ok := n.(Float); ok {
-		return Float(i) * _n, nil
 	}
 	return nil, err
 }
@@ -147,6 +147,12 @@ func funArithmeticErrorOperands(ctx context.Context, w *World, n Node) (Node, er
 }
 
 func (i Integer) Divide(ctx context.Context, w *World, n Node) (Node, error) {
+	if _n, ok := n.(Float); ok {
+		if _n == 0 {
+			return raiseDivisionByZero(ctx, w, i, n)
+		}
+		return Float(i) / _n, nil
+	}
 	_n, err := ExpectClass[Integer](ctx, w, n)
 	if err == nil {
 		if _n == 0 {
@@ -154,22 +160,16 @@ func (i Integer) Divide(ctx context.Context, w *World, n Node) (Node, error) {
 		}
 		return i / _n, nil
 	}
-	if _n, ok := n.(Float); ok {
-		if _n == 0 {
-			return raiseDivisionByZero(ctx, w, i, n)
-		}
-		return Float(i) / _n, nil
-	}
 	return nil, err
 }
 
 func (i Integer) LessThan(ctx context.Context, w *World, n Node) (bool, error) {
+	if _n, ok := n.(Float); ok {
+		return Float(i) < _n, nil
+	}
 	_n, err := ExpectClass[Integer](ctx, w, n)
 	if err == nil {
 		return i < _n, nil
-	}
-	if _n, ok := n.(Float); ok {
-		return Float(i) < _n, nil
 	}
 	return false, err
 }
@@ -200,39 +200,45 @@ func (f Float) Equals(n Node, m EqlMode) bool {
 }
 
 func (f Float) Add(ctx context.Context, w *World, n Node) (Node, error) {
+	if _n, ok := n.(Integer); ok {
+		return f + Float(_n), nil
+	}
 	_n, err := ExpectClass[Float](ctx, w, n)
 	if err == nil {
 		return f + _n, nil
-	}
-	if _n, ok := n.(Integer); ok {
-		return f + Float(_n), nil
 	}
 	return nil, err
 }
 
 func (f Float) Sub(ctx context.Context, w *World, n Node) (Node, error) {
+	if _n, ok := n.(Integer); ok {
+		return f - Float(_n), nil
+	}
 	_n, err := ExpectClass[Float](ctx, w, n)
 	if err == nil {
 		return f - _n, nil
-	}
-	if _n, ok := n.(Integer); ok {
-		return f - Float(_n), nil
 	}
 	return nil, err
 }
 
 func (f Float) Multi(ctx context.Context, w *World, n Node) (Node, error) {
+	if _n, ok := n.(Integer); ok {
+		return f * Float(_n), nil
+	}
 	_n, err := ExpectClass[Float](ctx, w, n)
 	if err == nil {
 		return f * _n, nil
-	}
-	if _n, ok := n.(Integer); ok {
-		return f * Float(_n), nil
 	}
 	return nil, err
 }
 
 func (f Float) Divide(ctx context.Context, w *World, n Node) (Node, error) {
+	if _n, ok := n.(Integer); ok {
+		if _n == 0 {
+			return raiseDivisionByZero(ctx, w, f, n)
+		}
+		return f / Float(_n), nil
+	}
 	_n, err := ExpectClass[Float](ctx, w, n)
 	if err == nil {
 		if _n == 0 {
@@ -240,22 +246,16 @@ func (f Float) Divide(ctx context.Context, w *World, n Node) (Node, error) {
 		}
 		return f / _n, nil
 	}
-	if _n, ok := n.(Integer); ok {
-		if _n == 0 {
-			return raiseDivisionByZero(ctx, w, f, n)
-		}
-		return f / Float(_n), nil
-	}
 	return nil, err
 }
 
 func (f Float) LessThan(ctx context.Context, w *World, n Node) (bool, error) {
+	if _n, ok := n.(Integer); ok {
+		return f < Float(_n), nil
+	}
 	_n, err := ExpectClass[Float](ctx, w, n)
 	if err == nil {
 		return f < _n, nil
-	}
-	if _n, ok := n.(Integer); ok {
-		return f < Float(_n), nil
 	}
 	return false, err
 }
