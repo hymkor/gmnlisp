@@ -332,9 +332,9 @@ func (e EndOfStream) Equals(n Node, _ EqlMode) bool {
 }
 
 func (e EndOfStream) String() string {
-	return "end of stream"
+	return "<end-of-stream>"
 }
 
 func (e EndOfStream) Error() string {
-	return "end of stream"
+	return "<end-of-stream>"
 }
