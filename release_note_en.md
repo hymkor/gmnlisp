@@ -1,6 +1,6 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
-- Implement `(defconstant)`
+- Implement `(defconstant)`, `(gcd)`, and `(lcm)`
 - Fix: `too many arguments` / `too few arguments` were not `DomainError`
 - Fix: type errors for `+`,`-`,`*`,`div`,and `mod` were not `DomainError`
 

@@ -1,6 +1,6 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
-- `(defconstant)` を実装
+- `(defconstant)`, `(gcd)`, `(lcm)` を実装
 - `too many arguments` / `too few arguments` が `DomainError` になっていなかった不具合を修正
 - 四則演算の型エラーが DomainError になっていなかった不具合を修正
 
