@@ -1,5 +1,9 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+v0.7.6
+======
+Dec 25, 2024
+
 - `(format W)` throws `<domain-error>` when W is not io.Writer
 - `(format)` supports `~nT`
 - Implement `(format-tab W COLUMN)`, `(streamp)`, `(input-stream-p)`, `(output-stream-p)`, `(open-stream-p)`, `(open-io-file)`, `(with-open-io-file)`, `(with-standard-output)`, `(with-error-output)`, and `(stream-ready-p)`
@@ -7,6 +11,8 @@
 - Remove class-names `<_WriterNode>`, `<reader>`, `<output-file-stream>`, `<input-stream>`, `<stream-set-file-position>` and `<input-output-stream>`, and add `<stream>`
 - Support `RESULT` of `(dolist (VAR INIT-FORM RESULT) FORM...)`
 - Support `RESULT` of `(dotimes (VAR LIMIT RESULT) FORM...)`
+
+[TP Result] : OK = 8642, NG = 7769
 
 v0.7.5
 ======

@@ -1,5 +1,9 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+v0.7.6
+======
+Dec 25, 2024
+
 - `(format W)` は W が Writer でない時に `<domain-error>` を発生するようにした
 - `(format)` で `~nT` をサポート
 - `(format-tab W COLUMN)`,`(streamp)`,`(input-stream-p)`,`(output-stream-p)`,`(open-stream-p)`, `(open-io-file)`, `(with-open-io-file)`, `(with-standard-output)`, `(with-error-output)`, `(stream-ready-p)` を実装
@@ -7,6 +11,8 @@
 - クラス名 `<_WriterNode>`, `<reader>`, `<output-file-stream>`, `<input-stream>`, `<input-output-stream>`, `<stream-file-position>`, `<stream-set-file-position>` を廃止し、`<stream>` を追加
 - `(dolist (VAR INIT-FORM RESULT) FORM...)` の RESULT をサポート
 - `(dotimes (VAR LIMIT RESULT) FORM...)` の RESULT をサポート
+
+[TP Result] : OK = 8642, NG = 7769
 
 v0.7.5
 ======
