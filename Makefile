@@ -15,7 +15,7 @@ VERSION:=$(shell git describe --tags || echo v0.0.0)
 
 TARGET:=$(NAME)$(EXE)
 RUNLISP?="./$(TARGET)"
-GENERATES=sort-world newtypes.go stringer.go
+GENERATES=sort-world
 
 all:
 	go fmt ./...
@@ -51,14 +51,6 @@ sort-world:
 	$(RUNLISP) tools/gosort.lsp < world.go > world.go_
 	-cmp world.go world.go_ || $(CP) world.go_ world.go
 	$(RM) world.go_
-
-### Generating sources ###
-
-newtypes.go : tools/newtypes.lsp Makefile
-	$(RUNLISP) $< $(NAME) "*StringBuilder" "*inputStream" "*_OutputFileStream" "*_Macro" "_WriterNode" > $@
-
-stringer.go : tools/stringer.lsp Makefile
-	$(RUNLISP) $< $(NAME) ErrorNode Float Integer _WriterNode _Macro _OutputFileStream inputStream _JoinedForm LispString SpecialF _Lambda _TrueType Cons Keyword Rune _NullType Array Function _Hash > $@
 
 ### Packaging ###
 
