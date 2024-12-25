@@ -6,6 +6,7 @@
 - `(dynamic)` が返す `<undefined-entity>` に対する `(undefined-entity-namespace)` は `'dynamic-variable` を返すようにした
 - クラス名 `<_WriterNode>`, `<reader>`, `<output-file-stream>`, `<input-stream>`, `<input-output-stream>`, `<stream-file-position>`, `<stream-set-file-position>` を廃止し、`<stream>` を追加
 - `(dolist (VAR INIT-FORM RESULT) FORM...)` の RESULT をサポート
+- `(dotimes (VAR LIMIT RESULT) FORM...)` の RESULT をサポート
 
 v0.7.5
 ======

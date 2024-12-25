@@ -6,6 +6,7 @@
 - `(undefined-entity-namespace)` returns `'dynamic-variables` now for `<undefined-entity>` returned by `(dynamic)`
 - Remove class-names `<_WriterNode>`, `<reader>`, `<output-file-stream>`, `<input-stream>`, `<stream-set-file-position>` and `<input-output-stream>`, and add `<stream>`
 - Support `RESULT` of `(dolist (VAR INIT-FORM RESULT) FORM...)`
+- Support `RESULT` of `(dotimes (VAR LIMIT RESULT) FORM...)`
 
 v0.7.5
 ======
