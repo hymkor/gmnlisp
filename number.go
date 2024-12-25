@@ -261,12 +261,31 @@ func (f Float) LessThan(ctx context.Context, w *World, n Node) (bool, error) {
 }
 
 func funSqrt(ctx context.Context, w *World, arg Node) (Node, error) {
-	n, err := ExpectClass[Float](ctx, w, arg)
-	if err != nil {
-		return nil, err
+	cast := func(f float64) Node {
+		return Float(f)
 	}
-	v := math.Sqrt(float64(n))
-	return Float(v), nil
+	var f float64
+	if n, ok := arg.(Integer); ok {
+		f = float64(int(n))
+		cast = func(f float64) Node {
+			v := int(f)
+			if v*v == int(n) {
+				return Integer(v)
+			}
+			return Float(f)
+		}
+	} else if _f, err := ExpectClass[Float](ctx, w, arg); err != nil {
+		return nil, err
+	} else {
+		f = float64(_f)
+	}
+	if f < 0 {
+		return raiseError(ctx, w, &DomainError{
+			Object:        arg,
+			ExpectedClass: floatClass,
+		})
+	}
+	return cast(math.Sqrt(f)), nil
 }
 
 type BigInt struct {
