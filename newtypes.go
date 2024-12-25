@@ -1,6 +1,7 @@
 package gmnlisp
 
 import (
+	"fmt"
 	"io"
 )
 
@@ -35,7 +36,7 @@ func (t *inputStream) Equals(Node, EqlMode) bool {
 }
 
 func (t *inputStream) String() string {
-	return "(*inputStream)"
+	return fmt.Sprintf("<input-stream>: %p", t)
 }
 
 func (*_OutputFileStream) ClassOf() Class {
@@ -47,7 +48,7 @@ func (t *_OutputFileStream) Equals(Node, EqlMode) bool {
 }
 
 func (t *_OutputFileStream) String() string {
-	return "(*_OutputFileStream)"
+	return fmt.Sprintf("<output-stream>: %p", t)
 }
 
 func (t *_Macro) Equals(Node, EqlMode) bool {
@@ -55,7 +56,7 @@ func (t *_Macro) Equals(Node, EqlMode) bool {
 }
 
 func (t *_Macro) String() string {
-	return "(*_Macro)"
+	return fmt.Sprintf("<macro>: %p", t)
 }
 
 func (_ReaderNode) ClassOf() Class {
@@ -67,10 +68,10 @@ func (t _ReaderNode) Equals(Node, EqlMode) bool {
 }
 
 func (t _ReaderNode) String() string {
-	return "(_ReaderNode)"
+	return fmt.Sprintf("<reader>: %p", &t)
 }
 
-var writerNodeClass = registerNewBuiltInClass[_WriterNode]("<_WriterNode>")
+var writerNodeClass = registerNewBuiltInClass[_WriterNode]("<writer>")
 
 func (_WriterNode) ClassOf() Class {
 	return streamClass
@@ -81,5 +82,5 @@ func (t _WriterNode) Equals(Node, EqlMode) bool {
 }
 
 func (t _WriterNode) String() string {
-	return "(_WriterNode)"
+	return fmt.Sprintf("<writer>: %p", &t)
 }
