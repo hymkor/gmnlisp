@@ -22,10 +22,11 @@ type canPlus interface {
 
 func funAdd(ctx context.Context, w *World, args []Node) (Node, error) {
 	return inject(args, func(left, right Node) (Node, error) {
-		if _left, ok := left.(canPlus); ok {
-			return _left.Add(ctx, w, right)
+		_left, err := ExpectInterface[canPlus](ctx, w, left, floatClass)
+		if err != nil {
+			return nil, err
 		}
-		return nil, MakeError(ErrNotSupportType, left)
+		return _left.Add(ctx, w, right)
 	})
 }
 
@@ -45,10 +46,11 @@ func funSub(ctx context.Context, w *World, args []Node) (Node, error) {
 		return z.Sub(ctx, w, args[0])
 	}
 	return inject(args, func(left, right Node) (Node, error) {
-		if _left, ok := left.(canMinus); ok {
-			return _left.Sub(ctx, w, right)
+		_left, err := ExpectInterface[canMinus](ctx, w, left, floatClass)
+		if err != nil {
+			return nil, err
 		}
-		return nil, MakeError(ErrNotSupportType, left)
+		return _left.Sub(ctx, w, right)
 	})
 }
 
@@ -58,10 +60,11 @@ func funMulti(ctx context.Context, w *World, args []Node) (Node, error) {
 		Multi(context.Context, *World, Node) (Node, error)
 	}
 	return inject(args, func(left, right Node) (Node, error) {
-		if _left, ok := left.(CanMulti); ok {
-			return _left.Multi(ctx, w, right)
+		_left, err := ExpectInterface[CanMulti](ctx, w, left, floatClass)
+		if err != nil {
+			return nil, err
 		}
-		return nil, MakeError(ErrNotSupportType, left)
+		return _left.Multi(ctx, w, right)
 	})
 }
 
@@ -71,46 +74,50 @@ func funDevide(ctx context.Context, w *World, args []Node) (Node, error) {
 		Divide(context.Context, *World, Node) (Node, error)
 	}
 	return inject(args, func(left, right Node) (Node, error) {
-		if _left, ok := left.(CanDevide); ok {
-			return _left.Divide(ctx, w, right)
+		_left, err := ExpectInterface[CanDevide](ctx, w, left, floatClass)
+		if err != nil {
+			return nil, err
 		}
-		return nil, MakeError(ErrNotSupportType, left)
+		return _left.Divide(ctx, w, right)
 	})
 }
 
 type canLessThan interface {
 	LessThan(context.Context, *World, Node) (bool, error)
+	Node
 }
 
 func funLessThan(ctx context.Context, w *World, args []Node) (Node, error) {
 	return notNullToTrue(inject(args, func(left, right Node) (Node, error) {
-		if _left, ok := left.(canLessThan); ok {
-			result, err := _left.LessThan(ctx, w, right)
-			if err != nil {
-				return Null, err
-			}
-			if result {
-				return right, nil
-			}
-			return Null, nil
+		_left, err := ExpectInterface[canLessThan](ctx, w, left, floatClass)
+		if err != nil {
+			return nil, err
 		}
-		return nil, MakeError(ErrNotSupportType, left)
+		result, err := _left.LessThan(ctx, w, right)
+		if err != nil {
+			return Null, err
+		}
+		if result {
+			return right, nil
+		}
+		return Null, nil
 	}))
 }
 
 func funGreaterThan(ctx context.Context, w *World, args []Node) (Node, error) {
 	return notNullToTrue(inject(args, func(left, right Node) (Node, error) {
-		if _right, ok := right.(canLessThan); ok {
-			result, err := _right.LessThan(ctx, w, left)
-			if err != nil {
-				return Null, err
-			}
-			if result {
-				return right, nil
-			}
-			return Null, nil
+		_right, err := ExpectInterface[canLessThan](ctx, w, right, floatClass)
+		if err != nil {
+			return nil, err
 		}
-		return nil, MakeError(ErrNotSupportType, right)
+		result, err := _right.LessThan(ctx, w, left)
+		if err != nil {
+			return Null, err
+		}
+		if result {
+			return right, nil
+		}
+		return Null, nil
 	}))
 }
 
@@ -127,17 +134,18 @@ func funGreaterOrEqual(ctx context.Context, w *World, args []Node) (Node, error)
 	return notNullToTrue(inject(args, func(left, right Node) (Node, error) {
 		//     left >= right
 		// <=> not (left < right )
-		if _left, ok := left.(canLessThan); ok {
-			result, err := _left.LessThan(ctx, w, right)
-			if err != nil {
-				return Null, err
-			}
-			if result {
-				return Null, nil
-			}
-			return right, nil
+		_left, err := ExpectInterface[canLessThan](ctx, w, left, floatClass)
+		if err != nil {
+			return nil, err
 		}
-		return nil, MakeError(ErrNotSupportType, right)
+		result, err := _left.LessThan(ctx, w, right)
+		if err != nil {
+			return Null, err
+		}
+		if result {
+			return Null, nil
+		}
+		return right, nil
 	}))
 }
 
@@ -145,17 +153,18 @@ func funLessOrEqual(ctx context.Context, w *World, args []Node) (Node, error) {
 	return notNullToTrue(inject(args, func(left, right Node) (Node, error) {
 		//     left <= right
 		// <=> not (right < left)
-		if _right, ok := right.(canLessThan); ok {
-			result, err := _right.LessThan(ctx, w, left)
-			if err != nil {
-				return Null, err
-			}
-			if result {
-				return Null, nil
-			}
-			return right, nil
+		_right, err := ExpectInterface[canLessThan](ctx, w, right, floatClass)
+		if err != nil {
+			return nil, err
 		}
-		return nil, MakeError(ErrNotSupportType, right)
+		result, err := _right.LessThan(ctx, w, left)
+		if err != nil {
+			return Null, err
+		}
+		if result {
+			return Null, nil
+		}
+		return right, nil
 	}))
 }
 
@@ -195,33 +204,34 @@ func cmdOr(ctx context.Context, w *World, param Node) (Node, error) {
 	}
 }
 
-func floatToInteger(arg Node, f func(float64) float64) (Node, error) {
+func floatToInteger(ctx context.Context, w *World, arg Node, f func(float64) float64) (Node, error) {
 	if value, ok := arg.(Integer); ok {
 		return value, nil
 	}
-	if value, ok := arg.(Float); ok {
-		return Integer(int(f(float64(value)))), nil
+	value, err := ExpectClass[Float](ctx, w, arg)
+	if err != nil {
+		return nil, err
 	}
-	return nil, MakeError(ErrNotSupportType, arg)
+	return Integer(int(f(float64(value)))), nil
 }
 
 // funTruncate implements (truncte X). It returns the integer value of X.
 func funTruncate(ctx context.Context, w *World, arg Node) (Node, error) {
-	return floatToInteger(arg, math.Trunc)
+	return floatToInteger(ctx, w, arg, math.Trunc)
 }
 
 // funFloor implements (truncte X). It returns the greatest integer value less than or equal to x.
 func funFloor(ctx context.Context, w *World, arg Node) (Node, error) {
-	return floatToInteger(arg, math.Floor)
+	return floatToInteger(ctx, w, arg, math.Floor)
 }
 
 // funCeiling implements (ceiling X). It returns the least integer value greater than or equal to x.
 func funCeiling(ctx context.Context, w *World, arg Node) (Node, error) {
-	return floatToInteger(arg, math.Ceil)
+	return floatToInteger(ctx, w, arg, math.Ceil)
 }
 
 func funRound(ctx context.Context, w *World, arg Node) (Node, error) {
-	return floatToInteger(arg, math.Round)
+	return floatToInteger(ctx, w, arg, math.Round)
 }
 
 func funMod(ctx context.Context, w *World, first, second Node) (Node, error) {
@@ -229,27 +239,24 @@ func funMod(ctx context.Context, w *World, first, second Node) (Node, error) {
 	var right float64
 	bits := 0
 
-	if _left, ok := first.(Float); ok {
-		left = float64(_left)
-	} else {
-		_left, ok := first.(Integer)
-		if !ok {
-			return nil, ErrNotSupportType
-		}
+	if _left, ok := first.(Integer); ok {
 		left = float64(int(_left))
 		bits = 1
-	}
-	if _right, ok := second.(Float); ok {
-		right = float64(_right)
+	} else if _left, err := ExpectClass[Float](ctx, w, first); err != nil {
+		return nil, err
 	} else {
-		_right, ok := second.(Integer)
-		if !ok {
-			return nil, ErrNotSupportType
-		}
+		left = float64(_left)
+	}
+
+	if _right, ok := second.(Integer); ok {
 		right = float64(int(_right))
 		bits |= 2
+	} else if _right, err := ExpectClass[Float](ctx, w, second); err != nil {
+		return nil, err
+	} else {
+		right = float64(_right)
 	}
-	value := math.Remainder(float64(left), float64(right))
+	value := math.Remainder(left, right)
 	if bits == 3 {
 		return Integer(int(value)), nil
 	}
@@ -262,13 +269,16 @@ func funRem(ctx context.Context, w *World, first, second Node) (Node, error) {
 			return Integer(left % right), nil
 		}
 	}
-	if left, ok := first.(Float); ok {
-		if right, ok := second.(Float); ok {
-			return Float(math.Mod(float64(left), float64(right))), nil
-		}
-		if right, ok := second.(Integer); ok {
-			return Float(math.Mod(float64(left), float64(int(right)))), nil
-		}
+	left, err := ExpectClass[Float](ctx, w, first)
+	if err != nil {
+		return nil, err
 	}
-	return nil, ErrNotSupportType
+	if right, ok := second.(Integer); ok {
+		return Float(math.Mod(float64(left), float64(int(right)))), nil
+	}
+	right, err := ExpectClass[Float](ctx, w, second)
+	if err != nil {
+		return nil, err
+	}
+	return Float(math.Mod(float64(left), float64(right))), nil
 }
