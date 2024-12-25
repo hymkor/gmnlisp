@@ -1,0 +1,8 @@
+(lambda (a b)
+  (assure <integer> a)
+  (assure <integer> b)
+  (while (/= b 0)
+    (let ((new-a b) (new-b (mod a b)))
+      (setq a new-a)
+      (setq b new-b)))
+  a)
