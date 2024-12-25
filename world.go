@@ -156,10 +156,6 @@ type _Reader interface {
 	io.Reader
 }
 
-type _ReaderNode struct {
-	_Reader
-}
-
 func (w *World) Get(name Symbol) (Node, error) {
 	for W := w; W != nil; {
 		if W.vars != nil {

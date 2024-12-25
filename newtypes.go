@@ -59,18 +59,6 @@ func (t *_Macro) String() string {
 	return fmt.Sprintf("<macro>: %p", t)
 }
 
-func (_ReaderNode) ClassOf() Class {
-	return streamClass
-}
-
-func (t _ReaderNode) Equals(Node, EqlMode) bool {
-	return false
-}
-
-func (t _ReaderNode) String() string {
-	return fmt.Sprintf("<reader>: %p", &t)
-}
-
 var writerNodeClass = registerNewBuiltInClass[_WriterNode]("<writer>")
 
 func (_WriterNode) ClassOf() Class {
