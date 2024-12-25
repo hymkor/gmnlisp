@@ -307,14 +307,17 @@ func (s StreamError) Equals(n Node, _ EqlMode) bool {
 }
 
 func (s StreamError) String() string {
-	return "stream error"
+	return "<stream-error>"
 }
 
 func (s StreamError) Error() string {
-	return "stream error"
+	return "<stream-error>"
 }
 
 func funStreamErrorStream(ctx context.Context, w *World, node Node) (Node, error) {
+	if endOfStream, ok := node.(EndOfStream); ok {
+		return endOfStream.Stream, nil
+	}
 	streamError, err := ExpectClass[StreamError](ctx, w, node)
 	if err != nil {
 		return nil, err
