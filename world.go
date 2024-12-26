@@ -312,7 +312,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("defmacro"):                       SpecialF(cmdDefMacro),
 	NewSymbol("defmethod"):                      SpecialF(cmdDefMethod),
 	NewSymbol("defun"):                          SpecialF(cmdDefun),
-	NewSymbol("div"):                            &Function{F: funDevide},
+	NewSymbol("div"):                            &Function{C: 2, F: funDevide},
 	NewSymbol("domain-error-expected-class"):    Function1(funDomainErrorExpectedClass),
 	NewSymbol("domain-error-object"):            Function1(funDomainErrorObject),
 	NewSymbol("dynamic"):                        SpecialF(cmdDynamic),

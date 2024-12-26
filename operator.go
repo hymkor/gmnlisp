@@ -85,13 +85,11 @@ func funDevide(ctx context.Context, w *World, args []Node) (Node, error) {
 		Node
 		Divide(context.Context, *World, Node) (Node, error)
 	}
-	return inject(args, func(left, right Node) (Node, error) {
-		_left, err := ExpectInterface[CanDevide](ctx, w, left, floatClass)
-		if err != nil {
-			return nil, err
-		}
-		return _left.Divide(ctx, w, right)
-	})
+	_left, err := ExpectInterface[CanDevide](ctx, w, args[0], floatClass)
+	if err != nil {
+		return nil, err
+	}
+	return _left.Divide(ctx, w, args[1])
 }
 
 type canLessThan interface {
