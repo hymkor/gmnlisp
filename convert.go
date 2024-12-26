@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strconv"
+	"unicode"
 )
 
 var (
@@ -39,8 +40,8 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 		case integerClass.name:
 			i, err := strconv.ParseInt(val.String(), 10, 64)
 			if err != nil {
-				return callHandler[*ParseError](ctx, w, true, &ParseError{
-					str:           String(val.String()),
+				return callHandler[*DomainError](ctx, w, true, &DomainError{
+					Object:        val,
 					ExpectedClass: integerClass,
 				})
 			}
@@ -48,8 +49,8 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 		case floatClass.name:
 			f, err := strconv.ParseFloat(val.String(), 64)
 			if err != nil {
-				return callHandler[*ParseError](ctx, w, true, &ParseError{
-					str:           String(val.String()),
+				return callHandler[*DomainError](ctx, w, true, &DomainError{
+					Object:        val,
 					ExpectedClass: floatClass,
 				})
 			}
@@ -73,17 +74,17 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 		}
 	case Float:
 		switch class {
-		case integerClass.name: // it should be error
-			return Integer(val), nil
 		case floatClass.name:
 			return val, nil
 		case stringClass.name:
-			return String(fmt.Sprintf("%f", float64(val))), nil
+			return String(strconv.FormatFloat(float64(val), 'f', -1, 64)), nil
 		}
 	case Integer:
 		switch class {
 		case characterClass.name:
-			return Rune(val), nil
+			if val < unicode.MaxRune && val != unicode.ReplacementChar {
+				return Rune(val), nil
+			}
 		case integerClass.name:
 			return val, nil
 		case floatClass.name:
@@ -126,9 +127,11 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 		switch class {
 		case stringClass.name:
 			return String(val.String()), nil
+		case symbolClass.name:
+			return val, nil
 		}
 	}
-	return nil, fmt.Errorf("%w: %#v to %#v", ErrNotSupportType, source, class)
+	return nil, &DomainError{Object: source, ExpectedClass: builtInClass}
 }
 
 func funAssure(ctx context.Context, w *World, first, second Node) (Node, error) {
