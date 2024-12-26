@@ -186,12 +186,12 @@ Items without checkboxes are not standard functions
 - [x] let
 - [x] let\*
 - [x] tagbody
-- [ ] with-error-output
-- [ ] with-open-input-file
-- [ ] with-open-io-file
+- [x] with-error-output
+- [x] with-open-input-file
+- [x] with-open-io-file
 - [x] with-open-output-file
 - [x] with-standard-input
-- [ ] with-standard-output
+- [x] with-standard-output
 
 ### 4 Forms and Evaluation
 
@@ -233,13 +233,13 @@ Items without checkboxes are not standard functions
 - [x] throw
 - [x] unwind-protect
 - [x] while
-- [ ] with-error-output
+- [x] with-error-output
 - [x] with-handler
-- [ ] with-open-input-file
-- [ ] with-open-io-file
+- [x] with-open-input-file
+- [x] with-open-io-file
 - [x] with-open-output-file
 - [x] with-standard-input
-- [ ] with-standard-output
+- [x] with-standard-output
 
 #### 4.4 Defining Forms
 
@@ -300,7 +300,7 @@ Items without checkboxes are not standard functions
 - [x] listp
 - [x] null
 - [x] numberp
-- [ ] streamp
+- [x] streamp
 - [x] stringp
 - [x] symbolp
 - atom OBJ
@@ -510,8 +510,8 @@ Items without checkboxes are not standard functions
 - [x] integerp
 - [x] div
 - [x] mod
-- [ ] gcd
-- [ ] lcm
+- [x] gcd
+- [x] lcm
 - [ ] isqrt
 - rem
 - most-postive-fixnum
@@ -610,25 +610,25 @@ Items without checkboxes are not standard functions
 
 ### 18 Stream class
 
-- [ ] streamp
-- [ ] open-stream-p
+- [x] streamp
+- [x] open-stream-p
 - [ ] input-stream-p
-- [ ] output-stream-p
+- [x] output-stream-p
 - [x] standard-input
 - [x] standard-output
 - [x] error-output
-- [ ] with-standard-input
-- [ ] with-standard-output
-- [ ] with-error-output
+- [x] with-standard-input
+- [x] with-standard-output
+- [x] with-error-output
 
 #### 18.1 Streams to files
 
 - [x] open-input-file
 - [x] open-output-file
-- [ ] open-io-file
+- [x] open-io-file
 - [x] with-open-input-file
 - [x] with-open-output-file
-- [ ] with-open-io-file
+- [x] with-open-io-file
 - [x] close
 - [ ] finish-output
 
@@ -643,17 +643,17 @@ Items without checkboxes are not standard functions
 #### 19.1 Argument conventions for input functions
 
 - [x] read
-- [ ] read-char
+- [x] read-char
 - [ ] preview-char
 - [x] read-line
-- [ ] stream-ready-p
+- [x] stream-ready-p
 - [x] format
 - [x] format-char
 - [x] format-float
 - [ ] format-fresh-line
 - [x] format-integer
 - [x] format-object
-- [ ] format-tab
+- [x] format-tab
 
 #### 19.2 Charactoer I/O
 
@@ -700,8 +700,8 @@ Items without checkboxes are not standard functions
 
 ##### 21.3.3 Parse errors
 
-- [ ] parse-error-string
-- [ ] parse-error-expected-class
+- [x] parse-error-string
+- [x] parse-error-expected-class
 
 ##### 21.3.4 Simple errors
 
@@ -710,7 +710,7 @@ Items without checkboxes are not standard functions
 
 ##### 21.3.5 Stream errors
 
-- [ ] stream-error-stream
+- [x] stream-error-stream
 - [x] undefined-entity-name
 - [x] undefined-entity-namespace
 
@@ -729,13 +729,13 @@ Items without checkboxes are not standard functions
     - [ ] cannot-create-sequence
     - [ ] cannot-create-string
     - [ ] cannot-create-vector
-- [ ] \<parse-error\>, cannot-parse-number
+- [x] \<parse-error\>, cannot-parse-number
 - [x] \<control-error\>, control-error
 - [x] \<devision-by-zero\>, division-by-zero
 - [x] \<domain-error\>
     - not-an-input-stream
     - not-an-output-stream
-- [ ] \<end-of-stream\>, end-of-stream
+- [x] \<end-of-stream\>, end-of-stream
 - [x] \<undefined-entity\> , undefined-entity
     - [x] \<unbound-variable\> , unbound-variable
     - [x] \<undefined-function\>, undefined-function
