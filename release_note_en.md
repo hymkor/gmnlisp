@@ -3,6 +3,8 @@
 - Implement `(defconstant)`, `(gcd)`, and `(lcm)`
 - Fix: `too many arguments` / `too few arguments` were not `DomainError`
 - Fix: type errors for `+`,`-`,`*`,`div`,and `mod` were not `DomainError`
+- Fix: `(lambda)` returned `<program-error>` on the case it should return `<domain-error>`
+- Fix: the number of the parameters of `(eq)`, `(eql)`, `(equal)`, `(equalp)` and `(div)` could be any number. It should always 2
 
 v0.7.6
 ======

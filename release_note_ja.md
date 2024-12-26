@@ -3,6 +3,8 @@
 - `(defconstant)`, `(gcd)`, `(lcm)` を実装
 - `too many arguments` / `too few arguments` が `DomainError` になっていなかった不具合を修正
 - 四則演算の型エラーが DomainError になっていなかった不具合を修正
+- `(lambda)` で `<domain-error>` を返すべきケースで、`<program-error>` を返していた点を修正
+- `(eq)`,`(eql)`,`(equal)`,`(equalp)`,`(div)` のパラメータの個数は2個固定なのに、任意個数が可能だった点を修正
 
 v0.7.6
 ======
