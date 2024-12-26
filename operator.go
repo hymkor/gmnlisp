@@ -21,6 +21,12 @@ type canPlus interface {
 }
 
 func funAdd(ctx context.Context, w *World, args []Node) (Node, error) {
+	if len(args) == 1 {
+		_, err := ExpectInterface[canPlus](ctx, w, args[0], floatClass)
+		if err != nil {
+			return nil, err
+		}
+	}
 	return inject(args, func(left, right Node) (Node, error) {
 		_left, err := ExpectInterface[canPlus](ctx, w, left, floatClass)
 		if err != nil {
@@ -58,6 +64,12 @@ func funMulti(ctx context.Context, w *World, args []Node) (Node, error) {
 	type CanMulti interface {
 		Node
 		Multi(context.Context, *World, Node) (Node, error)
+	}
+	if len(args) == 1 {
+		_, err := ExpectInterface[CanMulti](ctx, w, args[0], floatClass)
+		if err != nil {
+			return nil, err
+		}
 	}
 	return inject(args, func(left, right Node) (Node, error) {
 		_left, err := ExpectInterface[CanMulti](ctx, w, left, floatClass)
