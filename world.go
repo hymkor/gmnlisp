@@ -391,6 +391,8 @@ var autoLoadFunc = Functions{
 	NewSymbol("open-stream-p"):                  Function1(funOpenStreamP),
 	NewSymbol("or"):                             SpecialF(cmdOr),
 	NewSymbol("output-stream-p"):                Function1(funOutputStreamP),
+	NewSymbol("parse-error-expected-class"):     Function1(funParseErrorExpectedClass),
+	NewSymbol("parse-error-string"):             Function1(funParseErrorString),
 	NewSymbol("parse-number"):                   Function1(funParseNumber),
 	NewSymbol("plusp"):                          Function1(funPlusp),
 	NewSymbol("probe-file"):                     Function1(funProbeFile),
