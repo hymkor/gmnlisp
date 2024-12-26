@@ -21,9 +21,9 @@ type _Lambda struct {
 func cmdLambda(ctx context.Context, w *World, node Node) (Node, error) {
 	value, err := newLambda(ctx, w, node, nulSymbol)
 	if err != nil {
-		return raiseProgramError(ctx, w, err)
+		return nil, err
 	}
-	return FunctionRef{value: value}, err
+	return FunctionRef{value: value}, nil
 }
 
 type _Parameters struct {
