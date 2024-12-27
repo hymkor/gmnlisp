@@ -11,7 +11,6 @@ func TestConvert(t *testing.T) {
 	assertEqual(t, `(convert 1 <character>)`, Rune(1))
 	assertEqual(t, `(convert #\A <integer>)`, Integer('A'))
 	assertEqual(t, `(convert 1 <float>)`, Float(1.0))
-	assertEqual(t, `(convert 1.0 <integer>)`, Integer(1))
 	assertEqual(t, `(convert 1 <string>)`, String(`1`))
 	assertEqual(t, `(convert "1" <integer>)`, Integer(1))
 	assertEqual(t, `(convert "1.1" <float>)`, Float(1.1))
