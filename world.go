@@ -335,6 +335,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("format"):                         &Function{Min: 2, F: funFormat},
 	NewSymbol("format-char"):                    &Function{C: 2, F: funFormatChar},
 	NewSymbol("format-float"):                   &Function{C: 2, F: funFormatFloat},
+	NewSymbol("format-fresh-line"):              Function1(funFormatFreshLine),
 	NewSymbol("format-integer"):                 &Function{C: 3, F: funFormatInteger},
 	NewSymbol("format-object"):                  &Function{C: 3, F: funFormatObject},
 	NewSymbol("format-tab"):                     Function2(funFormatTab),

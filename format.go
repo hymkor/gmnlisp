@@ -165,6 +165,21 @@ func writeRune(w io.Writer, r rune) (int, error) {
 	return w.Write(buffer[:size])
 }
 
+func funFormatFreshLine(ctx context.Context, w *World, node Node) (Node, error) {
+	if c, ok := node.(interface{ Column() int }); ok && c.Column() == 0 {
+		return Null, nil
+	}
+	writer, ok := node.(io.Writer)
+	if !ok {
+		return callHandler[Node](ctx, w, true, &DomainError{
+			Object:        node,
+			ExpectedClass: streamClass,
+		})
+	}
+	writer.Write(NewLineOnFormat)
+	return Null, nil
+}
+
 func formatSub(ctx context.Context, world *World, w io.Writer, argv []Node) error {
 	format, err := ExpectClass[String](ctx, world, argv[0])
 	if err != nil {
