@@ -1,0 +1,12 @@
+(lambda (des fn :rest seq)
+  (block m
+    (let ((i 0))
+      (while (< i (length des))
+        (let ((param nil))
+          (dolist (e seq)
+            (if (>= i (length e))
+              (return-from m des))
+            (setq param (append param (list (elt e i)))))
+          (setf (elt des i) (apply fn param)))
+        (setq i (+ i 1))))
+    des))
