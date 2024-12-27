@@ -395,6 +395,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("parse-error-string"):             Function1(funParseErrorString),
 	NewSymbol("parse-number"):                   Function1(funParseNumber),
 	NewSymbol("plusp"):                          Function1(funPlusp),
+	NewSymbol("preview-char"):                   &Function{Max: 3, F: funPreviewChar},
 	NewSymbol("probe-file"):                     Function1(funProbeFile),
 	NewSymbol("progn"):                          SpecialF(cmdProgn),
 	NewSymbol("psetq"):                          SpecialF(cmdPSetq),

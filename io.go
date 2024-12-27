@@ -161,6 +161,42 @@ func funReadChar(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return Rune(ch), err
 }
 
+func funPreviewChar(ctx context.Context, w *World, argv []Node) (Node, error) {
+	stream, err := newStreamInput(w, argv)
+	if err != nil {
+		return nil, err
+	}
+	type runeUnreader interface {
+		UnreadRune() error
+		Node
+	}
+	ru, ok := stream.reader.(runeUnreader)
+	if !ok {
+		domainError := &DomainError{
+			ExpectedClass: streamClass,
+		}
+		if len(argv) > 0 {
+			domainError.Object = argv[0]
+		} else {
+			domainError.Object = w.stdin
+		}
+		return nil, domainError
+	}
+	ch, _, err := stream.reader.ReadRune()
+	if err == io.EOF {
+		if stream.eofFlag {
+			return callHandler[Node](ctx, w, true, EndOfStream{
+				Stream: argv[0],
+			})
+		}
+		return stream.eofValue, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+	return Rune(ch), ru.UnreadRune()
+}
+
 func funClose(ctx context.Context, w *World, arg Node) (Node, error) {
 	c, ok := arg.(io.Closer)
 	if !ok {
