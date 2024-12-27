@@ -253,6 +253,7 @@ var autoLoadConstants = Constants{
 
 var autoLoadFunc = Functions{
 	// *sort*start*
+
 	NewSymbol("*"):                              &Function{F: funMulti},
 	NewSymbol("+"):                              &Function{F: funAdd},
 	NewSymbol("-"):                              &Function{F: funSub},
@@ -272,6 +273,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("array-dimensions"):               Function1(funArrayDimensions),
 	NewSymbol("assoc"):                          Function2(Assoc),
 	NewSymbol("assure"):                         Function2(funAssure),
+	NewSymbol("atan"):                           funMath1(math.Atan),
 	NewSymbol("atom"):                           Function1(funAtom),
 	NewSymbol("basic-array*-p"):                 Function1(funGeneralArray),
 	NewSymbol("basic-array-p"):                  Function1(funBasicArray),
@@ -298,6 +300,8 @@ var autoLoadFunc = Functions{
 	NewSymbol("consp"):                          Function1(funAnyTypep[*Cons]),
 	NewSymbol("continue-condition"):             SpecialF(cmdContinueCondition),
 	NewSymbol("convert"):                        SpecialF(cmdConvert),
+	NewSymbol("cos"):                            funMath1(math.Cos),
+	NewSymbol("cosh"):                           funMath1(math.Cosh),
 	NewSymbol("create"):                         &Function{Min: 1, F: funCreate},
 	NewSymbol("create-array"):                   &Function{Min: 1, Max: 2, F: funCreateArray},
 	NewSymbol("create-list"):                    &Function{Min: 2, F: funCreateList},
@@ -326,6 +330,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("eval"):                           Function1(funEval),
 	NewSymbol("evenp"):                          Function1(funEvenp),
 	NewSymbol("exit"):                           Function0(funQuit),
+	NewSymbol("exp"):                            funMath1(math.Exp),
 	NewSymbol("expand-defun"):                   SpecialF(cmdExpandDefun),
 	NewSymbol("file-length"):                    Function2(funFileLength),
 	NewSymbol("file-position"):                  Function1(funFilePosition),
@@ -421,6 +426,8 @@ var autoLoadFunc = Functions{
 	NewSymbol("set-gethash"):                    &Function{C: 3, F: funSetHash},
 	NewSymbol("setq"):                           SpecialF(cmdSetq),
 	NewSymbol("signal-condition"):               Function2(funSignalCondition),
+	NewSymbol("sin"):                            funMath1(math.Sin),
+	NewSymbol("sinh"):                           funMath1(math.Sinh),
 	NewSymbol("sqrt"):                           Function1(funSqrt),
 	NewSymbol("standard-input"):                 Function0(funStandardInput),
 	NewSymbol("standard-output"):                Function0(funStandardOutput),
@@ -440,6 +447,8 @@ var autoLoadFunc = Functions{
 	NewSymbol("subseq"):                         &Function{C: 3, F: funSubSeq},
 	NewSymbol("symbolp"):                        Function1(funAnyTypep[Symbol]),
 	NewSymbol("tagbody"):                        SpecialF(cmdTagBody),
+	NewSymbol("tan"):                            funMath1(math.Tan),
+	NewSymbol("tanh"):                           funMath1(math.Tanh),
 	NewSymbol("the"):                            Function2(funAssure),
 	NewSymbol("throw"):                          Function2(funThrow),
 	NewSymbol("trace"):                          SpecialF(cmdTrace),
