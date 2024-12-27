@@ -473,20 +473,20 @@ Items without checkboxes are not standard functions
 - [ ] quotient
 - [x] max
 - [x] min
-- [ ] abs
-- [ ] exp
-- [ ] log
+- [x] abs
+- [x] exp
+- [x] log
 - [ ] expt
 - [x] sqrt
-- [ ] sin
-- [ ] cos
-- [ ] tan
-- [ ] atan
+- [x] sin
+- [x] cos
+- [x] tan
+- [x] atan
 - [ ] atan2
-- [ ] sinh
-- [ ] cosh
-- [ ] tanh
-- [ ] atanh
+- [x] sinh
+- [x] cosh
+- [x] tanh
+- [x] atanh
 - 1+
 - 1-
 - incf
@@ -495,8 +495,8 @@ Items without checkboxes are not standard functions
 #### 11.2 Float class
 
 - [ ] \*pi\*
-- [ ] \*most-positive-float\*
-- [ ] \*most-negative-float\*
+- [x] \*most-positive-float\*
+- [x] \*most-negative-float\*
 - [x] floatp
 - [ ] float
 - [x] floor
