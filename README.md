@@ -606,13 +606,13 @@ Items without checkboxes are not standard functions
 - [x] elt
 - [x] set-elt, (setf (elt SEQ Z) OBJ)
 - [x] subseq
-- [ ] map-into
+- [x] map-into
 
 ### 18 Stream class
 
 - [x] streamp
 - [x] open-stream-p
-- [ ] input-stream-p
+- [x] input-stream-p
 - [x] output-stream-p
 - [x] standard-input
 - [x] standard-output
@@ -644,13 +644,13 @@ Items without checkboxes are not standard functions
 
 - [x] read
 - [x] read-char
-- [ ] preview-char
+- [x] preview-char
 - [x] read-line
 - [x] stream-ready-p
 - [x] format
 - [x] format-char
 - [x] format-float
-- [ ] format-fresh-line
+- [x] format-fresh-line
 - [x] format-integer
 - [x] format-object
 - [x] format-tab
