@@ -1,6 +1,6 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
-- Implement `(defconstant)`, `(gcd)`, `(lcm)`, `(preview-char)`, `(format-fresh-line)`, and `(map-into)`
+- Implement `(defconstant)`, `(gcd)`, `(lcm)`, `(preview-char)`, `(format-fresh-line)`, `(map-into)`, `(exp)`, `(sin)`, `(cos)`, `(tah)`, `(sinh)`, `(cosh)`, `(tanh)`, `(atan)`, `(abs)`, `(log)`, `*most-negative-float*` and `*most-positive-float*`
 - Fix: `too many arguments` / `too few arguments` were not `DomainError`
 - Fix: type errors for `+`,`-`,`*`,`div`,and `mod` were not `DomainError`
 - Fix: `(lambda)` returned `<program-error>` on the case it should return `<domain-error>`
