@@ -375,6 +375,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("list"):                           &Function{F: funList},
 	NewSymbol("listp"):                          Function1(funListp),
 	NewSymbol("load"):                           Function1(funLoad),
+	NewSymbol("log"):                            Function1(funLog),
 	NewSymbol("macroexpand"):                    Function1(funMacroExpand),
 	NewSymbol("make-hash-table"):                Function0(funMakeHashTable),
 	NewSymbol("mapc"):                           &Function{F: funMapC},
