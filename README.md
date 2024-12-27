@@ -3,8 +3,7 @@
 Gmnlisp
 =======
 
-The Gmnlisp is a small Lisp implementation in Go.
-The functions are the subset of [ISLisp]'s.
+Gmnlisp is the interpreter of ISLisp written in Go.
 It is developed to embbed to the applications for customizing.
 
 [pkgGoDev]: https://pkg.go.dev/github.com/hymkor/gmnlisp
