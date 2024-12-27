@@ -235,25 +235,28 @@ func (w *World) Stdin() _Reader {
 var autoLoadVars = Variables{}
 
 var autoLoadConstants = Constants{
+	// *sort*start*
 	NewSymbol("*err-exist*"):              ErrorNode{Value: os.ErrExist},
 	NewSymbol("*err-not-exist*"):          ErrorNode{Value: os.ErrNotExist},
 	NewSymbol("*err-quit*"):               ErrorNode{Value: ErrQuit},
 	NewSymbol("*err-too-few-arguments*"):  ErrorNode{Value: ErrTooFewArguments},
 	NewSymbol("*err-too-many-arguments*"): ErrorNode{Value: ErrTooManyArguments},
 	NewSymbol("*err-too-short-tokens*"):   ErrorNode{Value: ErrTooShortTokens},
+	NewSymbol("*most-negative-float*"):    Float(-math.MaxFloat64),
+	NewSymbol("*most-positive-float*"):    Float(math.MaxFloat64),
 	NewSymbol("<error>"):                  errorClass,
 	NewSymbol("most-negative-fixnum"):     Integer(math.MinInt),
 	NewSymbol("most-positive-fixnum"):     Integer(math.MaxInt),
 	NewSymbol("pi"):                       Float(math.Pi),
-	objectClass.name:                      objectClass,
 	builtInClass.name:                     builtInClass,
-	standardClass.name:                    standardClass,
 	numberClass.name:                      numberClass,
+	objectClass.name:                      objectClass,
+	standardClass.name:                    standardClass,
+	// *sort*end*
 }
 
 var autoLoadFunc = Functions{
 	// *sort*start*
-
 	NewSymbol("*"):                              &Function{F: funMulti},
 	NewSymbol("+"):                              &Function{F: funAdd},
 	NewSymbol("-"):                              &Function{F: funSub},
