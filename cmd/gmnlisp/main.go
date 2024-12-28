@@ -88,8 +88,9 @@ func interactive(lisp *gmnlisp.World) error {
 
 	var editor multiline.Editor
 
+	stdout := colorable.NewColorableStdout()
 	editor.SetHistory(history)
-	editor.SetWriter(colorable.NewColorableStdout())
+	editor.SetWriter(stdout)
 	editor.SetColoring(&skk.Coloring{Base: &Coloring{}})
 	editor.SetPrompt(func(w io.Writer, i int) (int, error) {
 		if i == 0 {
@@ -140,6 +141,12 @@ func interactive(lisp *gmnlisp.World) error {
 		lines, err := editor.Read(ctx)
 		if err != nil {
 			return err
+		}
+		if n := len(lines); n > 1 {
+			fmt.Fprintf(stdout, "\r\x1B[%dA", n-1)
+			for ; n > 1; n-- {
+				fmt.Fprintln(stdout, "         ")
+			}
 		}
 		code := strings.Join(lines, "\n")
 
