@@ -5,6 +5,7 @@
 - Fix: type errors for `+`,`-`,`*`,`div`,and `mod` were not `DomainError`
 - Fix: `(lambda)` returned `<program-error>` on the case it should return `<domain-error>`
 - Fix: the number of the parameters of `(eq)`, `(eql)`, `(equal)`, `(equalp)` and `(div)` could be any number. It should always 2
+- readline: erase continuation prompt after submiting for copying with mouse
 
 v0.7.6
 ======
