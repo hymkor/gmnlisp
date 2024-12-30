@@ -11,6 +11,8 @@ Dec 30, 2024
 - Fix: the number of the parameters of `(eq)`, `(eql)`, `(equal)`, `(equalp)` and `(div)` could be any number. It should always 2
 - readline: erase continuation prompt after submiting for copying with mouse
 
+[TP Result] : OK = 10217, NG = 6194
+
 v0.7.6
 ======
 Dec 25, 2024
