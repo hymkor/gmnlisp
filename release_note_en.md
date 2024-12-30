@@ -1,5 +1,9 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+v0.7.7
+======
+Dec 30, 2024
+
 - Implement `(defconstant)`, `(gcd)`, `(lcm)`, `(preview-char)`, `(format-fresh-line)`, `(map-into)`, `(exp)`, `(sin)`, `(cos)`, `(tah)`, `(sinh)`, `(cosh)`, `(tanh)`, `(atan)`, `(abs)`, `(log)`, `*most-negative-float*` and `*most-positive-float*`
 - Fix: `too many arguments` / `too few arguments` were not `DomainError`
 - Fix: type errors for `+`,`-`,`*`,`div`,and `mod` were not `DomainError`
