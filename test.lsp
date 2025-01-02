@@ -1,14 +1,10 @@
-(defmacro test (&rest args)
-  (unless (equal (length args) 2)
-    (format t "Too few arguments: ~s~%" args)
-    (abort)
-    )
-  (let ((func (car args)) (expect (cadr args)) (result (gensym)))
-    `(let ((,result ,func))
+(defmacro test (source expect)
+  (let ((result (gensym)))
+    `(let ((,result ,source))
        (if (not (equal ,result ,expect))
          (progn
-           (format t "Failed: ~s~%" (quote ,func))
-           (format t "  expect: ~s but ~s~%" ,expect ,result)
+           (format (error-output) "Failed: ~s~%" (quote ,source))
+           (format (error-output) "  expect: ~s but ~s~%" ,expect ,result)
            (abort))))))
 
 ;;; test for create-array ;;;
