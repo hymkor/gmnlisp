@@ -21,7 +21,10 @@ type canPlus interface {
 }
 
 func funAdd(ctx context.Context, w *World, args []Node) (Node, error) {
-	if len(args) == 1 {
+	switch len(args) {
+	case 0:
+		return Integer(0), nil
+	case 1:
 		_, err := ExpectInterface[canPlus](ctx, w, args[0], floatClass)
 		if err != nil {
 			return nil, err
