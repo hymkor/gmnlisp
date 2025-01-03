@@ -182,8 +182,8 @@ func funLessOrEqual(ctx context.Context, w *World, args []Node) (Node, error) {
 }
 
 func cmdAnd(ctx context.Context, w *World, param Node) (Node, error) {
-	for {
-		var value Node
+	var value Node = True
+	for IsSome(param) {
 		var err error
 
 		value, param, err = w.ShiftAndEvalCar(ctx, param)
@@ -193,10 +193,8 @@ func cmdAnd(ctx context.Context, w *World, param Node) (Node, error) {
 		if IsNone(value) {
 			return Null, nil
 		}
-		if IsNone(param) {
-			return value, nil
-		}
 	}
+	return value, nil
 }
 
 func cmdOr(ctx context.Context, w *World, param Node) (Node, error) {
