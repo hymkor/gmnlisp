@@ -31,8 +31,12 @@ func (t *inputStream) ClassOf() Class {
 	return streamClass
 }
 
-func (t *inputStream) Equals(Node, EqlMode) bool {
-	return false
+func (t *inputStream) Equals(other Node, _ EqlMode) bool {
+	o, ok := other.(*inputStream)
+	if !ok {
+		return false
+	}
+	return t.file.Fd() == o.file.Fd()
 }
 
 func (t *inputStream) String() string {
