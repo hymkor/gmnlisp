@@ -77,8 +77,26 @@ func (t *inputStream) String() string {
 	return fmt.Sprintf("<input-stream>: %p", t)
 }
 
+var outputStreamClass = &_BuiltInClass{
+	name: NewSymbol("<output-stream>"),
+	instanceP: func(value Node) bool {
+		_, ok := value.(*_OutputFileStream)
+		return ok
+	},
+	create: func() Node {
+		return &_OutputFileStream{
+			_WriterNode: _WriterNode{
+				_Writer: bufio.NewWriter(os.Stderr),
+				column:  0,
+			},
+			file: os.Stderr,
+		}
+	},
+	super: []Class{objectClass, streamClass},
+}
+
 func (*_OutputFileStream) ClassOf() Class {
-	return streamClass
+	return outputStreamClass
 }
 
 func (t *_OutputFileStream) Equals(other Node, _ EqlMode) bool {
