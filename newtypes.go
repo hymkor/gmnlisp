@@ -19,8 +19,20 @@ var streamClass = registerClass(&_BuiltInClass{
 	},
 })
 
+var stringBuilderClass = &_BuiltInClass{
+	name: NewSymbol("<string-builder>"),
+	instanceP: func(value Node) bool {
+		_, ok := value.(*StringBuilder)
+		return ok
+	},
+	create: func() Node {
+		return &StringBuilder{}
+	},
+	super: []Class{objectClass, streamClass},
+}
+
 func (*StringBuilder) ClassOf() Class {
-	return streamClass
+	return stringBuilderClass
 }
 
 func (t *StringBuilder) Equals(other Node, _ EqlMode) bool {
