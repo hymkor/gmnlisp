@@ -209,6 +209,18 @@ type StringReader struct {
 	*strings.Reader
 }
 
+var stringReaderClass = &_BuiltInClass{
+	name: NewSymbol("<string-stream-reader>"),
+	instanceP: func(v Node) bool {
+		_, ok := v.(StringReader)
+		return ok
+	},
+	create: func() Node {
+		return StringReader{Reader: strings.NewReader("")}
+	},
+	super: []Class{objectClass, streamClass},
+}
+
 func (sr StringReader) QueryStreamReady() (Node, error) {
 	if sr.Reader.Len() <= 0 {
 		return Null, nil
@@ -217,11 +229,15 @@ func (sr StringReader) QueryStreamReady() (Node, error) {
 }
 
 func (sr StringReader) ClassOf() Class {
-	return streamClass
+	return stringReaderClass
 }
 
-func (sr StringReader) Equals(Node, EqlMode) bool {
-	return false
+func (sr StringReader) Equals(other Node, _ EqlMode) bool {
+	o, ok := other.(StringReader)
+	if !ok {
+		return false
+	}
+	return o.Reader == sr.Reader
 }
 
 func (sr StringReader) String() string {
