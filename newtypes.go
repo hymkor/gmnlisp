@@ -47,8 +47,12 @@ func (*_OutputFileStream) ClassOf() Class {
 	return streamClass
 }
 
-func (t *_OutputFileStream) Equals(Node, EqlMode) bool {
-	return false
+func (t *_OutputFileStream) Equals(other Node, _ EqlMode) bool {
+	o, ok := other.(*_OutputFileStream)
+	if !ok {
+		return false
+	}
+	return t.file.Fd() == o.file.Fd()
 }
 
 func (t *_OutputFileStream) String() string {
