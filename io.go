@@ -241,9 +241,9 @@ func funCreateStringOutputStream(ctx context.Context, w *World) (Node, error) {
 }
 
 func funGetOutputStreamString(ctx context.Context, w *World, arg Node) (Node, error) {
-	stringer, ok := arg.(fmt.Stringer) // expect StringBuilder
-	if !ok {
-		return nil, ErrNotSupportType
+	stringer, err := ExpectClass[*StringBuilder](ctx, w, arg)
+	if err != nil {
+		return nil, err
 	}
 	return String(stringer.String()), nil
 }
