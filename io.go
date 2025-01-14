@@ -245,7 +245,9 @@ func funGetOutputStreamString(ctx context.Context, w *World, arg Node) (Node, er
 	if err != nil {
 		return nil, err
 	}
-	return String(stringer.String()), nil
+	result := String(stringer.String())
+	stringer.Reset()
+	return result, nil
 }
 
 type inputStream struct {
