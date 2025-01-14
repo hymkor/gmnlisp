@@ -1,5 +1,11 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+- Fixed: `(+)`, which should have been `0`, was `nil`
+- Fixed: `(and)` raised an error instead of returning `t`
+- Fixed: `(equal)` always returned `nil` between instances of `<input-stream>`
+- Fixed: `(equal)` always returned `nil` between instances of `<output-stream>`
+- Fixed: `(get-string-output-stream)` did not reset the instance of `(create-string-output-stream)` as expected.
+
 v0.7.7
 ======
 Dec 30, 2024
