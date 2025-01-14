@@ -23,8 +23,12 @@ func (*StringBuilder) ClassOf() Class {
 	return streamClass
 }
 
-func (t *StringBuilder) Equals(Node, EqlMode) bool {
-	return false
+func (t *StringBuilder) Equals(other Node, _ EqlMode) bool {
+	o, ok := other.(*StringBuilder)
+	if !ok {
+		return false
+	}
+	return t.String() == o.String()
 }
 
 func (t *inputStream) ClassOf() Class {
