@@ -6,6 +6,50 @@ import (
 	"fmt"
 )
 
+type ErrorNode struct {
+	Value error
+}
+
+var errorClass = &_BuiltInClass{
+	name: NewSymbol("<error>"),
+	instanceP: func(value Node) bool {
+		_, ok := value.(error)
+		return ok
+	},
+	create: func() Node {
+		return nil
+	},
+	super: []Class{objectClass},
+}
+
+func (ErrorNode) ClassOf() Class {
+	return errorClass
+}
+
+func (e ErrorNode) String() string {
+	return e.Value.Error()
+}
+
+func (e ErrorNode) Equals(n Node, m EqlMode) bool {
+	f, ok := n.(ErrorNode)
+	if !ok {
+		return false
+	}
+	return errors.Is(e.Value, f.Value) || errors.Is(f.Value, e.Value)
+}
+
+func (e ErrorNode) Error() string {
+	return e.Value.Error()
+}
+
+func raiseError(ctx context.Context, w *World, e error) (Node, error) {
+	if _, ok := e.(interface{ ClassOf() Class }); ok {
+		return nil, e
+	}
+	condition := ErrorNode{Value: e}
+	return callHandler[Node](ctx, w, false, condition)
+}
+
 type ProgramError struct {
 	err error
 }

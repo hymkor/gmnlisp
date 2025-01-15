@@ -35,7 +35,7 @@ func funLog(ctx context.Context, w *World, x Node) (Node, error) {
 		f = float64(_f)
 	}
 	if f <= 0 {
-		return raiseError(ctx, w, &DomainError{
+		return callHandler[Node](ctx, w, true, &DomainError{
 			Object:        x,
 			ExpectedClass: floatClass,
 		})

@@ -280,7 +280,7 @@ func funSqrt(ctx context.Context, w *World, arg Node) (Node, error) {
 		f = float64(_f)
 	}
 	if f < 0 {
-		return raiseError(ctx, w, &DomainError{
+		return callHandler[Node](ctx, w, true, &DomainError{
 			Object:        arg,
 			ExpectedClass: floatClass,
 		})

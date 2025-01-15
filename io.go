@@ -217,7 +217,7 @@ func funWriteByte(ctx context.Context, w *World, z, stream Node) (Node, error) {
 		w.Write([]byte{byte(int(data))})
 		return data, nil
 	}
-	return raiseError(ctx, w, &DomainError{
+	return callHandler[Node](ctx, w, true, &DomainError{
 		Object:        stream,
 		ExpectedClass: streamClass,
 	})
