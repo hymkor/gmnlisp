@@ -4,7 +4,11 @@
 - `(and)` が `t` ではなく、エラーを出力していた不具合を修正
 - `<input-stream>` のクラスインスタンスどうしの`(equal)` が常に false になっていた不具合を修正
 - `<output-stream>` のクラスインスタンスどうしの `(equal)` が常に false になっていた不具合を修正
-- `(get-string-output-stream)` で、`(create-string-output-stream)` のインスタンスがクリアされていなかった不具合を修正
+- `(get-string-output-stream)` で、`(create-string-output-stream)` のインスタンスをクリアしていなかった
+- `(case-using PREDFORM ...)` で PREDFORM の型をチェックしていなかった
+- `(set-car NEWOBJ CONS)`, `(set-cdr NEWOBJ CONS)` の戻り値が NEWOBJ ではなく CONS になっていた
+- `(equal)` が `<stream-error>` や `<parse-error>` のインスタンス間で正しく動作していなかった
+- `(write-byte)` が `<domain-error>` を返していなかった
 
 v0.7.7
 ======

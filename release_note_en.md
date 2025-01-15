@@ -1,10 +1,14 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
-- Fixed: `(+)`, which should have been `0`, was `nil`
-- Fixed: `(and)` raised an error instead of returning `t`
-- Fixed: `(equal)` always returned `nil` between instances of `<input-stream>`
-- Fixed: `(equal)` always returned `nil` between instances of `<output-stream>`
-- Fixed: `(get-string-output-stream)` did not reset the instance of `(create-string-output-stream)` as expected.
+- Fixed: `(+)` returned `nil` instead of `0` as expected.
+- Fixed: `(and)` produced an error instead of returning `t`.
+- Fixed: `(equal)` always returned `nil` when comparing `<input-stream>` instances
+- Fixed: `(equal)` always returned `nil` when comparing `<output-stream>` instances.
+- Fixed: `(get-string-output-stream)` did not reset `(create-string-output-stream)` instances as required.
+- Fixed: `(case-using PREDFORM ...)` did not validate the type of PREDFORM.
+- Fixed: `(set-car OBJ CONS)` and `(set-cdr OBJ CONS)` returned `CONS` instead of `OBJ`
+- Fixed: `(equal)` did not function correctly when comparing instances of `<stream-error>` or `<parse-error>`.
+- Fixed: `(write-byte)` returned an incorrect error instead of `<domain-error>`.
 
 v0.7.7
 ======
