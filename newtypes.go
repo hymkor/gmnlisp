@@ -1,10 +1,8 @@
 package gmnlisp
 
 import (
-	"bufio"
 	"fmt"
 	"io"
-	"os"
 )
 
 var streamClass = registerClass(&_BuiltInClass{
@@ -20,48 +18,6 @@ var streamClass = registerClass(&_BuiltInClass{
 		return &StringBuilder{}
 	},
 })
-
-var stringBuilderClass = &_BuiltInClass{
-	name: NewSymbol("<string-builder>"),
-	instanceP: func(value Node) bool {
-		_, ok := value.(*StringBuilder)
-		return ok
-	},
-	create: func() Node {
-		return &StringBuilder{}
-	},
-	super: []Class{objectClass, streamClass},
-}
-
-func (*StringBuilder) ClassOf() Class {
-	return stringBuilderClass
-}
-
-func (t *StringBuilder) Equals(other Node, _ EqlMode) bool {
-	o, ok := other.(*StringBuilder)
-	if !ok {
-		return false
-	}
-	return t.String() == o.String()
-}
-
-var outputStreamClass = &_BuiltInClass{
-	name: NewSymbol("<output-stream>"),
-	instanceP: func(value Node) bool {
-		_, ok := value.(*_OutputFileStream)
-		return ok
-	},
-	create: func() Node {
-		return &_OutputFileStream{
-			_WriterNode: _WriterNode{
-				_Writer: bufio.NewWriter(os.Stderr),
-				column:  0,
-			},
-			file: os.Stderr,
-		}
-	},
-	super: []Class{objectClass, streamClass},
-}
 
 func (*_OutputFileStream) ClassOf() Class {
 	return outputStreamClass
