@@ -1,10 +1,3 @@
-(defclass <simple-error> (<error>)
-  ((format-string
-     :initarg  format-string
-     :reader simple-error-format-string)
-   (format-arguments
-     :initarg  format-arguments
-     :reader simple-error-format-arguments)))
 (defmethod report-condition ((e <simple-error>) (w <object>))
     (apply #'format
            w

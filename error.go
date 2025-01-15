@@ -404,3 +404,56 @@ func (e EndOfStream) String() string {
 func (e EndOfStream) Error() string {
 	return "<end-of-stream>"
 }
+
+type SimpleError struct {
+	FormatString    Node
+	FormatArguments Node
+}
+
+var simpleErrorClass = registerNewAbstractClass[*SimpleError]("<simple-error>", errorClass)
+
+func (s *SimpleError) ClassOf() Class {
+	return simpleErrorClass
+}
+
+func (s *SimpleError) String() string {
+	return fmt.Sprintf("{ Format=%#v, Arguments=%#v }",
+		s.FormatString,
+		s.FormatArguments)
+}
+
+func (s *SimpleError) Equals(other Node, m EqlMode) bool {
+	o, ok := other.(*SimpleError)
+	if !ok {
+		return false
+	}
+	return s.FormatString.Equals(o.FormatString, m) &&
+		s.FormatArguments.Equals(o.FormatArguments, m)
+}
+
+func funSimpleErrorFormatString(ctx context.Context, w *World, s Node) (Node, error) {
+	e, err := ExpectClass[*SimpleError](ctx, w, s)
+	if err != nil {
+		return nil, err
+	}
+	return e.FormatString, nil
+}
+
+func funSimpleErrorFormatArguments(ctx context.Context, w *World, s Node) (Node, error) {
+	e, err := ExpectClass[*SimpleError](ctx, w, s)
+	if err != nil {
+		return nil, err
+	}
+	return e.FormatArguments, nil
+}
+
+func funSimpleError(ctx context.Context, w *World, args []Node) (Node, error) {
+	var arguments Node = Null
+	for i := len(args) - 1; i >= 1; i-- {
+		arguments = &Cons{Car: args[i], Cdr: arguments}
+	}
+	return &SimpleError{
+		FormatString:    args[0],
+		FormatArguments: arguments,
+	}, nil
+}
