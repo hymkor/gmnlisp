@@ -45,38 +45,6 @@ func (t *StringBuilder) Equals(other Node, _ EqlMode) bool {
 	return t.String() == o.String()
 }
 
-var inputStreamClass = &_BuiltInClass{
-	name: NewSymbol("<input-stream>"),
-	instanceP: func(value Node) bool {
-		_, ok := value.(*inputStream)
-		return ok
-	},
-	create: func() Node {
-		return &inputStream{
-			_Reader:  bufio.NewReader(os.Stdin),
-			file:     os.Stdin,
-			isClosed: false,
-		}
-	},
-	super: []Class{objectClass, streamClass},
-}
-
-func (t *inputStream) ClassOf() Class {
-	return inputStreamClass
-}
-
-func (t *inputStream) Equals(other Node, _ EqlMode) bool {
-	o, ok := other.(*inputStream)
-	if !ok {
-		return false
-	}
-	return t.file.Fd() == o.file.Fd()
-}
-
-func (t *inputStream) String() string {
-	return fmt.Sprintf("<input-stream>: %p", t)
-}
-
 var outputStreamClass = &_BuiltInClass{
 	name: NewSymbol("<output-stream>"),
 	instanceP: func(value Node) bool {
