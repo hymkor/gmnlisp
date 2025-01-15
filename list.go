@@ -153,7 +153,7 @@ func funSetCdr(ctx context.Context, w *World, first, second Node) (Node, error) 
 		return nil, err
 	}
 	cons.Cdr = first
-	return cons, nil
+	return first, nil
 }
 
 func funCreateList(ctx context.Context, w *World, argv []Node) (Node, error) {
