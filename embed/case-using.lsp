@@ -16,7 +16,7 @@
                       (cdr entry)))
                   ) body))
     (setq body (cons 'cond body))
-    (setq body `(let ((,keyform_ ,keyform)) ,body))
+    (setq body `(let ((,keyform_ ,keyform)) (assure <function> ,predform) ,body))
     ;(format t "~s~%" body)
     ;body
     ))
