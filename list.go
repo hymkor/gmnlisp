@@ -143,7 +143,7 @@ func funSetCar(ctx context.Context, w *World, first, second Node) (Node, error) 
 		return nil, err
 	}
 	cons.Car = first
-	return cons, nil
+	return first, nil
 }
 
 // funSetCdr implements (replacd X Y) == (setf (cdr X) Y) = (set-cdr Y X)
