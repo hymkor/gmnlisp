@@ -316,8 +316,12 @@ func (p *ParseError) String() string {
 	return fmt.Sprintf("ParseError: %s: %s", String(p.str), p.ExpectedClass.String())
 }
 
-func (p *ParseError) Equals(n Node, _ EqlMode) bool {
-	return false
+func (p *ParseError) Equals(other Node, m EqlMode) bool {
+	o, ok := other.(*ParseError)
+	if !ok {
+		return false
+	}
+	return p.str == o.str && p.ExpectedClass.Equals(o.ExpectedClass, m)
 }
 
 func (p *ParseError) Error() string {
