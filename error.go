@@ -349,9 +349,12 @@ func (s StreamError) ClassOf() Class {
 	return streamErrorClass
 }
 
-func (s StreamError) Equals(n Node, _ EqlMode) bool {
-	_, ok := n.(StreamError)
-	return ok
+func (s StreamError) Equals(other Node, m EqlMode) bool {
+	o, ok := other.(StreamError)
+	if !ok {
+		return false
+	}
+	return s.Stream.Equals(o.Stream, m)
 }
 
 func (s StreamError) String() string {
