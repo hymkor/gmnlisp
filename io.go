@@ -278,7 +278,10 @@ func funWriteByte(ctx context.Context, w *World, z, stream Node) (Node, error) {
 		w.Write([]byte{byte(int(data))})
 		return data, nil
 	}
-	return nil, errors.New("not stream")
+	return raiseError(ctx, w, &DomainError{
+		Object:        stream,
+		ExpectedClass: streamClass,
+	})
 }
 
 type filePositioner interface {
