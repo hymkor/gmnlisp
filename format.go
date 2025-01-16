@@ -282,30 +282,13 @@ func formatSub(ctx context.Context, world *World, w io.Writer, argv []Node) erro
 			continue
 		}
 		if c == '&' {
-			n := 1
-			if len(parameter) >= 1 {
-				n = parameter[0]
-			}
-			if W, ok := w.(interface{ Column() int }); ok {
-				if W.Column() == 0 {
-					n--
-				}
-			}
-			if n > 0 {
-				for ; n >= 1; n-- {
-					w.Write(NewLineOnFormat)
-				}
+			if W, ok := w.(interface{ Column() int }); !ok || W.Column() > 0 {
+				w.Write(NewLineOnFormat)
 			}
 			continue
 		}
 		if c == '%' {
-			if len(parameter) >= 1 {
-				for n := parameter[0]; n >= 1; n-- {
-					w.Write(NewLineOnFormat)
-				}
-			} else {
-				w.Write(NewLineOnFormat)
-			}
+			w.Write(NewLineOnFormat)
 			continue
 		}
 
