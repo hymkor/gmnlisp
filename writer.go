@@ -62,6 +62,11 @@ func (o *_OutputFileStream) IsClosed() bool {
 	return o.isClosed
 }
 
+func (o *_OutputFileStream) Flush() {
+	o.w.Flush()
+	o.file.Sync()
+}
+
 func (o *_OutputFileStream) Close() error {
 	o.w.Flush()
 	o.isClosed = true

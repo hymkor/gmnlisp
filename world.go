@@ -209,7 +209,11 @@ func (w *World) Stdout() io.Writer {
 }
 
 func (w *World) SetStdout(writer io.Writer) {
-	w.stdout = &_WriterNode{_Writer: writer}
+	if f, ok := writer.(*os.File); ok {
+		w.stdout = newOutputFileStream(f)
+	} else {
+		w.stdout = &_WriterNode{_Writer: writer}
+	}
 }
 
 func funErrorOutput(ctx context.Context, w *World) (Node, error) {
@@ -221,7 +225,11 @@ func (w *World) Errout() io.Writer {
 }
 
 func (w *World) SetErrout(writer io.Writer) {
-	w.errout = &_WriterNode{_Writer: writer}
+	if f, ok := writer.(*os.File); ok {
+		w.errout = newOutputFileStream(f)
+	} else {
+		w.errout = &_WriterNode{_Writer: writer}
+	}
 }
 
 func funStandardInput(ctx context.Context, w *World) (Node, error) {
@@ -525,8 +533,8 @@ func New() *World {
 			dynamic:   Variables{},
 			constants: autoLoadConstants,
 			stdin:     &inputStream{_Reader: bufio.NewReader(os.Stdin), file: os.Stdin},
-			stdout:    &_WriterNode{_Writer: os.Stdout},
-			errout:    &_WriterNode{_Writer: os.Stderr},
+			stdout:    newOutputFileStream(os.Stdout),
+			errout:    newOutputFileStream(os.Stderr),
 		},
 		vars:  rwvars,
 		funcs: rwfuncs,
@@ -586,6 +594,15 @@ func (w *World) InterpretNodes(ctx context.Context, ns []Node) (Node, error) {
 	})
 	var result Node = Null
 	var err error
+
+	defer func() {
+		if f, ok := w.stdout.(interface{ Flush() }); ok {
+			f.Flush()
+		}
+		if f, ok := w.errout.(interface{ Flush() }); ok {
+			f.Flush()
+		}
+	}()
 
 	for _, c := range ns {
 		result, err = w.Eval(ctx, c)
