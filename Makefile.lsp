@@ -1,4 +1,4 @@
-; go run github.com/hymkor/smake@latest
+; go run github.com/hymkor/smake@latest {test or release-all}
 
 (defun tail (path)
   (let ((buf (create-string-output-stream)))
@@ -29,8 +29,74 @@
        ); pushd
      ); let
    ); "test"
+
+  (("release-all")
+   (let ((j (-d ".jj")))
+     (flet
+       ((step-exec
+          (command)
+          (if j
+            (sh "jj log")
+            (sh "git log"))
+          (block b
+            (while t
+              (format (standard-output) "~&$ ~A~%[Y]es: execute, [N]o: skip, [Q]uit ? " command)
+              (case (read-line (standard-input))
+                (("q") (return-from b nil))
+                (("n") (return-from b t))
+                (("y") (sh command) (return-from b t))))))
+        (find-release-note
+          ()
+          (let ((note (wildcard "release_note*.md")))
+            (and note (car note))))
+        (version-from-release-note
+          (fname)
+          (block b
+            (let ((line nil) (version nil))
+              (if fname
+                (with-open-input-file
+                  (fd fname)
+                  (while (setq line (read-line fd nil nil))
+                    (if (setq version (match "^v([0-9]+)\.([0-9]+)\.([0-9]+)$" line))
+                      (return-from b (car version)))))))
+            "v0.0.0"))) ; flet param
+
+       (let*
+         ((note (find-release-note))
+          (version
+            (if note
+              (progn
+                (format (error-output) "Found: ~A~%" note)
+                (version-from-release-note note))
+              "v0.0.0")))
+         (and
+           (step-exec
+             (if j
+               (string-append "jj commit -m \"bump to " version "\"")
+               (string-append "git commit -m \"bump to " version "\" -a")))
+           (step-exec (string-append "git tag " version))
+           (if j
+             (and (step-exec (string-append "jj bookmark set master -r " version))
+                  (step-exec "jj git push"))
+             (step-exec "git push"))
+           (step-exec "git push --tag")
+           (step-exec "make release")
+           (progn (sh "gh browse")
+                  (step-exec "make manifest"))
+           (if j
+             (and (step-exec (string-append "jj commit -m \"Update the manifest of the scoop-installer for " version "\""))
+                  (step-exec "jj bookmark set master -r @-")
+                  (step-exec "jj git push"))
+             (and (progn (sh "git status")
+                         (step-exec (string-append "git commit -a -m \"Update the manifest of the scoop-installer for " version "\"")))
+                  (step-exec "git push"))))
+         ) ; let*
+       ) ; flet
+     ) ; let
+   ) ; "release-all"
+
   (t
     (format (error-output) "smake ~S: not suport~%" (car *args*))
-    )
-  ); case
+    ) ; t
+  ) ; case
 
