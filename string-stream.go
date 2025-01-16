@@ -100,10 +100,7 @@ var outputStreamClass = &_BuiltInClass{
 	},
 	create: func() Node {
 		return &_OutputFileStream{
-			_WriterNode: _WriterNode{
-				_Writer: bufio.NewWriter(os.Stderr),
-				column:  0,
-			},
+			w:    bufio.NewWriter(os.Stderr),
 			file: os.Stderr,
 		}
 	},
