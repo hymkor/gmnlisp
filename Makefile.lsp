@@ -80,6 +80,7 @@
                   (step-exec "jj git push"))
              (step-exec "git push"))
            (step-exec "git push --tag")
+           (step-exec "make dist")
            (step-exec "make release")
            (progn (sh "gh browse")
                   (step-exec "make manifest"))
