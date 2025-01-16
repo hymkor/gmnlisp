@@ -1,5 +1,9 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+v0.7.8
+======
+Jan 16, 2025
+
 - `(+)` が `0` ではなく、`nil` になっていた不具合を修正
 - `(and)` が `t` ではなく、エラーを出力していた不具合を修正
 - `<input-stream>` のクラスインスタンスどうしの`(equal)` が常に false になっていた不具合を修正
@@ -9,6 +13,8 @@
 - `(set-car NEWOBJ CONS)`, `(set-cdr NEWOBJ CONS)` の戻り値が NEWOBJ ではなく CONS になっていた
 - `(equal)` が `<stream-error>` や `<parse-error>` のインスタンス間で正しく動作していなかった
 - `(write-byte)` が `<domain-error>` を返していなかった
+
+[TP Result] : OK = 11040, NG = 5371
 
 v0.7.7
 ======

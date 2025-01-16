@@ -1,5 +1,9 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+v0.7.8
+======
+Jan 16, 2025
+
 - Fixed: `(+)` returned `nil` instead of `0` as expected.
 - Fixed: `(and)` produced an error instead of returning `t`.
 - Fixed: `(equal)` always returned `nil` when comparing `<input-stream>` instances
@@ -9,6 +13,7 @@
 - Fixed: `(set-car OBJ CONS)` and `(set-cdr OBJ CONS)` returned `CONS` instead of `OBJ`
 - Fixed: `(equal)` did not function correctly when comparing instances of `<stream-error>` or `<parse-error>`.
 - Fixed: `(write-byte)` returned an incorrect error instead of `<domain-error>`.
+[TP Result] : OK = 11040, NG = 5371
 
 v0.7.7
 ======
