@@ -11,6 +11,7 @@
      (rm "errr"))
    (if (probe-file "err")
      (progn
+       (format (standard-output) "**** Previous log ****~%")
        (tail "err")
        (mv "err" "errr")))
    (let* ((curdir (getwd))
@@ -23,6 +24,7 @@
                "(load \"tp.lsp\") (tp-all 'verbose)"
                err-path)
        (sh (get-output-stream-string buf))
+       (format (standard-output) "**** Latest log ****~%")
        (tail err-path)
        ); pushd
      ); let
