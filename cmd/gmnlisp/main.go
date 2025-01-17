@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"regexp"
 	"runtime"
 	"strings"
 
@@ -33,36 +34,6 @@ func setArgv(w *gmnlisp.World, args []string) {
 		posixArgv = append(posixArgv, gmnlisp.String(s))
 	}
 	w.DefineGlobal(gmnlisp.NewSymbol("*posix-argv*"), gmnlisp.List(posixArgv...))
-}
-
-type Coloring struct {
-	bits int
-	last rune
-}
-
-func (c *Coloring) Init() readline.ColorSequence {
-	c.bits = 0
-	c.last = 0
-	return readline.White
-}
-
-func (c *Coloring) Next(ch rune) readline.ColorSequence {
-	prebits := c.bits
-	if c.last != '\\' && ch == '"' {
-		c.bits ^= 1
-	}
-	var color readline.ColorSequence
-	if (c.bits&1) != 0 || (prebits&1) != 0 {
-		color = readline.Magenta
-	} else if ch == '(' || ch == ')' {
-		color = readline.Cyan
-	} else if ch == '\\' || ch == '#' || ch == '\'' {
-		color = readline.Red
-	} else {
-		color = readline.White
-	}
-	c.last = ch
-	return color
 }
 
 type miniBuffer struct {
@@ -92,7 +63,20 @@ func interactive(lisp *gmnlisp.World) error {
 	stdout := colorable.NewColorableStdout()
 	editor.SetHistory(history)
 	editor.SetWriter(stdout)
-	editor.SetColoring(&skk.Coloring{Base: &Coloring{}})
+	var kc kakkoColor
+	editor.Highlight = []readline.Highlight{
+		kc.newKakkoLevel("\x1B[0;31;22m"), // red
+		kc.newKakkoLevel("\x1B[0;33;22m"), // yellow
+		kc.newKakkoLevel("\x1B[0;32;22m"), // green
+		kc.newKakkoLevel("\x1B[0;36;22m"), // cyan
+		kc.newKakkoLevel("\x1B[0;35;22m"), // magenta
+
+		{Pattern: regexp.MustCompile(`[\\#']+`), Sequence: "\x1B[0;32;1m"}, // green
+
+		{Pattern: regexp.MustCompile(`"([^"]*\\")*[^"]*$|"([^"]*\\")*[^"]*"`), Sequence: "\x1B[0;35;1m"}, // magenta
+	}
+	editor.ResetColor = "\x1B[0m"
+	editor.DefaultColor = "\x1B[0;37;1m"
 	editor.SetPrompt(func(w io.Writer, i int) (int, error) {
 		if i == 0 {
 			return io.WriteString(w, "gmnlisp> ")
