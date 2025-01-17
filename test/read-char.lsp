@@ -1,5 +1,5 @@
 (let ((in (create-string-input-stream "h2")))
-  (test (read-char in nil nil) #\h)
-  (test (read-char in nil nil) #\2)
-  (test (read-char in nil nil) nil)
+  (assert-eq (read-char in nil nil) #\h)
+  (assert-eq (read-char in nil nil) #\2)
+  (assert-eq (read-char in nil nil) nil)
   )

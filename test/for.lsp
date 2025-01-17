@@ -1,4 +1,4 @@
-(test
+(assert-eq
   (let (x y)
     (for ((x 0 (1+ x)) (y 0 (+ y 10)))
          ((= x 5) (+ x y))
@@ -11,16 +11,16 @@
           (a 0 b)
           (b 1 (+ a b)))
          ((<= n 0) a))))
-(test (fibo2 10) 55)
+(assert-eq (fibo2 10) 55)
 
-(test
+(assert-eq
   (for ((vec (vector 0 0 0 0 0)) 
         (i 0 (+ i 1))) 
     ((= i 5) vec) 
     (setf (elt vec i) i))
   #(0 1 2 3 4))
 
-(test
+(assert-eq
   (let ((x '(1 3 5 7 9))) 
     (for ((x x (cdr x)) 
           (sum 0 (+ sum (car x)))) 

@@ -1,5 +1,5 @@
 ; <string>
-(test
+(assert-eq
   (catch
     'c
     (with-handler
@@ -13,7 +13,7 @@
   "OK")
 
 ; <integer>
-(test
+(assert-eq
   (catch
     'c
     (with-handler
@@ -26,7 +26,7 @@
     "NOT HANDLED")
   "OK")
 ; <float>
-(test
+(assert-eq
   (catch
     'c
     (with-handler
@@ -39,7 +39,7 @@
     "NOT HANDLED")
   "OK")
 ; <output-stream-writer>
-(test
+(assert-eq
   (catch
     'c
     (with-handler
@@ -58,7 +58,7 @@
         (continue-condition con 'newfunc)))
     (defun 1111 (v)
       (+ v 1))))
-(test
+(assert-eq
   (newfunc 1)
   2)
 

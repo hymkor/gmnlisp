@@ -1,4 +1,4 @@
-(test
+(assert-eq
   (block main
     (with-handler
       (lambda (c)

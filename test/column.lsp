@@ -5,7 +5,7 @@
   ); with-open-output-file
 
 
-(test
+(assert-eq
   ; result
   (with-open-input-file
     (r "/tmp/foo")

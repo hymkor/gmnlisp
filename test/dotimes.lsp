@@ -1,4 +1,4 @@
-(test
+(assert-eq
 	(let ((sum 0))
 		(dotimes (n 4 (* sum 2))
       (setq sum (+ sum n))))

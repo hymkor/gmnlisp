@@ -1,1 +1,1 @@
-(test (eval (list '+ 1 2)) 3)
+(assert-eq (eval (list '+ 1 2)) 3)

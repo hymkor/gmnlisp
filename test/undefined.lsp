@@ -1,4 +1,4 @@
-(test
+(assert-eq
   (catch
     'c
      (with-handler
@@ -13,7 +13,7 @@
   "OK")
 
 ;;; test for (with-handler)
-(test (catch 'hoge
+(assert-eq (catch 'hoge
              (with-handler
                (lambda (c)
                  (if (and (instancep c <undefined-function>)

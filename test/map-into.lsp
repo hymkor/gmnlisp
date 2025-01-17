@@ -1,4 +1,4 @@
-(test
+(assert-eq
   (let ((z (list 0 0 0 0))
         (x (list 1 2 3 4))
         (y (list 5 6 7 8)))
@@ -6,7 +6,7 @@
     z)
   (list 6 8 10 12))
 
-(test
+(assert-eq
   (let ((x (list 'a 'b 'c 'd))
         (y (list 'w 'x 'y))
         (z (list 0 0 0 0)))

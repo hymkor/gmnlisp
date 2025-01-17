@@ -1,4 +1,4 @@
-(test
+(assert-eq
   (with-handler
     (lambda (c)
       (if (instancep c <division-by-zero>)
