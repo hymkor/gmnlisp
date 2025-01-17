@@ -3,6 +3,7 @@ package gmnlisp
 import (
 	"bufio"
 	"bytes"
+	"fmt"
 	"io"
 	"os"
 )
@@ -11,6 +12,8 @@ type _WriterNode struct {
 	_Writer io.Writer
 	column  int
 }
+
+var writerNodeClass = registerNewBuiltInClass[_WriterNode]("<writer>")
 
 func (w *_WriterNode) Column() int {
 	return w.column
@@ -26,6 +29,18 @@ func (w *_WriterNode) Write(p []byte) (int, error) {
 		}
 	}
 	return n, err
+}
+
+func (_WriterNode) ClassOf() Class {
+	return streamClass
+}
+
+func (t _WriterNode) Equals(Node, EqlMode) bool {
+	return false
+}
+
+func (t _WriterNode) String() string {
+	return fmt.Sprintf("<writer>: %p", &t)
 }
 
 type outputStream struct {
@@ -81,4 +96,20 @@ func (o *outputStream) FilePosition() (int64, error) {
 func (o *outputStream) SetFilePosition(n int64) (int64, error) {
 	o.w.Flush()
 	return o.file.Seek(n, os.SEEK_SET)
+}
+
+func (*outputStream) ClassOf() Class {
+	return outputStreamClass
+}
+
+func (t *outputStream) Equals(other Node, _ EqlMode) bool {
+	o, ok := other.(*outputStream)
+	if !ok {
+		return false
+	}
+	return t.file.Fd() == o.file.Fd()
+}
+
+func (t *outputStream) String() string {
+	return fmt.Sprintf("<output-stream>: %p", t)
 }

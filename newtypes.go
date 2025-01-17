@@ -19,40 +19,10 @@ var streamClass = registerClass(&_BuiltInClass{
 	},
 })
 
-func (*outputStream) ClassOf() Class {
-	return outputStreamClass
-}
-
-func (t *outputStream) Equals(other Node, _ EqlMode) bool {
-	o, ok := other.(*outputStream)
-	if !ok {
-		return false
-	}
-	return t.file.Fd() == o.file.Fd()
-}
-
-func (t *outputStream) String() string {
-	return fmt.Sprintf("<output-stream>: %p", t)
-}
-
 func (t *_Macro) Equals(Node, EqlMode) bool {
 	return false
 }
 
 func (t *_Macro) String() string {
 	return fmt.Sprintf("<macro>: %p", t)
-}
-
-var writerNodeClass = registerNewBuiltInClass[_WriterNode]("<writer>")
-
-func (_WriterNode) ClassOf() Class {
-	return streamClass
-}
-
-func (t _WriterNode) Equals(Node, EqlMode) bool {
-	return false
-}
-
-func (t _WriterNode) String() string {
-	return fmt.Sprintf("<writer>: %p", &t)
 }
