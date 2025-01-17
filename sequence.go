@@ -75,7 +75,7 @@ func (S *StringBuilder) Column() int {
 	s := S.String()
 	pos := strings.LastIndexByte(s, '\n')
 	if pos >= 0 {
-		return len(s) - pos
+		return len(s) - pos - 1
 	}
 	return len(s)
 }
