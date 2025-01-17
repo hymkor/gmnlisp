@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"context"
+	_ "embed"
 	"errors"
 	"flag"
 	"fmt"
@@ -169,11 +170,18 @@ func interactive(lisp *gmnlisp.World) error {
 	}
 }
 
+//go:embed startup.lsp
+var startupCode string
+
 func mains(args []string) error {
 	var err error
 
 	ctx := context.Background()
 	lisp := gmnlisp.New()
+
+	if _, err := lisp.Interpret(ctx, startupCode); err != nil {
+		return err
+	}
 
 	if *flagExecute != "" {
 		setArgv(lisp, args)
