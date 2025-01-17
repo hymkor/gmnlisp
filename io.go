@@ -259,7 +259,7 @@ func funSetFilePosition(ctx context.Context, w *World, stream, z Node) (Node, er
 	}
 }
 
-func openOutputFile(ctx context.Context, w *World, fnameNode Node) (*_OutputFileStream, error) {
+func openOutputFile(ctx context.Context, w *World, fnameNode Node) (*outputStream, error) {
 	filename, err := ExpectClass[String](ctx, w, fnameNode)
 	if err != nil {
 		return nil, err

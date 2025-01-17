@@ -95,11 +95,11 @@ func (t *StringBuilder) Equals(other Node, _ EqlMode) bool {
 var outputStreamClass = &_BuiltInClass{
 	name: NewSymbol("<output-stream>"),
 	instanceP: func(value Node) bool {
-		_, ok := value.(*_OutputFileStream)
+		_, ok := value.(*outputStream)
 		return ok
 	},
 	create: func() Node {
-		return &_OutputFileStream{
+		return &outputStream{
 			w:    bufio.NewWriter(os.Stderr),
 			file: os.Stderr,
 		}

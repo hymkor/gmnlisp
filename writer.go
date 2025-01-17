@@ -28,25 +28,25 @@ func (w *_WriterNode) Write(p []byte) (int, error) {
 	return n, err
 }
 
-type _OutputFileStream struct {
+type outputStream struct {
 	w        *bufio.Writer
 	file     *os.File
 	column   int
 	isClosed bool
 }
 
-func newOutputFileStream(f *os.File) *_OutputFileStream {
-	return &_OutputFileStream{
+func newOutputFileStream(f *os.File) *outputStream {
+	return &outputStream{
 		w:    bufio.NewWriter(f),
 		file: f,
 	}
 }
 
-func (o *_OutputFileStream) Column() int {
+func (o *outputStream) Column() int {
 	return o.column
 }
 
-func (o *_OutputFileStream) Write(p []byte) (int, error) {
+func (o *outputStream) Write(p []byte) (int, error) {
 	n, err := o.w.Write(p)
 	if n >= 1 {
 		if pos := bytes.LastIndexByte(p[:n], '\n'); pos >= 0 {
@@ -58,27 +58,27 @@ func (o *_OutputFileStream) Write(p []byte) (int, error) {
 	return n, err
 }
 
-func (o *_OutputFileStream) IsClosed() bool {
+func (o *outputStream) IsClosed() bool {
 	return o.isClosed
 }
 
-func (o *_OutputFileStream) Flush() {
+func (o *outputStream) Flush() {
 	o.w.Flush()
 	o.file.Sync()
 }
 
-func (o *_OutputFileStream) Close() error {
+func (o *outputStream) Close() error {
 	o.w.Flush()
 	o.isClosed = true
 	return o.file.Close()
 }
 
-func (o *_OutputFileStream) FilePosition() (int64, error) {
+func (o *outputStream) FilePosition() (int64, error) {
 	o.w.Flush()
 	return o.file.Seek(0, os.SEEK_CUR)
 }
 
-func (o *_OutputFileStream) SetFilePosition(n int64) (int64, error) {
+func (o *outputStream) SetFilePosition(n int64) (int64, error) {
 	o.w.Flush()
 	return o.file.Seek(n, os.SEEK_SET)
 }

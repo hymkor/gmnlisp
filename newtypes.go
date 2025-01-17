@@ -19,19 +19,19 @@ var streamClass = registerClass(&_BuiltInClass{
 	},
 })
 
-func (*_OutputFileStream) ClassOf() Class {
+func (*outputStream) ClassOf() Class {
 	return outputStreamClass
 }
 
-func (t *_OutputFileStream) Equals(other Node, _ EqlMode) bool {
-	o, ok := other.(*_OutputFileStream)
+func (t *outputStream) Equals(other Node, _ EqlMode) bool {
+	o, ok := other.(*outputStream)
 	if !ok {
 		return false
 	}
 	return t.file.Fd() == o.file.Fd()
 }
 
-func (t *_OutputFileStream) String() string {
+func (t *outputStream) String() string {
 	return fmt.Sprintf("<output-stream>: %p", t)
 }
 
