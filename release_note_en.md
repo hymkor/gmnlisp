@@ -1,5 +1,12 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+- Renamed the type `_OutputFileStream` to `outputStream`.
+- The standard output and the error output now use `outputStream`.
+- Fixed an issue `~&` of `(format)` inserted a new line even when the cursor was at the beginning of the line.
+- Made `_WriteNode` and `outputStream` completely independent of each other.
+- Made the executable include the macro `(assert-eq)` which was defined on test lisp files. It is not contained in the gmnlisp package.
+- Incorporated the macro `(assert-eq)`, previously defined as `(test)` in test Lisp files, into the gmnlisp executable. Note that it is not included in the gmnlisp package.
+
 v0.7.8
 ======
 Jan 16, 2025
