@@ -1,5 +1,9 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+v0.7.9
+======
+Feb 15, 2025
+
 - Renamed the type `_OutputFileStream` to `outputStream`.
 - The standard output and the error output now use `outputStream`.
 - Fixed an issue `~&` of `(format)` inserted a new line even when the cursor was at the beginning of the line.
@@ -7,6 +11,8 @@
 - Made the executable include the macro `(assert-eq)` which was defined on test lisp files. It is not contained in the gmnlisp package.
 - Incorporated the macro `(assert-eq)`, previously defined as `(test)` in test Lisp files, into the gmnlisp executable. Note that it is not included in the gmnlisp package.
 - In interactive mode, parentheses are now colored differently for each nested level
+
+[TP Result] : OK = 11040, NG = 5371
 
 v0.7.8
 ======

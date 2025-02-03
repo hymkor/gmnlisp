@@ -1,11 +1,17 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+v0.7.9
+======
+Feb 15, 2025
+
 - `_OutputFileStream` を `outputStream` に改名
 - 標準出力・標準エラー出力は `outputStream` で使うよう修正
 - `(format)` の `~&` で印刷位置が行頭の時でも改行する場合があった点を修正
 - `_WriteNode` と `outputStream` は完全に独立した型とした
 - テスト用 Lisp ファイルで定義されていた `(test)` マクロを、`(assert-eq)` という名前でgmnlisp の実行ファイルに組み込んだ。なお、gmnlisp パッケージには含んでいない
 - インタラクティブモードで、括弧はネストレベルごとに違う色付けをするようにした
+
+[TP Result] : OK = 11040, NG = 5371
 
 v0.7.8
 ======
