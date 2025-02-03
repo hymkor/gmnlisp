@@ -6,6 +6,7 @@
 - Made `_WriteNode` and `outputStream` completely independent of each other.
 - Made the executable include the macro `(assert-eq)` which was defined on test lisp files. It is not contained in the gmnlisp package.
 - Incorporated the macro `(assert-eq)`, previously defined as `(test)` in test Lisp files, into the gmnlisp executable. Note that it is not included in the gmnlisp package.
+- In interactive mode, parentheses are now colored differently for each nested level
 
 v0.7.8
 ======
