@@ -124,7 +124,7 @@ var divisionByZeroClass = registerNewAbstractClass[*ArithmeticError]("<division-
 
 func raiseDivisionByZero(ctx context.Context, w *World, m, n Node) (Node, error) {
 	return callHandler[Node](ctx, w, true, &ArithmeticError{
-		Operation: FunctionRef{value: &Function{F: funDevide}},
+		Operation: FunctionRef{value: &Function{C: 2, F: funDevide}},
 		Operands:  List(m, n),
 		Class:     divisionByZeroClass,
 	})
@@ -144,23 +144,6 @@ func funArithmeticErrorOperands(ctx context.Context, w *World, n Node) (Node, er
 		return nil, err
 	}
 	return e.Operands, nil
-}
-
-func (i Integer) Divide(ctx context.Context, w *World, n Node) (Node, error) {
-	if _n, ok := n.(Float); ok {
-		if _n == 0 {
-			return raiseDivisionByZero(ctx, w, i, n)
-		}
-		return Float(i) / _n, nil
-	}
-	_n, err := ExpectClass[Integer](ctx, w, n)
-	if err == nil {
-		if _n == 0 {
-			return raiseDivisionByZero(ctx, w, i, n)
-		}
-		return i / _n, nil
-	}
-	return nil, err
 }
 
 func (i Integer) LessThan(ctx context.Context, w *World, n Node) (bool, error) {
@@ -228,23 +211,6 @@ func (f Float) Multi(ctx context.Context, w *World, n Node) (Node, error) {
 	_n, err := ExpectClass[Float](ctx, w, n)
 	if err == nil {
 		return f * _n, nil
-	}
-	return nil, err
-}
-
-func (f Float) Divide(ctx context.Context, w *World, n Node) (Node, error) {
-	if _n, ok := n.(Integer); ok {
-		if _n == 0 {
-			return raiseDivisionByZero(ctx, w, f, n)
-		}
-		return f / Float(_n), nil
-	}
-	_n, err := ExpectClass[Float](ctx, w, n)
-	if err == nil {
-		if _n == 0 {
-			return raiseDivisionByZero(ctx, w, f, n)
-		}
-		return f / _n, nil
 	}
 	return nil, err
 }

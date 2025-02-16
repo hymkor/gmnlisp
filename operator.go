@@ -83,16 +83,32 @@ func funMulti(ctx context.Context, w *World, args []Node) (Node, error) {
 	})
 }
 
-func funDevide(ctx context.Context, w *World, args []Node) (Node, error) {
-	type CanDevide interface {
-		Node
-		Divide(context.Context, *World, Node) (Node, error)
+func div(z1, z2 int) int {
+	q := z1 / z2
+	r := z1 % z2
+	if r != 0 && (z1 < 0) != (z2 < 0) {
+		q--
 	}
-	_left, err := ExpectInterface[CanDevide](ctx, w, args[0], floatClass)
+	return q
+}
+
+func funDivide(ctx context.Context, w *World, args []Node) (Node, error) {
+	L, err := ExpectClass[Integer](ctx, w, args[0])
 	if err != nil {
 		return nil, err
 	}
-	return _left.Divide(ctx, w, args[1])
+	R, err := ExpectClass[Integer](ctx, w, args[1])
+	if err != nil {
+		return nil, err
+	}
+	if R == 0 {
+		return callHandler[Node](ctx, w, true, &ArithmeticError{
+			Operation: FunctionRef{value: &Function{C: 2, F: funDivide}},
+			Operands:  List(args[0], args[1]),
+			Class:     divisionByZeroClass,
+		})
+	}
+	return Integer(div(int(L), int(R))), nil
 }
 
 type canLessThan interface {
