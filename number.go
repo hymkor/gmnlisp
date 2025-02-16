@@ -122,14 +122,6 @@ func (e *ArithmeticError) Error() string {
 
 var divisionByZeroClass = registerNewAbstractClass[*ArithmeticError]("<division-by-zero>")
 
-func raiseDivisionByZero(ctx context.Context, w *World, m, n Node) (Node, error) {
-	return callHandler[Node](ctx, w, true, &ArithmeticError{
-		Operation: FunctionRef{value: &Function{C: 2, F: funDevide}},
-		Operands:  List(m, n),
-		Class:     divisionByZeroClass,
-	})
-}
-
 func funArithmeticErrorOperation(ctx context.Context, w *World, n Node) (Node, error) {
 	e, err := ExpectClass[*ArithmeticError](ctx, w, n)
 	if err != nil {

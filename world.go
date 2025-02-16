@@ -397,7 +397,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("maplist"):                        &Function{F: funMapList},
 	NewSymbol("member"):                         Function2(funMember),
 	NewSymbol("minusp"):                         Function1(funMinusp),
-	NewSymbol("mod"):                            Function2(funMod),
+	NewSymbol("mod"):                            &Function{C: 2, F: funMod},
 	NewSymbol("not"):                            Function1(funNot),
 	NewSymbol("nreverse"):                       Function1(NReverse),
 	NewSymbol("null"):                           Function1(funNullp),

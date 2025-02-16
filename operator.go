@@ -261,33 +261,31 @@ func funRound(ctx context.Context, w *World, arg Node) (Node, error) {
 	return floatToInteger(ctx, w, arg, math.Round)
 }
 
-func funMod(ctx context.Context, w *World, first, second Node) (Node, error) {
-	var left float64
-	var right float64
-	bits := 0
+func mod(z1, z2 int) int {
+	r := z1 % z2
+	if r != 0 && (r < 0) != (z2 < 0) {
+		r += z2
+	}
+	return r
+}
 
-	if _left, ok := first.(Integer); ok {
-		left = float64(int(_left))
-		bits = 1
-	} else if _left, err := ExpectClass[Float](ctx, w, first); err != nil {
+func funMod(ctx context.Context, w *World, args []Node) (Node, error) {
+	L, err := ExpectClass[Integer](ctx, w, args[0])
+	if err != nil {
 		return nil, err
-	} else {
-		left = float64(_left)
 	}
-
-	if _right, ok := second.(Integer); ok {
-		right = float64(int(_right))
-		bits |= 2
-	} else if _right, err := ExpectClass[Float](ctx, w, second); err != nil {
+	R, err := ExpectClass[Integer](ctx, w, args[1])
+	if err != nil {
 		return nil, err
-	} else {
-		right = float64(_right)
 	}
-	value := math.Remainder(left, right)
-	if bits == 3 {
-		return Integer(int(value)), nil
+	if R == 0 {
+		return callHandler[Node](ctx, w, true, &ArithmeticError{
+			Operation: FunctionRef{value: &Function{C: 2, F: funMod}},
+			Operands:  List(args[0], args[1]),
+			Class:     divisionByZeroClass,
+		})
 	}
-	return Float(value), nil
+	return Integer(mod(int(L), int(R))), nil
 }
 
 func funRem(ctx context.Context, w *World, first, second Node) (Node, error) {
