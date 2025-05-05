@@ -3,6 +3,7 @@
 - Modified the functions `div` and `mod` to ensure that the division result is the greatest integer less than or equal to the quotient when negative values are passed as arguments.
 - Reserved symbols such as `nil`, `t`, `*pi*`, `*most-positive-float*`, and `*most-negative-float*` are now recognized and rejected when used improperly as identifiers in `let`, `let*`, `lambda`, `defconstant`, and `defglobal` forms. These cases now raise `<program-error>` as required.
 - Introduced a new `Reserved` type to represent such reserved symbols, which are now identified during parsing.
+- `(defglobal)` now raises an error if the symbol has already been defined as a constant.
 
 v0.7.9
 ======
