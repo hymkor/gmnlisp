@@ -1,10 +1,8 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
 - Modified the functions `div` and `mod` to ensure that the division result is the greatest integer less than or equal to the quotient when negative values are passed as arguments.
-- Reject reserved symbols (`nil`, `t`) in lambda parameter list with `<program-error>`
-- Added a new `Reserved` type to represent reserved symbols that cannot be used as lambda parameters.
-- The constants `*pi*`, `*most-positive-float*`, and `*most-negative-float*` are now recognized as Reserved symbols at parse time, preventing their misuse in parameter lists.
-    - `((lambda (*pi*) nil) 1)` → now correctly raises `<program-error>`
+- Reserved symbols such as `nil`, `t`, `*pi*`, `*most-positive-float*`, and `*most-negative-float*` are now recognized and rejected when used improperly as identifiers in `let`, `let*`, `lambda`, `defconstant`, and `defglobal` forms. These cases now raise `<program-error>` as required.
+- Introduced a new `Reserved` type to represent such reserved symbols, which are now identified during parsing.
 
 v0.7.9
 ======
