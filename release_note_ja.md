@@ -4,6 +4,7 @@
 - `nil`、`t`、`*pi*`、`*most-positive-float*`、`*most-negative-float*` などの予約語を、`let`, `let*`, `lambda`、`defconstant`、`defglobal` フォームで識別子として使った場合に `<program-error>` を発生させるようにした。
 - 予約語を表現する新しい型 `Reserved` を導入し、構文解析の段階で認識するようにした。
 - シンボルが定数として定義済みの時、`(defglobal)` はエラーになるようにした。
+- 引数のない `(or)` で、エラーとせずに、正しく `nil` を返すよう修正した。
 
 v0.7.9
 ======
