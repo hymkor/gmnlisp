@@ -144,7 +144,7 @@ func cmdDefConstant(ctx context.Context, w *World, list Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	symbol, err := ExpectSymbol(ctx, w, symbolNode)
+	symbol, err := ExpectNonReservedSymbol(ctx, w, symbolNode)
 	if err != nil {
 		return nil, err
 	}
@@ -170,7 +170,7 @@ func cmdDefglobal(ctx context.Context, w *World, list Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	symbol, err := ExpectSymbol(ctx, w, symbolNode)
+	symbol, err := ExpectNonReservedSymbol(ctx, w, symbolNode)
 	if err != nil {
 		return nil, err
 	}
