@@ -265,7 +265,7 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 	if err != nil {
 		return nil, fmt.Errorf("[1] %w", err)
 	}
-	className, err := ExpectSymbol(ctx, w, _className)
+	className, err := ExpectNonReservedSymbol(ctx, w, _className)
 	if err != nil {
 		return nil, err
 	}
