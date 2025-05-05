@@ -29,7 +29,7 @@ func (stdFactory) Array(list []Node, dim []int) Node { return &Array{list: list,
 func (stdFactory) Keyword(s string) Node             { return NewKeyword(s) }
 func (stdFactory) Rune(r rune) Node                  { return Rune(r) }
 func (stdFactory) Symbol(s string) Node {
-	if r, ok := reservedManager.Find(s); ok {
+	if r, ok := reservedManager.find(s); ok {
 		return r
 	}
 	return NewSymbol(s)

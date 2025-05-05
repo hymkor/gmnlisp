@@ -126,7 +126,7 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 	case Symbol:
 		switch class {
 		case stringClass.name:
-			return String(val.String()), nil
+			return String(val.OriginalString()), nil
 		case symbolClass.name:
 			return val, nil
 		}

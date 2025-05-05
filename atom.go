@@ -15,7 +15,11 @@ func (t _TrueType) ClassOf() Class {
 }
 
 func (_TrueType) String() string {
-	return "t"
+	return "T"
+}
+
+func (_TrueType) OriginalString() string {
+	return "T"
 }
 
 var True Node = _TrueType{}
@@ -26,7 +30,7 @@ func (_TrueType) Equals(n Node, m EqlMode) bool {
 }
 
 func (nt _TrueType) Id() int {
-	return int(NewSymbol("t"))
+	return NewReserved("T").Id()
 }
 
 type _NullType struct{}
@@ -38,7 +42,11 @@ func (_NullType) ClassOf() Class {
 }
 
 func (_NullType) String() string {
-	return "nil"
+	return "NIL"
+}
+
+func (_NullType) OriginalString() string {
+	return "NIL"
 }
 
 func (nt _NullType) Equals(n Node, m EqlMode) bool {
@@ -50,7 +58,7 @@ func (nt _NullType) Equals(n Node, m EqlMode) bool {
 }
 
 func (nt _NullType) Id() int {
-	return int(NewSymbol("nil"))
+	return NewReserved("NIL").Id()
 }
 
 var Null Node = _NullType{}
@@ -201,7 +209,7 @@ func (Keyword) ClassOf() Class {
 }
 
 func (k Keyword) String() string {
-	return keywordManager.IdToName(k)
+	return keywordManager.IdToName(k)[0]
 }
 
 func (k Keyword) Equals(n Node, m EqlMode) bool {

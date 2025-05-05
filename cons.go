@@ -87,7 +87,7 @@ func (cons *Cons) writeToWithoutKakko(w io.Writer, m PrintMode) (int, error) {
 	var wc writeCounter
 	var lastCar Node = cons.Car
 	if IsNone(cons.Car) {
-		if wc.Try(io.WriteString(w, "nil")) {
+		if wc.Try(io.WriteString(w, "NIL")) {
 			return wc.Result()
 		}
 	} else {
@@ -107,7 +107,7 @@ func (cons *Cons) writeToWithoutKakko(w io.Writer, m PrintMode) (int, error) {
 					}
 				}
 				if IsNull(p.Car) {
-					if wc.Try(io.WriteString(w, "nil")) {
+					if wc.Try(io.WriteString(w, "NIL")) {
 						return wc.Result()
 					}
 				} else if wc.Try(tryPrintTo(w, p.Car, m)) {

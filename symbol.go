@@ -3,18 +3,20 @@ package gmnlisp
 import (
 	"context"
 	"fmt"
+	"strings"
 )
 
 type idMap[T ~int] struct {
-	id2name []string
+	id2name [][2]string
 	name2id map[string]T
 }
 
-func (idm *idMap[T]) Find(name string) (T, bool) {
+func (idm *idMap[T]) find(name string) (T, bool) {
 	if idm.name2id == nil {
 		var zero T
 		return zero, false
 	}
+	name = strings.ToUpper(name)
 	s, ok := idm.name2id[name]
 	return s, ok
 }
@@ -23,12 +25,13 @@ func (idm *idMap[T]) NameToId(name string) T {
 	if idm.name2id == nil {
 		idm.name2id = make(map[string]T)
 	}
-	if id, ok := idm.name2id[name]; ok {
+	upperName := strings.ToUpper(name)
+	if id, ok := idm.name2id[upperName]; ok {
 		return id
 	}
 	id := T(len(idm.name2id))
-	idm.name2id[name] = id
-	idm.id2name = append(idm.id2name, name)
+	idm.name2id[upperName] = id
+	idm.id2name = append(idm.id2name, [...]string{upperName, name})
 	return id
 }
 
@@ -36,9 +39,9 @@ func (idm *idMap[T]) Count() int {
 	return len(idm.name2id)
 }
 
-func (idm *idMap[T]) IdToName(id T) string {
+func (idm *idMap[T]) IdToName(id T) [2]string {
 	if id < 0 || int(id) >= len(idm.id2name) {
-		return "(undefined)"
+		return [...]string{"(UNDEFINED)", "(undefined)"}
 	}
 	return idm.id2name[id]
 }
@@ -46,6 +49,7 @@ func (idm *idMap[T]) IdToName(id T) string {
 type Symbol interface {
 	Id() int
 	Node
+	OriginalString() string
 }
 
 type _Symbol int
@@ -68,7 +72,11 @@ func (s _Symbol) Equals(n Node, m EqlMode) bool {
 }
 
 func (s _Symbol) String() string {
-	return symbolManager.IdToName(s)
+	return symbolManager.IdToName(s)[0]
+}
+
+func (s _Symbol) OriginalString() string {
+	return symbolManager.IdToName(s)[1]
 }
 
 var symbolManager = &idMap[_Symbol]{}
@@ -107,7 +115,11 @@ func (r Reserved) Equals(n Node, m EqlMode) bool {
 }
 
 func (r Reserved) String() string {
-	return reservedManager.IdToName(r)
+	return reservedManager.IdToName(r)[0]
+}
+
+func (s Reserved) OriginalString() string {
+	return reservedManager.IdToName(s)[1]
 }
 
 var reservedManager = &idMap[Reserved]{}

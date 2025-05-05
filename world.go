@@ -505,7 +505,7 @@ func (rw _RootWorld) Get(symbol Symbol) (Callable, bool) {
 	if value, ok := autoLoadFunc[symbol]; ok {
 		return value, true
 	}
-	fname := "embed/" + symbol.String() + ".lsp"
+	fname := "embed/" + strings.ToLower(symbol.String()) + ".lsp"
 
 	script, err := embedLisp.ReadFile(fname)
 	if err == nil {
