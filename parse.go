@@ -28,9 +28,15 @@ func (stdFactory) String(s string) Node              { return String(s) }
 func (stdFactory) Array(list []Node, dim []int) Node { return &Array{list: list, dim: dim} }
 func (stdFactory) Keyword(s string) Node             { return NewKeyword(s) }
 func (stdFactory) Rune(r rune) Node                  { return Rune(r) }
-func (stdFactory) Symbol(s string) Node              { return NewSymbol(s) }
-func (stdFactory) Null() Node                        { return Null }
-func (stdFactory) True() Node                        { return True }
+func (stdFactory) Symbol(s string) Node {
+	if r, ok := reservedManager.Find(s); ok {
+		return r
+	}
+	return NewSymbol(s)
+}
+
+func (stdFactory) Null() Node { return Null }
+func (stdFactory) True() Node { return True }
 
 func ReadNode(rs io.RuneScanner) (Node, error) {
 	return parser.Read[Node](stdFactory{}, rs)

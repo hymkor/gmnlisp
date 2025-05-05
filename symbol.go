@@ -10,6 +10,15 @@ type idMap[T ~int] struct {
 	name2id map[string]T
 }
 
+func (idm *idMap[T]) Find(name string) (T, bool) {
+	if idm.name2id == nil {
+		var zero T
+		return zero, false
+	}
+	s, ok := idm.name2id[name]
+	return s, ok
+}
+
 func (idm *idMap[T]) NameToId(name string) T {
 	if idm.name2id == nil {
 		idm.name2id = make(map[string]T)
