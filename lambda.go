@@ -354,11 +354,11 @@ func testCarIsCurrFunc(ctx context.Context, w *World, target Node, currFunc Symb
 }
 
 var (
-	symIf    = NewSymbol("if")
-	symLet   = NewSymbol("let")
-	symLetX  = NewSymbol("let*")
-	symProgn = NewSymbol("progn")
-	symCond  = NewSymbol("cond")
+	symIf    = NewReserved("if")
+	symLet   = NewReserved("let")
+	symLetX  = NewReserved("let*")
+	symProgn = NewReserved("progn")
+	symCond  = NewReserved("cond")
 )
 
 // Evaluate the target considering the tail call optimization.
