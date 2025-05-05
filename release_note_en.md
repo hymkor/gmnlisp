@@ -5,6 +5,7 @@
 - Introduced a new `Reserved` type to represent such reserved symbols, which are now identified during parsing.
 - `(defglobal)` now raises an error if the symbol has already been defined as a constant.
 - Fix: `(or)` with no arguments now correctly returns `nil` instead of raising an error
+- `(defclass)` now raises an error when a special form name is used as the class name
 
 v0.7.9
 ======
