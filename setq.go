@@ -2,6 +2,7 @@ package gmnlisp
 
 import (
 	"context"
+	"fmt"
 )
 
 func cmdSetq(ctx context.Context, w *World, params Node) (Node, error) {
@@ -180,6 +181,10 @@ func cmdDefglobal(ctx context.Context, w *World, list Node) (Node, error) {
 	}
 	if IsSome(list) {
 		return nil, ErrTooManyArguments
+	}
+	if _, ok := w.constants[symbol]; ok {
+		_, err = raiseProgramError(ctx, w, fmt.Errorf("%v is defined as constant", symbol))
+		return nil, err
 	}
 	w.DefineGlobal(symbol, value)
 	return symbol, nil
