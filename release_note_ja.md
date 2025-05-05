@@ -1,6 +1,7 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
 - マイナスの値を与えられても、割り算の結果が商以下の最大の整数になるよう、関数 `div` と `mod` を修正した
+- lambda の仮引数に nil や t を使った場合に `<program-error>` を返すよう修正
 
 v0.7.9
 ======

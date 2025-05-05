@@ -1,6 +1,7 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
 - Modified the functions `div` and `mod` to ensure that the division result is the greatest integer less than or equal to the quotient when negative values are passed as arguments.
+- Reject reserved symbols (`nil`, `t`) in lambda parameter list with `<program-error>`
 
 v0.7.9
 ======
