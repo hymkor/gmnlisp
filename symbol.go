@@ -77,3 +77,32 @@ func funGensym(ctx context.Context, w *World) (Node, error) {
 }
 
 var symbolClass = registerNewBuiltInClass[Symbol]("<symbol>")
+
+type Reserved int
+
+func (r Reserved) Id() int {
+	return int(r)
+}
+
+func (_ Reserved) ClassOf() Class {
+	return symbolClass
+}
+
+func (r Reserved) Eval(_ context.Context, w *World) (Node, error) {
+	return w.Get(r)
+}
+
+func (r Reserved) Equals(n Node, m EqlMode) bool {
+	ns, ok := n.(Reserved)
+	return ok && r == ns
+}
+
+func (r Reserved) String() string {
+	return reservedManager.IdToName(r)
+}
+
+var reservedManager = &idMap[Reserved]{}
+
+func NewReserved(name string) Reserved {
+	return reservedManager.NameToId(name)
+}
