@@ -7,6 +7,7 @@
 - Fix: `(or)` with no arguments now correctly returns `nil` instead of raising an error
 - `(defclass)` now raises an error when a special form name is used as the class name
 - Symbols: case-insensitive equality, display in uppercase, and preserve original case for string conversion
+- Fix `(convert nil <type>)` not behaving according to the specification
 
 v0.7.9
 ======
