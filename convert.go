@@ -25,6 +25,21 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 	if IsSome(list) {
 		return nil, ErrTooManyArguments
 	}
+
+	if IsNone(source) {
+		switch class {
+		case arrayClass.name:
+			return arrayClass.Create(), nil
+		case stringClass.name:
+			return String("NIL"), nil
+		case symbolClass.name:
+			return Null, nil
+		case listClass.name:
+			return Null, nil
+		case classVector:
+			return new(VectorBuilder).Sequence(), nil
+		}
+	}
 	switch val := source.(type) {
 	case Rune:
 		switch class {
