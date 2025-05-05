@@ -2,6 +2,9 @@
 
 - マイナスの値を与えられても、割り算の結果が商以下の最大の整数になるよう、関数 `div` と `mod` を修正した
 - lambda の仮引数に nil や t を使った場合に `<program-error>` を返すよう修正
+- lambda の引数で予約語が使えないように新規に `Reserved` 型を追加した。
+- 引数リストで誤って使わないよう、定数 `*pi*`, `*most-positive-float*`, `*most-negative-float*` をパース時に予約シンボルと認識するようにした。
+    - `((lambda (*pi*) nil) 1)` が、正しく `<program-error>` を起こすようになった。
 
 v0.7.9
 ======

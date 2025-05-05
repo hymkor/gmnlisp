@@ -2,6 +2,9 @@
 
 - Modified the functions `div` and `mod` to ensure that the division result is the greatest integer less than or equal to the quotient when negative values are passed as arguments.
 - Reject reserved symbols (`nil`, `t`) in lambda parameter list with `<program-error>`
+- Added a new `Reserved` type to represent reserved symbols that cannot be used as lambda parameters.
+- The constants `*pi*`, `*most-positive-float*`, and `*most-negative-float*` are now recognized as Reserved symbols at parse time, preventing their misuse in parameter lists.
+    - `((lambda (*pi*) nil) 1)` → now correctly raises `<program-error>`
 
 v0.7.9
 ======
