@@ -235,6 +235,18 @@ func ExpectSymbol(ctx context.Context, w *World, v Node) (Symbol, error) {
 	return ExpectInterface[Symbol](ctx, w, v, symbolClass)
 }
 
+func ExpectNonReservedSymbol(ctx context.Context, w *World, v Node) (_Symbol, error) {
+	symbol, ok := v.(_Symbol)
+	if ok {
+		return symbol, nil
+	}
+	if _, err := ExpectSymbol(ctx, w, v); err != nil {
+		return 0, err
+	}
+	_, err := raiseProgramError(ctx, w, errors.New("Expect Symbol"))
+	return 0, err
+}
+
 type _UndefinedEntity struct {
 	name  Symbol
 	space Symbol

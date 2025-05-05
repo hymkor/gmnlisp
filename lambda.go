@@ -52,14 +52,8 @@ func getParameterList(ctx context.Context, w *World, node Node) (*_Parameters, e
 			if err != nil {
 				return nil, err
 			}
-			var ok bool
-			rest, ok = nameNode.(_Symbol)
-			if !ok {
-				if _, err := ExpectSymbol(ctx, w, nameNode); err != nil {
-					return nil, err
-				}
-				// for reserved symbols (e.g. t and nil)
-				_, err := raiseProgramError(ctx, w, errors.New("Expect Symbol"))
+			rest, err = ExpectNonReservedSymbol(ctx, w, nameNode)
+			if err != nil {
 				return nil, err
 			}
 			if _, ok := dupCheck[rest]; ok {
@@ -68,13 +62,8 @@ func getParameterList(ctx context.Context, w *World, node Node) (*_Parameters, e
 			}
 			dupCheck[rest] = struct{}{}
 		} else {
-			nameSymbol, ok := nameNode.(_Symbol)
-			if !ok {
-				if _, err := ExpectSymbol(ctx, w, nameNode); err != nil {
-					return nil, err
-				}
-				// for reserved symbols (e.g. t and nil)
-				_, err := raiseProgramError(ctx, w, errors.New("Expect Symbol"))
+			nameSymbol, err := ExpectNonReservedSymbol(ctx, w, nameNode)
+			if err != nil {
 				return nil, err
 			}
 			if _, ok := dupCheck[nameSymbol]; ok {
