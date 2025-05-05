@@ -214,7 +214,8 @@ func cmdAnd(ctx context.Context, w *World, param Node) (Node, error) {
 }
 
 func cmdOr(ctx context.Context, w *World, param Node) (Node, error) {
-	for {
+	var value Node = Null
+	for IsSome(param) {
 		var value Node
 		var err error
 
@@ -225,10 +226,8 @@ func cmdOr(ctx context.Context, w *World, param Node) (Node, error) {
 		if IsSome(value) {
 			return value, nil
 		}
-		if IsNone(param) {
-			return Null, nil
-		}
 	}
+	return value, nil
 }
 
 func floatToInteger(ctx context.Context, w *World, arg Node, f func(float64) float64) (Node, error) {
