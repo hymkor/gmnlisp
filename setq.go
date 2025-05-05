@@ -82,7 +82,7 @@ func letValuesToVars(ctx context.Context, w *World, list Node, lexical map[Symbo
 		if err := ListToArray(item, argv[:]); err != nil {
 			return err
 		}
-		symbol, err := ExpectSymbol(ctx, w, argv[0])
+		symbol, err := ExpectNonReservedSymbol(ctx, w, argv[0])
 		if err != nil {
 			return err
 		}
