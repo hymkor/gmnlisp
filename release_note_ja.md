@@ -1,5 +1,9 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+v0.7.10
+=======
+May 6 2025
+
 - マイナスの値を与えられても、割り算の結果が商以下の最大の整数になるよう、関数 `div` と `mod` を修正した
 - `nil`、`t`、`*pi*`、`*most-positive-float*`、`*most-negative-float*` などの予約語を、`let`, `let*`, `lambda`、`defconstant`、`defglobal` フォームで識別子として使った場合に `<program-error>` を発生させるようにした。
 - 予約語を表現する新しい型 `Reserved` を導入し、構文解析の段階で認識するようにした。
@@ -8,6 +12,8 @@
 - `(defclass)` で、特殊形式名がクラス名として使われた時にエラーを起こすようにした。
 - シンボルの比較では英大文字・小文字を区別しないが、表示は英大文字とするようにした。シンボルから文字列に戻す時は最初に作られた英大文字・小文字を復元するようにした
 - `(convert nil 各種型)` が仕様通りとなっていなかった点を修正した
+
+[TP Result] : OK = 11533, NG = 4878
 
 v0.7.9
 ======

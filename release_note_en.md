@@ -1,5 +1,9 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+v0.7.10
+=======
+May 6 2025
+
 - Modified the functions `div` and `mod` to ensure that the division result is the greatest integer less than or equal to the quotient when negative values are passed as arguments.
 - Reserved symbols such as `nil`, `t`, `*pi*`, `*most-positive-float*`, and `*most-negative-float*` are now recognized and rejected when used improperly as identifiers in `let`, `let*`, `lambda`, `defconstant`, and `defglobal` forms. These cases now raise `<program-error>` as required.
 - Introduced a new `Reserved` type to represent such reserved symbols, which are now identified during parsing.
@@ -8,6 +12,8 @@
 - `(defclass)` now raises an error when a special form name is used as the class name
 - Symbols: case-insensitive equality, display in uppercase, and preserve original case for string conversion
 - Fix `(convert nil <type>)` not behaving according to the specification
+
+[TP Result] : OK = 11533, NG = 4878
 
 v0.7.9
 ======
