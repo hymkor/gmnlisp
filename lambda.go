@@ -451,6 +451,10 @@ func cmdApply(ctx context.Context, w *World, list Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
+	if IsNone(list) {
+		_, err := raiseProgramError(ctx, w, ErrTooShortTokens)
+		return nil, err
+	}
 	f, err := ExpectFunction(ctx, w, funcNode)
 	if err != nil {
 		return nil, err
