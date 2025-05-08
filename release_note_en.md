@@ -1,5 +1,8 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+- Fix: ensure APPLY raises error for improper list in final argument
+- Fix APPLY to check number of arguments before validating the function argument
+
 v0.7.10
 =======
 May 6 2025

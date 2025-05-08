@@ -1,5 +1,8 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+- 最後の引数が適切なリストでない場合 APPLY はエラーを起こすようにした
+- 「関数」引数の検査よりも前に引数チェックをするよう APPLY を修正した。
+
 v0.7.10
 =======
 May 6 2025
