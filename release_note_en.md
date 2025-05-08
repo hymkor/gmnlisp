@@ -2,6 +2,7 @@
 
 - Fix: ensure APPLY raises error for improper list in final argument
 - Fix APPLY to check number of arguments before validating the function argument
+- Fix: recognize character names like #\Space case-insensitively
 
 v0.7.10
 =======
