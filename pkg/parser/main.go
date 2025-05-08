@@ -294,7 +294,7 @@ func (p *_Parser[N]) ReadNode(rs io.RuneScanner) (N, error) {
 	}
 	if strings.HasPrefix(token, "#\\") {
 		var val rune
-		switch token[2:] {
+		switch strings.ToLower(token[2:]) {
 		case "tab":
 			val = '\t'
 		case "linefeed", "newline":
