@@ -4,6 +4,7 @@
 - 「関数」引数の検査よりも前に引数チェックをするよう APPLY を修正した。
 - #\Space のような文字の名前の英大文字小文字の区別をしないよう修正した。
 - `simple-error`, `simple-error-format-string`, `simple-error-format-arguments` をGo言語で実装しなおした。
+- 新関数 `%make-simple-error` を作成し、`(create <simple-error>)` のかわりに `(error)` と `(cerror)` 中で使うようにした
 
 v0.7.10
 =======
