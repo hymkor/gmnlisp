@@ -447,13 +447,9 @@ func funSimpleErrorFormatArguments(ctx context.Context, w *World, s Node) (Node,
 	return e.FormatArguments, nil
 }
 
-func funSimpleError(ctx context.Context, w *World, args []Node) (Node, error) {
-	var arguments Node = Null
-	for i := len(args) - 1; i >= 1; i-- {
-		arguments = &Cons{Car: args[i], Cdr: arguments}
-	}
+func funMakeSimpleError(ctx context.Context, w *World, f, args Node) (Node, error) {
 	return &SimpleError{
-		FormatString:    args[0],
-		FormatArguments: arguments,
+		FormatString:    f,
+		FormatArguments: args,
 	}, nil
 }

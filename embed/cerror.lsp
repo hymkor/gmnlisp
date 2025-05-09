@@ -1,8 +1,6 @@
 (lambda (continue-string error-string :rest obj)
   (signal-condition
-    (create (class <simple-error>)
-        'format-string error-string
-        'format-arguments obj)
+    (%make-simple-error error-string obj)
     (let ((str (create-string-output-stream)))
-      (apply format str continue-string obj)
+      (apply #'format str continue-string obj)
       (get-output-stream-string str))))
