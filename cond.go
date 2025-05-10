@@ -76,6 +76,12 @@ var reportCondition = &_Generic{
 }
 
 func funSignalCondition(ctx context.Context, w *World, cond, continueable Node) (Node, error) {
+	if !errorClass.InstanceP(cond) {
+		return nil, &DomainError{
+			Object:        cond,
+			ExpectedClass: errorClass,
+		}
+	}
 	if len(w.handler) <= 0 {
 		buffer := &StringBuilder{}
 		if _, err := reportCondition.Call(ctx, w, UnevalList(cond, buffer)); err == nil {
