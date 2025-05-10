@@ -494,7 +494,7 @@ Items without checkboxes are not standard functions
 
 #### 11.2 Float class
 
-- [ ] \*pi\*
+- [x] \*pi\*
 - [x] \*most-positive-float\*
 - [x] \*most-negative-float\*
 - [x] floatp
@@ -583,7 +583,7 @@ Items without checkboxes are not standard functions
 - [ ] basic-vector-p
 - [ ] general-vector-p
 - [ ] create-vector
-- [ ] vector
+- [x] vector
 
 ### 16 String class
 
