@@ -6,6 +6,7 @@
 - `simple-error`, `simple-error-format-string`, `simple-error-format-arguments` をGo言語で実装しなおした。
 - 新関数 `%make-simple-error` を作成し、`(create <simple-error>)` のかわりに `(error)` と `(cerror)` 中で使うようにした
 - `error` and `cerror` で引数が文字列か検査するようにした
+- `(signal-conditions)` で第一引数が `<error>` を継承しているかチェックするようにした。
 
 v0.7.10
 =======

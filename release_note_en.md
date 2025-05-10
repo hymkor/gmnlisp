@@ -6,6 +6,7 @@
 - Reimplement `simple-error`, `simple-error-format-string`, and `simple-error-format-arguments` in Go
 - Create and use new function `%make-simple-error` instead of `(create <simple-error>)` at `(error)` and `(cerror)`
 - `error` and `cerror` now validates if arguments are strings
+- `(signal-conditions)` now checks whether the argument inherits from `<error>`
 
 v0.7.10
 =======
