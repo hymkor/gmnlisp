@@ -2,7 +2,7 @@
   (let ((inits nil)
         (steps '(psetq))
         (test (car test-result))
-        (result (elt test-result 1)))
+        (result (append '(progn) (cdr test-result))))
     (while iters
       (let* ((iteration-spec (car iters))
              (var (car iteration-spec))
