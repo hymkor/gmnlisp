@@ -9,6 +9,7 @@
 - `(signal-conditions)` で第一引数が `<error>` を継承しているかチェックするようにした。
 - `for` マクロで、`(elt result* 1)` のかわりに、`(progn . result*)` の結果を返すようにした。
 - `for` マクロで、`iteration-spec` の長さが2,3であるかを確認するようにした。
+- `*posix-argv*` と同じ内容のリスト `*argv*` を用意した。
 
 v0.7.10
 =======

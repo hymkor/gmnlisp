@@ -9,6 +9,7 @@
 - `(signal-conditions)` now checks whether the argument inherits from `<error>`
 - Change `for` macro to return the result of `(progn . result*)` instead of using `(elt result* 1)`.
 - `for` now checks whether the length of iteration-spec is two or three
+- Add a new system variable `*argv*` with the same contents as `*posix-argv*`.
 
 v0.7.10
 =======
