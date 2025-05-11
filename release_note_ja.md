@@ -1,5 +1,9 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+v0.7.11
+=======
+May 12, 2025
+
 - 最後の引数が適切なリストでない場合 APPLY はエラーを起こすようにした
 - 「関数」引数の検査よりも前に引数チェックをするよう APPLY を修正した。
 - #\Space のような文字の名前の英大文字小文字の区別をしないよう修正した。
@@ -10,6 +14,8 @@
 - `for` マクロで、`(elt result* 1)` のかわりに、`(progn . result*)` の結果を返すようにした。
 - `for` マクロで、`iteration-spec` の長さが2,3であるかを確認するようにした。
 - `*posix-argv*` と同じ内容のリスト `*argv*` を用意した。
+
+[TP Result] : OK = 11677, NG = 4734
 
 v0.7.10
 =======

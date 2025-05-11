@@ -1,5 +1,9 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+v0.7.11
+=======
+May 12, 2025
+
 - Fix: ensure APPLY raises error for improper list in final argument
 - Fix APPLY to check number of arguments before validating the function argument
 - Fix: recognize character names like #\Space case-insensitively
@@ -10,6 +14,8 @@
 - Change `for` macro to return the result of `(progn . result*)` instead of using `(elt result* 1)`.
 - `for` now checks whether the length of iteration-spec is two or three
 - Add a new system variable `*argv*` with the same contents as `*posix-argv*`.
+
+[TP Result] : OK = 11677, NG = 4734
 
 v0.7.10
 =======
