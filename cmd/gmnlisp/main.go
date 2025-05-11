@@ -29,11 +29,12 @@ var version string = "snapshot"
 var flagExecute = flag.String("e", "", "execute string")
 
 func setArgv(w *gmnlisp.World, args []string) {
-	posixArgv := []gmnlisp.Node{}
-	for _, s := range args {
-		posixArgv = append(posixArgv, gmnlisp.String(s))
+	var argv gmnlisp.Node = gmnlisp.Null
+	for i := len(args) - 1; i >= 0; i-- {
+		argv = &gmnlisp.Cons{Car: gmnlisp.String(args[i]), Cdr: argv}
 	}
-	w.DefineGlobal(gmnlisp.NewSymbol("*posix-argv*"), gmnlisp.List(posixArgv...))
+	w.DefineGlobal(gmnlisp.NewSymbol("*argv*"), argv)
+	w.DefineGlobal(gmnlisp.NewSymbol("*posix-argv*"), argv)
 }
 
 type miniBuffer struct {
