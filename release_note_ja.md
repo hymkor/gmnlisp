@@ -7,6 +7,7 @@
 - 新関数 `%make-simple-error` を作成し、`(create <simple-error>)` のかわりに `(error)` と `(cerror)` 中で使うようにした
 - `error` and `cerror` で引数が文字列か検査するようにした
 - `(signal-conditions)` で第一引数が `<error>` を継承しているかチェックするようにした。
+- `for` マクロで、`(elt result* 1)` のかわりに、`(progn . result*)` の結果を返すようにした。
 
 v0.7.10
 =======
