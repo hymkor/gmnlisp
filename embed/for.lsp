@@ -6,15 +6,20 @@
     (while iters
       (let* ((iteration-spec (car iters))
              (var (car iteration-spec))
-             (init (elt iteration-spec 1)))
+             (init (elt iteration-spec 1))
+             (iteration-spec-length (length iteration-spec)))
         (setq inits (cons (list var init) inits))
-        (if (= (length iteration-spec) 3)
-          (let ((step (elt iteration-spec 2)))
-            (setq steps (append steps (list var step))))))
+        (cond
+          ((= iteration-spec-length 3)
+           (let ((step (elt iteration-spec 2)))
+             (setq steps (append steps (list var step)))))
+          ((/= iteration-spec-length 2)
+           (error "FOR: too few arguments")))
         (setq iters (cdr iters))
-      ) ; while
-    (if (> (length steps) 1)
-      `(let ,inits (while (not ,test) ,@body ,steps) ,result)
-      `(let ,inits (while (not ,test) ,@body) ,result))
-    ) ; let
-  ) ; lambda
+        ) ; let*
+        ) ; while
+      (if (> (length steps) 1)
+        `(let ,inits (while (not ,test) ,@body ,steps) ,result)
+        `(let ,inits (while (not ,test) ,@body) ,result))
+      ) ; let
+    ) ; lambda
