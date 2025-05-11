@@ -8,6 +8,7 @@
 - `error` and `cerror` now validates if arguments are strings
 - `(signal-conditions)` now checks whether the argument inherits from `<error>`
 - Change `for` macro to return the result of `(progn . result*)` instead of using `(elt result* 1)`.
+- `for` now checks whether the length of iteration-spec is two or three
 
 v0.7.10
 =======
