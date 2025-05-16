@@ -6,6 +6,7 @@
 - `(property)` no longer raises an error when the symbol or property name is not found
 - `(property)` now uses the last argument according to the specification
 - Add parameter validations `(instancep)`
+- Add parameter validations `(subclassp)`
 
 v0.7.11
 =======
