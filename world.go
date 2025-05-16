@@ -346,6 +346,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("create-string"):                  &Function{Min: 1, Max: 2, F: funCreateString},
 	NewSymbol("create-string-input-stream"):     Function1(funCreateStringInputStream),
 	NewSymbol("create-string-output-stream"):    Function0(funCreateStringOutputStream),
+	NewSymbol("create-vector"):                  &Function{Min: 1, Max: 2, F: funCreateVector},
 	NewSymbol("defclass"):                       SpecialF(cmdDefClass),
 	NewSymbol("defconstant"):                    SpecialF(cmdDefConstant),
 	NewSymbol("defdynamic"):                     SpecialF(cmdDefDynamic),

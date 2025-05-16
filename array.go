@@ -31,6 +31,38 @@ func NewVector(ctx context.Context, w *World, args ...Node) Node {
 	return v.Sequence()
 }
 
+func funCreateVector(ctx context.Context, w *World, args []Node) (Node, error) {
+	n, err := ExpectClass[Integer](ctx, w, args[0])
+	if err != nil {
+		return nil, err
+	}
+	if n < 0 {
+		condition := &DomainError{
+			Object:        args[0],
+			ExpectedClass: integerClass,
+		}
+		n, err = callHandler[Integer](ctx, w, true, condition)
+		if err != nil {
+			return nil, err
+		}
+	}
+	if n >= 1234567890 {
+		return callHandler[Node](ctx, w, false, StorageExhausted{})
+	}
+	v := &Array{
+		list: make([]Node, int(n)),
+		dim:  []int{int(n)},
+	}
+	var iniEle Node = Null
+	if len(args) >= 2 {
+		iniEle = args[1]
+	}
+	for i := 0; i < int(n); i++ {
+		v.list[i] = iniEle
+	}
+	return v, nil
+}
+
 type Array struct {
 	list []Node
 	dim  []int
