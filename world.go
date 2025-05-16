@@ -470,7 +470,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("string>"):                        &Function{C: 2, F: funStringGt},
 	NewSymbol("string>="):                       &Function{C: 2, F: funStringGe},
 	NewSymbol("stringp"):                        Function1(funAnyTypep[String]),
-	NewSymbol("subclassp"):                      &Function{C: 2, F: funSubClassP},
+	NewSymbol("subclassp"):                      Function2(funSubClassP),
 	NewSymbol("subseq"):                         &Function{C: 3, F: funSubSeq},
 	NewSymbol("symbolp"):                        Function1(funAnyTypep[Symbol]),
 	NewSymbol("tan"):                            funMath1(math.Tan),

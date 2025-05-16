@@ -568,16 +568,16 @@ func cmdClass(ctx context.Context, w *World, node Node) (Node, error) {
 	return value, nil
 }
 
-func funSubClassP(ctx context.Context, w *World, node []Node) (Node, error) {
-	class1, ok := node[0].(Class)
-	if !ok {
-		return nil, fmt.Errorf("%v: %w", node[0], ErrExpectedClass)
+func funSubClassP(ctx context.Context, w *World, class1, class2 Node) (Node, error) {
+	_class1, err := ExpectInterface[Class](ctx, w, class1, classClass)
+	if err != nil {
+		return nil, err
 	}
-	class2, ok := node[1].(Class)
-	if !ok {
-		return nil, fmt.Errorf("%v: %w", node[1], ErrExpectedClass)
+	_class2, err := ExpectInterface[Class](ctx, w, class2, classClass)
+	if err != nil {
+		return nil, err
 	}
-	if class1.InheritP(class2) {
+	if _class1.InheritP(_class2) {
 		return True, nil
 	}
 	return Null, nil
