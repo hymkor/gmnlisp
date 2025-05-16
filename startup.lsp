@@ -44,6 +44,8 @@
             (setq all-properties (set-item sym properties all-properties))))))
 
     (defun remove-property (sym name)
+      (assure <symbol> sym)
+      (assure <symbol> name)
       (let ((properties (assoc sym all-properties)))
         (if properties
           (setf (cdr properties) (rm-item name (cdr properties)))
