@@ -2,6 +2,9 @@
 
 - `(equal)` が vector の各要素を再帰的に `(equal)` で比較していなかった点を修正
 - `(create-vector)` を実装
+- `(property)`, `(set-property)`, `(remove-property)` で引数がシンボルかを確認するようにした
+- `(property)`: シンボルもしくはプロパティー名が見付からなくてもエラーとしないようにした
+- `(property)`: 最後の引数を仕様どおり使うようにした
 
 v0.7.11
 =======
