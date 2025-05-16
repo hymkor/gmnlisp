@@ -118,7 +118,7 @@ func (A *Array) Equals(_B Node, mode EqlMode) bool {
 		return false
 	}
 	for i, v := range A.list {
-		if v != B.list[i] {
+		if !v.Equals(B.list[i], mode) {
 			return false
 		}
 	}
