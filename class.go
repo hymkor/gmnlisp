@@ -542,21 +542,10 @@ func defaultInitializeObject(ctx context.Context, w *World, args []Node) (Node, 
 	return this, this.callInitForm(this._StandardClass)
 }
 
-func defInstanceP(ctx context.Context, w *World, node Node) (Node, error) {
-	value, node, err := w.ShiftAndEvalCar(ctx, node)
+func funInstanceP(ctx context.Context, w *World, value, _class Node) (Node, error) {
+	class, err := ExpectInterface[Class](ctx, w, _class, classClass)
 	if err != nil {
 		return nil, err
-	}
-	_class, node, err := w.ShiftAndEvalCar(ctx, node)
-	if err != nil {
-		return nil, err
-	}
-	class, ok := _class.(Class)
-	if !ok {
-		return nil, fmt.Errorf("%v: %w", _class, ErrExpectedClass)
-	}
-	if IsSome(node) {
-		return nil, ErrTooManyArguments
 	}
 	if class.InstanceP(value) {
 		return True, nil

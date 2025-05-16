@@ -394,7 +394,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("hash-table-count"):               Function1(funHashTableCount),
 	NewSymbol("identity"):                       Function1(funIdentity),
 	NewSymbol("input-stream-p"):                 Function1(funInputStreamP),
-	NewSymbol("instancep"):                      SpecialF(defInstanceP),
+	NewSymbol("instancep"):                      Function2(funInstanceP),
 	NewSymbol("integerp"):                       Function1(funAnyTypep[Integer]),
 	NewSymbol("internal-time-units-per-second"): Function0(funInternalTimeUnitPerSecond),
 	NewSymbol("lambda-macro"):                   SpecialF(cmdLambdaMacro),
