@@ -4,7 +4,9 @@
            (simple-error-format-string e)
            (simple-error-format-arguments e)))
 (let ((all-properties ()))
-  (defun property (sym name)
+  (defun property (sym name &rest objs)
+    (if (> (length objs) 2)
+      (error "too many arguments"))
     (assure <symbol> sym)
     (assure <symbol> name)
     (let ((sym-props (assoc sym all-properties)))
@@ -12,8 +14,13 @@
         ; symbol found
         (let* ((properties (cdr sym-props))
                (name-value (assoc name properties)))
-          (if name-value 
-            (cdr name-value))))))
+          (if name-value
+            ; name found
+            (cdr name-value)
+            ; name not found
+            (and objs (car objs))))
+        ; symbol not found
+        (and objs (car objs)))))
 
   (labels
     ((rm-item
