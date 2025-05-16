@@ -5,6 +5,8 @@
            (simple-error-format-arguments e)))
 (let ((all-properties ()))
   (defun property (sym name)
+    (assure <symbol> sym)
+    (assure <symbol> name)
     (let ((sym-props (assoc sym all-properties)))
       (if sym-props
         ; symbol found
