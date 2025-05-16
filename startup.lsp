@@ -13,10 +13,7 @@
         (let* ((properties (cdr sym-props))
                (name-value (assoc name properties)))
           (if name-value 
-            (cdr name-value)
-            (error "~A of ~A not found" name sym)))
-        ; symbol not found
-        (error "Symbol ~A not found" name))))
+            (cdr name-value))))))
 
   (labels
     ((rm-item
