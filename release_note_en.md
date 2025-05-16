@@ -1,6 +1,7 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
 - Fix: `(equal)` did not recursively compare vector elements
+- Implement `(create-vector)`
 
 v0.7.11
 =======

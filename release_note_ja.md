@@ -1,6 +1,7 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
 - `(equal)` が vector の各要素を再帰的に `(equal)` で比較していなかった点を修正
+- `(create-vector)` を実装
 
 v0.7.11
 =======
