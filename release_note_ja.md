@@ -1,5 +1,9 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+v0.7.12
+=======
+May 19, 2025
+
 - `(equal)` が vector の各要素を再帰的に `(equal)` で比較していなかった点を修正
 - `(create-vector)` を実装
 - `(property)`, `(set-property)`, `(remove-property)` で引数がシンボルかを確認するようにした
@@ -7,6 +11,8 @@
 - `(property)`: 最後の引数を仕様どおり使うようにした
 - `(instancep)` にパラメータチェックを追加した
 - `(subclassp)` にパラメータチェックを追加した
+
+[TP Result] : OK = 11918, NG = 4493
 
 v0.7.11
 =======

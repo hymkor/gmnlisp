@@ -1,5 +1,9 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+v0.7.12
+=======
+May 19, 2025
+
 - Fix: `(equal)` did not recursively compare vector elements
 - Implement `(create-vector)`
 - `(property)`, `(set-property)` and `(remove-property)` now validate that arguments are symbols
@@ -7,6 +11,8 @@
 - `(property)` now uses the last argument according to the specification
 - Add parameter validations `(instancep)`
 - Add parameter validations `(subclassp)`
+
+[TP Result] : OK = 11918, NG = 4493
 
 v0.7.11
 =======
