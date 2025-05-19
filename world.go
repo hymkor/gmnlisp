@@ -137,10 +137,11 @@ type shared struct {
 		_Reader
 		Node
 	}
-	startup   sync.Once
-	blockName map[Symbol]struct{}
-	catchTag  map[Node]struct{}
-	goTag     map[Symbol]struct{}
+	startup    sync.Once
+	blockName  map[Symbol]struct{}
+	catchTag   map[Node]struct{}
+	goTag      map[Symbol]struct{}
+	StrictMode bool
 }
 
 type World struct {

@@ -26,7 +26,10 @@ import (
 
 var version string = "snapshot"
 
-var flagExecute = flag.String("e", "", "execute string")
+var (
+	flagExecute = flag.String("e", "", "execute string")
+	flagStrict  = flag.Bool("strict", false, "strict mode")
+)
 
 func setArgv(w *gmnlisp.World, args []string) {
 	var argv gmnlisp.Node = gmnlisp.Null
@@ -163,7 +166,9 @@ func mains(args []string) error {
 
 	ctx := context.Background()
 	lisp := gmnlisp.New()
-
+	if *flagStrict {
+		lisp.StrictMode = true
+	}
 	if _, err := lisp.Interpret(ctx, startupCode); err != nil {
 		return err
 	}
