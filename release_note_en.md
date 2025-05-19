@@ -4,6 +4,7 @@
 - `(dynamic)` now checks the number of arguments
 - `(setf (dynamic X) V)` now checks whether X exists and returns V
 - Macros now checks the number of arguments
+- Implement zero-dimension literal
 
 v0.7.12
 =======
