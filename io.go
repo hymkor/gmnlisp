@@ -199,7 +199,10 @@ func funPreviewChar(ctx context.Context, w *World, argv []Node) (Node, error) {
 func funClose(ctx context.Context, w *World, arg Node) (Node, error) {
 	c, ok := arg.(io.Closer)
 	if !ok {
-		return callHandler[Node](ctx, w, true, StreamError{Stream: arg})
+		return callHandler[Node](ctx, w, true, &DomainError{
+			Object:        arg,
+			ExpectedClass: streamClass,
+		})
 	}
 	return Null, c.Close()
 }

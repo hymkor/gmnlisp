@@ -89,6 +89,11 @@ func (S *StringBuilder) Add(ctx context.Context, w *World, n Node) error {
 	return nil
 }
 
+func (S *StringBuilder) Close() error {
+	S.Reset()
+	return nil
+}
+
 func (S *StringBuilder) Sequence() Node {
 	return String(S.String())
 }

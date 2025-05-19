@@ -46,6 +46,10 @@ func (sr StringReader) String() string {
 	return "<stream> for string"
 }
 
+func (sr StringReader) Close() error {
+	return nil
+}
+
 func funCreateStringInputStream(ctx context.Context, w *World, arg Node) (Node, error) {
 	s, err := ExpectClass[String](ctx, w, arg)
 	if err != nil {
