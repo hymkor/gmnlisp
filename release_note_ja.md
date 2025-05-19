@@ -9,6 +9,7 @@
 - strict mode では t や nil は stream として扱わないようにした
 - strict mode では、let のパラメータが単独のシンボルの時にエラーとするようにした
 - strict mode では、setq のパラメータが2個以外ではエラーとするようにした
+- `(dynamic :A)` は domain error ではなく、undefined entity error とするようにした
 
 v0.7.12
 =======
