@@ -74,9 +74,11 @@ func letValuesToVars(ctx context.Context, w *World, list Node, lexical map[Symbo
 		if err != nil {
 			return err
 		}
-		if symbol, ok := item.(Symbol); ok {
-			lexical[symbol] = Null
-			continue
+		if !w.StrictMode {
+			if symbol, ok := item.(Symbol); ok {
+				lexical[symbol] = Null
+				continue
+			}
 		}
 		var argv [2]Node
 
