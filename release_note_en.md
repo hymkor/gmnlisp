@@ -5,6 +5,9 @@
 - `(setf (dynamic X) V)` now checks whether X exists and returns V
 - Macros now checks the number of arguments
 - Implement zero-dimension literal
+- Implement the strict mode and `-strict` option
+- When the strict mode, t and nil are not treated as streams
+- When the strict mode, `let` and `let*` raise the error if each parameter is a single symbol rather than list
 
 v0.7.12
 =======
