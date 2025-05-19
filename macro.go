@@ -102,6 +102,9 @@ func (m *_Macro) expand(ctx context.Context, w *World, n Node) (Node, error) {
 			return nil, err
 		}
 	}
+	if IsSome(n) && m.rest == nulSymbol {
+		return nil, ErrTooManyArguments
+	}
 	lexical[m.rest] = n
 	joinedForm := _JoinedForm{}
 	for cons, ok := n.(*Cons); ok && IsSome(cons); cons, ok = cons.Cdr.(*Cons) {
