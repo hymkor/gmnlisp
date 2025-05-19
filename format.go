@@ -70,6 +70,10 @@ func funFormatChar(ctx context.Context, w *World, list []Node) (Node, error) {
 }
 
 func funFormatInteger(ctx context.Context, w *World, _args []Node) (Node, error) {
+	_, err := ExpectClass[Integer](ctx, w, _args[1])
+	if err != nil {
+		return nil, err
+	}
 	return tAndNilToWriter(ctx, w, _args, func(writer io.Writer, args []Node) error {
 		radix, err := ExpectClass[Integer](ctx, w, args[1])
 		if err != nil {
