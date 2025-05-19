@@ -1,2 +1,6 @@
 (lambda-macro (newvalue name)
-  `(defdynamic ,name ,newvalue))
+  (let ((tmpvar (gensym)))
+  `(let ((,tmpvar ,newvalue))
+     (dynamic ,name)
+     (defdynamic ,name ,tmpvar)
+     ,tmpvar)))
