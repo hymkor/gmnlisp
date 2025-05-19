@@ -310,29 +310,31 @@ func cmdDynamicLet(ctx context.Context, w *World, list Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		if symbol, ok := varAndValue.(Symbol); ok {
-			D.Set(symbol, Null)
-		} else {
-			var symbolNode Node
-			var value Node
-
-			symbolNode, varAndValue, err = Shift(varAndValue)
-			if err != nil {
-				return nil, err
+		if !w.StrictMode {
+			if symbol, ok := varAndValue.(Symbol); ok {
+				D.Set(symbol, Null)
+				continue
 			}
-			symbol, err := ExpectSymbol(ctx, w, symbolNode)
-			if err != nil {
-				return nil, err
-			}
-			value, varAndValue, err = w.ShiftAndEvalCar(ctx, varAndValue)
-			if err != nil {
-				return nil, err
-			}
-			if IsSome(varAndValue) {
-				return nil, ErrTooManyArguments
-			}
-			D.Set(symbol, value)
 		}
+		var symbolNode Node
+		var value Node
+
+		symbolNode, varAndValue, err = Shift(varAndValue)
+		if err != nil {
+			return nil, err
+		}
+		symbol, err := ExpectSymbol(ctx, w, symbolNode)
+		if err != nil {
+			return nil, err
+		}
+		value, varAndValue, err = w.ShiftAndEvalCar(ctx, varAndValue)
+		if err != nil {
+			return nil, err
+		}
+		if IsSome(varAndValue) {
+			return nil, ErrTooManyArguments
+		}
+		D.Set(symbol, value)
 	}
 	return Progn(ctx, w, list)
 }
