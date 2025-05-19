@@ -6,8 +6,10 @@ import (
 )
 
 func cmdSetq(ctx context.Context, w *World, params Node) (Node, error) {
+	if w.StrictMode && IsNone(params) {
+		return nil, ErrTooFewArguments
+	}
 	var value Node = Null
-
 	for IsSome(params) {
 		var nameNode Node
 		var err error
@@ -16,11 +18,21 @@ func cmdSetq(ctx context.Context, w *World, params Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
+		if IsNone(params) {
+			return nil, ErrTooFewArguments
+		}
+		value, params, err = Shift(params)
+		if err != nil {
+			return nil, err
+		}
+		if w.StrictMode && IsSome(params) {
+			return nil, ErrTooManyArguments
+		}
 		nameSymbol, err := ExpectSymbol(ctx, w, nameNode)
 		if err != nil {
 			return nil, err
 		}
-		value, params, err = w.ShiftAndEvalCar(ctx, params)
+		value, err = w.Eval(ctx, value)
 		if err != nil {
 			return nil, err
 		}
