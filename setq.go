@@ -219,9 +219,12 @@ func cmdDynamic(ctx context.Context, w *World, list Node) (Node, error) {
 	var err error
 	var symbolNode Node
 
-	symbolNode, _, err = Shift(list)
+	symbolNode, list, err = Shift(list)
 	if err != nil {
 		return nil, err
+	}
+	if IsSome(list) {
+		return nil, ErrTooManyArguments
 	}
 	symbol, err := ExpectSymbol(ctx, w, symbolNode)
 	if err != nil {
