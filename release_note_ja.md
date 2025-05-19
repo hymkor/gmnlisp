@@ -1,5 +1,7 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+- `(format-integer)`, `(format-float)`, `(close)` にパラメータチェック追加
+
 v0.7.12
 =======
 May 19, 2025
