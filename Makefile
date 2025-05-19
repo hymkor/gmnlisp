@@ -79,14 +79,14 @@ download-verify:
 
 verify:
 	cd "$(CURDIR)/__verify/tp-ipa" && \
-	"$(CURDIR)/gmnlisp" -e "(load \"tp.lsp\") (tp-all)"
+	"$(CURDIR)/gmnlisp" -strict -e "(load \"tp.lsp\") (tp-all)"
 
 verify-verbose:
 	cd "$(CURDIR)/__verify/tp-ipa" && \
-	"$(CURDIR)/gmnlisp" -e "(load \"tp.lsp\") (tp-all 'verbose)"
+	"$(CURDIR)/gmnlisp" -strict -e "(load \"tp.lsp\") (tp-all 'verbose)"
 
 verify-formeval:
 	cd "$(CURDIR)/__verify/tp-ipa" && \
-	"$(CURDIR)/gmnlisp" -e "(load \"tp.lsp\") (tp \"data/formeval.lsp\" 'verbose)"
+	"$(CURDIR)/gmnlisp" -strict -e "(load \"tp.lsp\") (tp \"data/formeval.lsp\" 'verbose)"
 
 .PHONY: generate test clean clean-gen sort-world _dist dist manifest
