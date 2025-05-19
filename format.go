@@ -134,6 +134,10 @@ func printFloat(w io.Writer, value Node, mark byte, args ...int) error {
 }
 
 func funFormatFloat(ctx context.Context, w *World, args []Node) (Node, error) {
+	_, err := ExpectClass[Float](ctx, w, args[1])
+	if err != nil {
+		return nil, err
+	}
 	return tAndNilToWriter(ctx, w, args, func(_writer io.Writer, args []Node) error {
 		return printFloat(_writer, args[0], 'f')
 	})
