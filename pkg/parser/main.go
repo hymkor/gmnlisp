@@ -19,6 +19,7 @@ var (
 	rxOctInteger = regexp.MustCompile(`^\#[Oo][0-7]+$`)
 	rxBinInteger = regexp.MustCompile(`^\#[Bb][01]+$`)
 	rxArray      = regexp.MustCompile(`^#(\d*)[aA]\(`)
+	rx0Array     = regexp.MustCompile(`^#0[aA]`)
 )
 
 var (
@@ -278,6 +279,13 @@ func (p *_Parser[N]) ReadNode(rs io.RuneScanner) (N, error) {
 			panic(err.Error())
 		}
 		return p.readArray(dim, rs)
+	}
+	if m := rx0Array.FindStringSubmatch(token); m != nil {
+		val, err := p.ReadNode(strings.NewReader(token[3:]))
+		if err != nil {
+			return p.Null(), err
+		}
+		return p.Array([]N{val}, []int{}), nil
 	}
 	if token == "(" {
 		nodes, err := p.readUntilCloseParen(rs)

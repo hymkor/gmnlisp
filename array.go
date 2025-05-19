@@ -109,7 +109,20 @@ func (A *Array) printTo(w io.Writer, mode PrintMode, list []Node, dim []int) ([]
 func (A *Array) PrintTo(w io.Writer, mode PrintMode) (int, error) {
 	var n int
 	var err error
-	if len(A.dim) == 1 {
+
+	if len(A.dim) <= 0 {
+		// dimension zero
+		n, err = fmt.Fprintf(w, "#%dA", len(A.dim))
+		if err != nil {
+			return 0, err
+		}
+		if len(A.list) >= 1 {
+			var _n int
+			_n, err = tryPrintTo(w, A.list[0], mode)
+			n += _n
+		}
+		return n, err
+	} else if len(A.dim) == 1 {
 		n, err = w.Write([]byte{'#'})
 	} else {
 		n, err = fmt.Fprintf(w, "#%dA", len(A.dim))
