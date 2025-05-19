@@ -7,7 +7,7 @@
 - 零次元配列リテラル(例: `#0A1`) を実装
 - `-strict` で strict mode になるようにした
 - strict mode では t や nil は stream として扱わないようにした
-- strict mode では、let のパラメータが単独のシンボルの時にエラーとするようにした
+- strict mode では、dynamic-let, let, let\* のパラメータが単独のシンボルの時にエラーとするようにした
 - strict mode では、setq のパラメータが2個以外ではエラーとするようにした
 - `(dynamic :A)` は domain error ではなく、undefined entity error とするようにした
 
