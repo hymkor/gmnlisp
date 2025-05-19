@@ -242,6 +242,9 @@ func cmdDynamic(ctx context.Context, w *World, list Node) (Node, error) {
 	}
 	symbol, err := ExpectSymbol(ctx, w, symbolNode)
 	if err != nil {
+		if _, _err := ExpectClass[Keyword](ctx, w, symbolNode); _err == nil {
+			return nil, &_UndefinedEntity{name: NewSymbol(symbolNode.String()), space: symDynamicVariable}
+		}
 		return nil, err
 	}
 	value, ok := w.dynamic.Get(symbol)
