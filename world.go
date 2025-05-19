@@ -307,7 +307,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("/="):                             &Function{C: 2, F: funNotEqual},
 	NewSymbol("<"):                              &Function{F: funLessThan},
 	NewSymbol("<="):                             &Function{F: funLessOrEqual},
-	NewSymbol("="):                              &Function{F: funEqualOp},
+	NewSymbol("="):                              &Function{C: 2, F: funEqualOp},
 	NewSymbol(">"):                              &Function{F: funGreaterThan},
 	NewSymbol(">="):                             &Function{F: funGreaterOrEqual},
 	NewSymbol("abort"):                          Function0(funAbort),

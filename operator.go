@@ -151,12 +151,17 @@ func funGreaterThan(ctx context.Context, w *World, args []Node) (Node, error) {
 }
 
 func funEqualOp(ctx context.Context, w *World, args []Node) (Node, error) {
-	return notNullToTrue(inject(args, func(left, right Node) (Node, error) {
-		if left.Equals(right, EQUALP) {
-			return right, nil
+	for _, v := range args {
+		if _, ok := v.(Integer); !ok {
+			if _, err := ExpectClass[Float](ctx, w, v); err != nil {
+				return nil, err
+			}
 		}
-		return Null, nil
-	}))
+	}
+	if args[0].Equals(args[1], EQUALP) {
+		return True, nil
+	}
+	return Null, nil
 }
 
 func funGreaterOrEqual(ctx context.Context, w *World, args []Node) (Node, error) {
