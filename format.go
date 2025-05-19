@@ -350,13 +350,15 @@ func formatSub(ctx context.Context, world *World, w io.Writer, argv []Node) erro
 }
 
 func tAndNilToWriter(ctx context.Context, w *World, argv []Node, f func(io.Writer, []Node) error) (Node, error) {
-	if IsNone(argv[0]) {
-		var buffer StringBuilder
-		err := f(&buffer, argv[1:])
-		return buffer.Sequence(), err
-	}
-	if True.Equals(argv[0], STRICT) {
-		return Null, f(w.stdout, argv[1:])
+	if !w.StrictMode {
+		if IsNone(argv[0]) {
+			var buffer StringBuilder
+			err := f(&buffer, argv[1:])
+			return buffer.Sequence(), err
+		}
+		if True.Equals(argv[0], STRICT) {
+			return Null, f(w.stdout, argv[1:])
+		}
 	}
 	type writerType interface {
 		Node
