@@ -8,6 +8,7 @@
 - Implement the strict mode and `-strict` option
 - When the strict mode, t and nil are not treated as streams
 - When the strict mode, `let` and `let*` raise the error if each parameter is a single symbol rather than list
+- When the strict mode, `setq` raises an error when the number of parameters it not two
 
 v0.7.12
 =======
