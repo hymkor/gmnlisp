@@ -1,6 +1,6 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
-- `(format-integer)`, `(format-float)`, `(close)` にパラメータチェック追加
+- `(=)`, `(/=)`, `(format-integer)`, `(format-float)`, `(close)` にパラメータチェック追加
 - `(dynamic)` で引数の数チェックを行うようにした
 - `(setf (dynamic X) V)` で X の存在チェックをして、V を返すようにした
 - マクロにおいても引数過剰チェックを行うようにした

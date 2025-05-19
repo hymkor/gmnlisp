@@ -1,6 +1,6 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
-- Add parameter validations: `(format-integer)`, `(format-float)` and `(close)`
+- Add parameter validations: `(=)`, `(/=)`, `(format-integer)`, `(format-float)` and `(close)`
 - `(dynamic)` now checks the number of arguments
 - `(setf (dynamic X) V)` now checks whether X exists and returns V
 - Macros now checks the number of arguments
