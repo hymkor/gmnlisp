@@ -132,32 +132,48 @@ func FUNCNAME(c context.Context,w *World,args Node)(Node,error){...}
 - The parameters are given as a list not an array.
 - Use `gmnlisp.SpecialF(FUNCNAME)` instead of `gmnlisp.Function{F:FUNCNAME}`
 
-Support Types
--------------
+Supported Types
+---------------
 
-| Type(Lisp)        | Type(Go)
-|-------------------|------------------------
-| t                 | gmnlisp.\_TrueType
-| nil               | gmnlisp.\_NullType
-| &lt;integer&gt;   | gmnlisp.Integer == int64
-| &lt;float&gt;     | gmnlisp.Float == float64
-| &lt;string&gt;    | gmnlisp.String == string
-| &lt;symbol&gt;    | gmnlisp.Symbol == int
-| &lt;cons&gt;      | \*gmnlisp.Cons == struct{ Car,Cdr: gmnlisp.Node }
-| &lt;character&gt; | gmnlisp.Rune == rune
-| (keyword)         | gmnlisp.Keyword
-| (array)           | \*gmnlisp.Array
-| (hashtable)       | gmnlisp.\_Hash == map[gmnlisp.Node]gmnlisp.Node
+Lisp values correspond to the following Go types or constructors when embedding gmnlisp in Go applications:
+
+| Lisp         | Go                                      |
+---------------|-----------------------------------------|
+| `t`          | `gmnlisp.True`                          |
+| `nil`        | `gmnlisp.Null`                          |
+| `1`          | `gmnlisp.Integer(1)`                    |
+| `2.3`        | `gmnlisp.Float(2.3)`                    |
+| `"string"`   | `gmnlisp.String("string")`              |
+| `Symbol`     | `gmnlisp.NewSymbol("Symbol")`           |
+| `(cons 1 2)` | `&gmnlisp.Cons{ Car:gmnlisp.Integer(1), Cdr:gmnlisp.Integer(2) }` |
+| `#\A`        | `gmnlisp.Rune('A')`                     |
 
 `gmnlisp.Node` is the root interface.
-All objects used in Lisp code have to satisfy it.
+All values that appear in Lisp code must implement this interface.
 
-`gmnlisp.Symbol` is the unique number associated to string.
+```
+type Node interface {
+    Equals(Node, EqlMode) bool
+    String() string
+    ClassOf() Class
+}
 
-- string to gmnlisp.Symbol
-    - `sbl := gmnlisp.NewSymbol("foo")`
-- Symbol to string
-    - `sbl.String()`
+type Class interface {
+    Node
+    Name() Symbol
+    InstanceP(Node) bool
+    Create() Node
+    InheritP(Class) bool
+}
+
+type EqlMode int
+
+const (
+    STRICT EqlMode = iota // corresponds to (eql a b)
+    EQUAL                 // corresponds to (equal a b)
+    EQUALP                // corresponds to (equalp a b) 
+)
+```
 
 ISLisp Compatibility
 --------------------
