@@ -31,9 +31,9 @@ var (
 type EqlMode int
 
 const (
-	STRICT EqlMode = iota
-	EQUAL
-	EQUALP
+	STRICT EqlMode = iota // corresponds to (eql A B)
+	EQUAL                 // corresponds to (equal A B)
+	EQUALP                // corresponds to (equalp A B)
 )
 
 type PrintMode int
