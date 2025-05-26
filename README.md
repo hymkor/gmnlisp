@@ -63,45 +63,43 @@ $ go run examples/example.go
 3
 ```
 
-- `gmnlisp.New` returns the new Lisp interpretor instance (`*gmnlisp.World`).
-- `gmnlisp.NewSymbol` is the symbol constructor. `gmnlisp.NewSymbol("a")` always returns the same value no matter how many times you call it.
-- `gmnlisp.Variables` is the symbol-map type. It is the alias of `map[gmnlisp.Symbol]gmnlisp.Node`. `Node` is the interface-type that all objects in the Lisp have to implement.
-- `.Let` makes a new instance including the given namespace.
+- `gmnlisp.New` returns a new Lisp interpreter instance (`*gmnlisp.World`).
+- `gmnlisp.NewSymbol` constructs a symbol. Calling `gmnlisp.NewSymbol("a")` always returns the same value, no matter how many times it's called.
+- `gmnlisp.Variables` is a symbol map type. It is an alias for `map[gmnlisp.Symbol]gmnlisp.Node`.  
+  `Node` is the interface that all Lisp objects must implement.
+- `.Let` creates a new world instance with the given variable bindings (namespace).
 
-```
+```lisp
 lisp.Let(gmnlisp.Variables{
-        gmnlisp.NewSymbol("a"): gmnlisp.Integer(1),
-        gmnlisp.NewSymbol("b"): gmnlisp.Integer(2),
-    }).Interpret(context.Background(),"(c)")
-```
-
-is same as `(let ((a 1) (b 1)) (c))`
-
-+ `a,err := gmnlisp.ExpectClass[gmnlisp.Integer](ctx,w,x)`  
-  is similar as  
-  `a,ok := x.(gmnlisp.Integer)`  
-  but, ExpectClass can call error-handler defined by user when x is not Integer
-
-The user defined normal functions have to get the three parameters.
-
-- The 1st: context.Context that is given to the method .Interpret()
-- The 2nd: \*gmnlisp.World on which the instance runs.
-- The 3rd: []gmnlisp.Node the parameters given by caller. They are already evaluated.
-
-`gmnlisp.Function` wraps the normal function as Lisp object.
-
-- `F`: the function itself
-- `C`: when the number of the parameter is not same as this, the error will be raised.
-    If it does not have to be checked, omit it.
-
-To get unevaluted parameters, the function's definition should be as below.
+    gmnlisp.NewSymbol("a"): gmnlisp.Integer(1),
+    gmnlisp.NewSymbol("b"): gmnlisp.Integer(2),
+}).Interpret(context.Background(), "(c)")
 
 ```
-func FUNCNAME(c context.Context,w *World,args Node)(Node,error){...}
-```
 
-- The parameters are given as a list not an array.
-- Use `gmnlisp.SpecialF(FUNCNAME)` instead of `gmnlisp.Function{F:FUNCNAME}`
+is equivalent to the Lisp code: `(let ((a 1) (b 2)) (c))`
+
+### Type assertions:
+
+`a, err := gmnlisp.ExpectClass[gmnlisp.Integer](ctx, w, x)`  
+is similar to:  
+`a, ok := x.(gmnlisp.Integer)`  
+
+However, `ExpectClass` invokes the user-defined error handler if `x` is not of type `Integer`.
+
+### User-defined functions:
+
+User-defined functions must accept three parameters:
+
+1. `context.Context`: the context passed to `.Interpret()`
+2. `*gmnlisp.World`: the interpreter instance
+3. `[]gmnlisp.Node`: the arguments passed by the caller (already evaluated)
+
+Such a function can be wrapped as a Lisp value like this:  
+`&gmnlisp.Function{C: argc, F: function}`
+
+- Field `F`: the function itself
+- Field `C`: the required number of arguments. An error is raised if the number of arguments doesn't match.
 
 Supported Types
 ---------------
