@@ -1,5 +1,9 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+v0.7.13
+=======
+May 26, 2025
+
 - `(=)`, `(/=)`, `(format-integer)`, `(format-float)`, `(close)` にパラメータチェック追加
 - `(dynamic)` で引数の数チェックを行うようにした
 - `(setf (dynamic X) V)` で X の存在チェックをして、V を返すようにした
@@ -10,6 +14,8 @@
 - strict mode では、dynamic-let, let, let\* のパラメータが単独のシンボルの時にエラーとするようにした
 - strict mode では、setq のパラメータが2個以外ではエラーとするようにした
 - `(dynamic :A)` は domain error ではなく、undefined entity error とするようにした
+
+[TP Result] : OK = 12090, NG = 4321
 
 v0.7.12
 =======

@@ -1,5 +1,9 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+v0.7.13
+=======
+May 26, 2025
+
 - Add parameter validations: `(=)`, `(/=)`, `(format-integer)`, `(format-float)` and `(close)`
 - `(dynamic)` now checks the number of arguments
 - `(setf (dynamic X) V)` now checks whether X exists and returns V
@@ -10,6 +14,8 @@
 - When the strict mode, `dynamic-let`, `let` and `let*` raise the error if each parameter is a single symbol rather than list
 - When the strict mode, `setq` raises an error when the number of parameters it not two
 - `(dynamic :A)` now raises the undefined entity error rather than the domain error
+
+[TP Result] : OK = 12090, NG = 4321
 
 v0.7.12
 =======
