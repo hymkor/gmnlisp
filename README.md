@@ -175,12 +175,12 @@ References
 
 ### Gmnlisp and other implementations of [ISLisp]
 
-| Implementation      | Language|  Windows  | Linux     |
-|---------------------|---------|-----------|-----------|
-| [OK!ISLisp][oki]    | C       | Supported | ?         |
-| [iris]              | Go      | Supported | Supported |
-| [Easy-ISLisp][eisl] | C       |           | Supported |
-| **gmnlisp**         | Go      | Supported | Supported |
+| Implementation      | Language      |  Windows  | Linux     | Execution Model      |
+|---------------------|---------------|-----------|-----------|----------------------|
+| [OK!ISLisp][oki]    | C             | Supported | Supported | Interpreter/Bytecode compiler |
+| [iris]              | Go/JavaScript | Supported | Supported | Interpreter          |
+| [Easy-ISLisp][eisl] | C             |           | Supported | Interpreter/Native Compiler |
+| **gmnlisp**         | Go            | Supported | Supported | Interpreter          |
 
 [ISLisp]: http://islisp.org/
 [oki]: http://islisp.org/OKIISLisp.html
