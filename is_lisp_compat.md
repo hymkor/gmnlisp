@@ -414,7 +414,7 @@
 
 - [ ] basic-vector-p
 - [ ] general-vector-p
-- [ ] create-vector
+- [x] create-vector
 - [x] vector
 
 ### 16 String class
