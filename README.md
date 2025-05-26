@@ -148,6 +148,10 @@ Lisp values correspond to the following Go types or constructors when embedding 
 | `(cons 1 2)` | `&gmnlisp.Cons{ Car:gmnlisp.Integer(1), Cdr:gmnlisp.Integer(2) }` |
 | `#\A`        | `gmnlisp.Rune('A')`                     |
 
+Unlike other types shown above, `gmnlisp.NewSymbol(...)` is a function call, not a type conversion.
+It returns a value of type `Symbol` (defined as `type Symbol int`), which is distinct from `int`.
+The function guarantees that the same string always maps to the same symbol value.
+
 `gmnlisp.Node` is the root interface.
 All values that appear in Lisp code must implement this interface.
 
