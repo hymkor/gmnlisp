@@ -792,3 +792,13 @@ References
 [oki]: http://islisp.org/OKIISLisp.html
 [iris]: https://github.com/islisp-dev/iris
 [eisl]: https://github.com/sasagawa888/eisl
+
+Author
+------
+
+[hymkor (HAYAMA Kaoru)](https://github.com/hymkor)
+
+License
+-------
+
+[MIT Licence](./LICENSE)
