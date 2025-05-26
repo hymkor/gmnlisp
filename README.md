@@ -173,13 +173,14 @@ References
 + [JISX3012:1998 プログラム言語ＩＳＬＩＳＰ](https://kikakurui.com/x3/X3012-1998-01.html)
 + [M.Hiroi's Home Page / お気楽 ISLisp プログラミング超入門](http://www.nct9.ne.jp/m_hiroi/clisp/islisp.html)
 
-### Other implementations of [ISLisp]
+### Gmnlisp and other implementations of [ISLisp]
 
-|               | Language|  Windows  | Linux
-|---------------------|---|-----------|----------
-| [OK!ISLisp][oki]    | C | Supported | ?
-| [iris]              | Go| Supported | Supported
-| [Easy-ISLisp][eisl] | C |           | Supported
+| Implementation      | Language|  Windows  | Linux     |
+|---------------------|---------|-----------|-----------|
+| [OK!ISLisp][oki]    | C       | Supported | ?         |
+| [iris]              | Go      | Supported | Supported |
+| [Easy-ISLisp][eisl] | C       |           | Supported |
+| **gmnlisp**         | Go      | Supported | Supported |
 
 [ISLisp]: http://islisp.org/
 [oki]: http://islisp.org/OKIISLisp.html
