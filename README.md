@@ -13,56 +13,7 @@ It is developed to embbed to the applications for customizing.
 Examples
 --------
 
-### 1. Execute Lisp code in string with parameters
-
-```examples/example1.go
-package main
-
-import (
-    "context"
-    "fmt"
-    "os"
-
-    "github.com/hymkor/gmnlisp"
-)
-
-func main() {
-    lisp := gmnlisp.New()
-    lisp = lisp.Let(gmnlisp.Variables{
-        gmnlisp.NewSymbol("a"): gmnlisp.Integer(1),
-        gmnlisp.NewSymbol("b"): gmnlisp.Integer(2),
-    })
-    value, err := lisp.Interpret(context.TODO(), "(+ a b)")
-    if err != nil {
-        fmt.Fprintln(os.Stderr, err.Error())
-        return
-    }
-    fmt.Println(value.String())
-}
-```
-
-```
-$ go run examples/example1.go
-3
-```
-
-- `gmnlisp.New` returns the new Lisp interpretor instance (`*gmnlisp.World`).
-- `gmnlisp.NewSymbol` is the symbol constructor. `gmnlisp.NewSymbol("a")` always returns the same value no matter how many times you call it.
-- `gmnlisp.Variables` is the symbol-map type. It is the alias of `map[gmnlisp.Symbol]gmnlisp.Node`. `Node` is the interface-type that all objects in the Lisp have to implement.
-- `.Let` makes a new instance including the given namespace.
-
-```
-lisp.Let(gmnlisp.Variables{
-        gmnlisp.NewSymbol("a"): gmnlisp.Integer(1),
-        gmnlisp.NewSymbol("b"): gmnlisp.Integer(2),
-    }).Interpret(context.Background(),"(c)")
-```
-
-is same as `(let ((a 1) (b 1)) (c))`
-
-### 2. Execute Lisp-code and give call-back function written in Go
-
-```examples/example2.go
+```examples/example.go
 package main
 
 import (
@@ -87,24 +38,44 @@ func sum(ctx context.Context, w *gmnlisp.World, args []gmnlisp.Node) (gmnlisp.No
 
 func main() {
     lisp := gmnlisp.New()
+
+    lisp = lisp.Let(gmnlisp.Variables{
+        gmnlisp.NewSymbol("a"): gmnlisp.Integer(1),
+        gmnlisp.NewSymbol("b"): gmnlisp.Integer(2),
+    })
+
     lisp = lisp.Flet(
         gmnlisp.Functions{
             gmnlisp.NewSymbol("sum"): &gmnlisp.Function{C: 2, F: sum},
         })
 
-    result, err := lisp.Interpret(context.Background(), `(sum 1 2)`)
+    value, err := lisp.Interpret(context.TODO(), "(sum a b)")
     if err != nil {
         fmt.Fprintln(os.Stderr, err.Error())
         return
     }
-    fmt.Printf("(sum 1 2)=%v\n", result)
+    fmt.Println(value.String())
 }
 ```
 
 ```
-$ go run examples/example2.go
-(sum 1 2)=3
+$ go run examples/example.go
+3
 ```
+
+- `gmnlisp.New` returns the new Lisp interpretor instance (`*gmnlisp.World`).
+- `gmnlisp.NewSymbol` is the symbol constructor. `gmnlisp.NewSymbol("a")` always returns the same value no matter how many times you call it.
+- `gmnlisp.Variables` is the symbol-map type. It is the alias of `map[gmnlisp.Symbol]gmnlisp.Node`. `Node` is the interface-type that all objects in the Lisp have to implement.
+- `.Let` makes a new instance including the given namespace.
+
+```
+lisp.Let(gmnlisp.Variables{
+        gmnlisp.NewSymbol("a"): gmnlisp.Integer(1),
+        gmnlisp.NewSymbol("b"): gmnlisp.Integer(2),
+    }).Interpret(context.Background(),"(c)")
+```
+
+is same as `(let ((a 1) (b 1)) (c))`
 
 + `a,err := gmnlisp.ExpectClass[gmnlisp.Integer](ctx,w,x)`  
   is similar as  
