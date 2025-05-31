@@ -1,5 +1,7 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+- `(cond)` に関連するテストのNG項目を修正した
+
 v0.7.13
 =======
 May 26, 2025

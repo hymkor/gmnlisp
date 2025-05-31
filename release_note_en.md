@@ -1,5 +1,7 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+- Fixed test failures related to `(cond)`
+
 v0.7.13
 =======
 May 26, 2025
