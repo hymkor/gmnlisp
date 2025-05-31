@@ -144,7 +144,7 @@ func funThrow(ctx context.Context, w *World, tagForm, value Node) (Node, error) 
 }
 
 func cmdCond(ctx context.Context, w *World, list Node) (Node, error) {
-	return cmdCondWithTailRecOpt(ctx, w, list, _Symbol(-1))
+	return cmdCondWithTailRecOpt(ctx, w, list, nulSymbol)
 }
 
 func cmdCondWithTailRecOpt(ctx context.Context, w *World, list Node, currFunc Symbol) (Node, error) {
@@ -158,9 +158,15 @@ func cmdCondWithTailRecOpt(ctx context.Context, w *World, list Node, currFunc Sy
 		}
 		cond, act, err := w.ShiftAndEvalCar(ctx, condAndAct)
 		if err != nil {
+			if errors.Is(err, ErrTooFewArguments) {
+				return raiseError(ctx, w, errors.New("requires cons"))
+			}
 			return nil, err
 		}
 		if IsSome(cond) {
+			if IsNone(act) {
+				return cond, nil
+			}
 			return prognWithTailRecOpt(ctx, w, act, currFunc)
 		}
 	}
