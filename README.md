@@ -1,7 +1,8 @@
-[![GoDoc](https://pkg.go.dev/badge/github.com/hymkor/gmnlisp)][pkgGoDev]
-
 Gmnlisp
 =======
+
+[![Go Reference](https://pkg.go.dev/badge/github.com/hymkor/gmnlisp.svg)](https://pkg.go.dev/github.com/hymkor/minipage)
+[![Go Test](https://github.com/hymkor/gmnlisp/actions/workflows/go.yml/badge.svg)](https://github.com/hymkor/minipage/actions/workflows/go.yml)
 
 Gmnlisp is the interpreter of ISLisp written in Go.
 It is developed to embbed to the applications for customizing.
