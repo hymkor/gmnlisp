@@ -4,15 +4,13 @@ Gmnlisp
 [![Go Reference](https://pkg.go.dev/badge/github.com/hymkor/gmnlisp.svg)](https://pkg.go.dev/github.com/hymkor/minipage)
 [![Go Test](https://github.com/hymkor/gmnlisp/actions/workflows/go.yml/badge.svg)](https://github.com/hymkor/minipage/actions/workflows/go.yml)
 
-Gmnlisp is the interpreter of ISLisp written in Go.
+Gmnlisp is the interpreter of [ISLisp] written in Go.
 It is developed to embbed to the applications for customizing.
-
-[pkgGoDev]: https://pkg.go.dev/github.com/hymkor/gmnlisp
 
 ![Example image](factorial.png)
 
-Examples
---------
+Usage and Integration Guide
+----------------------------
 
 ```examples/example.go
 package main
@@ -80,7 +78,7 @@ lisp.Let(gmnlisp.Variables{
 
 is equivalent to the Lisp code: `(let ((a 1) (b 2)) (c))`
 
-### Type assertions:
+### Type assertions
 
 `a, err := gmnlisp.ExpectClass[gmnlisp.Integer](ctx, w, x)`  
 is similar to:  
@@ -88,7 +86,7 @@ is similar to:
 
 However, `ExpectClass` invokes the user-defined error handler if `x` is not of type `Integer`.
 
-### User-defined functions:
+### User-defined functions
 
 User-defined functions must accept three parameters:
 
@@ -102,8 +100,7 @@ Such a function can be wrapped as a Lisp value like this:
 - Field `F`: the function itself
 - Field `C`: the required number of arguments. An error is raised if the number of arguments doesn't match.
 
-Supported Types
----------------
+### Supported Types
 
 Lisp values correspond to the following Go types or constructors when embedding gmnlisp in Go applications:
 
@@ -125,7 +122,7 @@ The function guarantees that the same string always maps to the same symbol valu
 `gmnlisp.Node` is the root interface.
 All values that appear in Lisp code must implement this interface.
 
-```
+```go
 type Node interface {
     Equals(Node, EqlMode) bool
     String() string
