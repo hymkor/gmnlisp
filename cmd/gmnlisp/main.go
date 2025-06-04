@@ -151,10 +151,10 @@ func interactive(lisp *gmnlisp.World) error {
 			fmt.Fprintln(os.Stderr, err.Error())
 			continue
 		}
-		if gmnlisp.IsSome(result) {
-			fmt.Fprintln(os.Stdout, result.String())
+		if result == nil {
+			result = gmnlisp.Null
 		}
-		fmt.Println()
+		fmt.Println(result.String())
 	}
 }
 
