@@ -1,6 +1,11 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
 - Fixed test failures related to `(cond)`
+- Fixed test failures related to `(generic-function-p)`
+- In interactive mode, print the result value even when it is nil.
+- `(macroexpand ARG)` now returns ARG when ARG is not a macro form.
+- When the first argument is a macro, `(setf)` expands it before evaluting.
+- `(macroexpand ARG)` now recursively expands ARG until no macro form remains.
 
 v0.7.13
 =======
