@@ -240,11 +240,13 @@ func cmdDefMethod(ctx context.Context, w *World, node Node) (Node, error) {
 }
 
 func funGenericFunctionP(ctx context.Context, w *World, arg Node) (Node, error) {
-	f, err := ExpectFunction(ctx, w, arg)
-	if err != nil {
+	if f, ok := arg.(FunctionRef); ok {
+		if _, okk := f.value.(*_Generic); okk {
+			return True, nil
+		}
 		return Null, nil
 	}
-	if _, ok := f.(*_Generic); ok {
+	if _, ok := arg.(*_Generic); ok {
 		return True, nil
 	}
 	return Null, nil
