@@ -173,13 +173,15 @@ func (w *World) Get(name Symbol) (Node, error) {
 }
 
 func (w *World) GetFunc(name Symbol) (Callable, error) {
-	for w != nil {
-		if w.funcs != nil {
-			if value, ok := w.funcs.Get(name); ok {
+	for W := w; W != nil; W = W.parent {
+		if W.funcs != nil {
+			if value, ok := W.funcs.Get(name); ok {
 				return value, nil
 			}
 		}
-		w = w.parent
+	}
+	if value, ok := w.shared.defun.Get(name); ok {
+		return value, nil
 	}
 	return nil, &_UndefinedEntity{name: name, space: symFunction}
 }
