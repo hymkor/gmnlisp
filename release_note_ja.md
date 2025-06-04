@@ -1,11 +1,17 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+v0.7.14
+=======
+Jun 9, 2025
+
 - `(cond)` に関連するテストのNG項目を修正した
 - `(generic-function-p)` に関するテストのNG項目を修正した
 - インタラクティブモードで、nil である時も結果の値を表示するようにした
 - `(macroexpand ARG)` で ARG がマクロでない場合、ARG をそのまま返すようにした
 - setf の第一引数がマクロだった時、マクロを展開してから評価を始めるようにした
 - `(macroexpand ARG)` でマクロがなくなるまで ARG を再帰的に展開するようにした
+
+[TP Result] : OK = 12127, NG = 4284
 
 v0.7.13
 =======
