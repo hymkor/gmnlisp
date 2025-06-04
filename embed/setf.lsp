@@ -18,6 +18,7 @@
           (gethash . set-gethash))))
   (lambda-macro
     (expr newvalue)
+    (setq expr (macroexpand expr))
     (if (symbolp expr)
       `(setq ,expr ,newvalue)
       (let* ((name (car expr))
