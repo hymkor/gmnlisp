@@ -77,7 +77,7 @@ func cmdPSetq(ctx context.Context, w *World, params Node) (Node, error) {
 	return Null, nil
 }
 
-func letValuesToVars(ctx context.Context, w *World, list Node, lexical map[Symbol]Node) error {
+func letValuesToVars(ctx context.Context, ww **World, list Node, setter func(Symbol, Node)) error {
 	for IsSome(list) {
 		var item Node
 		var err error
@@ -86,9 +86,9 @@ func letValuesToVars(ctx context.Context, w *World, list Node, lexical map[Symbo
 		if err != nil {
 			return err
 		}
-		if !w.StrictMode {
+		if !(*ww).StrictMode {
 			if symbol, ok := item.(Symbol); ok {
-				lexical[symbol] = Null
+				setter(symbol, Null)
 				continue
 			}
 		}
@@ -97,15 +97,15 @@ func letValuesToVars(ctx context.Context, w *World, list Node, lexical map[Symbo
 		if err := ListToArray(item, argv[:]); err != nil {
 			return err
 		}
-		symbol, err := ExpectNonReservedSymbol(ctx, w, argv[0])
+		symbol, err := ExpectNonReservedSymbol(ctx, *ww, argv[0])
 		if err != nil {
 			return err
 		}
-		value, err := w.Eval(ctx, argv[1])
+		value, err := (*ww).Eval(ctx, argv[1])
 		if err != nil {
 			return err
 		}
-		lexical[symbol] = value
+		setter(symbol, value)
 	}
 	return nil
 }
@@ -122,7 +122,8 @@ func cmdLetWithTailRecOpt(ctx context.Context, w *World, params Node, tailOptSym
 	}
 	lexical := Variables{}
 
-	if err := letValuesToVars(ctx, w, list, lexical); err != nil {
+	setter := func(s Symbol, n Node) { lexical[s] = n }
+	if err := letValuesToVars(ctx, &w, list, setter); err != nil {
 		return nil, err
 	}
 
@@ -140,14 +141,13 @@ func cmdLetXWithTailRecOpt(ctx context.Context, w *World, params Node, tailOptSy
 	if err != nil {
 		return nil, err
 	}
-	lexical := Variables{}
-
-	newWorld := w.Let(lexical)
-
-	if err := letValuesToVars(ctx, newWorld, list, lexical); err != nil {
+	setter := func(s Symbol, n Node) {
+		w = w.Let(&Pair{Key: s, Value: n})
+	}
+	if err := letValuesToVars(ctx, &w, list, setter); err != nil {
 		return nil, err
 	}
-	return prognWithTailRecOpt(ctx, newWorld, params, tailOptSym)
+	return prognWithTailRecOpt(ctx, w, params, tailOptSym)
 }
 
 func cmdDefConstant(ctx context.Context, w *World, list Node) (Node, error) {
