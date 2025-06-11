@@ -207,6 +207,8 @@ func cmdCase(ctx context.Context, w *World, list Node) (Node, error) {
 			}
 		} else if caseValue.Equals(True, STRICT) {
 			return Progn(ctx, w, act)
+		} else {
+			return raiseProgramError(ctx, w, errors.New("Syntax error"))
 		}
 	}
 	return Null, nil
