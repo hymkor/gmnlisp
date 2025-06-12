@@ -2,6 +2,7 @@ package gmnlisp
 
 import (
 	"context"
+	"errors"
 	"fmt"
 )
 
@@ -77,7 +78,7 @@ func cmdPSetq(ctx context.Context, w *World, params Node) (Node, error) {
 	return Null, nil
 }
 
-func letValuesToVars(ctx context.Context, ww **World, list Node, setter func(Symbol, Node)) error {
+func letValuesToVars(ctx context.Context, ww **World, list Node, setter func(Symbol, Node) error) error {
 	for IsSome(list) {
 		var item Node
 		var err error
@@ -88,7 +89,9 @@ func letValuesToVars(ctx context.Context, ww **World, list Node, setter func(Sym
 		}
 		if !(*ww).StrictMode {
 			if symbol, ok := item.(Symbol); ok {
-				setter(symbol, Null)
+				if err := setter(symbol, Null); err != nil {
+					return err
+				}
 				continue
 			}
 		}
@@ -105,7 +108,9 @@ func letValuesToVars(ctx context.Context, ww **World, list Node, setter func(Sym
 		if err != nil {
 			return err
 		}
-		setter(symbol, value)
+		if err := setter(symbol, value); err != nil {
+			return err
+		}
 	}
 	return nil
 }
@@ -122,7 +127,13 @@ func cmdLetWithTailRecOpt(ctx context.Context, w *World, params Node, tailOptSym
 	}
 	lexical := Variables{}
 
-	setter := func(s Symbol, n Node) { lexical[s] = n }
+	setter := func(s Symbol, n Node) error {
+		if _, ok := lexical[s]; ok {
+			return errors.New("duplicate variable name")
+		}
+		lexical[s] = n
+		return nil
+	}
 	if err := letValuesToVars(ctx, &w, list, setter); err != nil {
 		return nil, err
 	}
@@ -141,8 +152,9 @@ func cmdLetXWithTailRecOpt(ctx context.Context, w *World, params Node, tailOptSy
 	if err != nil {
 		return nil, err
 	}
-	setter := func(s Symbol, n Node) {
+	setter := func(s Symbol, n Node) error {
 		w = w.Let(&Pair{Key: s, Value: n})
+		return nil
 	}
 	if err := letValuesToVars(ctx, &w, list, setter); err != nil {
 		return nil, err
