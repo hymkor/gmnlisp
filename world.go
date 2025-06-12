@@ -105,6 +105,7 @@ func (m *Pair) Get(key Symbol) (Node, bool) {
 func (m *Pair) Set(key Symbol, value Node) error {
 	if key == m.Key {
 		m.Value = value
+		return nil
 	}
 	return errors.New("Pair can be set value")
 }
@@ -195,7 +196,9 @@ func (w *World) Set(name Symbol, value Node) error {
 	for w != nil {
 		if w.vars != nil {
 			if _, ok := w.vars.Get(name); ok {
-				return w.vars.Set(name, value)
+				if err := w.vars.Set(name, value); err == nil {
+					return nil
+				}
 			}
 		}
 		w = w.parent
