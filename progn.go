@@ -201,10 +201,12 @@ func cmdCase(ctx context.Context, w *World, list Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		caseValue, act, err := Shift(caseAndAct)
+		cons, err := ExpectClass[*Cons](ctx, w, caseAndAct)
 		if err != nil {
 			return nil, err
 		}
+		caseValue := cons.Car
+		act := cons.Cdr
 		if cons, ok := caseValue.(*Cons); ok {
 			var list Node = cons
 			for IsSome(list) {
