@@ -116,6 +116,18 @@ func cmdCatch(ctx context.Context, w *World, node Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
+	if _, ok := tagForm.(Integer); ok {
+		return raiseProgramError(ctx, w, errors.New("Can not use an integer as tag-form"))
+	}
+	if _, ok := tagForm.(Float); ok {
+		return raiseProgramError(ctx, w, errors.New("Can not use an float as tag-form"))
+	}
+	if _, ok := tagForm.(String); ok {
+		return raiseProgramError(ctx, w, errors.New("Can not use an string as tag-form"))
+	}
+	if _, ok := tagForm.(Rune); ok {
+		return raiseProgramError(ctx, w, errors.New("Can not use an character as tag-form"))
+	}
 
 	if w.catchTag == nil {
 		w.catchTag = make(map[Node]struct{})
