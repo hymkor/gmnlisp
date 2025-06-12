@@ -4,7 +4,7 @@
           (mapcar
             (lambda (entry)
               (if (equal (car entry) 't)
-                entry
+                (cons 't (list (cons 'progn (cdr entry))))
                 (append
                   (list
                     (cons
@@ -13,7 +13,7 @@
                         (lambda (key1)
                           (list 'funcall predform keyform_ key1))
                         (car entry))))
-                      (cdr entry)))
+                      (list (cons 'progn (cdr entry)))))
                   ) body))
     (setq body (cons 'cond body))
     (setq body `(let ((,keyform_ ,keyform)) (assure <function> ,predform) ,body))
