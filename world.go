@@ -375,6 +375,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("exit"):                           Function0(funQuit),
 	NewSymbol("exp"):                            funMath1(math.Exp),
 	NewSymbol("expand-defun"):                   SpecialF(cmdExpandDefun),
+	NewSymbol("expt"):                           Function2(funExpt),
 	NewSymbol("file-length"):                    Function2(funFileLength),
 	NewSymbol("file-position"):                  Function1(funFilePosition),
 	NewSymbol("floatp"):                         Function1(funAnyTypep[Float]),

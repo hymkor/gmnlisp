@@ -3,6 +3,7 @@ package gmnlisp
 import (
 	"context"
 	"math"
+	"math/big"
 )
 
 func funMath1(fn func(n float64) float64) SpecialF {
@@ -25,14 +26,24 @@ func funMath1(fn func(n float64) float64) SpecialF {
 	}
 }
 
-func funLog(ctx context.Context, w *World, x Node) (Node, error) {
-	var f float64
+func toFloat64(ctx context.Context, w *World, x Node, hasPeriod *bool) (float64, error) {
 	if i, ok := x.(Integer); ok {
-		f = float64(int(i))
-	} else if _f, err := ExpectClass[Float](ctx, w, x); err != nil {
+		return float64(int(i)), nil
+	}
+	f, err := ExpectClass[Float](ctx, w, x)
+	if err != nil {
+		return 0.0, err
+	}
+	if hasPeriod != nil {
+		*hasPeriod = true
+	}
+	return float64(f), nil
+}
+
+func funLog(ctx context.Context, w *World, x Node) (Node, error) {
+	f, err := toFloat64(ctx, w, x, nil)
+	if err != nil {
 		return nil, err
-	} else {
-		f = float64(_f)
 	}
 	if f <= 0 {
 		return callHandler[Node](ctx, w, true, &DomainError{
@@ -41,4 +52,53 @@ func funLog(ctx context.Context, w *World, x Node) (Node, error) {
 		})
 	}
 	return Float(math.Log(f)), nil
+}
+
+func funExpt(ctx context.Context, w *World, x1, x2 Node) (Node, error) {
+	hasPeriod := false
+	f1, err := toFloat64(ctx, w, x1, &hasPeriod)
+	if err != nil {
+		return nil, err
+	}
+	f2, err := toFloat64(ctx, w, x2, &hasPeriod)
+	if err != nil {
+		return nil, err
+	}
+	if (x1 == Integer(0) || x1 == Float(0)) && (f2 < 0 || x2 == Float(0)) {
+		return callHandler[*ArithmeticError](ctx, w, true, &ArithmeticError{
+			Operation: FunctionRef{value: Function2(funExpt)},
+			Operands:  List(x1, x2),
+			Class:     arithmeticErrorClass,
+		})
+	}
+	if _, ok := x2.(Integer); !ok && f1 < 0 {
+		return callHandler[*ArithmeticError](ctx, w, true, &ArithmeticError{
+			Operation: FunctionRef{value: Function2(funExpt)},
+			Operands:  List(x1, x2),
+			Class:     arithmeticErrorClass,
+		})
+	}
+	result := math.Pow(f1, f2)
+	if hasPeriod || f2 < 0 {
+		if math.IsInf(result, 0) {
+			return callHandler[*ArithmeticError](ctx, w, true, &ArithmeticError{
+				Operation: FunctionRef{value: Function2(funExpt)},
+				Operands:  List(x1, x2),
+				Class:     floatingPointOverflowClass,
+			})
+		}
+		if math.IsNaN(result) {
+			return callHandler[*ArithmeticError](ctx, w, true, &ArithmeticError{
+				Operation: FunctionRef{value: Function2(funExpt)},
+				Operands:  List(x1, x2),
+				Class:     arithmeticErrorClass,
+			})
+		}
+		return Float(result), nil
+	}
+	if math.MinInt64 < result && result < math.MaxInt64 {
+		return Integer(int64(result)), nil
+	}
+	i, _ := big.NewFloat(result).Int(nil)
+	return BigInt{Int: i}, nil
 }
