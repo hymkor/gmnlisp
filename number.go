@@ -264,3 +264,30 @@ func (b BigInt) Equals(n Node, m EqlMode) bool {
 func (b BigInt) ClassOf() Class {
 	return integerClass
 }
+
+func funReciprocal(ctx context.Context, w *World, x Node) (Node, error) {
+	var f Float
+	var err error
+	if i, ok := x.(Integer); ok {
+		if i == 0 {
+			return callHandler[Node](ctx, w, true, &ArithmeticError{
+				Operation: FunctionRef{value: Function1(funReciprocal)},
+				Operands:  x,
+				Class:     divisionByZeroClass,
+			})
+		}
+		if 1%i == 0 {
+			return Integer(1 / i), nil
+		}
+		f = Float(i)
+	} else if f, err = ExpectClass[Float](ctx, w, x); err != nil {
+		return nil, err
+	} else if f == 0.0 {
+		return callHandler[Node](ctx, w, true, &ArithmeticError{
+			Operation: FunctionRef{value: Function1(funReciprocal)},
+			Operands:  x,
+			Class:     divisionByZeroClass,
+		})
+	}
+	return 1 / f, nil
+}

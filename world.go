@@ -444,6 +444,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("read-byte"):                      &Function{Min: 1, Max: 3, F: funReadByte},
 	NewSymbol("read-char"):                      &Function{Max: 3, F: funReadChar},
 	NewSymbol("read-line"):                      &Function{Max: 3, F: funReadLine},
+	NewSymbol("reciprocal"):                     Function1(funReciprocal),
 	NewSymbol("rem"):                            Function2(funRem),
 	NewSymbol("remhash"):                        Function2(funRemoveHash),
 	NewSymbol("rest"):                           Function1(funGetCdr),
