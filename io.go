@@ -207,6 +207,18 @@ func funClose(ctx context.Context, w *World, arg Node) (Node, error) {
 	return Null, c.Close()
 }
 
+func funFinishOutput(ctx context.Context, w *World, arg Node) (Node, error) {
+	W, ok := arg.(interface{ Flush() error })
+	if !ok {
+		return callHandler[Node](ctx, w, true, &DomainError{
+			Object:        arg,
+			ExpectedClass: streamClass,
+		})
+	}
+	W.Flush()
+	return Null, nil
+}
+
 func funWriteByte(ctx context.Context, w *World, z, stream Node) (Node, error) {
 	data, err := ExpectClass[Integer](ctx, w, z)
 	if err != nil {
