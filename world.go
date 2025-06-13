@@ -610,10 +610,10 @@ func (w *World) InterpretNodes(ctx context.Context, ns []Node) (Node, error) {
 	var err error
 
 	defer func() {
-		if f, ok := w.stdout.(interface{ Flush() }); ok {
+		if f, ok := w.stdout.(interface{ Flush() error }); ok {
 			f.Flush()
 		}
-		if f, ok := w.errout.(interface{ Flush() }); ok {
+		if f, ok := w.errout.(interface{ Flush() error }); ok {
 			f.Flush()
 		}
 	}()

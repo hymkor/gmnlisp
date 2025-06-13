@@ -3,6 +3,7 @@ package gmnlisp
 import (
 	"bufio"
 	"bytes"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -77,9 +78,16 @@ func (o *outputStream) IsClosed() bool {
 	return o.isClosed
 }
 
-func (o *outputStream) Flush() {
-	o.w.Flush()
-	o.file.Sync()
+func (o *outputStream) Flush() error {
+	err1 := o.w.Flush()
+	err2 := o.file.Sync()
+	if err1 != nil {
+		if err2 != nil {
+			return errors.Join(err1, err2)
+		}
+		return err1
+	}
+	return err2
 }
 
 func (o *outputStream) Close() error {
