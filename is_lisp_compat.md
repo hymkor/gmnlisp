@@ -308,7 +308,7 @@
 - [x] abs
 - [x] exp
 - [x] log
-- [ ] expt
+- [x] expt
 - [x] sqrt
 - [x] sin
 - [x] cos
@@ -330,7 +330,7 @@
 - [x] \*most-positive-float\*
 - [x] \*most-negative-float\*
 - [x] floatp
-- [ ] float
+- [x] float
 - [x] floor
 - [x] ceiling
 - [x] truncate
@@ -461,7 +461,7 @@
 - [x] with-open-output-file
 - [x] with-open-io-file
 - [x] close
-- [ ] finish-output
+- [x] finish-output
 
 #### 18.2 Other streams
 
