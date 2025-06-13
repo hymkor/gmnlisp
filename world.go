@@ -378,6 +378,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("expt"):                           Function2(funExpt),
 	NewSymbol("file-length"):                    Function2(funFileLength),
 	NewSymbol("file-position"):                  Function1(funFilePosition),
+	NewSymbol("float"):                          Function1(funFloat),
 	NewSymbol("floatp"):                         Function1(funAnyTypep[Float]),
 	NewSymbol("floor"):                          Function1(funFloor),
 	NewSymbol("format"):                         &Function{Min: 2, F: funFormat},

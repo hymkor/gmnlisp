@@ -362,3 +362,21 @@ func funQuotient(ctx context.Context, w *World, args []Node) (Node, error) {
 	}
 	return fromBigFloat(L), nil
 }
+
+func funFloat(ctx context.Context, w *World, x Node) (Node, error) {
+	if _, ok := x.(Float); ok {
+		return x, nil
+	}
+	if i, ok := x.(Integer); ok {
+		return Float(float32(i)), nil
+	}
+	if b, ok := x.(BigInt); ok {
+		f := new(big.Float).SetInt(b.Int)
+		v, _ := f.Float64()
+		return Float(v), nil
+	}
+	return callHandler[Node](ctx, w, true, &DomainError{
+		Object:        x,
+		ExpectedClass: floatClass,
+	})
+}
