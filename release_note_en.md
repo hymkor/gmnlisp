@@ -1,5 +1,16 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+- Fix: `(set-elt NEWVALUE SEQ Z)` returned SEQ though it should return NEWVALUE
+- Fix: `(case 1 (1))` should raise error, but returned nil
+- Fix: `(*Pair) Set` always retured an error
+- Fix: Where the same variable declared twice in a `(let*)` expression was treated as the same variable.
+- Fix: Multiple declarations of the same variable in `let` or `for` were not reported as errors.
+- Fix: numeric or character tags in `(catch)` were not treated as errors.
+- `(case-using)` now returns nil when action section is empty
+- Fix: `(case NIL NIL)` and `(case NIL NIL NIL)` raise `<domain-error>` instead of `<program-error>`
+- Changed REPL output format to print values as S-expressions (~S-style) instead of raw strings (~A-style).
+- Implement `(reciprocal)` and `(quotient)`
+
 v0.7.14
 =======
 Jun 9, 2025

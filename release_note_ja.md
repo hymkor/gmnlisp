@@ -1,5 +1,15 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+- Fix: `(set-elt NEWVALUE SEQ Z)` が NEWVALUE を返すべきなのに SEQ を返していた
+- Fix: `(case 1 (1))` はエラーになるべきだが nil となっていた
+- Fix: `(*Pair) Set` が常にエラーを返していた
+- `(let*)` の中で同じ変数が二回宣言されていた時、いずれも同じ変数扱いされていた不具合を修正
+- `(let)` や `(for)` で同じ変数が複数回宣言されていた時、エラーにしていなかった不具合を修正
+- `(catch)` で数値や文字列がタグの時にエラーとしなかった不具合を修正
+- `(case-using)` でアクション部が空の時、nil を返すようにした
+- インタラクティブモードでの結果は、S式で表示するようにした。
+- `(reciprocal)`,`(quotient)` を実装
+
 v0.7.14
 =======
 Jun 9, 2025
