@@ -440,6 +440,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("psetq"):                          SpecialF(cmdPSetq),
 	NewSymbol("quasiquote"):                     SpecialF(cmdQuasiQuote),
 	NewSymbol("quit"):                           Function0(funQuit),
+	NewSymbol("quotient"):                       &Function{Min: 2, F: funQuotient},
 	NewSymbol("read"):                           &Function{Max: 3, F: funRead},
 	NewSymbol("read-byte"):                      &Function{Min: 1, Max: 3, F: funReadByte},
 	NewSymbol("read-char"):                      &Function{Max: 3, F: funReadChar},

@@ -291,3 +291,68 @@ func funReciprocal(ctx context.Context, w *World, x Node) (Node, error) {
 	}
 	return 1 / f, nil
 }
+
+func toBigFloat(v Node) *big.Float {
+	if i, ok := v.(Integer); ok {
+		return big.NewFloat(float64(int64(i)))
+	}
+	if f, ok := v.(Float); ok {
+		return big.NewFloat(float64(f))
+	}
+	if b, ok := v.(BigInt); ok {
+		return new(big.Float).SetInt(b.Int)
+	}
+	return nil
+}
+
+func fromBigFloat(v *big.Float) Node {
+	if v.IsInt() {
+		i, _ := v.Int(nil)
+		if i.IsInt64() {
+			return Integer(i.Int64())
+		}
+		return BigInt{Int: i}
+	}
+	r, _ := v.Float64()
+	return Float(r)
+}
+
+func funQuotient(ctx context.Context, w *World, args []Node) (Node, error) {
+	resultIsFloat := false
+	for _, arg1 := range args {
+		if _, ok := arg1.(Integer); ok {
+			continue
+		}
+		if _, ok := arg1.(BigInt); ok {
+			continue
+		}
+		_, err := ExpectClass[Float](ctx, w, arg1)
+		if err != nil {
+			return nil, err
+		}
+		resultIsFloat = true
+	}
+	L := toBigFloat(args[0])
+	if L == nil {
+		panic("funQuotient(L)")
+	}
+	for divisor := args[1:]; len(divisor) > 0; divisor = divisor[1:] {
+		R := toBigFloat(divisor[0])
+		if R == nil {
+			panic("funQuotient(R)")
+		}
+		if R.Sign() == 0 {
+			return callHandler[Node](ctx, w, true, &ArithmeticError{
+				Operation: FunctionRef{value: &Function{Min: 2, F: funQuotient}},
+				Operands:  divisor[0],
+				Class:     divisionByZeroClass,
+			})
+		}
+		L = new(big.Float).Quo(L, R)
+	}
+	if resultIsFloat {
+		f, _ := L.Float64()
+		return Float(f), nil
+	}
+	return fromBigFloat(L), nil
+}
