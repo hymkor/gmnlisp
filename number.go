@@ -252,6 +252,34 @@ func funSqrt(ctx context.Context, w *World, arg Node) (Node, error) {
 	return cast(math.Sqrt(f)), nil
 }
 
+func funIsqrt(ctx context.Context, w *World, arg Node) (Node, error) {
+	z := new(big.Float)
+	if b, ok := arg.(BigInt); ok {
+		if b.Int.Sign() < 0 {
+			return callHandler[Integer](ctx, w, false, &DomainError{
+				Object:        arg,
+				ExpectedClass: floatClass,
+			})
+		}
+		z = z.SetInt(b.Int)
+	} else {
+		i, err := ExpectClass[Integer](ctx, w, arg)
+		if err != nil {
+			return nil, err
+		}
+		if i < 0 {
+			return callHandler[Integer](ctx, w, false, &DomainError{
+				Object:        arg,
+				ExpectedClass: floatClass,
+			})
+		}
+		z = z.SetInt64(int64(i))
+	}
+	z = new(big.Float).Sqrt(z)
+	v, _ := z.Int64()
+	return Integer(v), nil
+}
+
 type BigInt struct {
 	*big.Int
 }

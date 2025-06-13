@@ -406,6 +406,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("instancep"):                      Function2(funInstanceP),
 	NewSymbol("integerp"):                       Function1(funAnyTypep[Integer]),
 	NewSymbol("internal-time-units-per-second"): Function0(funInternalTimeUnitPerSecond),
+	NewSymbol("isqrt"):                          Function1(funIsqrt),
 	NewSymbol("lambda-macro"):                   SpecialF(cmdLambdaMacro),
 	NewSymbol("last"):                           Function1(funLast),
 	NewSymbol("length"):                         Function1(funLength),
