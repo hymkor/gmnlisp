@@ -87,6 +87,15 @@ func funEqual(ctx context.Context, w *World, list []Node) (Node, error) {
 	})
 }
 
+func funEqualp(ctx context.Context, w *World, list []Node) (Node, error) {
+	return equalSub(ctx, w, list, func(left, right Node) bool {
+		if IsNone(left) {
+			return IsNone(right)
+		}
+		return left.Equals(right, EQUALP)
+	})
+}
+
 func funNot(_ context.Context, w *World, arg Node) (Node, error) {
 	if IsNone(arg) {
 		return True, nil
