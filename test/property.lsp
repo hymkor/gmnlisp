@@ -5,9 +5,5 @@
 (assert-eq (property 'zeus 'dauter) 'who)
 
 (remove-property 'zeus 'dauter)
-(assert-eq
-  (catch 'ok
-   (with-handler 
-    (lambda (e) (throw 'ok "OK"))
-    (format t "(6) ~S~%" (property 'zeus 'dauter))
-    "NG")) "OK")
+(assert-eq (property 'zeus 'dauter 'not-found) 'not-found)
+(assert-eq (property 'zeus 'dauter) nil)
