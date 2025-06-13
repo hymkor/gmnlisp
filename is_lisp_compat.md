@@ -301,8 +301,8 @@
 - [x] +
 - [x] \*
 - [x] -
-- [ ] reciproca1
-- [ ] quotient
+- [x] reciprocal
+- [x] quotient
 - [x] max
 - [x] min
 - [x] abs
