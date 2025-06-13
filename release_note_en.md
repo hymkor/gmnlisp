@@ -9,7 +9,15 @@
 - `(case-using)` now returns nil when action section is empty
 - Fix: `(case NIL NIL)` and `(case NIL NIL NIL)` raise `<domain-error>` instead of `<program-error>`
 - Changed REPL output format to print values as S-expressions (~S-style) instead of raw strings (~A-style).
-- Implement `(reciprocal)` and `(quotient)`
+- Implement `(finish-output)`, `(float)`, `(expt)`, `(reciprocal)` and `(quotient)`
+- Add platform-specific `*dev-null*` constant to executable
+    (evaluates to `"NUL"` on Windows and `"/dev/null"` on other platforms)
+- Fixed incorrect behavior where `(equalp)` acted like `(=)`
+- Fixed outdated custom test code to align with the latest specification  
+  (Note: No issue in the main implementation; tested using the ISLisp verification system)  
+  - `(property)` was expected to signal an error when the property was missing, but it should return the third argument or `nil`
+  - `(=)` was incorrectly used to compare case-insensitive strings
+  - `(=)` was used with more than two arguments, which is not allowed
 
 v0.7.14
 =======
