@@ -169,6 +169,8 @@ func mains(args []string) error {
 	if *flagStrict {
 		lisp.StrictMode = true
 	}
+	lisp.DefineGlobal(gmnlisp.NewSymbol("*dev-null*"), gmnlisp.String(os.DevNull))
+
 	if _, err := lisp.Interpret(ctx, startupCode); err != nil {
 		return err
 	}
