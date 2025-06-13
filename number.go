@@ -161,6 +161,12 @@ func (f Float) String() string {
 	return fmt.Sprintf("%f", float64(f))
 }
 
+func floatEqualsRelative(a, b float64, relEps float64) bool {
+	diff := math.Abs(a - b)
+	norm := math.Max(math.Abs(a), math.Abs(b))
+	return diff <= relEps*norm
+}
+
 func (f Float) Equals(n Node, m EqlMode) bool {
 	if m == EQUALP {
 		if _n, ok := n.(Float); ok && f == _n {
@@ -170,7 +176,7 @@ func (f Float) Equals(n Node, m EqlMode) bool {
 		return ok && f == Float(_n)
 	} else {
 		v, ok := n.(Float)
-		return ok && f == v
+		return ok && floatEqualsRelative(float64(f), float64(v), 1e-9)
 	}
 }
 
