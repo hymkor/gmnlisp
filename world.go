@@ -463,6 +463,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("set-car"):                        Function2(funSetCar),
 	NewSymbol("set-cdr"):                        Function2(funSetCdr),
 	NewSymbol("set-file-position"):              Function2(funSetFilePosition),
+	NewSymbol("set-garef"):                      &Function{Min: 3, F: funSetGaref},
 	NewSymbol("set-gethash"):                    &Function{C: 3, F: funSetHash},
 	NewSymbol("setq"):                           SpecialF(cmdSetq),
 	NewSymbol("signal-condition"):               Function2(funSignalCondition),

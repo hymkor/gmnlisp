@@ -2,6 +2,7 @@ package gmnlisp
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"strings"
@@ -316,6 +317,30 @@ func funGaref(ctx context.Context, w *World, args []Node) (Node, error) {
 }
 
 func funSetAref(ctx context.Context, w *World, args []Node) (Node, error) {
+	if _, ok := args[1].(*Array); ok {
+		return funSetGaref(ctx, w, args)
+	}
+	if _, ok := args[1].(String); ok {
+		if len(args) > 3 {
+			return nil, ErrTooManyArguments
+		}
+		if len(args) < 3 {
+			return nil, ErrTooFewArguments
+		}
+		if i, ok := args[1].(Integer); ok && i < 0 {
+			return callHandler[Node](ctx, w, false, &DomainError{
+				Object:        args[1],
+				ExpectedClass: integerClass,
+			})
+		}
+		return nil, errors.New("aref did not support <string>,yet")
+	}
+	return callHandler[Node](ctx, w, false, &DomainError{
+		Object:        args[0],
+		ExpectedClass: arrayClass,
+	})
+}
+func funSetGaref(ctx context.Context, w *World, args []Node) (Node, error) {
 	newValue := args[0]
 
 	array, err := ExpectClass[*Array](ctx, w, args[1])
