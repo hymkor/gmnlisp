@@ -119,13 +119,13 @@
 
 - [x] basic-array-p
 - [x] basic-array\*-p
-- [ ] basic-vector-p
+- [x] basic-vector-p
 - [x] characterp
 - [x] consp
 - [x] floatp
 - [x] functionp
 - [x] general-array\*-p
-- [ ] general-vector-p
+- [x] general-vector-p
 - [x] generic-function-p
 - [x] integerp
 - [x] listp
@@ -343,7 +343,7 @@
 - [x] mod
 - [x] gcd
 - [x] lcm
-- [ ] isqrt
+- [x] isqrt
 - rem
 - most-postive-fixnum
 - most-negative-fixnum
@@ -404,16 +404,16 @@
 - [x] general-array\*-p
 - [x] create-array
 - [x] aref
-- [ ] garef
+- [x] garef
 - [x] set-aref , (setf (aref BASIC-ARRAY Z\*) OBJ)
-- [ ] set-garef , (setf (garef BASIC-ARRAY Z\*) OBJ)
+- [x] set-garef , (setf (garef BASIC-ARRAY Z\*) OBJ)
 - [x] array-dimensions
 - #(...) , #2a((...) (...)) , #3a(((.. ..))) ...
 
 ### 15 Vector
 
-- [ ] basic-vector-p
-- [ ] general-vector-p
+- [x] basic-vector-p
+- [x] general-vector-p
 - [x] create-vector
 - [x] vector
 
