@@ -8,7 +8,6 @@
 - `(catch)` で数値や文字列がタグの時にエラーとしなかった不具合を修正
 - `(case-using)` でアクション部が空の時、nil を返すようにした
 - インタラクティブモードでの結果は、S式で表示するようにした。
-- `(finish-output)`, `(float)`, `(expt)`, `(reciprocal)`, `(quotient)` を実装
 - 実行ファイルのにみ `*dev-null*` を追加  
    (Windows では `"NUL"`、他の OS では `"/dev/null"` と評価される)
 - `(equalp)` が `(=)` の動作となっていた不具合を修正
@@ -17,6 +16,10 @@
     - `(property)` でプロパティーがなかった時エラーを期待していたが、第三引数もしくは nil を返すのが正解だった
     - `(=)` で英大文字小文字を区別しない文字列の比較をさせていた
     - `(=)` で3つ以上の値の比較をさせていた
+- `(case)` や `(case-using)` で `t` ブロックに続くフォームがエラーとして特にリジェクトされていなかった不具合を修正
+- `index-out-of-range` は `<program-error>` に一種になった
+- `(garef)`, `(basic-vector-p)`, `(general-vector-p)`, `(isqrt)`, `(finish-output)`, `(float)`, `(expt)`, `(reciprocal)`, `(quotient)` を実装
+- `(set-aref)` の動作が実質 `(set-garef)` だったため、名前を `(set-gref)` に改めた 
 
 v0.7.14
 =======

@@ -9,7 +9,6 @@
 - `(case-using)` now returns nil when action section is empty
 - Fix: `(case NIL NIL)` and `(case NIL NIL NIL)` raise `<domain-error>` instead of `<program-error>`
 - Changed REPL output format to print values as S-expressions (~S-style) instead of raw strings (~A-style).
-- Implement `(finish-output)`, `(float)`, `(expt)`, `(reciprocal)` and `(quotient)`
 - Add platform-specific `*dev-null*` constant to executable
     (evaluates to `"NUL"` on Windows and `"/dev/null"` on other platforms)
 - Fixed incorrect behavior where `(equalp)` acted like `(=)`
@@ -18,6 +17,10 @@
   - `(property)` was expected to signal an error when the property was missing, but it should return the third argument or `nil`
   - `(=)` was incorrectly used to compare case-insensitive strings
   - `(=)` was used with more than two arguments, which is not allowed
+- Fixed a bug in `case` and `case-using` where forms following a `t` clause were not properly rejected as an error.
+- `index-ouf-of-range` is now one of `<program-error>`
+- Implement `(garef)`, `(basic-vector-p)`, `(general-vector-p)`, `(isqrt)`, `(finish-output)`, `(float)`, `(expt)`, `(reciprocal)` and `(quotient)`
+- Renamed `(set-aref)` to `(set-garef)` since its behavior was effectively equivalent to `(set-garef)`.
 
 v0.7.14
 =======
