@@ -74,6 +74,13 @@ func funGeneralVectorP(ctx context.Context, w *World, arg Node) (Node, error) {
 	return True, nil
 }
 
+func funBasicVectorP(ctx context.Context, w *World, arg Node) (Node, error) {
+	if _, ok := arg.(String); ok {
+		return True, nil
+	}
+	return funGeneralVectorP(ctx, w, arg)
+}
+
 type Array struct {
 	list []Node
 	dim  []int
