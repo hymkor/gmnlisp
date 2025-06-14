@@ -392,6 +392,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("funcall"):                        SpecialF(cmdFunCall),
 	NewSymbol("functionp"):                      Function1(funAnyTypep[FunctionRef]),
 	NewSymbol("general-array*-p"):               Function1(funGeneralArray),
+	NewSymbol("general-vector-p"):               Function1(funGeneralVectorP),
 	NewSymbol("generic-function-p"):             Function1(funGenericFunctionP),
 	NewSymbol("gensym"):                         Function0(funGensym),
 	NewSymbol("get-internal-real-time"):         Function0(funInternalRealTime),

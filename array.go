@@ -63,6 +63,17 @@ func funCreateVector(ctx context.Context, w *World, args []Node) (Node, error) {
 	return v, nil
 }
 
+func funGeneralVectorP(ctx context.Context, w *World, arg Node) (Node, error) {
+	A, ok := arg.(*Array)
+	if !ok {
+		return Null, nil
+	}
+	if len(A.dim) != 1 {
+		return Null, nil
+	}
+	return True, nil
+}
+
 type Array struct {
 	list []Node
 	dim  []int
