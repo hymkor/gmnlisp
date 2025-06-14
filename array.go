@@ -254,6 +254,31 @@ func (A *Array) Elt(n int) (Node, error) {
 }
 
 func funAref(ctx context.Context, w *World, args []Node) (Node, error) {
+	if _, ok := args[0].(*Array); ok {
+		return funGaref(ctx, w, args)
+	}
+	if _, ok := args[0].(String); ok {
+		if len(args) > 2 {
+			return nil, ErrTooManyArguments
+		}
+		if len(args) < 2 {
+			return nil, ErrTooFewArguments
+		}
+		if i, ok := args[1].(Integer); ok && i < 0 {
+			return callHandler[Node](ctx, w, false, &DomainError{
+				Object:        args[1],
+				ExpectedClass: integerClass,
+			})
+		}
+		return funElt(ctx, w, args)
+	}
+	return callHandler[Node](ctx, w, false, &DomainError{
+		Object:        args[0],
+		ExpectedClass: arrayClass,
+	})
+}
+
+func funGaref(ctx context.Context, w *World, args []Node) (Node, error) {
 	array, err := ExpectClass[*Array](ctx, w, args[0])
 	if err != nil {
 		return nil, err
@@ -261,13 +286,22 @@ func funAref(ctx context.Context, w *World, args []Node) (Node, error) {
 	if len(args)-1 > len(array.dim) {
 		return nil, ErrTooManyArguments
 	}
+	if len(args)-1 < len(array.dim) {
+		return nil, ErrTooFewArguments
+	}
 	for _, _nth := range args[1:] {
 		nth, err := ExpectClass[Integer](ctx, w, _nth)
 		if err != nil {
 			return nil, err
 		}
-		if nth < 0 || int(nth) >= array.dim[0] {
-			return nil, MakeError(ErrIndexOutOfRange, args[1])
+		if nth < 0 {
+			return callHandler[Node](ctx, w, false, &DomainError{
+				Object:        nth,
+				ExpectedClass: integerClass,
+			})
+		}
+		if int(nth) >= array.dim[0] {
+			return nil, ErrIndexOutOfRange
 		}
 		if len(array.dim) == 1 {
 			return array.list[nth], nil
@@ -278,7 +312,7 @@ func funAref(ctx context.Context, w *World, args []Node) (Node, error) {
 			dim:  array.dim[1:],
 		}
 	}
-	return array, nil
+	return array.list[0], nil
 }
 
 func funSetAref(ctx context.Context, w *World, args []Node) (Node, error) {

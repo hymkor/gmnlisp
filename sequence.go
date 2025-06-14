@@ -121,9 +121,12 @@ func funElt(ctx context.Context, w *World, args []Node) (Node, error) {
 			continue
 		}
 		for list := value; index >= 0; {
+			if list == String("") {
+				return callHandler[Node](ctx, w, true, ErrIndexOutOfRange)
+			}
 			seq, ok := list.(Sequence)
 			if !ok {
-				return Null, nil
+				return callHandler[Node](ctx, w, true, ErrIndexOutOfRange)
 			}
 			value, list, _ = seq.FirstAndRest()
 			index--
