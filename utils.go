@@ -10,22 +10,22 @@ import (
 )
 
 var (
-	ErrAbort           = errors.New("abort")
-	ErrDevisionByZero  = errors.New("devision by zeor")
-	ErrExpectedClass   = errors.New("expected class")
-	ErrExpectedMacro   = errors.New("expected macro")
-	ErrExpectedStream  = errors.New("expected stream")
-	ErrExpectedWriter  = errors.New("expected writer")
-	ErrIndexOutOfRange = errors.New("index out of range")
-	ErrInvalidFormat   = errors.New("invalid format")
-	ErrNoMatchMethods  = errors.New("no match methods")
-	ErrNotSupportType  = errors.New("not support type")
-	ErrQuit            = errors.New("bye")
+	ErrAbort          = errors.New("abort")
+	ErrDevisionByZero = errors.New("devision by zeor")
+	ErrExpectedClass  = errors.New("expected class")
+	ErrExpectedMacro  = errors.New("expected macro")
+	ErrExpectedStream = errors.New("expected stream")
+	ErrExpectedWriter = errors.New("expected writer")
+	ErrInvalidFormat  = errors.New("invalid format")
+	ErrNoMatchMethods = errors.New("no match methods")
+	ErrNotSupportType = errors.New("not support type")
+	ErrQuit           = errors.New("bye")
 
 	ErrCanNotParseNumber = parser.ErrCanNotParseNumber
 	ErrTooFewArguments   = ProgramError{err: parser.ErrTooFewArguments}
 	ErrTooManyArguments  = ProgramError{err: parser.ErrTooManyArguments}
 	ErrTooShortTokens    = parser.ErrTooShortTokens
+	ErrIndexOutOfRange   = ProgramError{err: errors.New("index out of range")}
 )
 
 type EqlMode int
