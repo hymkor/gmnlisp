@@ -154,7 +154,11 @@ func interactive(lisp *gmnlisp.World) error {
 		if result == nil {
 			result = gmnlisp.Null
 		}
-		fmt.Printf("%#v\n", result)
+		if v, ok := result.(fmt.GoStringer); ok {
+			fmt.Printf("%s\n", v.GoString())
+		} else {
+			fmt.Printf("%s\n", result.String())
+		}
 	}
 }
 
