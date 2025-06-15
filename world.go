@@ -371,7 +371,6 @@ var autoLoadFunc = Functions{
 	NewSymbol("equal"):                          &Function{C: 2, F: funEqual},
 	NewSymbol("equalp"):                         &Function{C: 2, F: funEqualp},
 	NewSymbol("error-output"):                   Function0(funErrorOutput),
-	NewSymbol("eval"):                           Function1(funEval),
 	NewSymbol("evenp"):                          Function1(funEvenp),
 	NewSymbol("exit"):                           Function0(funQuit),
 	NewSymbol("exp"):                            funMath1(math.Exp),

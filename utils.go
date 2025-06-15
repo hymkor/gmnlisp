@@ -130,7 +130,3 @@ func ignoreEOF(err error) error {
 func MakeError(e error, s any) error {
 	return fmt.Errorf("%w: %#v", e, s)
 }
-
-func funEval(ctx context.Context, w *World, arg Node) (Node, error) {
-	return w.Eval(ctx, arg)
-}

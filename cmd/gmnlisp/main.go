@@ -162,6 +162,10 @@ func interactive(lisp *gmnlisp.World) error {
 	}
 }
 
+func funEval(ctx context.Context, w *gmnlisp.World, arg gmnlisp.Node) (gmnlisp.Node, error) {
+	return w.Eval(ctx, arg)
+}
+
 //go:embed startup.lsp
 var startupCode string
 
@@ -174,7 +178,8 @@ func mains(args []string) error {
 		lisp.StrictMode = true
 	}
 	lisp.DefineGlobal(gmnlisp.NewSymbol("*dev-null*"), gmnlisp.String(os.DevNull))
-
+	lisp = lisp.Flet(gmnlisp.Functions{
+		gmnlisp.NewSymbol("eval"): gmnlisp.Function1(funEval)})
 	if _, err := lisp.Interpret(ctx, startupCode); err != nil {
 		return err
 	}
