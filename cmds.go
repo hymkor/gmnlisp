@@ -3,7 +3,6 @@ package gmnlisp
 import (
 	"context"
 	"errors"
-	"os"
 	"strconv"
 	"strings"
 )
@@ -101,18 +100,6 @@ func funNot(_ context.Context, w *World, arg Node) (Node, error) {
 		return True, nil
 	}
 	return Null, nil
-}
-
-func funLoad(ctx context.Context, w *World, arg Node) (Node, error) {
-	fname, err := ExpectClass[String](ctx, w, arg)
-	if err != nil {
-		return nil, err
-	}
-	script, err := os.ReadFile(fname.String())
-	if err != nil {
-		return nil, err
-	}
-	return w.InterpretBytes(ctx, script)
 }
 
 func funNotEqual(ctx context.Context, w *World, argv []Node) (Node, error) {
