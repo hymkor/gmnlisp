@@ -19,8 +19,10 @@
   - `(=)` was used with more than two arguments, which is not allowed
 - Fixed a bug in `case` and `case-using` where forms following a `t` clause were not properly rejected as an error.
 - `index-ouf-of-range` is now one of `<program-error>`
-- Implement `(garef)`, `(basic-vector-p)`, `(general-vector-p)`, `(isqrt)`, `(finish-output)`, `(float)`, `(expt)`, `(reciprocal)` and `(quotient)`
 - Renamed `(set-aref)` to `(set-garef)` since its behavior was effectively equivalent to `(set-garef)`.
+- Fixed an issue where the symbol’s ID number was printed instead of its name when displaying results in interactive mode.
+- Implement `(garef)`, `(basic-vector-p)`, `(general-vector-p)`, `(isqrt)`, `(finish-output)`, `(float)`, `(expt)`, `(reciprocal)` and `(quotient)`
+- Removed `(eval)` and `(load)` from the library package; now available only in the executable.
 
 v0.7.14
 =======

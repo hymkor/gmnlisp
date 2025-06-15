@@ -18,8 +18,10 @@
     - `(=)` で3つ以上の値の比較をさせていた
 - `(case)` や `(case-using)` で `t` ブロックに続くフォームがエラーとして特にリジェクトされていなかった不具合を修正
 - `index-out-of-range` は `<program-error>` に一種になった
-- `(garef)`, `(basic-vector-p)`, `(general-vector-p)`, `(isqrt)`, `(finish-output)`, `(float)`, `(expt)`, `(reciprocal)`, `(quotient)` を実装
 - `(set-aref)` の動作が実質 `(set-garef)` だったため、名前を `(set-gref)` に改めた 
+- インタラクティブモードで表示される計算結果がシンボルだった時、シンボルの名前ではなく IDの数値が表示されるという不具合を修正
+- `(garef)`, `(basic-vector-p)`, `(general-vector-p)`, `(isqrt)`, `(finish-output)`, `(float)`, `(expt)`, `(reciprocal)`, `(quotient)` を実装
+- `(eval)` と`(load)` をライブラリパッケージから削除し、実行ファイルからのみ利用可能とした
 
 v0.7.14
 =======
