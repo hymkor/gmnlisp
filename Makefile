@@ -79,10 +79,10 @@ download-verify:
 
 verify:
 	cd "$(CURDIR)/__verify/tp-ipa" && \
-	"$(CURDIR)/gmnlisp" -strict -e "(load \"tp.lsp\") (tp-all)"
+	"$(CURDIR)/gmnlisp" -strict "$(CURDIR)/verify.lsp" "$(TEMP)"
 
 verify-verbose:
 	cd "$(CURDIR)/__verify/tp-ipa" && \
-	"$(CURDIR)/gmnlisp" -strict -e "(load \"tp.lsp\") (tp-all 'verbose)"
+	"$(CURDIR)/gmnlisp" -strict "$(CURDIR)/verify.lsp" "$(TEMP)" verbose
 
 .PHONY: generate test clean clean-gen sort-world _dist dist manifest
