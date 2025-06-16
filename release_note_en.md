@@ -22,7 +22,8 @@
 - Renamed `(set-aref)` to `(set-garef)` since its behavior was effectively equivalent to `(set-garef)`.
 - Fixed an issue where the symbol’s ID number was printed instead of its name when displaying results in interactive mode.
 - Implement `(garef)`, `(basic-vector-p)`, `(general-vector-p)`, `(isqrt)`, `(finish-output)`, `(float)`, `(expt)`, `(reciprocal)` and `(quotient)`
-- Removed `(eval)` and `(load)` from the library package; now available only in the executable.
+- Move subpackages from ./pkg/ to ./
+- Moved `(eval)` and `(load)` from the core package to a subpackage: `"github.com/hymkor/gmnlisp/eval"`. Use `import _ "github.com/hymkor/gmnlisp/eval"` to enable them.
 
 v0.7.14
 =======

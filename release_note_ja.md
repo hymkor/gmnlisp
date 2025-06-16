@@ -21,7 +21,8 @@
 - `(set-aref)` の動作が実質 `(set-garef)` だったため、名前を `(set-gref)` に改めた 
 - インタラクティブモードで表示される計算結果がシンボルだった時、シンボルの名前ではなく IDの数値が表示されるという不具合を修正
 - `(garef)`, `(basic-vector-p)`, `(general-vector-p)`, `(isqrt)`, `(finish-output)`, `(float)`, `(expt)`, `(reciprocal)`, `(quotient)` を実装
-- `(eval)` と`(load)` をライブラリパッケージから削除し、実行ファイルからのみ利用可能とした
+- ./pkg/ においていたサブパッケージを ./ 直下に移動した
+- `(eval)` と`(load)` をコアパッケージからサブパッケージ `"github.com/hymkor/gmnlisp/eval"` へ移動した。今後は `import _ "github.com/hymkor/gmnlisp/eval"` を利用する。
 
 v0.7.14
 =======
