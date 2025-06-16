@@ -88,17 +88,50 @@ However, `ExpectClass` invokes the user-defined error handler if `x` is not of t
 
 ### User-defined functions
 
-User-defined functions must accept three parameters:
+You can register user-defined functions to the interpreter using `.Flet()`:
 
-1. `context.Context`: the context passed to `.Interpret()`
-2. `*gmnlisp.World`: the interpreter instance
-3. `[]gmnlisp.Node`: the arguments passed by the caller (already evaluated)
+```go
+lisp = lisp.Flet(
+    gmnlisp.Functions{
+        gmnlisp.NewSymbol("sum"): &gmnlisp.Function{C: 2, F: sum},
+    })
+```
 
-Such a function can be wrapped as a Lisp value like this:  
-`&gmnlisp.Function{C: argc, F: function}`
+The function definitions are passed as a `gmnlisp.Functions` map, where the keys are symbols and the values are Lisp function objects. There are several ways to define the function values:
 
-- Field `F`: the function itself
-- Field `C`: the required number of arguments. An error is raised if the number of arguments doesn't match.
+* `gmnlisp.Function1(f)`
+  For a function `f` with the signature:
+  `func(context.Context, *gmnlisp.World, gmnlisp.Node) (gmnlisp.Node, error)`
+  Accepts **one evaluated argument**.
+
+* `gmnlisp.Function2(f)`
+  For a function `f` with the signature:
+  `func(context.Context, *gmnlisp.World, gmnlisp.Node, gmnlisp.Node) (gmnlisp.Node, error)`
+  Accepts **two evaluated arguments**.
+
+* `&gmnlisp.Function{ C: n, Min: min, Max: max, F: f }`
+  For a function `f` with the signature:
+  `func(context.Context, *gmnlisp.World, []gmnlisp.Node) (gmnlisp.Node, error)`
+  Accepts **multiple evaluated arguments**.
+
+  * If `C` is non-zero, the function strictly expects `C` arguments.
+  * If `Min` and `Max` are specified instead, the function accepts a range of arguments.
+  * If all are left as zero values, argument count is not validated.
+
+  **Note**: A zero value (0) means "unspecified"; negative values are not used.
+
+* `gmnlisp.SpecialF(f)`
+  For defining **special forms** (macros, control structures, etc.), where arguments are passed **unevaluated**:
+  `func(context.Context, *gmnlisp.World, gmnlisp.Node) (gmnlisp.Node, error)`
+  All arguments are passed as a Lisp list (e.g., `(list a b c)` becomes `&gmnlisp.Cons{Car: ..., Cdr: ...}`).
+
+  Inside this function, you can evaluate an argument manually with:
+
+  ```go
+  result, err := w.Eval(ctx, x)
+  ```
+
+See the example in the "Usage and Integration Guide" section above for how to define and register a user function.
 
 ### Supported Types
 
