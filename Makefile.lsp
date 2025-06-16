@@ -44,14 +44,19 @@
        (mv "err" "errr")))
    (let* ((curdir (getwd))
           (buf (create-string-output-stream))
-          (err-path (joinpath curdir "err")))
+          (err-path (join-path curdir "err")))
      (pushd
-       "__verify/tp-ipa"
-       (format buf "\"~A\" -e ~S > \"~A\" 2>&1"
-               (joinpath curdir "gmnlisp")
-               "(load \"tp.lsp\") (tp-all 'verbose)"
-               err-path)
-       (sh (get-output-stream-string buf))
+        "__verify/tp-ipa"
+
+       (load "../../verify.lsp")
+       (load-tp-lsp (getenv "TEMP"))
+       (with-open-output-file
+         (err err-path)
+         (with-standard-output
+           err
+           (with-error-output
+             err
+             (tp-all 'verbose))))
        (format (standard-output) "**** Latest log ****~%")
        (tail err-path)
        ); pushd
