@@ -29,7 +29,7 @@ Jun 16, 2025
 - Move subpackages from ./pkg/ to ./
 - Moved `(eval)` and `(load)` from the core package to a subpackage: `"github.com/hymkor/gmnlisp/eval"`. Use `import _ "github.com/hymkor/gmnlisp/eval"` to enable them.
 
-[TP Result] : OK = 13175, NG = 3236
+[TP Result] : PASS = 13175, FAIL = 3236
 
 v0.7.14
 =======
@@ -42,7 +42,7 @@ Jun 9, 2025
 - When the first argument is a macro, `(setf)` expands it before evaluting.
 - `(macroexpand ARG)` now recursively expands ARG until no macro form remains.
 
-[TP Result] : OK = 12127, NG = 4284
+[TP Result] : PASS = 12127, FAIL = 4284
 
 v0.7.13
 =======
@@ -59,7 +59,7 @@ May 26, 2025
 - When the strict mode, `setq` raises an error when the number of parameters it not two
 - `(dynamic :A)` now raises the undefined entity error rather than the domain error
 
-[TP Result] : OK = 12090, NG = 4321
+[TP Result] : PASS = 12090, FAIL = 4321
 
 v0.7.12
 =======
@@ -73,7 +73,7 @@ May 19, 2025
 - Add parameter validations `(instancep)`
 - Add parameter validations `(subclassp)`
 
-[TP Result] : OK = 11918, NG = 4493
+[TP Result] : PASS = 11918, FAIL = 4493
 
 v0.7.11
 =======
@@ -90,7 +90,7 @@ May 12, 2025
 - `for` now checks whether the length of iteration-spec is two or three
 - Add a new system variable `*argv*` with the same contents as `*posix-argv*`.
 
-[TP Result] : OK = 11677, NG = 4734
+[TP Result] : PASS = 11677, FAIL = 4734
 
 v0.7.10
 =======
@@ -105,7 +105,7 @@ May 6 2025
 - **Symbols: previously case-sensitive, but now equality is case-insensitive; symbols display in uppercase and preserve original case for string conversion**
 - Fix `(convert nil <type>)` not behaving according to the specification
 
-[TP Result] : OK = 11533, NG = 4878
+[TP Result] : PASS = 11533, FAIL = 4878
 
 v0.7.9
 ======
@@ -119,7 +119,7 @@ Feb 15, 2025
 - Incorporated the macro `(assert-eq)`, previously defined as `(test)` in test Lisp files, into the gmnlisp executable. Note that it is not included in the gmnlisp package.
 - In interactive mode, parentheses are now colored differently for each nested level
 
-[TP Result] : OK = 11040, NG = 5371
+[TP Result] : PASS = 11040, FAIL = 5371
 
 v0.7.8
 ======
@@ -134,7 +134,7 @@ Jan 16, 2025
 - Fixed: `(set-car OBJ CONS)` and `(set-cdr OBJ CONS)` returned `CONS` instead of `OBJ`
 - Fixed: `(equal)` did not function correctly when comparing instances of `<stream-error>` or `<parse-error>`.
 - Fixed: `(write-byte)` returned an incorrect error instead of `<domain-error>`.
-[TP Result] : OK = 11040, NG = 5371
+[TP Result] : PASS = 11040, FAIL = 5371
 
 v0.7.7
 ======
@@ -147,7 +147,7 @@ Dec 30, 2024
 - Fix: the number of the parameters of `(eq)`, `(eql)`, `(equal)`, `(equalp)` and `(div)` could be any number. It should always 2
 - readline: erase continuation prompt after submiting for copying with mouse
 
-[TP Result] : OK = 10217, NG = 6194
+[TP Result] : PASS = 10217, FAIL = 6194
 
 v0.7.6
 ======
@@ -161,7 +161,7 @@ Dec 25, 2024
 - Support `RESULT` of `(dolist (VAR INIT-FORM RESULT) FORM...)`
 - Support `RESULT` of `(dotimes (VAR LIMIT RESULT) FORM...)`
 
-[TP Result] : OK = 8642, NG = 7769
+[TP Result] : PASS = 8642, FAIL = 7769
 
 v0.7.5
 ======
@@ -173,7 +173,7 @@ Dec 18, 2024
 - Rename the command name of division from `(/ Z1 Z2)` to `(div Z1 Z2)` same as ISLisp
 - gmnlisp.exe: set the position of the standard-output and the error-output to the top of the line for `~&` of `(format)`
 
-[TP Result] : OK = 8214, NG = 8197
+[TP Result] : PASS = 8214, FAIL = 8197
 
 v0.7.4
 ======
@@ -183,7 +183,7 @@ Dec 8, 2024
 - Support unicode character literal `#\U3042` like CommonLisp
 - Implement: `(get-universal-time)`, `(get-internal-real-time)`, `(get-internal-run-time)` and `(internal-time-units-per-secon)`
 
-[TP Result] : OK = 7903, NG = 8508
+[TP Result] : PASS = 7903, FAIL = 8508
 
 v0.7.3
 ======
@@ -194,7 +194,7 @@ Nov 29, 2024
 - Fix: `NG: (defun nil nil) -> nil`
 - Fix: `NG: (create (class <standard-class>)) -> panic: runtime error`
 
-[TP Result] : OK = 7891, NG = 8520
+[TP Result] : PASS = 7891, FAIL = 8520
 
 v0.7.2
 ======
@@ -208,7 +208,7 @@ Jul 29, 2024
 - Prevent signal handlers from going into infinite loop
 
 The ISLisp verification program now runs without crashing until the final test.
-The current score is `TP Result: OK = 7889, NG = 8522`
+The current score is `TP Result: PASS = 7889, FAIL = 8522`
 
 v0.7.1
 ======

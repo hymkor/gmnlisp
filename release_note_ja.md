@@ -28,7 +28,7 @@ Jun 16, 2025
 - ./pkg/ においていたサブパッケージを ./ 直下に移動した
 - `(eval)` と`(load)` をコアパッケージからサブパッケージ `"github.com/hymkor/gmnlisp/eval"` へ移動した。今後は `import _ "github.com/hymkor/gmnlisp/eval"` を利用する。
 
-[TP Result] : OK = 13175, NG = 3236
+[TP Result] : PASS = 13175, FAIL = 3236
 
 v0.7.14
 =======
@@ -41,7 +41,7 @@ Jun 9, 2025
 - setf の第一引数がマクロだった時、マクロを展開してから評価を始めるようにした
 - `(macroexpand ARG)` でマクロがなくなるまで ARG を再帰的に展開するようにした
 
-[TP Result] : OK = 12127, NG = 4284
+[TP Result] : PASS = 12127, FAIL = 4284
 
 v0.7.13
 =======
@@ -58,7 +58,7 @@ May 26, 2025
 - strict mode では、setq のパラメータが2個以外ではエラーとするようにした
 - `(dynamic :A)` は domain error ではなく、undefined entity error とするようにした
 
-[TP Result] : OK = 12090, NG = 4321
+[TP Result] : PASS = 12090, FAIL = 4321
 
 v0.7.12
 =======
@@ -72,7 +72,7 @@ May 19, 2025
 - `(instancep)` にパラメータチェックを追加した
 - `(subclassp)` にパラメータチェックを追加した
 
-[TP Result] : OK = 11918, NG = 4493
+[TP Result] : PASS = 11918, FAIL = 4493
 
 v0.7.11
 =======
@@ -89,7 +89,7 @@ May 12, 2025
 - `for` マクロで、`iteration-spec` の長さが2,3であるかを確認するようにした。
 - `*posix-argv*` と同じ内容のリスト `*argv*` を用意した。
 
-[TP Result] : OK = 11677, NG = 4734
+[TP Result] : PASS = 11677, FAIL = 4734
 
 v0.7.10
 =======
@@ -104,7 +104,7 @@ May 6 2025
 - **これまではシンボルは英大文字・小文字を区別していたが、比較において区別をしないようにした。表示は英大文字とするようにした。シンボルから文字列に戻す時は最初に作られた英大文字・小文字を復元するようにした**
 - `(convert nil 各種型)` が仕様通りとなっていなかった点を修正した
 
-[TP Result] : OK = 11533, NG = 4878
+[TP Result] : PASS = 11533, FAIL = 4878
 
 v0.7.9
 ======
@@ -117,7 +117,7 @@ Feb 15, 2025
 - テスト用 Lisp ファイルで定義されていた `(test)` マクロを、`(assert-eq)` という名前でgmnlisp の実行ファイルに組み込んだ。なお、gmnlisp パッケージには含んでいない
 - インタラクティブモードで、括弧はネストレベルごとに違う色付けをするようにした
 
-[TP Result] : OK = 11040, NG = 5371
+[TP Result] : PASS = 11040, FAIL = 5371
 
 v0.7.8
 ======
@@ -133,7 +133,7 @@ Jan 16, 2025
 - `(equal)` が `<stream-error>` や `<parse-error>` のインスタンス間で正しく動作していなかった
 - `(write-byte)` が `<domain-error>` を返していなかった
 
-[TP Result] : OK = 11040, NG = 5371
+[TP Result] : PASS = 11040, FAIL = 5371
 
 v0.7.7
 ======
@@ -146,7 +146,7 @@ Dec 30, 2024
 - `(eq)`,`(eql)`,`(equal)`,`(equalp)`,`(div)` のパラメータの個数は2個固定なのに、任意個数が可能だった点を修正
 - マウス操作によるコピー向けに入力終結後に継続プロンプトを消去するようにした。
 
-[TP Result] : OK = 10217, NG = 6194
+[TP Result] : PASS = 10217, FAIL = 6194
 
 v0.7.6
 ======
@@ -160,7 +160,7 @@ Dec 25, 2024
 - `(dolist (VAR INIT-FORM RESULT) FORM...)` の RESULT をサポート
 - `(dotimes (VAR LIMIT RESULT) FORM...)` の RESULT をサポート
 
-[TP Result] : OK = 8642, NG = 7769
+[TP Result] : PASS = 8642, FAIL = 7769
 
 v0.7.5
 ======
@@ -172,7 +172,7 @@ Dec 18, 2024
 - `(/ Z1 Z2)` だった除算を `(div Z1 Z2)` にリネーム (ISLisp 対応)
 - gmnlisp.exe: コマンド入力の直後に、`(format)` の `~&` のためにカウントしている標準出力と標準エラー出力の桁位置を行頭扱いにセットするようにした
 
-[TP Result] : OK = 8214, NG = 8197
+[TP Result] : PASS = 8214, FAIL = 8197
 
 v0.7.4
 ======
@@ -182,7 +182,7 @@ Dec 8, 2024
 - CommonLisp のような Unicode 文字リテラル(`#\U3042`) をサポート
 - `(get-universal-time)`, `(get-internal-real-time)`, `(get-internal-run-time)`, `(internal-time-units-per-secon)` を実装
 
-[TP Result] : OK = 7903, NG = 8508
+[TP Result] : PASS = 7903, FAIL = 8508
 
 v0.7.3
 ======
@@ -193,7 +193,7 @@ Nov 29, 2024
 - Fix: `NG: (defun nil nil) -> nil`
 - Fix: `NG: (create (class <standard-class>)) -> panic: runtime error`
 
-[TP Result] : OK = 7891, NG = 8520
+[TP Result] : PASS = 7891, FAIL = 8520
 
 v0.7.2
 ======
@@ -207,7 +207,7 @@ Jul 29, 2024
 - シグナルハンドラーが無限ループしないようにした
 
 ISLisp の検証プログラムが最後のテストまで落ちることなく走るようになった。
-現在のスコアは `TP Result: OK = 7889, NG = 8522`
+現在のスコアは `TP Result: PASS = 7889, FAIL = 8522`
 
 v0.7.1
 ======
