@@ -189,6 +189,17 @@ The full compatibility checklist has been moved to a separate file due to its le
 
 (Items without checkboxes are not standard functions.)
 
+Projects Using gmnlisp
+-----------------------
+
+The following open-source applications embed gmnlisp to provide ISLisp-based customization and scripting:
+
+- [**lispect**](https://github.com/hymkor/lispect):  
+  A text-terminal automation tool similar to `expect(1)`, powered by a subset of ISLisp.
+
+- [**smake**](https://github.com/hymkor/smake):  
+  A build automation tool where Makefiles are written in S-expressions.
+
 References
 ----------
 
