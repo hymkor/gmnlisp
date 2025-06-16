@@ -1,4 +1,4 @@
-; go run github.com/hymkor/smake@latest {test or release-all}
+; go run github.com/hymkor/smake@latest {test or release}
 
 (defun tail (path)
   (let ((buf (create-string-output-stream)))
@@ -34,7 +34,7 @@
     (and note (car note))))
 
 (case (and *args* (car *args*))
-  (("test" nil)
+  (("test")
    (if (probe-file "errr")
      (rm "errr"))
    (if (probe-file "err")
@@ -63,7 +63,7 @@
      ); let
    ); "test"
 
-  (("release-all")
+  (("release")
    (let
      ((j (-d ".jj"))
       (version
@@ -96,10 +96,12 @@
                      (step-exec (string-append "git commit -a -m \"Update the manifest of the scoop-installer for " version "\"")))
               (step-exec "git push"))))
      ) ; let
-   ) ; "release-all"
+   ) ; "release"
 
   (t
-    (format (error-output) "smake ~S: not suport~%" (car *args*))
+    (format (error-output) "Usage: smake TARGET~%")
+    (format (error-output) "  smake release~%")
+    (format (error-output) "  smake test~%")
     ) ; t
   ) ; case
 
