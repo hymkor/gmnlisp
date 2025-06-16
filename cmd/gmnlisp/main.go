@@ -15,6 +15,7 @@ import (
 
 	"github.com/hymkor/gmnlisp"
 	_ "github.com/hymkor/gmnlisp/command"
+	_ "github.com/hymkor/gmnlisp/eval"
 	_ "github.com/hymkor/gmnlisp/regexp"
 	_ "github.com/hymkor/gmnlisp/wildcard"
 	"github.com/hymkor/go-multiline-ny"
@@ -162,22 +163,6 @@ func interactive(lisp *gmnlisp.World) error {
 	}
 }
 
-func funEval(ctx context.Context, w *gmnlisp.World, arg gmnlisp.Node) (gmnlisp.Node, error) {
-	return w.Eval(ctx, arg)
-}
-
-func funLoad(ctx context.Context, w *gmnlisp.World, arg gmnlisp.Node) (gmnlisp.Node, error) {
-	fname, err := gmnlisp.ExpectClass[gmnlisp.String](ctx, w, arg)
-	if err != nil {
-		return nil, err
-	}
-	script, err := os.ReadFile(fname.String())
-	if err != nil {
-		return nil, err
-	}
-	return w.InterpretBytes(ctx, script)
-}
-
 //go:embed startup.lsp
 var startupCode string
 
@@ -190,10 +175,6 @@ func mains(args []string) error {
 		lisp.StrictMode = true
 	}
 	lisp.DefineGlobal(gmnlisp.NewSymbol("*dev-null*"), gmnlisp.String(os.DevNull))
-	lisp = lisp.Flet(gmnlisp.Functions{
-		gmnlisp.NewSymbol("eval"): gmnlisp.Function1(funEval),
-		gmnlisp.NewSymbol("load"): gmnlisp.Function1(funLoad),
-	})
 	if _, err := lisp.Interpret(ctx, startupCode); err != nil {
 		return err
 	}
