@@ -1,5 +1,7 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+- gmnlisp の実行ファイルで稼動している時、`*executable-name*` にパスを設定するようになった( 仕様としては [lispect](https://github.com/hymkor/lispect)互換 )
+
 v0.7.15
 =======
 Jun 16, 2025

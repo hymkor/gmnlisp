@@ -1,5 +1,7 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+- When running the gmnlisp executable, `*executable-name*` is set to its path. (Compatible with [lispect](https://github.com/hymkor/lispect) )
+
 v0.7.15
 =======
 Jun 16, 2025
