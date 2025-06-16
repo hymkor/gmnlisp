@@ -1,5 +1,9 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+v0.7.15
+=======
+Jun 16, 2025
+
 - Fix: `(set-elt NEWVALUE SEQ Z)` が NEWVALUE を返すべきなのに SEQ を返していた
 - Fix: `(case 1 (1))` はエラーになるべきだが nil となっていた
 - Fix: `(*Pair) Set` が常にエラーを返していた
@@ -23,6 +27,8 @@
 - `(garef)`, `(basic-vector-p)`, `(general-vector-p)`, `(isqrt)`, `(finish-output)`, `(float)`, `(expt)`, `(reciprocal)`, `(quotient)` を実装
 - ./pkg/ においていたサブパッケージを ./ 直下に移動した
 - `(eval)` と`(load)` をコアパッケージからサブパッケージ `"github.com/hymkor/gmnlisp/eval"` へ移動した。今後は `import _ "github.com/hymkor/gmnlisp/eval"` を利用する。
+
+[TP Result] : OK = 13175, NG = 3236
 
 v0.7.14
 =======
