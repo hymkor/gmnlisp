@@ -56,10 +56,12 @@
            err
            (with-error-output
              err
-             (tp-all 'verbose))))
+             ;(tp-all 'verbose)
+             (tp-all)
+             )))
+       ); pushd
        (format (standard-output) "**** Latest log ****~%")
        (tail err-path)
-       ); pushd
      ); let
    ); "test"
 
