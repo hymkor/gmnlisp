@@ -12,6 +12,7 @@
   (block b
     (while t
       (format (standard-output) "~&$ ~A~%[Y]es: execute, [N]o: skip, [Q]uit ? " command)
+      (finish-output (standard-output))
       (case (read-line (standard-input))
         (("q") (return-from b nil))
         (("n") (return-from b t))
