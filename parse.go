@@ -4,7 +4,7 @@ import (
 	"io"
 	"math/big"
 
-	"github.com/hymkor/gmnlisp/pkg/parser"
+	"github.com/hymkor/gmnlisp/parser"
 )
 
 var (

@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/hymkor/gmnlisp/pkg/parser"
+	"github.com/hymkor/gmnlisp/parser"
 )
 
 var (

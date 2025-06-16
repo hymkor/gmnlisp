@@ -14,9 +14,9 @@ import (
 	"strings"
 
 	"github.com/hymkor/gmnlisp"
-	_ "github.com/hymkor/gmnlisp/pkg/command"
-	_ "github.com/hymkor/gmnlisp/pkg/regexp"
-	_ "github.com/hymkor/gmnlisp/pkg/wildcard"
+	_ "github.com/hymkor/gmnlisp/command"
+	_ "github.com/hymkor/gmnlisp/regexp"
+	_ "github.com/hymkor/gmnlisp/wildcard"
 	"github.com/hymkor/go-multiline-ny"
 	"github.com/mattn/go-colorable"
 	"github.com/nyaosorg/go-readline-ny"
