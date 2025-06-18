@@ -276,7 +276,7 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 		Slot:   make(map[Symbol]*_SlotSpec),
 	}
 	if IsNone(args) {
-		w.DefineGlobal(className, class)
+		w.shared.class[className] = class
 		return className, nil
 	}
 	// (sc-name*) ... super class list
@@ -297,7 +297,7 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 		class.Super = append(class.Super, super)
 	}
 	if IsNone(args) {
-		w.DefineGlobal(className, class)
+		w.shared.class[className] = class
 		return className, nil
 	}
 	// (slot-spec*)
@@ -347,7 +347,7 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 			}
 		}
 	}
-	w.DefineGlobal(className, class)
+	w.shared.class[className] = class
 
 	registerMethod(w, symInitializeObject, class, &_Method{
 		restType: objectClass,
@@ -554,18 +554,25 @@ func funInstanceP(ctx context.Context, w *World, value, _class Node) (Node, erro
 }
 
 func cmdClass(ctx context.Context, w *World, node Node) (Node, error) {
-	value, node, err := w.ShiftAndEvalCar(ctx, node)
+	_symbol, node, err := Shift(node)
 	if err != nil {
 		return nil, err
 	}
 	if IsSome(node) {
 		return nil, ErrTooManyArguments
 	}
-	_, ok := value.(Class)
+	symbol, ok := _symbol.(Symbol)
 	if !ok {
-		return nil, fmt.Errorf("%v: %w", value, ErrExpectedClass)
+		return callHandler[Node](ctx, w, false, &DomainError{
+			Object:        _symbol,
+			ExpectedClass: symbolClass,
+		})
 	}
-	return value, nil
+	class, ok := w.shared.class[symbol]
+	if !ok {
+		return nil, fmt.Errorf("%v: %w", symbol, ErrExpectedClass)
+	}
+	return class, nil
 }
 
 func funSubClassP(ctx context.Context, w *World, class1, class2 Node) (Node, error) {

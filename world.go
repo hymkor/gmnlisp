@@ -143,6 +143,7 @@ type shared struct {
 	catchTag   map[Node]struct{}
 	goTag      map[Symbol]struct{}
 	StrictMode bool
+	class      map[Symbol]Class
 }
 
 type World struct {
@@ -261,18 +262,13 @@ var autoLoadConstants = Constants{
 	NewSymbol("*err-too-few-arguments*"):  ErrorNode{Value: ErrTooFewArguments},
 	NewSymbol("*err-too-many-arguments*"): ErrorNode{Value: ErrTooManyArguments},
 	NewSymbol("*err-too-short-tokens*"):   ErrorNode{Value: ErrTooShortTokens},
-	NewSymbol("<error>"):                  errorClass,
-	builtInClass.name:                     builtInClass,
-	numberClass.name:                      numberClass,
-	objectClass.name:                      objectClass,
-	standardClass.name:                    standardClass,
 	// *sort*end*
 }
 
 var autoLoadFunc = Functions{
 	// *sort*start*
 	NewReserved("and"):                          SpecialF(cmdAnd),
-	NewReserved("assure"):                       Function2(funAssure),
+	NewReserved("assure"):                       SpecialF(cmdAssure),
 	NewReserved("block"):                        SpecialF(cmdBlock),
 	NewReserved("case"):                         SpecialF(cmdCase),
 	NewReserved("catch"):                        SpecialF(cmdCatch),
@@ -295,7 +291,7 @@ var autoLoadFunc = Functions{
 	NewReserved("quote"):                        SpecialF(cmdQuote),
 	NewReserved("return-from"):                  SpecialF(cmdReturnFrom),
 	NewReserved("tagbody"):                      SpecialF(cmdTagBody),
-	NewReserved("the"):                          Function2(funAssure),
+	NewReserved("the"):                          SpecialF(cmdAssure),
 	NewReserved("throw"):                        Function2(funThrow),
 	NewReserved("unwind-protect"):               SpecialF(cmdUnwindProtect),
 	NewReserved("while"):                        SpecialF(cmdWhile),
@@ -541,6 +537,14 @@ func (rw _RootWorld) Set(symbol Symbol, value Callable) {
 func (rw _RootWorld) Range(f func(Symbol, Callable) bool) {
 }
 
+var presetClass = []Class{
+	builtInClass,
+	errorClass,
+	numberClass,
+	objectClass,
+	standardClass,
+}
+
 func New() *World {
 	rwvars := &autoLoadVars
 	rwfuncs := _RootWorld{}
@@ -553,9 +557,13 @@ func New() *World {
 			stdin:     &inputStream{_Reader: bufio.NewReader(os.Stdin), file: os.Stdin},
 			stdout:    newOutputFileStream(os.Stdout),
 			errout:    newOutputFileStream(os.Stderr),
+			class:     map[Symbol]Class{},
 		},
 		vars:  rwvars,
 		funcs: rwfuncs,
+	}
+	for _, c := range presetClass {
+		w.class[c.Name()] = c
 	}
 	return w
 }

@@ -182,14 +182,18 @@ func cmdDefMethod(ctx context.Context, w *World, node Node) (Node, error) {
 			if err != nil {
 				return nil, err
 			}
-			_type1, t1, err := w.ShiftAndEvalCar(ctx, t1)
+			_type1, t1, err := Shift(t1)
 			if err != nil {
 				return nil, err
 			}
 			if IsSome(t1) {
 				return nil, ErrTooManyArguments
 			}
-			type1, ok := _type1.(Class)
+			classSymbol, err := ExpectSymbol(ctx, w, _type1)
+			if err != nil {
+				return nil, err
+			}
+			type1, ok := w.class[classSymbol]
 			if !ok {
 				return nil, ErrExpectedClass
 			}
@@ -207,14 +211,18 @@ func cmdDefMethod(ctx context.Context, w *World, node Node) (Node, error) {
 		}
 		paramNames = append(paramNames, pn1)
 		var _type1 Node
-		_type1, t1, err = w.ShiftAndEvalCar(ctx, t1)
+		_type1, t1, err = Shift(t1)
 		if err != nil {
 			return nil, err
 		}
 		if IsSome(t1) {
 			return nil, ErrTooManyArguments
 		}
-		type1, ok := _type1.(Class)
+		classSymbol, err := ExpectSymbol(ctx, w, _type1)
+		if err != nil {
+			return nil, err
+		}
+		type1, ok := w.class[classSymbol]
 		if !ok {
 			return nil, ErrExpectedClass
 		}

@@ -149,8 +149,23 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 	return nil, &DomainError{Object: source, ExpectedClass: builtInClass}
 }
 
-func funAssure(ctx context.Context, w *World, first, second Node) (Node, error) {
-	class, ok := first.(Class)
+func cmdAssure(ctx context.Context, w *World, args Node) (Node, error) {
+	first, args, err := Shift(args)
+	if err != nil {
+		return nil, err
+	}
+	second, args, err := w.ShiftAndEvalCar(ctx, args)
+	if err != nil {
+		return nil, err
+	}
+	if IsSome(args) {
+		return nil, ErrTooManyArguments
+	}
+	classSymbol, err := ExpectSymbol(ctx, w, first)
+	if err != nil {
+		return nil, err
+	}
+	class, ok := w.class[classSymbol]
 	if !ok {
 		return nil, &DomainError{
 			Object:        first,
