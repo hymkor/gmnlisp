@@ -1,6 +1,7 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
 - When running the gmnlisp executable, `*executable-name*` is set to its path. (Compatible with [lispect](https://github.com/hymkor/lispect) )
+- Although a class name like `<xxxxx>` used to represent a class object itself, it is now just a symbol, and `class <xxxxx>` is required to obtain the class object.
 
 v0.7.15
 =======
