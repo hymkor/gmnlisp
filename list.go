@@ -74,6 +74,13 @@ func funAppend(ctx context.Context, w *World, list []Node) (Node, error) {
 	if len(list) <= 0 {
 		return Null, nil
 	}
+	for i, v := range list {
+		v, err = ExpectList(ctx, w, v)
+		if err != nil {
+			return nil, err
+		}
+		list[i] = v
+	}
 	if len(list) == 1 {
 		return list[0], nil
 	}
