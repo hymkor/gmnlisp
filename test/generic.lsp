@@ -28,13 +28,13 @@
     (get-output-stream-string buf)))
 
 (assert-eq (generic-fun
-        (create <vector1d> 'x 4)
-        (create <vector1d> 'x 3))
+        (create (class <vector1d>) 'x 4)
+        (create (class <vector1d>) 'x 3))
   "(3) x=4 x=3")
 
 (assert-eq (generic-fun
-      (create <vector1d> 'x 5)
-      (create <vector2d> 'x 6 'y 7))
+      (create (class <vector1d>) 'x 5)
+      (create (class <vector2d>) 'x 6 'y 7))
   "(3) x=5 x=6")
 
 (defgeneric generic-rest (p :rest q))

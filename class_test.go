@@ -21,7 +21,7 @@ func TestDefClass(t *testing.T) {
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-	_class, err := w.Interpret(todo, "testclass")
+	_class, err := w.Interpret(todo, "(class testclass)")
 	if err != nil {
 		t.Fatal(err.Error())
 	}
