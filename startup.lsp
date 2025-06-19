@@ -45,7 +45,8 @@
             (setq all-properties (set-item sym properties all-properties)))
           ; symbol not found
           (let ((properties (list (cons name obj))))
-            (setq all-properties (set-item sym properties all-properties))))))
+            (setq all-properties (set-item sym properties all-properties)))))
+      obj)
 
     (defun remove-property (sym name)
       (assure <symbol> sym)
