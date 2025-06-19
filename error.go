@@ -434,7 +434,7 @@ func (s *SimpleError) ClassOf() Class {
 }
 
 func (s *SimpleError) String() string {
-	return fmt.Sprintf("{ Format=%#v, Arguments=%#v }",
+	return fmt.Sprintf("simple error: Format=%#v, Arguments=%#v",
 		s.FormatString,
 		s.FormatArguments)
 }
