@@ -230,10 +230,10 @@
 
 ;;; test for mapc
 (assert-eq (let ((buffer (create-string-output-stream)) result)
-        (setq result (mapc (lambda (c) (format-char buffer (1+ c))) "ABC"))
+        (setq result (mapc (lambda (c) (format-char buffer (1+ c))) '(#\A #\B #\C)))
         (list result (get-output-stream-string buffer))
         )
-      '("ABC" "BCD"))
+      '((#\A #\B #\C) "BCD"))
 
 ;;; test for mapcan
 (assert-eq (mapcan (lambda (x) (if (> x 0) (list x))) '(-3 4 0 5 -2 7))
