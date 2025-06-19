@@ -1,5 +1,5 @@
 (with-open-output-file
-  (w "/tmp/foo")
+  (w (string-append *temp-dir* "/foo"))
 
   (format w "~&~&X~&~&Y~&")
   ); with-open-output-file
@@ -8,7 +8,7 @@
 (assert-eq
   ; result
   (with-open-input-file
-    (r "/tmp/foo")
+    (r (string-append *temp-dir* "/foo"))
     (let ((c nil) (buf (create-string-output-stream)))
       (while (setq c (read-byte r nil nil))
         (write-byte c buf))
