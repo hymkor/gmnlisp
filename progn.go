@@ -298,18 +298,21 @@ func funAbort(context.Context, *World) (Node, error) {
 
 func cmdUnwindProtect(ctx context.Context, w *World, list Node) (Node, error) {
 	var formErr error
+	var value Node
 
-	_, list, formErr = w.ShiftAndEvalCar(ctx, list)
-
-	value, err := Progn(ctx, w, list)
-	if err != nil {
-		var e1 *_ErrEarlyReturns // block & return-from
-		var e2 *_ErrThrown       // catch & throw
-		var e3 *_ErrTagBody      // tagbody & go
-		if errors.As(err, &e1) || errors.As(err, &e2) || errors.As(err, &e3) {
-			return raiseControlError(ctx, w, errors.New("can not escape from cleanup-form"))
+	value, list, formErr = w.ShiftAndEvalCar(ctx, list)
+	if IsSome(list) {
+		var err error
+		_, err = Progn(ctx, w, list)
+		if err != nil {
+			var e1 *_ErrEarlyReturns // block & return-from
+			var e2 *_ErrThrown       // catch & throw
+			var e3 *_ErrTagBody      // tagbody & go
+			if errors.As(err, &e1) || errors.As(err, &e2) || errors.As(err, &e3) {
+				return raiseControlError(ctx, w, errors.New("can not escape from cleanup-form"))
+			}
+			return nil, err
 		}
-		return nil, err
 	}
 	if formErr != nil {
 		return nil, formErr
