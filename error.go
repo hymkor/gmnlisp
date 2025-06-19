@@ -342,7 +342,7 @@ func (p *ParseError) ClassOf() Class {
 }
 
 func (p *ParseError) String() string {
-	return fmt.Sprintf("ParseError: %s: %s", String(p.str), p.ExpectedClass.String())
+	return fmt.Sprintf("parse error: %s: %s", String(p.str), p.ExpectedClass.String())
 }
 
 func (p *ParseError) Equals(other Node, m EqlMode) bool {
