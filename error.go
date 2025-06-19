@@ -448,6 +448,10 @@ func (s *SimpleError) Equals(other Node, m EqlMode) bool {
 		s.FormatArguments.Equals(o.FormatArguments, m)
 }
 
+func (s *SimpleError) Error() string {
+	return s.String()
+}
+
 func funSimpleErrorFormatString(ctx context.Context, w *World, s Node) (Node, error) {
 	e, err := ExpectClass[*SimpleError](ctx, w, s)
 	if err != nil {
