@@ -319,7 +319,12 @@ func NReverse(ctx context.Context, w *World, list Node) (Node, error) {
 	return result, nil
 }
 
-func funReverse(_ context.Context, _ *World, arg Node) (Node, error) {
+func funReverse(ctx context.Context, w *World, arg Node) (Node, error) {
+	var err error
+	arg, err = ExpectList(ctx, w, arg)
+	if err != nil {
+		return nil, err
+	}
 	return Reverse(arg)
 }
 

@@ -235,6 +235,23 @@ func ExpectSymbol(ctx context.Context, w *World, v Node) (Symbol, error) {
 	return ExpectInterface[Symbol](ctx, w, v, symbolClass)
 }
 
+func ExpectList(ctx context.Context, w *World, arg Node) (Node, error) {
+	v := arg
+	for {
+		if IsNone(v) {
+			return arg, nil
+		}
+		cons, ok := v.(*Cons)
+		if !ok {
+			return callHandler[*Cons](ctx, w, true, &DomainError{
+				Object:        v,
+				ExpectedClass: consClass,
+			})
+		}
+		v = cons.Cdr
+	}
+}
+
 func ExpectNonReservedSymbol(ctx context.Context, w *World, v Node) (_Symbol, error) {
 	symbol, ok := v.(_Symbol)
 	if ok {
