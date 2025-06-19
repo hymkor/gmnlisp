@@ -51,9 +51,11 @@
     (defun remove-property (sym name)
       (assure <symbol> sym)
       (assure <symbol> name)
-      (let ((properties (assoc sym all-properties)))
+      (let ((result (property sym name))
+            (properties (assoc sym all-properties)))
         (if properties
           (setf (cdr properties) (rm-item name (cdr properties)))
-          (setq all-properties (rm-item sym all-properties)))))
+          (setq all-properties (rm-item sym all-properties)))
+        result))
     )
   )
