@@ -2,6 +2,10 @@
 
 - gmnlisp の実行ファイルで稼動している時、`*executable-name*` にパスを設定するようになった( 仕様としては [lispect](https://github.com/hymkor/lispect)互換 )
 - クラス名 `<xxxxx>` はそれ自体がクラスを示すオブジェクトであったが、現在はただのシンボルで `class <xxxxx>` として初めてクラスを示すオブジェクトとするようにした
+- `(unwind-proect)` の戻り値として cleanup-form の値が使われていた不具合を修正
+- `(set-property)` が代入した値を戻り値としていなかった不具合を修正
+- `(remove-property)` が削除した値を戻り値としていなかった不具合を修正
+- `(mapc)`,`(mapcan)`,`(marpcar)`,`(mapcon)`,`(mapl)`, `(maplist)`, `(reverse)`,`(append)` で引数がリストかどうかをチェックをするようにした
 
 v0.7.15
 =======

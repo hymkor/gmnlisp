@@ -2,6 +2,10 @@
 
 - When running the gmnlisp executable, `*executable-name*` is set to its path. (Compatible with [lispect](https://github.com/hymkor/lispect) )
 - Although a class name like `<xxxxx>` used to represent a class object itself, it is now just a symbol, and `class <xxxxx>` is required to obtain the class object.
+- Fixed a bug where the value of the cleanup-form was incorrectly used as the result of `(unwind-protect)`.
+- Fixed a bug where `(set-property)` did not return the assigned value.
+- Fixed a bug where `(remove-property)` did not return the removed value.
+- `(mapc)`,`(mapcan)`,`(marpcar)`,`(mapcon)`,`(mapl)`, `(maplist)`, `(reverse)` and `(append)` now check whether the parameters are lists.
 
 v0.7.15
 =======
