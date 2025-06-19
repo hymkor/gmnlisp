@@ -102,17 +102,23 @@ func funSignalCondition(ctx context.Context, w *World, cond, continueable Node) 
 	return rv, err
 }
 
-func cmdContinueCondition(ctx context.Context, w *World, node Node) (Node, error) {
-	cond, node, err := w.ShiftAndEvalCar(ctx, node)
-	if err != nil {
-		return nil, err
+func funContinueCondition(ctx context.Context, w *World, args []Node) (Node, error) {
+	_, ok := args[0].(error)
+	if !ok {
+		var err error
+		args[0], err = callHandler[Node](ctx, w, false, &DomainError{
+			Object:        args[0],
+			ExpectedClass: errorClass,
+		})
+		if err != nil {
+			return args[0], err
+		}
 	}
-	value, node, err := w.ShiftAndEvalCar(ctx, node)
-	if err != nil {
-		return nil, err
+	e := &_ErrContinueCondition{Cond: args[0]}
+	if len(args) >= 2 {
+		e.Value = args[1]
+	} else {
+		e.Value = Null
 	}
-	if IsSome(node) {
-		return nil, ErrTooManyArguments
-	}
-	return nil, &_ErrContinueCondition{Cond: cond, Value: value}
+	return nil, e
 }

@@ -340,7 +340,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("clrhash"):                        Function1(funClearHash),
 	NewSymbol("cons"):                           Function2(funCons),
 	NewSymbol("consp"):                          Function1(funAnyTypep[*Cons]),
-	NewSymbol("continue-condition"):             SpecialF(cmdContinueCondition),
+	NewSymbol("continue-condition"):             &Function{Min: 1, Max: 2, F: funContinueCondition},
 	NewSymbol("cos"):                            funMath1(math.Cos),
 	NewSymbol("cosh"):                           funMath1(math.Cosh),
 	NewSymbol("create"):                         &Function{Min: 1, F: funCreate},
