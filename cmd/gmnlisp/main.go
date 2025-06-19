@@ -179,7 +179,7 @@ func mains(args []string) error {
 		executable = value
 	}
 	lisp.DefineGlobal(gmnlisp.NewSymbol("*executable-name*"), gmnlisp.String(executable))
-
+	lisp.DefineGlobal(gmnlisp.NewSymbol("*temp-dir*"), gmnlisp.String(os.TempDir()))
 	lisp.DefineGlobal(gmnlisp.NewSymbol("*dev-null*"), gmnlisp.String(os.DevNull))
 	if _, err := lisp.Interpret(ctx, startupCode); err != nil {
 		return err
