@@ -501,6 +501,10 @@ func funCreate(ctx context.Context, w *World, args []Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
+	rec := class.Create()
+	if rec == nil {
+		return raiseError(ctx, w, fmt.Errorf("Can not create instance for %s", class.Name()))
+	}
 	_gen, err := w.GetFunc(symInitializeObject)
 	if err != nil {
 		return nil, err
@@ -509,13 +513,9 @@ func funCreate(ctx context.Context, w *World, args []Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	rec := class.Create()
 	if _, ok := rec.(*_StandardObject); ok {
 		newargs := append([]Node{rec}, args[1:]...)
 		return gen.Call(ctx, w, UnevalList(newargs...))
-	}
-	if rec == nil {
-		return raiseProgramError(ctx, w, fmt.Errorf("Can not create instance for %s", class.Name()))
 	}
 	return rec, nil
 }
