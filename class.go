@@ -285,14 +285,18 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 		return nil, fmt.Errorf("[2] %w", err)
 	}
 	for IsSome(_scNames) {
-		var _super Node
-		_super, _scNames, err = w.ShiftAndEvalCar(ctx, _scNames)
+		var superRaw Node
+		superRaw, _scNames, err = Shift(_scNames)
 		if err != nil {
 			return nil, err
 		}
-		super, ok := _super.(Class)
+		superSymbol, err := ExpectSymbol(ctx, w, superRaw)
+		if err != nil {
+			return nil, err
+		}
+		super, ok := w.class[superSymbol]
 		if !ok {
-			return nil, fmt.Errorf("%v: %w", _super, ErrExpectedClass)
+			return nil, fmt.Errorf("%v: %w", superRaw, ErrExpectedClass)
 		}
 		class.Super = append(class.Super, super)
 	}
