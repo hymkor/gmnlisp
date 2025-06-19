@@ -145,11 +145,14 @@ func funLength(ctx context.Context, w *World, arg Node) (Node, error) {
 }
 
 func MapCar(ctx context.Context, w *World, funcNode Node, sourceSet []Node, store func(Node)) error {
-	f, err := w.Eval(ctx, funcNode)
-	if err != nil {
-		return err
+	for i, v := range sourceSet {
+		var err error
+		sourceSet[i], err = ExpectList(ctx, w, v)
+		if err != nil {
+			return err
+		}
 	}
-	_f, err := ExpectFunction(ctx, w, f)
+	_f, err := ExpectFunction(ctx, w, funcNode)
 	if err != nil {
 		return err
 	}
@@ -222,11 +225,14 @@ func listToQuotedList(list []Node) Node {
 }
 
 func mapList(ctx context.Context, w *World, funcNode Node, sourceSet []Node, store func(Node)) error {
-	f, err := w.Eval(ctx, funcNode)
-	if err != nil {
-		return err
+	for i, v := range sourceSet {
+		var err error
+		sourceSet[i], err = ExpectList(ctx, w, v)
+		if err != nil {
+			return err
+		}
 	}
-	_f, err := ExpectFunction(ctx, w, f)
+	_f, err := ExpectFunction(ctx, w, funcNode)
 	if err != nil {
 		return err
 	}
