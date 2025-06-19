@@ -29,6 +29,9 @@ func (e *_BuiltInClass) InheritP(c Class) bool {
 }
 
 func (e *_BuiltInClass) Create() Node {
+	if e.create == nil {
+		return nil
+	}
 	return e.create()
 }
 
