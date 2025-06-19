@@ -110,7 +110,7 @@ func (e *ArithmeticError) Equals(other Node, mode EqlMode) bool {
 }
 
 func (e *ArithmeticError) String() string {
-	return fmt.Sprintf("%s: (%#v %#v)",
+	return fmt.Sprintf("arithmetic error: %#v %#v %#v",
 		e.Class.String(),
 		e.Operation.String(),
 		e.Operands.String())
