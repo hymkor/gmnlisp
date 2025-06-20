@@ -8,6 +8,7 @@
 - `(mapc)`,`(mapcan)`,`(marpcar)`,`(mapcon)`,`(mapl)`, `(maplist)`, `(reverse)`,`(append)` で引数がリストかどうかをチェックをするようにした
 - `(continue-condition)` で引数の個数と condition であるかチェックするようにした
 - gmnlisp の実行ファイルで稼動している時、`*temp-dir*` に一時ディレクトリを設定するようにした
+- 試験的にインタラクティブモードでシンボル名補完を実装した
 
 v0.7.15
 =======
