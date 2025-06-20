@@ -706,6 +706,24 @@ func (W *World) Range(f func(Symbol, Node) bool) {
 	W.global.Range(callback)
 }
 
+func (W *World) FuncRange(f func(Symbol, Callable) bool) {
+	marked := map[Symbol]struct{}{}
+	callback := func(key Symbol, val Callable) bool {
+		if _, ok := marked[key]; !ok {
+			if !f(key, val) {
+				return false
+			}
+			marked[key] = struct{}{}
+		}
+		return true
+	}
+	for w := W; w != nil; w = w.parent {
+		w.funcs.Range(callback)
+	}
+	W.defun.Range(callback)
+	autoLoadFunc.Range(callback)
+}
+
 func funDumpSession(_ context.Context, w *World) (Node, error) {
 	out := w.stdout
 	var err error
