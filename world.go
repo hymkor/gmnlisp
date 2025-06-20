@@ -535,6 +535,11 @@ func (rw _RootWorld) Set(symbol Symbol, value Callable) {
 }
 
 func (rw _RootWorld) Range(f func(Symbol, Callable) bool) {
+	for key, val := range rw {
+		if !f(key, val) {
+			break
+		}
+	}
 }
 
 var presetClass = []Class{
