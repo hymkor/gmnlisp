@@ -689,19 +689,21 @@ func (w *World) Assert(equation string, expect Node) string {
 	return ""
 }
 
-func (w *World) Range(f func(Symbol, Node) bool) {
+func (W *World) Range(f func(Symbol, Node) bool) {
 	marked := map[Symbol]struct{}{}
-	for ; w != nil; w = w.parent {
-		w.vars.Range(func(key Symbol, val Node) bool {
-			if _, ok := marked[key]; !ok {
-				if !f(key, val) {
-					return false
-				}
-				marked[key] = struct{}{}
+	callback := func(key Symbol, val Node) bool {
+		if _, ok := marked[key]; !ok {
+			if !f(key, val) {
+				return false
 			}
-			return true
-		})
+			marked[key] = struct{}{}
+		}
+		return true
 	}
+	for w := W; w != nil; w = w.parent {
+		w.vars.Range(callback)
+	}
+	W.global.Range(callback)
 }
 
 func funDumpSession(_ context.Context, w *World) (Node, error) {
