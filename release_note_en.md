@@ -6,6 +6,8 @@
 - Fixed a bug where `(set-property)` did not return the assigned value.
 - Fixed a bug where `(remove-property)` did not return the removed value.
 - `(mapc)`,`(mapcan)`,`(marpcar)`,`(mapcon)`,`(mapl)`, `(maplist)`, `(reverse)` and `(append)` now check whether the parameters are lists.
+- `(continue-condition)` now checks the number of arguments and verifies that the first argument is a condition.
+- When running the gmnlisp executable, `*temp-dir*` is set to the default directory to use for temporary files.
 
 v0.7.15
 =======

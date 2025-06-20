@@ -6,6 +6,8 @@
 - `(set-property)` が代入した値を戻り値としていなかった不具合を修正
 - `(remove-property)` が削除した値を戻り値としていなかった不具合を修正
 - `(mapc)`,`(mapcan)`,`(marpcar)`,`(mapcon)`,`(mapl)`, `(maplist)`, `(reverse)`,`(append)` で引数がリストかどうかをチェックをするようにした
+- `(continue-condition)` で引数の個数と condition であるかチェックするようにした
+- gmnlisp の実行ファイルで稼動している時、`*temp-dir*` に一時ディレクトリを設定するようにした
 
 v0.7.15
 =======
