@@ -21,6 +21,8 @@ import (
 	"github.com/hymkor/go-multiline-ny"
 	"github.com/mattn/go-colorable"
 	"github.com/nyaosorg/go-readline-ny"
+	"github.com/nyaosorg/go-readline-ny/completion"
+	"github.com/nyaosorg/go-readline-ny/keys"
 	"github.com/nyaosorg/go-readline-ny/simplehistory"
 	"github.com/nyaosorg/go-readline-skk"
 )
@@ -58,6 +60,10 @@ func (q *miniBuffer) Leave(w io.Writer) (int, error) {
 
 func (q *miniBuffer) Recurse() skk.MiniBuffer {
 	return skk.MiniBufferOnCurrentLine{}
+}
+
+func hasPrefix(s, sub string) bool {
+	return len(s) >= len(sub) && strings.EqualFold(s[:len(sub)], sub)
 }
 
 func interactive(lisp *gmnlisp.World) error {
@@ -119,14 +125,40 @@ func interactive(lisp *gmnlisp.World) error {
 			fmt.Fprintln(os.Stderr, err.Error())
 		}
 	}
-
+	ctx := context.Background()
+	lisp.InterpretNodes(ctx, nil) // initialize
+	editor.BindKey(keys.CtrlI, &completion.CmdCompletion2{
+		// Characters listed here are excluded from completion.
+		Delimiter: "()&|",
+		// Enclose candidates with these characters when they contain spaces
+		Enclosure: `"`,
+		// String to append when only one candidate remains
+		Postfix: " ",
+		// Function for listing candidates
+		Candidates: func(fields []string) ([]string, []string) {
+			word := fields[len(fields)-1]
+			var symbols = []string{}
+			lisp.Range(func(key gmnlisp.Symbol, _ gmnlisp.Node) bool {
+				if k := key.String(); hasPrefix(k, word) {
+					symbols = append(symbols, strings.ToLower(k))
+				}
+				return true
+			})
+			lisp.FuncRange(func(key gmnlisp.Symbol, _ gmnlisp.Callable) bool {
+				if k := key.String(); hasPrefix(k, word) {
+					symbols = append(symbols, strings.ToLower(k))
+				}
+				return true
+			})
+			return symbols, symbols
+		},
+	})
 	fmt.Printf("gmnlisp %s-%s-%s by %s\n",
 		version,
 		runtime.GOOS,
 		runtime.GOARCH,
 		runtime.Version())
 
-	ctx := context.Background()
 	for {
 		lines, err := editor.Read(ctx)
 		if err != nil {
