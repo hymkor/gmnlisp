@@ -19,9 +19,9 @@ import (
 	_ "github.com/hymkor/gmnlisp/regexp"
 	_ "github.com/hymkor/gmnlisp/wildcard"
 	"github.com/hymkor/go-multiline-ny"
+	"github.com/hymkor/go-multiline-ny/completion"
 	"github.com/mattn/go-colorable"
 	"github.com/nyaosorg/go-readline-ny"
-	"github.com/nyaosorg/go-readline-ny/completion"
 	"github.com/nyaosorg/go-readline-ny/keys"
 	"github.com/nyaosorg/go-readline-ny/simplehistory"
 	"github.com/nyaosorg/go-readline-skk"
@@ -64,6 +64,32 @@ func (q *miniBuffer) Recurse() skk.MiniBuffer {
 
 func hasPrefix(s, sub string) bool {
 	return len(s) >= len(sub) && strings.EqualFold(s[:len(sub)], sub)
+}
+
+const (
+	completeBoth        = 3
+	completeFunction    = 2
+	completeNonFunction = 1
+)
+
+func whatIsToComplete(fields []string) int {
+	L := len(fields)
+	if L >= 3 {
+		if fields[L-3] == "#" && fields[L-2] == "'" {
+			return completeFunction
+		}
+	}
+	if L >= 2 {
+		lastlast := fields[L-2]
+		if lastlast == "'" {
+			return completeBoth
+		} else if strings.HasSuffix(lastlast, "(") {
+			return completeFunction
+		} else if strings.EqualFold(lastlast, "function") {
+			return completeFunction
+		}
+	}
+	return completeNonFunction
 }
 
 func interactive(lisp *gmnlisp.World) error {
@@ -127,9 +153,9 @@ func interactive(lisp *gmnlisp.World) error {
 	}
 	ctx := context.Background()
 	lisp.InterpretNodes(ctx, nil) // initialize
-	editor.BindKey(keys.CtrlI, &completion.CmdCompletion2{
+	editor.BindKey(keys.CtrlI, &completion.CmdCompletionOrList{
 		// Characters listed here are excluded from completion.
-		Delimiter: "()&|",
+		Delimiter: "()&|#'",
 		// Enclose candidates with these characters when they contain spaces
 		Enclosure: `"`,
 		// String to append when only one candidate remains
@@ -138,18 +164,23 @@ func interactive(lisp *gmnlisp.World) error {
 		Candidates: func(fields []string) ([]string, []string) {
 			word := fields[len(fields)-1]
 			var symbols = []string{}
-			lisp.Range(func(key gmnlisp.Symbol, _ gmnlisp.Node) bool {
-				if k := key.String(); hasPrefix(k, word) {
-					symbols = append(symbols, strings.ToLower(k))
-				}
-				return true
-			})
-			lisp.FuncRange(func(key gmnlisp.Symbol, _ gmnlisp.Callable) bool {
-				if k := key.String(); hasPrefix(k, word) {
-					symbols = append(symbols, strings.ToLower(k))
-				}
-				return true
-			})
+			flag := whatIsToComplete(fields)
+			if (flag & completeFunction) != 0 {
+				lisp.FuncRange(func(key gmnlisp.Symbol, _ gmnlisp.Callable) bool {
+					if k := key.String(); hasPrefix(k, word) {
+						symbols = append(symbols, strings.ToLower(k))
+					}
+					return true
+				})
+			}
+			if (flag & completeNonFunction) != 0 {
+				lisp.Range(func(key gmnlisp.Symbol, _ gmnlisp.Node) bool {
+					if k := key.String(); hasPrefix(k, word) {
+						symbols = append(symbols, strings.ToLower(k))
+					}
+					return true
+				})
+			}
 			return symbols, symbols
 		},
 	})
