@@ -3,7 +3,7 @@ module github.com/hymkor/gmnlisp
 go 1.20
 
 require (
-	github.com/hymkor/go-multiline-ny v0.19.2
+	github.com/hymkor/go-multiline-ny v0.21.0
 	github.com/mattn/go-colorable v0.1.14
 	github.com/nyaosorg/go-readline-ny v1.9.0
 	github.com/nyaosorg/go-readline-skk v0.5.0
