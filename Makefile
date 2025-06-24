@@ -3,10 +3,19 @@ ifeq ($(OS),Windows_NT)
     SET=set
     CP=copy
     RM=del
+    NUL=nul
+    WHICH=where
 else
     SET=export
     CP=cp
     RM=rm
+    NUL=/dev/null
+    WHICH=which
+endif
+
+ifndef GO
+    SUPPORTGO=go1.20.14
+    GO:=$(shell $(WHICH) $(SUPPORTGO) 2>$(NUL) || echo go)
 endif
 
 NAME:=$(notdir $(CURDIR))
@@ -18,10 +27,10 @@ RUNLISP?="./$(TARGET)"
 GENERATES=sort-world
 
 all:
-	go fmt ./...
-	go build
-	go fmt cmd/gmnlisp/main.go
-	go build -C cmd/gmnlisp -o "$(CURDIR)/$(TARGET)" -ldflags "-s -w -X main.version=$(VERSION)"
+	$(GO) fmt ./...
+	$(GO) build
+	$(GO) fmt cmd/gmnlisp/main.go
+	$(GO) build -C cmd/gmnlisp -o "$(CURDIR)/$(TARGET)" -ldflags "-s -w -X main.version=$(VERSION)"
 
 generate: $(GENERATES)
 
@@ -29,8 +38,8 @@ generate: $(GENERATES)
 
 test:
 	$(RUNLISP) test.lsp
-	go fmt
-	go test
+	$(GO) fmt
+	$(GO) test
 
 ### Updating documents
 
