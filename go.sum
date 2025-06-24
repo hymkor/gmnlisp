@@ -1,5 +1,3 @@
-github.com/atotto/clipboard v0.1.4 h1:EH0zSVneZPSuFR11BlR9YppQTVDbh5+16AmcJi4g1z4=
-github.com/atotto/clipboard v0.1.4/go.mod h1:ZY9tmq7sm5xIbd9bOK4onWV4S6X0u6GY7Vn0Yu86PYI=
 github.com/hymkor/go-multiline-ny v0.21.0 h1:dGxPlvL2dcJvT4jOSCfaeVvcSptbf5q+Z5F92Uc8l8g=
 github.com/hymkor/go-multiline-ny v0.21.0/go.mod h1:zrkZWF1DAUsILQ1P8+MSrHOkOnndHl2mC6xki8xRrr8=
 github.com/mattn/go-colorable v0.1.14 h1:9A9LHSqF/7dyVVX6g0U9cwm9pG3kP9gSzcuIPHPsaIE=
