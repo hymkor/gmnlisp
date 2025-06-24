@@ -1,5 +1,9 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+v0.7.16
+=======
+Jun 24, 2025
+
 - gmnlisp の実行ファイルで稼動している時、`*executable-name*` にパスを設定するようになった( 仕様としては [lispect](https://github.com/hymkor/lispect)互換 )
 - クラス名 `<xxxxx>` はそれ自体がクラスを示すオブジェクトであったが、現在はただのシンボルで `class <xxxxx>` として初めてクラスを示すオブジェクトとするようにした
 - `(unwind-proect)` の戻り値として cleanup-form の値が使われていた不具合を修正
@@ -9,6 +13,8 @@
 - `(continue-condition)` で引数の個数と condition であるかチェックするようにした
 - gmnlisp の実行ファイルで稼動している時、`*temp-dir*` に一時ディレクトリを設定するようにした
 - 試験的にインタラクティブモードでシンボル名補完を実装した
+
+[TP Result] : PASS = 13687, FAIL = 2724
 
 v0.7.15
 =======
