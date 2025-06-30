@@ -173,7 +173,7 @@ func funDomainErrorExpectedClass(ctx context.Context, w *World, arg Node) (Node,
 	return e.ExpectedClass, nil
 }
 
-type errorAndNode interface {
+type Condition interface {
 	error
 	Node
 }
@@ -182,7 +182,7 @@ type callHandlerLimitter struct{}
 
 var errHandlerReturnNormally = errors.New("Handler return normally")
 
-func callHandler[T Node](ctx context.Context, w *World, cont bool, condition errorAndNode) (T, error) {
+func callHandler[T Node](ctx context.Context, w *World, cont bool, condition Condition) (T, error) {
 	var zero T
 	if len(w.handler) > 0 {
 		if v := ctx.Value(callHandlerLimitter{}); v != nil {

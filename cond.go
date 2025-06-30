@@ -43,10 +43,7 @@ func cmdWithHandler(ctx context.Context, w *World, node Node) (Node, error) {
 	if err == nil || IsNonLocalExists(err) || errors.Is(err, errHandlerReturnNormally) {
 		return value, err
 	}
-	var errorValue interface {
-		Node
-		Error() string
-	}
+	var errorValue Condition
 	var err2 error
 	if errors.As(err, &errorValue) {
 		_, err2 = handler.Call(ctx, w, &Cons{Car: errorValue, Cdr: Null})
@@ -124,11 +121,7 @@ func funContinueCondition(ctx context.Context, w *World, args []Node) (Node, err
 }
 
 func funConditionContinuable(ctx context.Context, w *World, arg Node) (Node, error) {
-	type errorNode interface {
-		error
-		Node
-	}
-	e, err := ExpectInterface[errorNode](ctx, w, arg, errorClass)
+	e, err := ExpectInterface[Condition](ctx, w, arg, errorClass)
 	if err != nil {
 		return nil, err
 	}
