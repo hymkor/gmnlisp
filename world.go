@@ -338,6 +338,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("class-of"):                       Function1(funClassOf),
 	NewSymbol("close"):                          Function1(funClose),
 	NewSymbol("clrhash"):                        Function1(funClearHash),
+	NewSymbol("condition-continuable"):          Function1(funConditionContinuable),
 	NewSymbol("cons"):                           Function2(funCons),
 	NewSymbol("consp"):                          Function1(funAnyTypep[*Cons]),
 	NewSymbol("continue-condition"):             &Function{Min: 1, Max: 2, F: funContinueCondition},

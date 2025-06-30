@@ -122,3 +122,19 @@ func funContinueCondition(ctx context.Context, w *World, args []Node) (Node, err
 	}
 	return nil, e
 }
+
+func funConditionContinuable(ctx context.Context, w *World, arg Node) (Node, error) {
+	type errorNode interface {
+		error
+		Node
+	}
+	e, err := ExpectInterface[errorNode](ctx, w, arg, errorClass)
+	if err != nil {
+		return nil, err
+	}
+	var ce *_ErrContinueCondition
+	if !errors.As(e, &ce) {
+		return Null, nil
+	}
+	return ce.Value, nil
+}
