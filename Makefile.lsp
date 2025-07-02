@@ -1,5 +1,7 @@
 ; go run github.com/hymkor/smake@latest {test or release}
 
+(defglobal make (load "smake-go120.lsp"))
+
 (defun tail (path)
   (let ((buf (create-string-output-stream)))
     (format buf "tail \"~A\"" path)
@@ -41,10 +43,29 @@
    (let ((bump (load "smake-bump.lsp")))
      (funcall bump)))
 
+  (("release" "manifest")
+   (funcall make $1))
+
+  (("build")
+   (funcall make 'build)
+   (funcall make 'build-cmd "cmd/gmnlisp"))
+
+  (("dist")
+   (dolist (platform (list (cons "linux" "386")
+                           (cons "linux" "amd64")
+                           (cons "windows" "386")
+                           (cons "windows" "amd64")))
+     (env (("GOOS"   (car platform))
+           ("GOARCH" (cdr platform)))
+          (funcall make 'build)
+          (let ((aout (funcall make 'build-cmd "cmd/gmnlisp")))
+            (funcall make 'dist aout))
+          ) ; env
+     ) ; dolist
+   ) ; "dist"
+
   (t
-    (format (error-output) "Usage: smake TARGET~%")
-    (format (error-output) "  smake release~%")
-    (format (error-output) "  smake test~%")
+    (format (error-output) "Usage: smake {build|dist|release|manifest|bump|test}~%")
     ) ; t
   ) ; case
 
