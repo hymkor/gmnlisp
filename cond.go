@@ -72,7 +72,12 @@ var reportCondition = &_Generic{
 	methods: []*_Method{},
 }
 
-func funSignalCondition(ctx context.Context, w *World, cond, continueable Node) (Node, error) {
+type Continuable interface {
+	SetContinuableString(String)
+	ContinuableString() Node
+}
+
+func funSignalCondition(ctx context.Context, w *World, cond, continuable Node) (Node, error) {
 	if !errorClass.InstanceP(cond) {
 		return nil, &DomainError{
 			Object:        cond,
@@ -91,9 +96,21 @@ func funSignalCondition(ctx context.Context, w *World, cond, continueable Node) 
 		}
 		return nil, errors.New(cond.String())
 	}
+	if c, ok := cond.(Continuable); ok {
+		if s, ok := continuable.(String); ok {
+			c.SetContinuableString(s)
+		} else if True.Equals(continuable, STRICT) {
+			c.SetContinuableString("Continue with no special action.")
+		} else if IsSome(continuable) {
+			return nil, &DomainError{
+				Object:        continuable,
+				ExpectedClass: stringClass,
+			}
+		}
+	}
 	rv, err := w.handler[len(w.handler)-1].Call(ctx, w, &Cons{Car: cond})
 	var e *_ErrContinueCondition
-	if IsSome(continueable) && errors.As(err, &e) {
+	if IsSome(continuable) && errors.As(err, &e) {
 		return e.Value, nil
 	}
 	return rv, err
@@ -125,9 +142,9 @@ func funConditionContinuable(ctx context.Context, w *World, arg Node) (Node, err
 	if err != nil {
 		return nil, err
 	}
-	var ce *_ErrContinueCondition
+	var ce Continuable
 	if !errors.As(e, &ce) {
 		return Null, nil
 	}
-	return ce.Value, nil
+	return ce.ContinuableString(), nil
 }

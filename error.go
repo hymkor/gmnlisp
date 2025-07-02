@@ -183,6 +183,11 @@ type callHandlerLimitter struct{}
 var errHandlerReturnNormally = errors.New("Handler return normally")
 
 func callHandler[T Node](ctx context.Context, w *World, cont bool, condition Condition) (T, error) {
+
+	var continuable Continuable
+	if cont && errors.As(condition, &continuable) {
+		continuable.SetContinuableString("continuable")
+	}
 	var zero T
 	if len(w.handler) > 0 {
 		if v := ctx.Value(callHandlerLimitter{}); v != nil {
@@ -422,9 +427,25 @@ func (e EndOfStream) Error() string {
 	return "<end-of-stream>"
 }
 
+type continuableImpl struct {
+	continuableString *String
+}
+
+func (s *continuableImpl) SetContinuableString(cs String) {
+	s.continuableString = &cs
+}
+
+func (s *continuableImpl) ContinuableString() Node {
+	if s.continuableString == nil {
+		return Null
+	}
+	return *s.continuableString
+}
+
 type SimpleError struct {
 	FormatString    Node
 	FormatArguments Node
+	continuableImpl
 }
 
 var simpleErrorClass = registerNewAbstractClass[*SimpleError]("<simple-error>", errorClass)
