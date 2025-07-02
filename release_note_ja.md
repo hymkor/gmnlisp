@@ -1,5 +1,7 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+- `(condition-continuable)` を実装
+
 v0.7.16
 =======
 Jun 24, 2025
