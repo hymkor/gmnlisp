@@ -1,11 +1,12 @@
+;;; The smake-template for release new version with Go 1.20.14
+;;; It requires smake, jj or git, gh, and smake-go120.lsp
+;;; Create an instance:
+;;;     (defglobal bump (load "smake-bump.lsp"))
+;;; Call a method:
+;;;     (funcall bump)
 (lambda ()
   (labels
-    ((find-release-note
-       ()
-       (let ((note (wildcard "release_note*.md")))
-         (and note (car note))))
-
-     (version-from-release-note
+    ((version-from-release-note
        (fname)
        (let ((version nil))
          (or
@@ -30,15 +31,15 @@
              (("n") (return-from b t))
              (("y") (sh command) (return-from b t))))))
      )
-    (let
+    (let*
       ((j (-d ".jj"))
+       (notes (wildcard "release_note*.md"))
        (version
-         (let ((note (find-release-note)))
-           (if note
-             (progn
-               (format (error-output) "Found: ~A~%" note)
-               (version-from-release-note note))
-             "v0.0.0"))))
+         (if (consp notes)
+           (progn
+             (format (error-output) "Found: ~A~%" (car notes))
+             (version-from-release-note (car notes)))
+           "v0.0.0")))
       (and
         (step-exec
           (if j
