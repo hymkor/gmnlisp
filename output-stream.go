@@ -44,6 +44,10 @@ func (t _WriterNode) String() string {
 	return fmt.Sprintf("<writer>: %p", &t)
 }
 
+func (t _WriterNode) RawWriter() io.Writer {
+	return t._Writer
+}
+
 type outputStream struct {
 	w        *bufio.Writer
 	file     *os.File
@@ -88,6 +92,11 @@ func (o *outputStream) Flush() error {
 		return err1
 	}
 	return err2
+}
+
+func (o *outputStream) RawWriter() io.Writer {
+	o.Flush()
+	return o.file
 }
 
 func (o *outputStream) Close() error {

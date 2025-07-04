@@ -3,6 +3,7 @@ package gmnlisp
 import (
 	"bufio"
 	"context"
+	"io"
 	"os"
 	"strings"
 )
@@ -94,6 +95,10 @@ func (t *StringBuilder) Equals(other Node, _ EqlMode) bool {
 		return false
 	}
 	return t.String() == o.String()
+}
+
+func (t *StringBuilder) RawWriter() io.Writer {
+	return &t.Builder
 }
 
 var outputStreamClass = &_BuiltInClass{
