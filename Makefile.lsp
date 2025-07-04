@@ -43,10 +43,10 @@
    (let ((bump (load "smake-bump.lsp")))
      (funcall bump)))
 
-  (("release" "manifest")
+  (("release" "manifest" "clean")
    (funcall make $1))
 
-  (("build")
+  (("build" "" nil)
    (funcall make 'build)
    (funcall make 'build-cmd "cmd/gmnlisp"))
 
