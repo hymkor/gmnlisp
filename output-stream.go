@@ -9,19 +9,19 @@ import (
 	"os"
 )
 
-type _WriterNode struct {
-	_Writer io.Writer
-	column  int
+type WriterStream struct {
+	writer io.Writer
+	column int
 }
 
-var writerNodeClass = registerNewBuiltInClass[_WriterNode]("<writer>")
+var writerNodeClass = registerNewBuiltInClass[WriterStream]("<writer>")
 
-func (w *_WriterNode) Column() int {
+func (w *WriterStream) Column() int {
 	return w.column
 }
 
-func (w *_WriterNode) Write(p []byte) (int, error) {
-	n, err := w._Writer.Write(p)
+func (w *WriterStream) Write(p []byte) (int, error) {
+	n, err := w.writer.Write(p)
 	if n >= 1 {
 		if pos := bytes.LastIndexByte(p[:n], '\n'); pos >= 0 {
 			w.column = n - pos - 1
@@ -32,20 +32,20 @@ func (w *_WriterNode) Write(p []byte) (int, error) {
 	return n, err
 }
 
-func (_WriterNode) ClassOf() Class {
+func (WriterStream) ClassOf() Class {
 	return streamClass
 }
 
-func (t _WriterNode) Equals(Node, EqlMode) bool {
+func (t WriterStream) Equals(Node, EqlMode) bool {
 	return false
 }
 
-func (t _WriterNode) String() string {
+func (t WriterStream) String() string {
 	return fmt.Sprintf("<writer>: %p", &t)
 }
 
-func (t _WriterNode) RawWriter() io.Writer {
-	return t._Writer
+func (t WriterStream) RawWriter() io.Writer {
+	return t.writer
 }
 
 type outputStream struct {

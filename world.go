@@ -218,8 +218,10 @@ func (w *World) Stdout() io.Writer {
 func (w *World) SetStdout(writer io.Writer) {
 	if f, ok := writer.(*os.File); ok {
 		w.stdout = newOutputFileStream(f)
+	} else if s, ok := writer.(*WriterStream); ok {
+		w.stdout = s
 	} else {
-		w.stdout = &_WriterNode{_Writer: writer}
+		w.stdout = &WriterStream{writer: writer}
 	}
 }
 
@@ -234,8 +236,10 @@ func (w *World) Errout() io.Writer {
 func (w *World) SetErrout(writer io.Writer) {
 	if f, ok := writer.(*os.File); ok {
 		w.errout = newOutputFileStream(f)
+	} else if s, ok := writer.(*WriterStream); ok {
+		w.errout = s
 	} else {
-		w.errout = &_WriterNode{_Writer: writer}
+		w.errout = &WriterStream{writer: writer}
 	}
 }
 
