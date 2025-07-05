@@ -1,6 +1,7 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
 - `(condition-continuable)` を実装
+- 型 `_WriteNode` を`WriterStream` として公開
 
 v0.7.16
 =======
