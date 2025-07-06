@@ -37,10 +37,10 @@ func (e *BuiltInClass) Create() Node {
 
 var classClass = registerNewBuiltInClass[Class]("<class>")
 
-var builtInClass = NewAbstractClass[*BuiltInClass]("<built-in-class>")
+var BuiltInClassObject = NewAbstractClass[*BuiltInClass]("<built-in-class>")
 
 func (e *BuiltInClass) ClassOf() Class {
-	return builtInClass
+	return BuiltInClassObject
 }
 
 func (e *BuiltInClass) Name() Symbol {
@@ -98,11 +98,11 @@ func registerClass(class *BuiltInClass) *BuiltInClass {
 }
 
 func registerNewBuiltInClass[T Node](name string, super ...Class) *BuiltInClass {
-	super = append(super, ObjectClass, builtInClass)
+	super = append(super, ObjectClass, BuiltInClassObject)
 	return registerClass(NewBuiltInClass[T](name, super...))
 }
 
 func registerNewAbstractClass[T Node](name string, super ...Class) *BuiltInClass {
-	super = append(super, ObjectClass, builtInClass)
+	super = append(super, ObjectClass, BuiltInClassObject)
 	return registerClass(NewAbstractClass[T](name, super...))
 }

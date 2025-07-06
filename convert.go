@@ -146,7 +146,7 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 			return val, nil
 		}
 	}
-	return nil, &DomainError{Object: source, ExpectedClass: builtInClass}
+	return nil, &DomainError{Object: source, ExpectedClass: BuiltInClassObject}
 }
 
 func cmdAssure(ctx context.Context, w *World, args Node) (Node, error) {

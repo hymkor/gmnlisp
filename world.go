@@ -548,7 +548,7 @@ func (rw _RootWorld) Range(f func(Symbol, Callable) bool) {
 }
 
 var presetClass = []Class{
-	builtInClass,
+	BuiltInClassObject,
 	errorClass,
 	numberClass,
 	ObjectClass,
