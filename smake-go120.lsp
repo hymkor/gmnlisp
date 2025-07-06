@@ -15,7 +15,8 @@
            'notag
            (with-handler
              (lambda (c) (throw 'notag "v0.0.0"))
-             (shell (string-append "git describe --tags 2>" *dev-null*))))))
+             (with-error-output *discard*
+               (q "git" "describe" "--tags"))))))
   (labels
     ((find-str-file
        (word filename)
@@ -141,6 +142,10 @@
           ((build-cmd)
            (apply #'go-build-cmd args))
 
+          ((env)
+           (mapc
+             (lambda (c) (format (standard-output) "~S=~S~%" c (eval c)))
+             '(GO120 GOEXE EXE CURDIR NAME TARGET SOURCE VERSION)))
           (t
             (error "~S: not command" sub-command))
           ); case
