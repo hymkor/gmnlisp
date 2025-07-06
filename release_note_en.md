@@ -1,5 +1,9 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+v0.7.17
+=======
+Jul 7, 2025
+
 - Implemented `(condition-continuable)`
 - Exported the internal type `_WriteNode` as `WriterStream`
     - Also exported its constructor `NewWriterStream`
@@ -11,6 +15,8 @@
 - Consolidated previously separate types implementing both `Node` and `error` interfaces into a single type `Condition`
 - Introduced the `Continuable` interface to represent continuable states, now used by `(signal-condition)` and `<simple-error>`
 - Fixed an issue where `(return-from)` could be used even when the tag was not visible in the **lexical scope** (like `catch`/`throw` tags), and ensured conformance to the standard by signaling a `<control-error>` in such cases
+
+[TP Result] : PASS = 13711, FAIL = 2700
 
 v0.7.16
 =======

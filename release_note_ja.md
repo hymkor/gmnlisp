@@ -1,5 +1,9 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+v0.7.17
+=======
+Jul 7, 2025
+
 - `(condition-continuable)` を実装
 - 型 `_WriteNode` を`WriterStream` として公開
     - そのコンストラクタ `NewWriterStream` も公開
@@ -11,6 +15,8 @@
 - 複数定義されていた `Node` と `error` の両 interface を実装した型を `Condition` として統合
 - 継続可能な状態を読み書きできる interface: `Continuable` を定義、`(signal-condition)` と `<simple-error>` で扱うようにした
 - `(return-from)`: タグが静的スコープ的に見えない場所でも（catch-throw のタグと同様に）使えてしまう問題を修正し、規格どおり`<control-error>` となるようにした。 
+
+[TP Result] : PASS = 13711, FAIL = 2700
 
 v0.7.16
 =======
