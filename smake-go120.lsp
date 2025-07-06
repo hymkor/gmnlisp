@@ -136,6 +136,9 @@
           ((test)
            (spawn GOEXE "test"))
 
+          ((fmt)
+           (spawn GOEXE "fmt" "./..."))
+
           ((build)
            (go-build))
 

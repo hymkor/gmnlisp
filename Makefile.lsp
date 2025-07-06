@@ -8,7 +8,7 @@
     (sh (get-output-stream-string buf))))
 
 (case (and *args* (car *args*))
-  (("test")
+  (("verify")
    (if (probe-file "errr")
      (rm "errr"))
    (if (probe-file "err")
@@ -37,13 +37,19 @@
        (format (standard-output) "**** Latest log ****~%")
        (tail err-path)
      ); let
-   ); "test"
+   ); "verify"
+
+  (("test")
+    (spawn "./gmnlisp" "test.lsp")
+    (funcall make 'fmt)
+    (funcall make 'test)
+  )
 
   (("bump")
    (let ((bump (load "smake-bump.lsp")))
      (funcall bump)))
 
-  (("release" "manifest" "clean")
+  (("release" "manifest" "clean" "env")
    (funcall make $1))
 
   (("build" "" nil)
