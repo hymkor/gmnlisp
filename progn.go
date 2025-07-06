@@ -7,53 +7,40 @@ import (
 )
 
 type _ErrEarlyReturns struct {
-	Value Node
-	Name  Symbol
+	value Node
+	tag   blockTagType
 }
 
 func (e *_ErrEarlyReturns) Error() string {
-	if e.Name == nulSymbol {
-		return "Unexpected (return)"
-	}
-	return fmt.Sprintf("Unexpected (return-from %s)", e.Name.String())
+	return "Unexpected (return-from)"
 }
 
-func funReturn(ctx context.Context, w *World, arg Node) (Node, error) {
-	if w.blockName == nil {
-		w.blockName = make(map[Symbol]struct{})
-	}
-	if _, ok := w.blockName[nulSymbol]; !ok {
-		return raiseControlError(ctx, w, fmt.Errorf("block name '%s' not found", nulSymbol.String()))
-	}
-	return nil, &_ErrEarlyReturns{Value: arg, Name: nulSymbol}
-}
-
-func cmdReturnFrom(ctx context.Context, w *World, n Node) (Node, error) {
-	var argv [2]Node
-	if err := ListToArray(n, argv[:]); err != nil {
-		return nil, err
-	}
-	var symbol Symbol
-	var err error
-	if IsSome(argv[0]) {
-		symbol, err = ExpectSymbol(ctx, w, argv[0])
-		if err != nil {
-			return nil, err
-		}
-	} else {
-		symbol = nulSymbol
-	}
-	if w.blockName == nil {
-		w.blockName = make(map[Symbol]struct{})
-	}
-	if _, ok := w.blockName[symbol]; !ok {
-		return raiseControlError(ctx, w, fmt.Errorf("block name '%s' not found", symbol.String()))
-	}
-	value, err := w.Eval(ctx, argv[1])
+func cmdReturnFrom(ctx context.Context, w *World, args Node) (Node, error) {
+	symbolNode, args, err := Shift(args)
 	if err != nil {
 		return nil, err
 	}
-	return nil, &_ErrEarlyReturns{Value: value, Name: symbol}
+	value, args, err := w.ShiftAndEvalCar(ctx, args)
+	if err != nil {
+		return nil, err
+	}
+	if IsSome(args) {
+		return raiseProgramError(ctx, w, ErrTooManyArguments)
+	}
+	symbol, err := ExpectSymbol(ctx, w, symbolNode)
+	if err != nil {
+		return nil, err
+	}
+	for p := w; p != nil; p = p.parent {
+		if p.tag != nil && p.tag.Key.Equals(symbol, STRICT) {
+			if tag1, ok := p.tag.Value.(blockTagType); ok {
+				if _, ok := w.blockName[tag1]; ok {
+					return nil, &_ErrEarlyReturns{value: value, tag: tag1}
+				}
+			}
+		}
+	}
+	return raiseControlError(ctx, w, fmt.Errorf("block-tag '%s' not found", symbol.String()))
 }
 
 func Progn(ctx context.Context, w *World, n Node) (value Node, err error) {
@@ -71,33 +58,56 @@ func cmdProgn(ctx context.Context, w *World, c Node) (Node, error) {
 	return Progn(ctx, w, c)
 }
 
+type blockTagType int
+
+var blockTagCount = 0
+
+func newBlockTag() blockTagType {
+	blockTagCount++
+	return blockTagType(blockTagCount)
+}
+
+func (b blockTagType) Equals(other Node, m EqlMode) bool {
+	o, ok := other.(blockTagType)
+	return ok && b == o
+}
+
+func (b blockTagType) String() string {
+	return fmt.Sprintf("(block-tag %d", int(b))
+}
+
+func (b blockTagType) ClassOf() Class {
+	return NewBuiltInClass[blockTagType]("<block-tag>", ObjectClass)
+}
+
 func cmdBlock(ctx context.Context, w *World, node Node) (Node, error) {
-	// from CommonLisp
 	nameNode, statements, err := Shift(node)
 	if err != nil {
 		return nil, err
 	}
-	var nameSymbol Symbol
+	nameSymbol, err := ExpectSymbol(ctx, w, nameNode)
+	if err != nil {
+		return nil, err
+	}
 
-	if IsSome(nameNode) {
-		nameSymbol, err = ExpectSymbol(ctx, w, nameNode)
-		if err != nil {
-			return nil, err
-		}
-	} else {
-		nameSymbol = nulSymbol
+	tag := newBlockTag()
+	newWorld := &World{
+		parent: w,
+		tag:    &Pair{Key: nameSymbol, Value: tag},
+		shared: w.shared,
 	}
 	if w.blockName == nil {
-		w.blockName = make(map[Symbol]struct{})
+		w.blockName = make(map[blockTagType]struct{})
 	}
-	if _, ok := w.blockName[nameSymbol]; !ok {
-		defer delete(w.blockName, nameSymbol)
-		w.blockName[nameSymbol] = struct{}{}
+	if _, ok := w.blockName[tag]; !ok {
+		defer delete(w.blockName, tag)
+		w.blockName[tag] = struct{}{}
 	}
+	rv, err := Progn(ctx, newWorld, statements)
+
 	var errEarlyReturns *_ErrEarlyReturns
-	rv, err := Progn(ctx, w, statements)
-	if errors.As(err, &errEarlyReturns) && errEarlyReturns.Name == nameSymbol {
-		return errEarlyReturns.Value, nil
+	if errors.As(err, &errEarlyReturns) && tag.Equals(errEarlyReturns.tag, STRICT) {
+		return errEarlyReturns.value, nil
 	}
 	return rv, err
 }

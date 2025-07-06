@@ -139,7 +139,7 @@ type shared struct {
 		Node
 	}
 	startup    sync.Once
-	blockName  map[Symbol]struct{}
+	blockName  map[blockTagType]struct{}
 	catchTag   map[Node]struct{}
 	goTag      map[Symbol]struct{}
 	StrictMode bool
@@ -151,6 +151,7 @@ type World struct {
 	parent *World
 	funcs  FuncScope
 	vars   Scope
+	tag    *Pair
 }
 
 type _Reader interface {
@@ -455,7 +456,6 @@ var autoLoadFunc = Functions{
 	NewSymbol("rem"):                            Function2(funRem),
 	NewSymbol("remhash"):                        Function2(funRemoveHash),
 	NewSymbol("rest"):                           Function1(funGetCdr),
-	NewSymbol("return"):                         Function1(funReturn),
 	NewSymbol("reverse"):                        Function1(funReverse),
 	NewSymbol("round"):                          Function1(funRound),
 	NewSymbol("set-aref"):                       &Function{Min: 3, F: funSetAref},
