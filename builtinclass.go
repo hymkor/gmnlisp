@@ -92,22 +92,17 @@ func NewAbstractClass[T Node](name string, super ...Class) *BuiltInClass {
 	return newBuiltInClass[T](name, ctor, super...)
 }
 
-func registerClass(class *BuiltInClass, super ...Class) Class {
-	class.super = append(super, objectClass, builtInClass)
+func registerClass(class *BuiltInClass) *BuiltInClass {
 	presetClass = append(presetClass, class)
 	return class
 }
 
 func registerNewBuiltInClass[T Node](name string, super ...Class) *BuiltInClass {
 	super = append(super, objectClass, builtInClass)
-	class := NewBuiltInClass[T](name, super...)
-	presetClass = append(presetClass, class)
-	return class
+	return registerClass(NewBuiltInClass[T](name, super...))
 }
 
 func registerNewAbstractClass[T Node](name string, super ...Class) *BuiltInClass {
 	super = append(super, objectClass, builtInClass)
-	class := NewAbstractClass[T](name, super...)
-	presetClass = append(presetClass, class)
-	return class
+	return registerClass(NewAbstractClass[T](name, super...))
 }

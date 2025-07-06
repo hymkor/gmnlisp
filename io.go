@@ -10,6 +10,21 @@ import (
 	"strings"
 )
 
+var streamClass = registerClass(&BuiltInClass{
+	name: NewSymbol("<stream>"),
+	instanceP: func(value Node) bool {
+		if _, ok := value.(io.Reader); ok {
+			return true
+		}
+		_, ok := value.(io.Writer)
+		return ok
+	},
+	create: func() Node {
+		return &StringBuilder{}
+	},
+	super: []Class{objectClass, builtInClass},
+})
+
 func chomp(s string) string {
 	L := len(s)
 	if L > 0 && s[L-1] == '\n' {
