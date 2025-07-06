@@ -26,7 +26,7 @@ var inputStreamClass = &BuiltInClass{
 			isClosed: false,
 		}
 	},
-	super: []Class{objectClass, streamClass},
+	super: []Class{ObjectClass, streamClass},
 }
 
 func (t *inputStream) ClassOf() Class {

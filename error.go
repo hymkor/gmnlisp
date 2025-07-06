@@ -19,7 +19,7 @@ var errorClass = &BuiltInClass{
 	create: func() Node {
 		return nil
 	},
-	super: []Class{objectClass},
+	super: []Class{ObjectClass},
 }
 
 func (ErrorNode) ClassOf() Class {

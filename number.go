@@ -22,7 +22,7 @@ var numberClass = &BuiltInClass{
 		return nil
 	},
 	super: []Class{
-		objectClass,
+		ObjectClass,
 	},
 }
 

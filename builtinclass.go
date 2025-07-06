@@ -64,7 +64,7 @@ func funClassOf(_ context.Context, _ *World, arg Node) (Node, error) {
 	return arg.ClassOf(), nil
 }
 
-var objectClass = &BuiltInClass{
+var ObjectClass = &BuiltInClass{
 	name:      NewSymbol("<object>"),
 	instanceP: func(Node) bool { return true },
 	create:    func() Node { return nil },
@@ -98,11 +98,11 @@ func registerClass(class *BuiltInClass) *BuiltInClass {
 }
 
 func registerNewBuiltInClass[T Node](name string, super ...Class) *BuiltInClass {
-	super = append(super, objectClass, builtInClass)
+	super = append(super, ObjectClass, builtInClass)
 	return registerClass(NewBuiltInClass[T](name, super...))
 }
 
 func registerNewAbstractClass[T Node](name string, super ...Class) *BuiltInClass {
-	super = append(super, objectClass, builtInClass)
+	super = append(super, ObjectClass, builtInClass)
 	return registerClass(NewAbstractClass[T](name, super...))
 }

@@ -21,7 +21,7 @@ var stringReaderClass = &BuiltInClass{
 	create: func() Node {
 		return StringReader{Reader: strings.NewReader("")}
 	},
-	super: []Class{objectClass, streamClass},
+	super: []Class{ObjectClass, streamClass},
 }
 
 func (sr StringReader) QueryStreamReady() (Node, error) {
@@ -82,7 +82,7 @@ var stringBuilderClass = &BuiltInClass{
 	create: func() Node {
 		return &StringBuilder{}
 	},
-	super: []Class{objectClass, streamClass},
+	super: []Class{ObjectClass, streamClass},
 }
 
 func (*StringBuilder) ClassOf() Class {
@@ -113,5 +113,5 @@ var outputStreamClass = &BuiltInClass{
 			file: os.Stderr,
 		}
 	},
-	super: []Class{objectClass, streamClass},
+	super: []Class{ObjectClass, streamClass},
 }

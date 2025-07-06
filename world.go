@@ -551,7 +551,7 @@ var presetClass = []Class{
 	builtInClass,
 	errorClass,
 	numberClass,
-	objectClass,
+	ObjectClass,
 	standardClass,
 }
 

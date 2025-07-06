@@ -35,7 +35,7 @@ func newGetter(class Class, slotName Symbol) *_Method {
 
 func newSetter(class Class, slotName Symbol) *_Method {
 	return &_Method{
-		types: []Class{objectClass, class},
+		types: []Class{ObjectClass, class},
 		method: func(ctx context.Context, w *World, node []Node) (Node, error) {
 			rec, ok := node[1].(*_StandardObject)
 			if !ok {
@@ -178,7 +178,7 @@ var standardClass = &BuiltInClass{
 		classCounter++
 		return &_StandardClass{}
 	},
-	super: []Class{objectClass},
+	super: []Class{ObjectClass},
 }
 
 func (u *_StandardClass) ClassOf() Class {
@@ -354,7 +354,7 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 	w.shared.class[className] = class
 
 	registerMethod(w, symInitializeObject, class, &_Method{
-		restType: objectClass,
+		restType: ObjectClass,
 		types:    []Class{class},
 		method:   defaultInitializeObject,
 	})
