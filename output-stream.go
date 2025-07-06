@@ -14,6 +14,10 @@ type WriterStream struct {
 	column int
 }
 
+func NewWriterStream(w io.Writer) *WriterStream {
+	return &WriterStream{writer: w}
+}
+
 var writerNodeClass = registerNewBuiltInClass[WriterStream]("<writer>")
 
 func (w *WriterStream) Column() int {
