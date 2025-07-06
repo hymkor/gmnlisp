@@ -123,7 +123,7 @@
                        (cp TARGET dir))))))))
 
           ((release)
-           (apply #'spawn "gh" "release" "create" "-d" "--notes" "-t"
+           (apply #'spawn "gh" "release" "create" "-d" "--notes" "" "-t"
                   VERSION VERSION
                   (wildcard (string-append NAME "-" VERSION "-*.zip"))))
 
