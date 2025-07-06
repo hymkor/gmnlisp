@@ -208,9 +208,9 @@ func callHandler[T Node](ctx context.Context, w *World, cont bool, condition Con
 			if e != nil {
 				return zero, condition
 			}
-			condition = &ControlError{err: errHandlerReturnNormally}
+			condition = ControlError{err: errHandlerReturnNormally}
 		}
-		return zero, &ControlError{err: errHandlerReturnNormally}
+		return zero, ControlError{err: errHandlerReturnNormally}
 	}
 	return zero, condition
 }
