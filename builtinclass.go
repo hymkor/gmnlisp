@@ -37,7 +37,7 @@ func (e *BuiltInClass) Create() Node {
 
 var classClass = registerNewBuiltInClass[Class]("<class>")
 
-var builtInClass = newAbstractClass[*BuiltInClass]("<built-in-class>")
+var builtInClass = NewAbstractClass[*BuiltInClass]("<built-in-class>")
 
 func (e *BuiltInClass) ClassOf() Class {
 	return builtInClass
@@ -70,33 +70,26 @@ var objectClass = &BuiltInClass{
 	create:    func() Node { return nil },
 }
 
-func NewBuiltInClass[T Node](name string, super ...Class) *BuiltInClass {
+func newBuiltInClass[T Node](name string, ctor func() Node, super ...Class) *BuiltInClass {
 	return &BuiltInClass{
 		name: NewSymbol(name),
 		instanceP: func(n Node) bool {
 			_, ok := n.(T)
 			return ok
 		},
-		create: func() Node {
-			var value T
-			return value
-		},
-		super: super,
+		create: ctor,
+		super:  super,
 	}
 }
 
-func newAbstractClass[T Node](name string) *BuiltInClass {
-	symbol := NewSymbol(name)
-	return &BuiltInClass{
-		name: symbol,
-		instanceP: func(n Node) bool {
-			_, ok := n.(T)
-			return ok
-		},
-		create: func() Node {
-			return nil
-		},
-	}
+func NewBuiltInClass[T Node](name string, super ...Class) *BuiltInClass {
+	ctor := func() Node { var value T; return value }
+	return newBuiltInClass[T](name, ctor, super...)
+}
+
+func NewAbstractClass[T Node](name string, super ...Class) *BuiltInClass {
+	ctor := func() Node { return nil }
+	return newBuiltInClass[T](name, ctor, super...)
 }
 
 func registerClass(class *BuiltInClass, super ...Class) Class {
@@ -113,8 +106,8 @@ func registerNewBuiltInClass[T Node](name string, super ...Class) *BuiltInClass 
 }
 
 func registerNewAbstractClass[T Node](name string, super ...Class) *BuiltInClass {
-	class := newAbstractClass[T](name)
-	class.super = append(super, objectClass, builtInClass)
+	super = append(super, objectClass, builtInClass)
+	class := NewAbstractClass[T](name, super...)
 	presetClass = append(presetClass, class)
 	return class
 }
