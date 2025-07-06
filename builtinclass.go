@@ -12,14 +12,14 @@ type Class interface {
 	InheritP(Class) bool
 }
 
-type _BuiltInClass struct {
+type BuiltInClass struct {
 	name      Symbol
 	instanceP func(Node) bool
 	create    func() Node
 	super     []Class
 }
 
-func (e *_BuiltInClass) InheritP(c Class) bool {
+func (e *BuiltInClass) InheritP(c Class) bool {
 	for _, s := range e.super {
 		if s.Equals(c, STRICT) || s.InheritP(c) {
 			return true
@@ -28,7 +28,7 @@ func (e *_BuiltInClass) InheritP(c Class) bool {
 	return false
 }
 
-func (e *_BuiltInClass) Create() Node {
+func (e *BuiltInClass) Create() Node {
 	if e.create == nil {
 		return nil
 	}
@@ -37,26 +37,26 @@ func (e *_BuiltInClass) Create() Node {
 
 var classClass = registerNewBuiltInClass[Class]("<class>")
 
-var builtInClass = newAbstractClass[*_BuiltInClass]("<built-in-class>")
+var builtInClass = newAbstractClass[*BuiltInClass]("<built-in-class>")
 
-func (e *_BuiltInClass) ClassOf() Class {
+func (e *BuiltInClass) ClassOf() Class {
 	return builtInClass
 }
 
-func (e *_BuiltInClass) Name() Symbol {
+func (e *BuiltInClass) Name() Symbol {
 	return e.name
 }
 
-func (e *_BuiltInClass) InstanceP(n Node) bool {
+func (e *BuiltInClass) InstanceP(n Node) bool {
 	return e.instanceP(n) || n.ClassOf().InheritP(e)
 }
 
-func (e *_BuiltInClass) String() string {
+func (e *BuiltInClass) String() string {
 	return e.Name().String()
 }
 
-func (e *_BuiltInClass) Equals(_other Node, _ EqlMode) bool {
-	other, ok := _other.(*_BuiltInClass)
+func (e *BuiltInClass) Equals(_other Node, _ EqlMode) bool {
+	other, ok := _other.(*BuiltInClass)
 	return ok && other.String() == e.String()
 }
 
@@ -64,15 +64,15 @@ func funClassOf(_ context.Context, _ *World, arg Node) (Node, error) {
 	return arg.ClassOf(), nil
 }
 
-var objectClass = &_BuiltInClass{
+var objectClass = &BuiltInClass{
 	name:      NewSymbol("<object>"),
 	instanceP: func(Node) bool { return true },
 	create:    func() Node { return nil },
 }
 
-func newBuiltInClass[T Node](name string) *_BuiltInClass {
+func newBuiltInClass[T Node](name string) *BuiltInClass {
 	symbol := NewSymbol(name)
-	return &_BuiltInClass{
+	return &BuiltInClass{
 		name: symbol,
 		instanceP: func(n Node) bool {
 			_, ok := n.(T)
@@ -85,9 +85,9 @@ func newBuiltInClass[T Node](name string) *_BuiltInClass {
 	}
 }
 
-func newAbstractClass[T Node](name string) *_BuiltInClass {
+func newAbstractClass[T Node](name string) *BuiltInClass {
 	symbol := NewSymbol(name)
-	return &_BuiltInClass{
+	return &BuiltInClass{
 		name: symbol,
 		instanceP: func(n Node) bool {
 			_, ok := n.(T)
@@ -99,20 +99,20 @@ func newAbstractClass[T Node](name string) *_BuiltInClass {
 	}
 }
 
-func registerClass(class *_BuiltInClass, super ...Class) Class {
+func registerClass(class *BuiltInClass, super ...Class) Class {
 	class.super = append(super, objectClass, builtInClass)
 	presetClass = append(presetClass, class)
 	return class
 }
 
-func registerNewBuiltInClass[T Node](name string, super ...Class) *_BuiltInClass {
+func registerNewBuiltInClass[T Node](name string, super ...Class) *BuiltInClass {
 	class := newBuiltInClass[T](name)
 	class.super = append(super, objectClass, builtInClass)
 	presetClass = append(presetClass, class)
 	return class
 }
 
-func registerNewAbstractClass[T Node](name string, super ...Class) *_BuiltInClass {
+func registerNewAbstractClass[T Node](name string, super ...Class) *BuiltInClass {
 	class := newAbstractClass[T](name)
 	class.super = append(super, objectClass, builtInClass)
 	presetClass = append(presetClass, class)

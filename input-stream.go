@@ -13,7 +13,7 @@ type inputStream struct {
 	isClosed bool
 }
 
-var inputStreamClass = &_BuiltInClass{
+var inputStreamClass = &BuiltInClass{
 	name: NewSymbol("<input-stream>"),
 	instanceP: func(value Node) bool {
 		_, ok := value.(*inputStream)

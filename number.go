@@ -7,7 +7,7 @@ import (
 	"math/big"
 )
 
-var numberClass = &_BuiltInClass{
+var numberClass = &BuiltInClass{
 	name: NewSymbol("number"),
 	instanceP: func(n Node) bool {
 		if _, ok := n.(Integer); ok {

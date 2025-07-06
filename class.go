@@ -168,7 +168,7 @@ type _StandardClass struct {
 
 // standardClass can not be created with registerNewBuilInClass
 // because it does not inherit <built-in-class>.
-var standardClass = &_BuiltInClass{
+var standardClass = &BuiltInClass{
 	name: NewSymbol("<standard-class>"),
 	instanceP: func(n Node) bool {
 		_, ok := n.(*_StandardClass)

@@ -12,7 +12,7 @@ type StringReader struct {
 	*strings.Reader
 }
 
-var stringReaderClass = &_BuiltInClass{
+var stringReaderClass = &BuiltInClass{
 	name: NewSymbol("<string-stream-reader>"),
 	instanceP: func(v Node) bool {
 		_, ok := v.(StringReader)
@@ -73,7 +73,7 @@ func funGetOutputStreamString(ctx context.Context, w *World, arg Node) (Node, er
 	return result, nil
 }
 
-var stringBuilderClass = &_BuiltInClass{
+var stringBuilderClass = &BuiltInClass{
 	name: NewSymbol("<string-builder>"),
 	instanceP: func(value Node) bool {
 		_, ok := value.(*StringBuilder)
@@ -101,7 +101,7 @@ func (t *StringBuilder) RawWriter() io.Writer {
 	return &t.Builder
 }
 
-var outputStreamClass = &_BuiltInClass{
+var outputStreamClass = &BuiltInClass{
 	name: NewSymbol("<output-stream>"),
 	instanceP: func(value Node) bool {
 		_, ok := value.(*outputStream)

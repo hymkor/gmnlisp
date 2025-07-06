@@ -5,7 +5,7 @@ import (
 	"io"
 )
 
-var streamClass = registerClass(&_BuiltInClass{
+var streamClass = registerClass(&BuiltInClass{
 	name: NewSymbol("<stream>"),
 	instanceP: func(value Node) bool {
 		if _, ok := value.(io.Reader); ok {
