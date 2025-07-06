@@ -70,10 +70,9 @@ var objectClass = &BuiltInClass{
 	create:    func() Node { return nil },
 }
 
-func newBuiltInClass[T Node](name string) *BuiltInClass {
-	symbol := NewSymbol(name)
+func NewBuiltInClass[T Node](name string, super ...Class) *BuiltInClass {
 	return &BuiltInClass{
-		name: symbol,
+		name: NewSymbol(name),
 		instanceP: func(n Node) bool {
 			_, ok := n.(T)
 			return ok
@@ -82,6 +81,7 @@ func newBuiltInClass[T Node](name string) *BuiltInClass {
 			var value T
 			return value
 		},
+		super: super,
 	}
 }
 
@@ -106,8 +106,8 @@ func registerClass(class *BuiltInClass, super ...Class) Class {
 }
 
 func registerNewBuiltInClass[T Node](name string, super ...Class) *BuiltInClass {
-	class := newBuiltInClass[T](name)
-	class.super = append(super, objectClass, builtInClass)
+	super = append(super, objectClass, builtInClass)
+	class := NewBuiltInClass[T](name, super...)
 	presetClass = append(presetClass, class)
 	return class
 }
