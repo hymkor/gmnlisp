@@ -1,12 +1,12 @@
 (lambda (des fn :rest seq)
-  (block m
-    (let ((i 0))
-      (while (< i (length des))
-        (let ((param nil))
-          (dolist (e seq)
-            (if (>= i (length e))
-              (return-from m des))
-            (setq param (append param (list (elt e i)))))
-          (setf (elt des i) (apply fn param)))
-        (setq i (+ i 1))))
-    des))
+  (assure <function> fn)
+  (labels
+    ((elts (sq i) (mapcar (lambda (s) (elt s i)) sq)))
+
+    (let ((i 0)
+          (n (apply #'min (mapcar #'length (cons des seq)))))
+      (while (< i n)
+        (setf (elt des i)
+              (apply fn (elts seq i)))
+        (setq i (+ i 1)))))
+  des)
