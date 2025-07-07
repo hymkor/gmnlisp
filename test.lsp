@@ -728,6 +728,9 @@
 (assert-eq (let ((x "1")) (if nil (setq x "2") (setq x "3")) x)
       "3")
 
-(dolist (testcode (wildcard "test/*.lsp"))
-  (format t "test ~s~%" testcode)
-  (load testcode))
+(mapc
+  (lambda (testcode)
+    (format t "test ~s~%" testcode)
+    (load testcode)
+    )
+  (wildcard "test/*.lsp"))
