@@ -2,48 +2,21 @@
 
 (defglobal make (load "smake-go120.lsp"))
 
-(defun tail (path)
-  (let ((buf (create-string-output-stream)))
-    (format buf "tail \"~A\"" path)
-    (sh (get-output-stream-string buf))))
-
 (case (and *args* (car *args*))
   (("verify")
-   (if (probe-file "errr")
-     (rm "errr"))
-   (if (probe-file "err")
-     (progn
-       (format (standard-output) "**** Previous log ****~%")
-       (tail "err")
-       (mv "err" "errr")))
-   (let* ((curdir (getwd))
-          (buf (create-string-output-stream))
-          (err-path (join-path curdir "err")))
+   (with-error-output
+     (standard-output)
      (pushd
-        "__verify/tp-ipa"
-
-       (load "../../verify.lsp")
-       (load-tp-lsp (getenv "TEMP"))
-       (with-open-output-file
-         (err err-path)
-         (with-standard-output
-           err
-           (with-error-output
-             err
-             ;(tp-all 'verbose)
-             (tp-all)
-             )))
-       ); pushd
-       (format (standard-output) "**** Latest log ****~%")
-       (tail err-path)
-     ); let
-   ); "verify"
+       "__verify/tp-ipa"
+       (spawn "../../gmnlisp"
+              "-strict"
+              "../../verify.lsp"
+              (getenv "TEMP")))))
 
   (("test")
-    (spawn "./gmnlisp" "test.lsp")
-    (funcall make 'fmt)
-    (funcall make 'test)
-  )
+   (spawn "./gmnlisp" "test.lsp")
+   (funcall make 'fmt)
+   (funcall make 'test))
 
   (("bump")
    (let ((bump (load "smake-bump.lsp")))
