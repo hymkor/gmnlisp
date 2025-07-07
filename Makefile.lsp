@@ -57,18 +57,19 @@
    (funcall make 'build-cmd "cmd/gmnlisp"))
 
   (("dist")
-   (dolist (platform (list (cons "linux" "386")
-                           (cons "linux" "amd64")
-                           (cons "windows" "386")
-                           (cons "windows" "amd64")))
-     (env (("GOOS"   (car platform))
-           ("GOARCH" (cdr platform)))
-          (funcall make 'build)
-          (let ((aout (funcall make 'build-cmd "cmd/gmnlisp")))
-            (funcall make 'dist aout))
-          ) ; env
-     ) ; dolist
-   ) ; "dist"
+   (mapc
+     (lambda (platform)
+       (env (("GOOS"   (car platform))
+             ("GOARCH" (cdr platform)))
+            (funcall make 'build)
+            (let ((aout (funcall make 'build-cmd "cmd/gmnlisp")))
+              (funcall make 'dist aout))
+            ))
+     (list (cons "linux" "386")
+           (cons "linux" "amd64")
+           (cons "windows" "386")
+           (cons "windows" "amd64")))
+   )
 
   (t
     (format (error-output) "Usage: smake {build|dist|release|manifest|bump|test}~%")
