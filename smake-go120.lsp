@@ -24,20 +24,22 @@
 
      (is-main-package
        (dir)
-       (catch
-         'is-main-package
-         (dolist (source (wildcard (join-path dir "*.go")))
-           (file-for-each
-             source
-             (lambda (line)
-               (cond
-                 ((string-index "go:build" line)
-                  t)
-                 ((and (string-index "package " line)
-                       (not (string-index "_test" line)))
-                  (throw 'is-main-package (string-index "main" line)))
-                 (t
-                   nil)))))))
+       (block
+         func
+         (mapc
+           (lambda (source)
+             (file-for-each
+               source
+               (lambda (line)
+                 (cond
+                   ((string-index "go:build" line)
+                    t)
+                   ((and (string-index "package " line)
+                         (not (string-index "_test" line)))
+                    (return-from func (string-index "main" line)))
+                   (t
+                     nil)))))
+           (wildcard (join-path dir "*.go")))))
 
      (go-build
        () 
@@ -86,12 +88,13 @@
       (block sub-command
         (case sub-command
           ((touch)
-           (dolist (fname SOURCE)
-             (touch fname)))
+           (mapc (lambda (fname) (touch fname))
+                 SOURCE)
+           )
 
           ((clean)
-           (dolist (fname (wildcard "*~"))
-             (rm fname))
+           (mapc (lambda (fname) (rm fname))
+                 (wildcard "*~"))
            (finish-output (error-output))
            (if (probe-file TARGET)
              (mv TARGET (string-append "." TARGET "~")))
@@ -100,11 +103,14 @@
           ((get)
            (spawn GOEXE "get" "-u")
            (if (consp GO120)
-             (dolist (i (list (cons "golang.org/x/sys" "@v0.30.0")
-                              (cons "golang.org/x/text" "@v0.22.0")
-                              (cons "golang.org/x/term" "@v0.29.0")))
-               (if (find-str-file (car i) "go.mod")
-                 (spawn GOEXE "get" (string-append (car i) (cdr i))))))
+             (mapc
+               (lambda (i)
+                 (if (find-str-file (car i) "go.mod")
+                   (spawn GOEXE "get" (string-append (car i) (cdr i)))))
+               (list (cons "golang.org/x/sys" "@v0.30.0")
+                     (cons "golang.org/x/text" "@v0.22.0")
+                     (cons "golang.org/x/term" "@v0.29.0")))
+             )
            (spawn GOEXE "mod" "tidy"))
 
           ((dist)
@@ -113,14 +119,16 @@
           ((upgrade) ; upgrade the installed program with the newly built version
            (if (probe-file TARGET)
              (let ((delimiter (elt *path-list-separator* 0)))
-               (dolist (dir (string-split delimiter (getenv "PATH")))
-                 (if (and (not (equalp CURDIR dir))
-                          (probe-file (join-path dir TARGET)))
-                   (progn
-                     (format (standard-output) "copy \"~A\" to \"~A\" ? [Y or N] " TARGET dir)
-                     (finish-output (standard-output))
-                     (if (equalp (read-line (standard-input) nil nil) "y")
-                       (cp TARGET dir))))))))
+               (mapc
+                 (lambda (dir)
+                   (if (and (not (equalp CURDIR dir))
+                            (probe-file (join-path dir TARGET)))
+                     (progn
+                       (format (standard-output) "copy \"~A\" to \"~A\" ? [Y or N] " TARGET dir)
+                       (finish-output (standard-output))
+                       (if (equalp (read-line (standard-input) nil nil) "y")
+                         (cp TARGET dir)))))
+                 (string-split delimiter (getenv "PATH"))))))
 
           ((release)
            (apply #'spawn "gh" "release" "create" "-d" "--notes" "" "-t"
