@@ -269,6 +269,15 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
+	if c, exist := w.class[className]; exist {
+		if _, ok := c.(*BuiltInClass); ok {
+			return nil, &DomainError{
+				Reason: "class name already defined",
+				Object: className,
+			}
+		}
+	}
+
 	classCounter++
 	class := &_StandardClass{
 		serial: classCounter,
