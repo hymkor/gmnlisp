@@ -1,5 +1,10 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+- エラーが発生した時のスタックトレースで、関数名だけでなく、引数も表示するようにした
+- `(elt)` がインデックスの範囲外エラーは `<domain-error>` として出すようにした
+- 型エラー以外もうまく表現できるよう、`<domain-error>` に Reason フィールドを追加した
+- 書き換えできない文字列に対する `set-elt` でも、更新値が `<character>` かを先に検証するようにした。
+
 v0.7.17
 =======
 Jul 7, 2025

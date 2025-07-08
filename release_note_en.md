@@ -1,5 +1,10 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+- Stack traces on error now show not only function names but also their arguments.
+- `(elt)` now raises an index out of range error as a `<domain-error>`
+- Extended `<domain-error>` with a `Reason` field to support non-type errors.
+- Even when `set-elt` is applied to an immutable string, it now checks whether the new value is a `<character>` first.
+
 v0.7.17
 =======
 Jul 7, 2025
