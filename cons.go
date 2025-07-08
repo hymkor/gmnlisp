@@ -206,7 +206,7 @@ func (cons *Cons) Eval(ctx context.Context, w *World) (Node, error) {
 		rc, err = function.Call(ctx, w, cons.Cdr)
 	}
 	if err != nil {
-		return nil, fmt.Errorf("%w\n\tat %v", err, symbol)
+		return nil, fmt.Errorf("%w\n\tat %#v", err, cons)
 	}
 	return rc, nil
 }
