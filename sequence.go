@@ -107,10 +107,16 @@ func funElt(ctx context.Context, w *World, args []Node) (Node, error) {
 		Elt(int) (Node, error)
 	}
 	var value Node = args[0]
-	for _, indexArg := range args[1:] {
+	for i, indexArg := range args[1:] {
 		index, err := ExpectClass[Integer](ctx, w, indexArg)
 		if err != nil {
 			return nil, err
+		}
+		if index < 0 {
+			return callHandler[Node](ctx, w, false, &DomainError{
+				Reason: "Not a non negative integer",
+				Object: Integer(index),
+			})
 		}
 		if aref, ok := value.(canElt); ok {
 			var err error
@@ -122,11 +128,17 @@ func funElt(ctx context.Context, w *World, args []Node) (Node, error) {
 		}
 		for list := value; index >= 0; {
 			if list == String("") {
-				return callHandler[Node](ctx, w, true, ErrIndexOutOfRange)
+				return callHandler[Node](ctx, w, false, &DomainError{
+					Reason: "Index Out of Range",
+					Object: args[i+1],
+				})
 			}
 			seq, ok := list.(Sequence)
 			if !ok {
-				return callHandler[Node](ctx, w, true, ErrIndexOutOfRange)
+				return callHandler[Node](ctx, w, false, &DomainError{
+					Reason: "Index Out of Range",
+					Object: args[i+1],
+				})
 			}
 			value, list, _ = seq.FirstAndRest()
 			index--
