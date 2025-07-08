@@ -414,7 +414,7 @@ func funBasicArrayP(_ context.Context, w *World, arg Node) (Node, error) {
 	return Null, nil
 }
 
-func funGeneralArray(_ context.Context, w *World, arg Node) (Node, error) {
+func funGeneralArrayStarP(_ context.Context, w *World, arg Node) (Node, error) {
 	if array, ok := arg.(*Array); ok && len(array.dim) >= 2 {
 		return True, nil
 	}
