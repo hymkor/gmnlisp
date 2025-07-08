@@ -307,6 +307,7 @@ var autoLoadFunc = Functions{
 	NewReserved("with-standard-input"):          SpecialF(cmdWithStandardInput),
 	NewReserved("with-standard-output"):         SpecialF(cmdWithStandardOutput),
 	NewSymbol("%make-simple-error"):             Function2(funMakeSimpleError),
+	NewSymbol("%raise-domain-error"):            Function2(funRaiseDomainError),
 	NewSymbol("*"):                              &Function{F: funMulti},
 	NewSymbol("+"):                              &Function{F: funAdd},
 	NewSymbol("-"):                              &Function{F: funSub},

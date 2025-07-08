@@ -173,6 +173,17 @@ func funDomainErrorExpectedClass(ctx context.Context, w *World, arg Node) (Node,
 	return e.ExpectedClass, nil
 }
 
+func funRaiseDomainError(ctx context.Context, w *World, obj, class Node) (Node, error) {
+	c, err := ExpectInterface[Class](ctx, w, class, classClass)
+	if err != nil {
+		return nil, err
+	}
+	return callHandler[Node](ctx, w, false, &DomainError{
+		Object:        obj,
+		ExpectedClass: c,
+	})
+}
+
 type Condition interface {
 	error
 	Node
