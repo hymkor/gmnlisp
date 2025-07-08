@@ -339,9 +339,12 @@ func (t *_ErrTagBody) Error() string {
 }
 
 func cmdGo(ctx context.Context, w *World, args Node) (Node, error) {
-	tag, _, err := Shift(args)
+	tag, args, err := Shift(args)
 	if err != nil {
 		return nil, err
+	}
+	if IsSome(args) {
+		return nil, ErrTooManyArguments
 	}
 	symbol, err := ExpectSymbol(ctx, w, tag)
 	if err != nil {
