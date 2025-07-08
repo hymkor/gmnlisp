@@ -61,6 +61,7 @@ type ControlError struct {
 type DomainError struct {
 	Object        Node
 	ExpectedClass Class
+	Reason        string
 }
 
 type ParseError struct {
@@ -150,7 +151,10 @@ func (e *DomainError) Equals(_other Node, mode EqlMode) bool {
 }
 
 func (e *DomainError) String() string {
-	return fmt.Sprintf("domain error: %#v: Expected %#v", e.Object.String(), e.ExpectedClass.Name().String())
+	if e.Reason != "" {
+		return fmt.Sprintf("Domain error: %#v: %s", e.Object, e.Reason)
+	}
+	return fmt.Sprintf("Domain error: %#v: not a %s", e.Object, e.ExpectedClass.Name().String())
 }
 
 func (e *DomainError) Error() string {
@@ -174,6 +178,12 @@ func funDomainErrorExpectedClass(ctx context.Context, w *World, arg Node) (Node,
 }
 
 func funRaiseDomainError(ctx context.Context, w *World, obj, class Node) (Node, error) {
+	if s, ok := class.(String); ok {
+		return callHandler[Node](ctx, w, false, &DomainError{
+			Object: obj,
+			Reason: s.String(),
+		})
+	}
 	c, err := ExpectInterface[Class](ctx, w, class, classClass)
 	if err != nil {
 		return nil, err
