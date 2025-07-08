@@ -395,6 +395,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("functionp"):                      Function1(funAnyTypep[FunctionRef]),
 	NewSymbol("garef"):                          &Function{Min: 1, F: funGaref},
 	NewSymbol("general-array*-p"):               Function1(funGeneralArrayStarP),
+	NewSymbol("general-array-p"):                Function1(funAnyTypep[*Array]),
 	NewSymbol("general-vector-p"):               Function1(funGeneralVectorP),
 	NewSymbol("generic-function-p"):             Function1(funGenericFunctionP),
 	NewSymbol("gensym"):                         Function0(funGensym),
