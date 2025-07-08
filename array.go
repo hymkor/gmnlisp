@@ -404,7 +404,7 @@ func funVector(_ context.Context, w *World, args []Node) (Node, error) {
 	}, nil
 }
 
-func funBasicArray(_ context.Context, w *World, arg Node) (Node, error) {
+func funBasicArrayP(_ context.Context, w *World, arg Node) (Node, error) {
 	if _, ok := arg.(*Array); ok {
 		return True, nil
 	}

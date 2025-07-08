@@ -327,7 +327,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("atan"):                           funMath1(math.Atan),
 	NewSymbol("atom"):                           Function1(funAtom),
 	NewSymbol("basic-array*-p"):                 Function1(funGeneralArray),
-	NewSymbol("basic-array-p"):                  Function1(funBasicArray),
+	NewSymbol("basic-array-p"):                  Function1(funBasicArrayP),
 	NewSymbol("basic-vector-p"):                 Function1(funBasicVectorP),
 	NewSymbol("car"):                            Function1(funGetCar),
 	NewSymbol("cdr"):                            Function1(funGetCdr),
