@@ -4,6 +4,9 @@
 - `(elt)` now raises an index out of range error as a `<domain-error>`
 - Extended `<domain-error>` with a `Reason` field to support non-type errors.
 - Even when `set-elt` is applied to an immutable string, it now checks whether the new value is a `<character>` first.
+- `(go)` now checks the number of arguments
+- Corrected the class name of `<number>` from `number` to `<number>`
+- `(defclass)` no longer overwrites the already existing built-in-classes
 
 v0.7.17
 =======
