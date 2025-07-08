@@ -8,7 +8,7 @@ import (
 )
 
 var numberClass = &BuiltInClass{
-	name: NewSymbol("number"),
+	name: NewSymbol("<number>"),
 	instanceP: func(n Node) bool {
 		if _, ok := n.(Integer); ok {
 			return true
