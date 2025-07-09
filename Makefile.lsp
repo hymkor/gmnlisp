@@ -6,13 +6,17 @@
   (("verify")
    (with-error-output
      (standard-output)
-     (pushd
-       "__verify/tp-ipa"
-       (spawn "../../gmnlisp"
-              "-strict"
-              "../../verify.lsp"
-              (getenv "TEMP")))))
-
+     (let ((start-time (get-internal-run-time)))
+       (pushd
+         "__verify/tp-ipa"
+         (spawn "../../gmnlisp"
+                "-strict"
+                "../../verify.lsp"
+                (getenv "TEMP")))
+       (format (error-output)
+               "~%Elapsed time: ~A seconds~%"
+               (quotient (- (get-internal-run-time) start-time)
+                         (internal-time-units-per-second))))))
   (("test")
    (spawn "./gmnlisp" "test.lsp")
    (funcall make 'fmt)
