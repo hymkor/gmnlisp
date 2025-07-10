@@ -3,7 +3,6 @@ package gmnlisp
 import (
 	"context"
 	"errors"
-	"fmt"
 	"io"
 	"os"
 	"strconv"
@@ -370,12 +369,13 @@ func cmdWithStandardInput(ctx context.Context, w *World, node Node) (Node, error
 	if err != nil {
 		return nil, err
 	}
-	stream, ok := _stream.(interface {
+	type readerInterface interface {
 		_Reader
 		Node
-	})
-	if !ok {
-		return nil, fmt.Errorf("%v: %w", _stream, ErrExpectedStream)
+	}
+	stream, err := ExpectInterface[readerInterface](ctx, w, _stream, streamClass)
+	if err != nil {
+		return nil, err
 	}
 	save := w.stdin
 	w.stdin = stream
