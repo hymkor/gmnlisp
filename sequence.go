@@ -364,9 +364,24 @@ func funSubSeq(ctx context.Context, w *World, args []Node) (Node, error) {
 	if _, ok := args[0].(String); ok {
 		buffer = &StringBuilder{}
 	} else {
+		if _, err := ExpectInterface[Sequence](ctx, w, args[0], listClass); !ok {
+			return nil, err
+		}
 		buffer = &ListBuilder{}
 	}
 	count := Integer(0)
+	if start < 0 {
+		return nil, &DomainError{
+			Object: Integer(start),
+			Reason: "Not a non negative integer",
+		}
+	}
+	if start > end {
+		return nil, &DomainError{
+			Object: Integer(start),
+			Reason: "Illegal index",
+		}
+	}
 	err = SeqEach(ctx, w, args[0], func(value Node) (e error) {
 		if count >= end {
 			return io.EOF
@@ -377,6 +392,12 @@ func funSubSeq(ctx context.Context, w *World, args []Node) (Node, error) {
 		count++
 		return
 	})
+	if end > count {
+		return nil, &DomainError{
+			Object: Integer(end),
+			Reason: "Index out of range",
+		}
+	}
 	return buffer.Sequence(), ignoreEOF(err)
 }
 
