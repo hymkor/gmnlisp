@@ -127,7 +127,10 @@ func printFloat(w io.Writer, value Node, mark byte, args ...int) error {
 	} else if f, ok := value.(Float); ok {
 		body = strconv.FormatFloat(float64(f), mark, prec, 64)
 	} else {
-		return ErrNotSupportType
+		return &DomainError{
+			Object:        value,
+			ExpectedClass: floatClass,
+		}
 	}
 	if len(body) < width {
 		for i := len(body); i < width; i++ {
