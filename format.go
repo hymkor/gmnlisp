@@ -319,6 +319,12 @@ func formatSub(ctx context.Context, world *World, w io.Writer, argv []Node) erro
 			} else {
 				err = printInt(w, value, parameter[0], parameter[1:]...)
 			}
+		case 'c', 'C':
+			var r Rune
+			r, err = ExpectClass[Rune](ctx, world, value)
+			if err == nil {
+				_, err = writeRune(w, rune(r))
+			}
 		case 'd', 'D':
 			err = printInt(w, value, 10, parameter...)
 		case 'x', 'X':
