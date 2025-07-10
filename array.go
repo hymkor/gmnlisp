@@ -190,12 +190,18 @@ func (A *Array) Equals(_B Node, mode EqlMode) bool {
 }
 
 func funCreateArray(ctx context.Context, w *World, args []Node) (Node, error) {
-	dim := args[0]
+	var dim Node
+	var err error
+	if IsSome(args[0]) {
+		dim, err = ExpectClass[*Cons](ctx, w, args[0])
+		if err != nil {
+			return nil, err
+		}
+	}
 	var ini Node = Null
 	if len(args) >= 2 {
 		ini = args[1]
 	}
-
 	_dim := make([]int, 0, 2)
 	size := 1
 	for IsSome(dim) {
@@ -210,7 +216,7 @@ func funCreateArray(ctx context.Context, w *World, args []Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		if n <= 0 {
+		if n < 0 {
 			return callHandler[Node](ctx, w, false, &DomainError{
 				Object:        Integer(n),
 				ExpectedClass: integerClass,
