@@ -30,7 +30,8 @@ import (
 var version string = "snapshot"
 
 var (
-	flagExecute = flag.String("e", "", "execute string")
+	flagExecute = flag.String("e", "", "Execute string")
+	flagPrint   = flag.Bool("p", false, "Print the result of the last evaluated expression")
 	flagStrict  = flag.Bool("strict", false, "strict mode")
 )
 
@@ -250,7 +251,11 @@ func mains(args []string) error {
 
 	if *flagExecute != "" {
 		setArgv(lisp, args)
-		_, err = lisp.Interpret(ctx, *flagExecute)
+		var v gmnlisp.Node
+		v, err = lisp.Interpret(ctx, *flagExecute)
+		if *flagPrint {
+			fmt.Printf("%#v\n", v)
+		}
 	} else if len(args) > 0 {
 		setArgv(lisp, args[1:])
 
@@ -272,7 +277,10 @@ func mains(args []string) error {
 		if err != nil {
 			return fmt.Errorf("%s: %w", args[0], err)
 		}
-		_, err = lisp.InterpretBytes(ctx, script)
+		v, err := lisp.InterpretBytes(ctx, script)
+		if *flagPrint {
+			fmt.Printf("%#v\n", v)
+		}
 		return err
 	} else {
 		return interactive(lisp)
