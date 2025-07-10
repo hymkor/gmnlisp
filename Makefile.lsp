@@ -2,21 +2,30 @@
 
 (defglobal make (load "smake-go120.lsp"))
 
-(case (and *args* (car *args*))
-  (("verify")
+(defun verify (:rest args)
    (with-error-output
      (standard-output)
      (let ((start-time (get-internal-run-time)))
        (pushd
          "__verify/tp-ipa"
-         (spawn "../../gmnlisp"
+         (apply #'spawn "../../gmnlisp"
                 "-strict"
                 "../../verify.lsp"
-                (getenv "TEMP")))
+                (getenv "TEMP")
+                args))
        (format (error-output)
                "~%Elapsed time: ~A seconds~%"
                (quotient (- (get-internal-run-time) start-time)
-                         (internal-time-units-per-second))))))
+                         (internal-time-units-per-second)))))
+   )
+
+(case (and *args* (car *args*))
+  (("verify")
+   (verify))
+
+  (("verify-verbose")
+   (verify "verbose"))
+
   (("test")
    (spawn "./gmnlisp" "test.lsp")
    (funcall make 'fmt)
