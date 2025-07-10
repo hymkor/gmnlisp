@@ -29,10 +29,11 @@ func printInt(w io.Writer, value Node, base int, args ...int) error {
 	var body string
 	if d, ok := value.(Integer); ok {
 		body = strconv.FormatInt(int64(d), base)
-	} else if f, ok := value.(Float); ok {
-		body = strconv.FormatInt(int64(f), base)
 	} else {
-		return ErrNotSupportType
+		return &DomainError{
+			Object:        value,
+			ExpectedClass: integerClass,
+		}
 	}
 	if len(body) < width {
 		if padding <= 0 {
