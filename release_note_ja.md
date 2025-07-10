@@ -7,6 +7,11 @@
 - `(go)` の引数の数のチェックが漏れていたのを修正
 - `<number>` のクラス名を `number` から `<number>` へ訂正した
 - `(defclass)` は既存の built-in-class を上書きしないようにした。
+- `(create-array)` の第一引数が非負整数のリストかをチェックするようにした。
+- `(format)`: `~B`,`~X`,`~O`,`~D` の引数が整数でなければ `<domain-error>` を返すようにした。
+- `(format)`: `~G` の引数が実数でなければ `<domain-error>` を返すようにした
+- `(format)`: `~C`, `~R` をサポート
+- `(with-standard-input)`: 引数が stream かどうかをチェックするようにした
 
 v0.7.17
 =======

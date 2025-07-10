@@ -1,12 +1,16 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
-
 - Stack traces on error now show not only function names but also their arguments.
-- `(elt)` now raises an index out of range error as a `<domain-error>`
-- Extended `<domain-error>` with a `Reason` field to support non-type errors.
-- Even when `set-elt` is applied to an immutable string, it now checks whether the new value is a `<character>` first.
-- `(go)` now checks the number of arguments
-- Corrected the class name of `<number>` from `number` to `<number>`
-- `(defclass)` no longer overwrites the already existing built-in-classes
+- `(elt)` now raises an index out of range error as a `<domain-error>`.
+- Extended `<domain-error>` with a `Reason` field to represent non-type errors more accurately.
+- Even when `set-elt` is applied to an immutable string, it now first checks whether the new value is a `<character>`.
+- Fixed: `(go)` did not check the number of arguments.
+- Corrected the class name of `<number>` from `number` to `<number>`.
+- `(defclass)` no longer overwrites existing built-in classes.
+- `(create-array)` now checks whether its first argument is a list of non-negative integers.
+- `(format)`: `~B`, `~X`, `~O`, and `~D` now raise `<domain-error>` if given non-integer arguments.
+- `(format)`: `~G` now raises `<domain-error>` if given a non-real argument.
+- `(format)`: Added support for `~C` and `~R`.
+- `(with-standard-input)` now checks whether its argument is a stream.
 
 v0.7.17
 =======
