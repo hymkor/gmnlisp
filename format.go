@@ -310,6 +310,12 @@ func formatSub(ctx context.Context, world *World, w io.Writer, argv []Node) erro
 
 		var err error
 		switch c {
+		case 'r', 'R':
+			if len(parameter) < 1 {
+				err = ErrTooFewArguments
+			} else {
+				err = printInt(w, value, parameter[0], parameter[1:]...)
+			}
 		case 'd', 'D':
 			err = printInt(w, value, 10, parameter...)
 		case 'x', 'X':
