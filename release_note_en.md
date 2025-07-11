@@ -11,6 +11,10 @@
 - `(format)`: `~G` now raises `<domain-error>` if given a non-real argument.
 - `(format)`: Added support for `~C` and `~R`.
 - `(with-standard-input)` now checks whether its argument is a stream.
+- Fixed a bug where an empty array was displayed as `#)` instead of `#()`.
+- Added the `-p` option to the executable to print the result of the last evaluated expression.
+- Disabled output buffering by default for standard output and standard error.
+- Changed `(subseq)` to return a `<domain-error>` when given out-of-range arguments.
 
 v0.7.17
 =======
