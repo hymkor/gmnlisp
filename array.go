@@ -436,3 +436,23 @@ func funGeneralArrayStarP(_ context.Context, w *World, arg Node) (Node, error) {
 	}
 	return Null, nil
 }
+
+func (A *Array) FirstAndRest() (Node, Node, bool) {
+	if len(A.dim) <= 0 || len(A.list) <= 0 {
+		return nil, nil, false
+	}
+	if len(A.dim) == 1 {
+		return A.list[0], &Array{
+			list: A.list[1:],
+			dim:  []int{A.dim[0] - 1},
+		}, true
+	}
+	elementSize := dim2size(A.dim[1:])
+	return &Array{
+			list: A.list[0:elementSize],
+			dim:  A.dim[1:],
+		}, &Array{
+			list: A.list[elementSize:],
+			dim:  append([]int{A.dim[0] - 1}, A.dim[1:]...),
+		}, true
+}
