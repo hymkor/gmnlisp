@@ -15,6 +15,7 @@
 - Added the `-p` option to the executable to print the result of the last evaluated expression.
 - Disabled output buffering by default for standard output and standard error.
 - Changed `(subseq)` to return a `<domain-error>` when given out-of-range arguments.
+- `(subseq)` now supports `<general-array>`
 
 v0.7.17
 =======
