@@ -1,4 +1,9 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
+
+v0.7.18
+=======
+Jul 14, 2025
+
 - Stack traces on error now show not only function names but also their arguments.
 - `(elt)` now raises an index out of range error as a `<domain-error>`.
 - Extended `<domain-error>` with a `Reason` field to represent non-type errors more accurately.
@@ -16,6 +21,8 @@
 - Disabled output buffering by default for standard output and standard error.
 - Changed `(subseq)` to return a `<domain-error>` when given out-of-range arguments.
 - `(subseq)` now supports `<general-array>`
+
+[TP Result] : OK = 14266, NG = 2145
 
 v0.7.17
 =======

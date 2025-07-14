@@ -1,5 +1,9 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+v0.7.18
+=======
+Jul 14, 2025
+
 - エラーが発生した時のスタックトレースで、関数名だけでなく、引数も表示するようにした
 - `(elt)` がインデックスの範囲外エラーは `<domain-error>` として出すようにした
 - 型エラー以外もうまく表現できるよう、`<domain-error>` に Reason フィールドを追加した
@@ -17,6 +21,8 @@
 - 標準出力・標準エラー出力のデフォルトはバッファリングしないようにした
 - `(subseq)` の引数が範囲外の時に `<domain-error>` とするようにした
 - `<general-array>` に対して `(subseq)` も使えるようにした
+
+[TP Result] : OK = 14266, NG = 2145
 
 v0.7.17
 =======
