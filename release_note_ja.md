@@ -1,5 +1,7 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+- `(read)` やパーサーで文字列中の `\r\n` を `\n` に変換するようにした
+
 v0.7.18
 =======
 Jul 14, 2025

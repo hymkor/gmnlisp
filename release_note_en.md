@@ -1,5 +1,7 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+- `(read)` and parser convert `\r\n` to `\n` in string literals.
+
 v0.7.18
 =======
 Jul 14, 2025
