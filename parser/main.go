@@ -328,9 +328,16 @@ func (p *_Parser[N]) ReadNode(rs io.RuneScanner) (N, error) {
 			token = token[:L-1]
 		}
 		var buffer strings.Builder
-		flag := false
+		backSlash := false
+		carriageReturn := false
 		for _, c := range token {
-			if flag {
+			if carriageReturn {
+				if c != '\n' {
+					buffer.WriteByte('\r')
+				}
+				carriageReturn = false
+			}
+			if backSlash {
 				switch c {
 				case '\\':
 					buffer.WriteByte('\\')
@@ -339,12 +346,17 @@ func (p *_Parser[N]) ReadNode(rs io.RuneScanner) (N, error) {
 				default:
 					buffer.WriteRune(c)
 				}
-				flag = false
+				backSlash = false
 			} else if c == '\\' {
-				flag = true
+				backSlash = true
+			} else if c == '\r' {
+				carriageReturn = true
 			} else {
 				buffer.WriteRune(c)
 			}
+		}
+		if carriageReturn {
+			buffer.WriteByte('\r')
 		}
 		token = buffer.String()
 		return p.String(token), nil
