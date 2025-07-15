@@ -190,13 +190,13 @@ func (p *Parser[N]) tryParseAsInt(token string) (N, bool, error) {
 }
 
 func (p *Parser[N]) tryParseAsNumber(token string) (N, bool, error) {
-	if val, ok, err := p.tryParseAsFloat(token); ok {
+	if val, ok, err := p.tryParseAsInt(token); ok {
 		if err != nil {
 			return p.Null(), true, err
 		}
 		return val, true, nil
 	}
-	if val, ok, err := p.tryParseAsInt(token); ok {
+	if val, ok, err := p.tryParseAsFloat(token); ok {
 		if err != nil {
 			return p.Null(), true, err
 		}
