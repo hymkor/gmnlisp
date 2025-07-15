@@ -1,3 +1,7 @@
+// Package parser provides a generic S-expression parser for ISLisp-like languages.
+// It reads input from an io.RuneScanner and constructs Lisp objects via
+// user-supplied constructor functions.
+
 package parser
 
 import (
@@ -23,23 +27,32 @@ var (
 )
 
 var (
-	ErrTooFewArguments  = errors.New("too few arguments")
+	// ErrTooFewArguments is returned when a list or array has fewer elements than expected.
+	ErrTooFewArguments = errors.New("too few arguments")
+
+	// ErrTooManyArguments is returned when a list or array has more elements than expected.
 	ErrTooManyArguments = errors.New("too many arguments")
-	ErrTooShortTokens   = errors.New("too short tokens")
+
+	// ErrTooShortTokens is returned when the input ends unexpectedly (e.g., an unmatched open parenthesis).
+	ErrTooShortTokens = errors.New("too short tokens")
 )
 
+// Parser represents a generic S-expression parser.
+// The type parameter N corresponds to the target object type used in the host Lisp implementation.
+// Users must provide constructor functions for various Lisp data types (e.g., Int, Symbol, Cons).
+
 type Parser[N comparable] struct {
-	Cons    func(N, N) N
-	Int     func(int64) N
-	BigInt  func(*big.Int) N
-	Float   func(float64) N
-	String  func(string) N
-	Symbol  func(string) N
-	Array   func([]N, []int) N
-	Keyword func(string) N
-	Rune    func(rune) N
-	Null    func() N
-	True    func() N
+	Cons    func(N, N) N       // Cons constructs a cons cell from two objects.
+	Int     func(int64) N      // Int constructs an integer object from an int64 value.
+	BigInt  func(*big.Int) N   // BigInt constructs an integer object from a *big.Int value.
+	Float   func(float64) N    // Float constructs a floating-point object from a float64 value.
+	String  func(string) N     // String constructs a string object from a Go string.
+	Symbol  func(string) N     // Symbol constructs a symbol object from a Go string.
+	Array   func([]N, []int) N // Array constructs an array object from a flat list of elements and their dimensions.
+	Keyword func(string) N     // Keyword constructs a keyword object from a Go string.
+	Rune    func(rune) N       // Rune constructs a character object from a rune.
+	Null    func() N           // Null returns the Lisp nil object.
+	True    func() N           // True returns the Lisp true object.
 
 	dotSymbol        N
 	functionSymbol   N
@@ -417,11 +430,18 @@ func (p *Parser[N]) init() {
 	}
 }
 
+// Read parses a single Lisp object from the given io.RuneScanner.
+// It returns the resulting object of type N, or an error if the input is malformed.
 func (p *Parser[N]) Read(rs io.RuneScanner) (N, error) {
 	p.init()
 	return p.readNode(rs)
 }
 
+// TryParseAsNumber attempts to parse a token as a numeric value.
+// If successful, it returns a numeric object created via the Int, BigInt, or Float constructor,
+// along with true.
+// If the token does not match a numeric format, it returns the result of Null() and false.
+// An error is returned only when numeric parsing fails due to an internal format error.
 func (p *Parser[N]) TryParseAsNumber(token string) (N, bool, error) {
 	p.init()
 	return p.tryParseAsNumber(token)
