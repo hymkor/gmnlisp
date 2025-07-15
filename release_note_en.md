@@ -1,6 +1,6 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
-
 - `(read)` and parser convert `\r\n` to `\n` in string literals.
+- Fixed a crash in `(subseq)` that occurred with certain argument combinations
 
 v0.7.18
 =======

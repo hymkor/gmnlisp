@@ -1,6 +1,7 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
 - `(read)` やパーサーで文字列中の `\r\n` を `\n` に変換するようにした
+- `(subseq)` において、特定の引数を与えた場合にクラッシュする不具合を修正
 
 v0.7.18
 =======
