@@ -1,3 +1,9 @@
+(defmacro assert (source)
+  `(if (not ,source)
+     (progn
+       (format (error-output) "~&Failed: ~S~%" (quote ,source))
+       (abort))))
+
 (defmacro assert-eq (source expect)
   (let ((result (gensym)))
     `(let ((,result ,source))
