@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"fmt"
 	"io"
 	"regexp"
 	"strings"
@@ -72,7 +71,7 @@ func readtokenWord(r io.RuneScanner) (string, error) {
 		if lastRune == '\\' {
 			nextRune, _, err := r.ReadRune()
 			if err != nil {
-				return "", fmt.Errorf("too near EOF: %w", err)
+				return "", io.ErrUnexpectedEOF
 			}
 			if nextRune == '\\' {
 				buffer.WriteString(`\\`)

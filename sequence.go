@@ -229,7 +229,13 @@ func listToQuotedList(list []Node) Node {
 	var cons Node = Null
 	for i := len(list) - 1; i >= 0; i-- {
 		cons = &Cons{
-			Car: newQuote(list[i]),
+			Car: &Cons{
+				Car: quoteSymbol,
+				Cdr: &Cons{
+					Car: list[i],
+					Cdr: Null,
+				},
+			},
 			Cdr: cons,
 		}
 	}

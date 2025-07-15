@@ -23,35 +23,35 @@ var (
 )
 
 var (
-	ErrTooFewArguments   = errors.New("too few arguments")
-	ErrTooManyArguments  = errors.New("too many arguments")
-	ErrCanNotParseNumber = errors.New("can not parse number")
-	ErrTooShortTokens    = errors.New("too short tokens")
+	ErrTooFewArguments  = errors.New("too few arguments")
+	ErrTooManyArguments = errors.New("too many arguments")
+	ErrTooShortTokens   = errors.New("too short tokens")
 )
 
-type Factory[N comparable] interface {
-	Cons(car, cdr N) N
-	Int(int64) N
-	BigInt(*big.Int) N
-	Float(float64) N
-	String(string) N
-	Symbol(string) N
-	Array([]N, []int) N
-	Keyword(string) N
-	Rune(rune) N
-	Null() N
-	True() N
-}
-
-type _Parser[N comparable] struct {
-	Factory[N]
+type Parser[N comparable] struct {
+	Cons    func(N, N) N
+	Int     func(int64) N
+	BigInt  func(*big.Int) N
+	Float   func(float64) N
+	String  func(string) N
+	Symbol  func(string) N
+	Array   func([]N, []int) N
+	Keyword func(string) N
+	Rune    func(rune) N
+	Null    func() N
+	True    func() N
 
 	dotSymbol        N
 	functionSymbol   N
 	parenCloseSymbol N
+	quoteSymbol      N
+	quasiquoteSymbol N
+	unquoteSymbol    N
+
+	initialized bool
 }
 
-func (p *_Parser[N]) nodes2cons(nodes []N) N {
+func (p *Parser[N]) nodes2cons(nodes []N) N {
 	if nodes == nil || len(nodes) <= 0 {
 		return p.Null()
 	}
@@ -67,14 +67,14 @@ func (p *_Parser[N]) nodes2cons(nodes []N) N {
 	return cons
 }
 
-func (p *_Parser[N]) readArray(lenDim int, rs io.RuneScanner) (N, error) {
+func (p *Parser[N]) readArray(lenDim int, rs io.RuneScanner) (N, error) {
 	nodes := []N{}
 	dim := make([]int, lenDim)
 	countDim := 0
 	fix := make([]bool, lenDim)
 	for {
 		if countDim == lenDim-1 {
-			newNode, err := p.ReadNode(rs)
+			newNode, err := p.readNode(rs)
 			if err != nil {
 				return p.Null(), err
 			}
@@ -121,22 +121,18 @@ func (p *_Parser[N]) readArray(lenDim int, rs io.RuneScanner) (N, error) {
 		return p.Null(), ErrTooManyArguments
 	} else {
 		return p.Array(nodes, dim), nil
-		//&Array{
-		//	list: nodes,
-		//	dim:  dim,
-		//}, nil
 	}
 }
 
-func (p *_Parser[N]) newQuote(value N) N {
-	return p.Cons(p.Symbol("quote"), p.Cons(value, p.Null()))
+func (p *Parser[N]) newQuote(value N) N {
+	return p.Cons(p.quoteSymbol, p.Cons(value, p.Null()))
 }
 
-func (p *_Parser[N]) newBackQuote(value N) N {
-	return p.Cons(p.Symbol("quasiquote"), p.Cons(value, p.Null()))
+func (p *Parser[N]) newBackQuote(value N) N {
+	return p.Cons(p.quasiquoteSymbol, p.Cons(value, p.Null()))
 }
 
-func (p *_Parser[N]) tryParseAsFloat(token string) (N, bool, error) {
+func (p *Parser[N]) tryParseAsFloat(token string) (N, bool, error) {
 	if !rxFloat1.MatchString(token) && !rxFloat2.MatchString(token) {
 		return p.Null(), false, nil
 	}
@@ -147,7 +143,7 @@ func (p *_Parser[N]) tryParseAsFloat(token string) (N, bool, error) {
 	return p.Float(val), true, nil
 }
 
-func (p *_Parser[N]) tryParseAsInt(token string) (N, bool, error) {
+func (p *Parser[N]) tryParseAsInt(token string) (N, bool, error) {
 	var val int64
 	var err error
 	var base = 10
@@ -180,23 +176,23 @@ func (p *_Parser[N]) tryParseAsInt(token string) (N, bool, error) {
 	return p.Int(val), true, nil
 }
 
-func (p *_Parser[N]) tryParseAsNumber(token string) (N, bool, error) {
+func (p *Parser[N]) tryParseAsNumber(token string) (N, bool, error) {
 	if val, ok, err := p.tryParseAsFloat(token); ok {
 		if err != nil {
-			return p.Null(), true, fmt.Errorf("%w: (%s)", ErrCanNotParseNumber, err.Error())
+			return p.Null(), true, err
 		}
 		return val, true, nil
 	}
 	if val, ok, err := p.tryParseAsInt(token); ok {
 		if err != nil {
-			return p.Null(), true, fmt.Errorf("%w (%s)", ErrCanNotParseNumber, err.Error())
+			return p.Null(), true, err
 		}
 		return val, true, nil
 	}
 	return p.Null(), false, nil
 }
 
-func (p *_Parser[N]) readUntilCloseParen(rs io.RuneScanner) ([]N, error) {
+func (p *Parser[N]) readUntilCloseParen(rs io.RuneScanner) ([]N, error) {
 	nodes := []N{}
 	var err error
 	for {
@@ -207,7 +203,7 @@ func (p *_Parser[N]) readUntilCloseParen(rs io.RuneScanner) ([]N, error) {
 			return nil, err
 		}
 		var node1 N
-		node1, err = p.ReadNode(rs)
+		node1, err = p.readNode(rs)
 		if err != nil {
 			if err == io.EOF {
 				return nil, ErrTooShortTokens
@@ -225,13 +221,13 @@ var symbol4barReplacer = strings.NewReplacer(
 	`\\`, `\`,
 	`\|`, `|`)
 
-func (p *_Parser[N]) ReadNode(rs io.RuneScanner) (N, error) {
+func (p *Parser[N]) readNode(rs io.RuneScanner) (N, error) {
 	token, err := readToken(rs)
 	if err != nil {
 		return p.Null(), err
 	}
 	if token == "`" {
-		quoted, err := p.ReadNode(rs)
+		quoted, err := p.readNode(rs)
 		if err != nil {
 			if err == io.EOF {
 				return p.Null(), ErrTooShortTokens
@@ -241,7 +237,7 @@ func (p *_Parser[N]) ReadNode(rs io.RuneScanner) (N, error) {
 		return p.newBackQuote(quoted), nil
 	}
 	if token == "'" {
-		quoted, err := p.ReadNode(rs)
+		quoted, err := p.readNode(rs)
 		if err != nil {
 			if err == io.EOF {
 				return p.Null(), ErrTooShortTokens
@@ -251,17 +247,17 @@ func (p *_Parser[N]) ReadNode(rs io.RuneScanner) (N, error) {
 		return p.newQuote(quoted), nil
 	}
 	if token == "," {
-		quoted, err := p.ReadNode(rs)
+		quoted, err := p.readNode(rs)
 		if err != nil {
 			if err == io.EOF {
 				return p.Null(), ErrTooShortTokens
 			}
 			return p.Null(), err
 		}
-		return p.Cons(p.Symbol("unquote"), p.Cons(quoted, p.Null())), nil
+		return p.Cons(p.unquoteSymbol, p.Cons(quoted, p.Null())), nil
 	}
 	if token == "#'" {
-		function, err := p.ReadNode(rs)
+		function, err := p.readNode(rs)
 		if err != nil {
 			if err == io.EOF {
 				return p.Null(), ErrTooShortTokens
@@ -281,7 +277,7 @@ func (p *_Parser[N]) ReadNode(rs io.RuneScanner) (N, error) {
 		return p.readArray(dim, rs)
 	}
 	if m := rx0Array.FindStringSubmatch(token); m != nil {
-		val, err := p.ReadNode(strings.NewReader(token[3:]))
+		val, err := p.readNode(strings.NewReader(token[3:]))
 		if err != nil {
 			return p.Null(), err
 		}
@@ -376,23 +372,57 @@ func (p *_Parser[N]) ReadNode(rs io.RuneScanner) (N, error) {
 	return p.Symbol(token), nil
 }
 
-func newParser[N comparable](f Factory[N]) *_Parser[N] {
-	return &_Parser[N]{
-		Factory:          f,
-		dotSymbol:        f.Symbol("."),
-		functionSymbol:   f.Symbol("function"),
-		parenCloseSymbol: f.Symbol(")"),
+func (p *Parser[N]) init() {
+	if !p.initialized {
+		p.initialized = true
+
+		p.dotSymbol = p.Symbol(".")
+		p.functionSymbol = p.Symbol("function")
+		p.parenCloseSymbol = p.Symbol(")")
+		p.quoteSymbol = p.Symbol("quote")
+		p.quasiquoteSymbol = p.Symbol("quasiquote")
+		p.unquoteSymbol = p.Symbol("unquote")
+
+		if p.Cons == nil {
+			panic("Parser.Cons is not set")
+		}
+		if p.Int == nil {
+			panic("Parser.Int is not set")
+		}
+		if p.BigInt == nil {
+			panic("Parser.BigInt is not set")
+		}
+		if p.Float == nil {
+			panic("Parser.Float is not set")
+		}
+		if p.String == nil {
+			panic("Parser.String is not set")
+		}
+		if p.Array == nil {
+			panic("Parser.Array is not set")
+		}
+		if p.Keyword == nil {
+			panic("Parser.Keyword is not set")
+		}
+		if p.Rune == nil {
+			panic("Parser.Rune is not set")
+		}
+		if p.Null == nil {
+			panic("Parser.Null is not set")
+		}
+		if p.True == nil {
+			panic("Parser.True is not set")
+		}
+
 	}
 }
 
-func Read[N comparable](f Factory[N], rs io.RuneScanner) (N, error) {
-	return newParser[N](f).ReadNode(rs)
+func (p *Parser[N]) Read(rs io.RuneScanner) (N, error) {
+	p.init()
+	return p.readNode(rs)
 }
 
-func TryParseAsNumber[N comparable](f Factory[N], token string) (N, bool, error) {
-	return newParser[N](f).tryParseAsNumber(token)
-}
-
-func NewQuote[N comparable](f Factory[N], value N) N {
-	return newParser[N](f).newQuote(value)
+func (p *Parser[N]) TryParseAsNumber(token string) (N, bool, error) {
+	p.init()
+	return p.tryParseAsNumber(token)
 }

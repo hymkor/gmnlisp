@@ -18,36 +18,31 @@ var (
 	colonRest       = NewKeyword(":rest")
 )
 
-type stdFactory struct{}
-
-func (stdFactory) Cons(car, cdr Node) Node           { return &Cons{Car: car, Cdr: cdr} }
-func (stdFactory) Int(n int64) Node                  { return Integer(n) }
-func (stdFactory) BigInt(n *big.Int) Node            { return BigInt{Int: n} }
-func (stdFactory) Float(f float64) Node              { return Float(f) }
-func (stdFactory) String(s string) Node              { return String(s) }
-func (stdFactory) Array(list []Node, dim []int) Node { return &Array{list: list, dim: dim} }
-func (stdFactory) Keyword(s string) Node             { return NewKeyword(s) }
-func (stdFactory) Rune(r rune) Node                  { return Rune(r) }
-func (stdFactory) Symbol(s string) Node {
-	if r, ok := reservedManager.find(s); ok {
-		return r
-	}
-	return NewSymbol(s)
+var parser1 = &parser.Parser[Node]{
+	Cons:    func(car, cdr Node) Node { return &Cons{Car: car, Cdr: cdr} },
+	Int:     func(n int64) Node { return Integer(n) },
+	BigInt:  func(n *big.Int) Node { return BigInt{Int: n} },
+	Float:   func(f float64) Node { return Float(f) },
+	String:  func(s string) Node { return String(s) },
+	Array:   func(list []Node, dim []int) Node { return &Array{list: list, dim: dim} },
+	Keyword: func(s string) Node { return NewKeyword(s) },
+	Rune:    func(r rune) Node { return Rune(r) },
+	Symbol: func(s string) Node {
+		if r, ok := reservedManager.find(s); ok {
+			return r
+		}
+		return NewSymbol(s)
+	},
+	Null: func() Node { return Null },
+	True: func() Node { return True },
 }
 
-func (stdFactory) Null() Node { return Null }
-func (stdFactory) True() Node { return True }
-
 func ReadNode(rs io.RuneScanner) (Node, error) {
-	return parser.Read[Node](stdFactory{}, rs)
+	return parser1.Read(rs)
 }
 
 func tryParseAsNumber(token string) (Node, bool, error) {
-	return parser.TryParseAsNumber[Node](stdFactory{}, token)
-}
-
-func newQuote(value Node) Node {
-	return parser.NewQuote[Node](stdFactory{}, value)
+	return parser1.TryParseAsNumber(token)
 }
 
 func ReadAll(rs io.RuneScanner) ([]Node, error) {
