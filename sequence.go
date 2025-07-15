@@ -392,7 +392,7 @@ func funSubSeq(ctx context.Context, w *World, args []Node) (Node, error) {
 	} else if _, ok := args[0].(String); ok {
 		buffer = &StringBuilder{}
 	} else {
-		if _, err := ExpectInterface[Sequence](ctx, w, args[0], listClass); !ok {
+		if _, err := ExpectInterface[Sequence](ctx, w, args[0], listClass); err != nil {
 			return nil, err
 		}
 		buffer = &ListBuilder{}
