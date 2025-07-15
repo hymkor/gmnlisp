@@ -74,7 +74,9 @@ func (i Integer) Sub(ctx context.Context, w *World, n Node) (Node, error) {
 }
 
 func (i Integer) Multi(ctx context.Context, w *World, n Node) (Node, error) {
-	if _n, ok := n.(Float); ok {
+	if _n, ok := n.(BigInt); ok {
+		return _n.Multi(ctx, w, i)
+	} else if _n, ok := n.(Float); ok {
 		return Float(i) * _n, nil
 	}
 	_n, err := ExpectClass[Integer](ctx, w, n)
@@ -297,6 +299,22 @@ func (b BigInt) Equals(n Node, m EqlMode) bool {
 
 func (b BigInt) ClassOf() Class {
 	return integerClass
+}
+
+func (b BigInt) Multi(ctx context.Context, w *World, other Node) (Node, error) {
+	var o *big.Int
+
+	if i, ok := other.(Integer); ok {
+		o = big.NewInt(int64(i))
+	} else if b2, ok := other.(BigInt); ok {
+		o = b2.Int
+	} else {
+		return nil, &DomainError{
+			Reason: "not a integer or bigint",
+			Object: other,
+		}
+	}
+	return BigInt{Int: new(big.Int).Mul(b.Int, o)}, nil
 }
 
 func funReciprocal(ctx context.Context, w *World, x Node) (Node, error) {
