@@ -18,7 +18,7 @@ import (
 var (
 	rxFloat1     = regexp.MustCompile(`^[\-\+]?[0-9]+\.[0-9]*([eE][\-\+]?\d+)?$`)
 	rxFloat2     = regexp.MustCompile(`^[\-\+]?[0-9]+[eE][-+]?\d+$`)
-	rxInteger    = regexp.MustCompile(`^-?[0-9]+$`)
+	rxInteger    = regexp.MustCompile(`^[\-\+]?[0-9]+$`)
 	rxHexInteger = regexp.MustCompile(`^\#[Xx][0-9A-Fa-f]+$`)
 	rxOctInteger = regexp.MustCompile(`^\#[Oo][0-7]+$`)
 	rxBinInteger = regexp.MustCompile(`^\#[Bb][01]+$`)
