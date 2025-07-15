@@ -7,6 +7,7 @@ import (
 	"io"
 	"math"
 	"os"
+	"reflect"
 	"strings"
 )
 
@@ -321,6 +322,10 @@ func (L *_Lambda) Call(ctx context.Context, w *World, n Node) (Node, error) {
 	return result, nil
 }
 
+func (L *_Lambda) FuncId() uintptr {
+	return funcToId(L)
+}
+
 // If target.Car is current function symbol, then make and return an instance of _ErrTailRecOpt
 func testCarIsCurrFunc(ctx context.Context, w *World, target Node, currFunc Symbol) (err error) {
 	if currFunc.Id() < 0 {
@@ -484,6 +489,18 @@ func cmdApply(ctx context.Context, w *World, list Node) (Node, error) {
 
 type Callable interface {
 	Call(context.Context, *World, Node) (Node, error)
+	FuncId() uintptr
+}
+
+func funcToId(v any) uintptr {
+	value := reflect.ValueOf(v)
+	switch value.Kind() {
+	case reflect.Func, reflect.Map, reflect.Pointer, reflect.Slice, reflect.String:
+
+		return value.Pointer()
+	default:
+		return 0
+	}
 }
 
 type SpecialF func(context.Context, *World, Node) (Node, error)
@@ -493,6 +510,10 @@ func (f SpecialF) Call(ctx context.Context, w *World, n Node) (Node, error) {
 		return nil, err
 	}
 	return f(ctx, w, n)
+}
+
+func (f SpecialF) FuncId() uintptr {
+	return funcToId(f)
 }
 
 func cmdTrace(ctx context.Context, w *World, list Node) (Node, error) {
@@ -542,6 +563,10 @@ func (f Function0) Call(ctx context.Context, w *World, list Node) (Node, error) 
 	return f(ctx, w)
 }
 
+func (f Function0) FuncId() uintptr {
+	return funcToId(f)
+}
+
 type Function1 func(context.Context, *World, Node) (Node, error)
 
 func (f Function1) Call(ctx context.Context, w *World, list Node) (Node, error) {
@@ -553,6 +578,10 @@ func (f Function1) Call(ctx context.Context, w *World, list Node) (Node, error) 
 		return raiseProgramError(ctx, w, ErrTooManyArguments)
 	}
 	return f(ctx, w, v)
+}
+
+func (f Function1) FuncId() uintptr {
+	return funcToId(f)
 }
 
 type Function2 func(context.Context, *World, Node, Node) (Node, error)
@@ -570,6 +599,10 @@ func (f Function2) Call(ctx context.Context, w *World, list Node) (Node, error) 
 		return raiseProgramError(ctx, w, ErrTooManyArguments)
 	}
 	return f(ctx, w, first, second)
+}
+
+func (f Function2) FuncId() uintptr {
+	return funcToId(f)
 }
 
 type Function struct {
@@ -618,6 +651,10 @@ func (f *Function) Call(ctx context.Context, w *World, list Node) (Node, error) 
 	return f.F(ctx, w, args)
 }
 
+func (f *Function) FuncId() uintptr {
+	return funcToId(f.F)
+}
+
 type LispString struct {
 	S       string
 	compile Node
@@ -644,6 +681,10 @@ func (L *LispString) Call(ctx context.Context, w *World, n Node) (Node, error) {
 		return nil, fmt.Errorf("(*LispString) Call: %w", err)
 	}
 	return f.Call(ctx, w, n)
+}
+
+func (L *LispString) FuncId() uintptr {
+	return funcToId(L)
 }
 
 func cmdExpandDefun(ctx context.Context, w *World, n Node) (Node, error) {

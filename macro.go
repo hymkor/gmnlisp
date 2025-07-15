@@ -154,6 +154,10 @@ func (m *_Macro) Call(ctx context.Context, w *World, n Node) (Node, error) {
 	return w.Eval(ctx, newCode)
 }
 
+func (m *_Macro) FuncId() uintptr {
+	return funcToId(m)
+}
+
 func cmdLambdaMacro(ctx context.Context, w *World, n Node) (Node, error) {
 	v, err := lambdaMacro(ctx, w, n)
 	if err != nil {

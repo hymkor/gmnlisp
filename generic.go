@@ -126,6 +126,10 @@ func (c *_Generic) Call(ctx context.Context, w *World, node Node) (Node, error) 
 	})
 }
 
+func (c *_Generic) FuncId() uintptr {
+	return funcToId(c)
+}
+
 func ExpectGeneric(c Callable) (*_Generic, error) {
 	g, ok := c.(*_Generic)
 	if !ok {

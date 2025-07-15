@@ -21,11 +21,18 @@ func (f FunctionRef) Equals(other Node, mode EqlMode) bool {
 	if !ok {
 		return false
 	}
-	return f.value == _other.value
+	if f.value == nil {
+		return _other.value == nil
+	}
+	return f.value.FuncId() == _other.value.FuncId()
 }
 
 func (f FunctionRef) PrintTo(w io.Writer, _ PrintMode) (int, error) {
-	return fmt.Fprintf(w, "(function to %#v)", f.value)
+	if f.value != nil {
+		return fmt.Fprintf(w, "(FuncID:%#v)", f.value.FuncId())
+	} else {
+		return fmt.Fprintf(w, "(function to %#v)", f.value)
+	}
 }
 
 func (f FunctionRef) String() string {
