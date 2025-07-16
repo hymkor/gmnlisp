@@ -1,6 +1,9 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 - `(read)` and parser convert `\r\n` to `\n` in string literals.
 - Fixed a crash in `(subseq)` that occurred with certain argument combinations
+- Fixed: Numeric strings starting with a plus sign were mistakenly recognized as symbols
+- Fixed: Numeric strings representing large integers were incorrectly treated as floating-point numbers
+- Fixed: Comparison between references to functions now behaves as expected
 
 v0.7.18
 =======
