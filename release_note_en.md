@@ -10,7 +10,7 @@
 - Fixed: Non-class ordinary objects were incorrectly treated as subclasses of `<built-in-class>`
 - Defined the class `<serious-condition>`
 - Fixed: `<arithmetic-error>` was mistakenly referred to as `<arithmetic-error-class>`
-- Fixed: `<floating-point-overflow>` and `<floating-point-underflow>` did not inherit from `<object>`, `<serious-condition>`, `<error>`, and `<arithmetic-error>` as expected
+- Fixed: `<division-by-zero>`, `<floating-point-overflow>` and `<floating-point-underflow>` did not inherit from `<object>`, `<serious-condition>`, `<error>`, and `<arithmetic-error>` as expected
 - Fixed: Signed binary, octal, and hexadecimal numbers were not recognized as integers
 - Fixed: Numeric literals ending with a decimal point did not cause an error
 - Fixed: `(-)`, `(max)`, and `(min)` now raise appropriate errors when called with non-numeric arguments or with zero arguments
@@ -19,6 +19,7 @@
 - Fixed: `(create-list)` now raises an error if the first argument is not a non-negative integer or if the number of arguments is not 1 or 2
 - Standardized the number of elements required to trigger `<storage-exhausted>` to 123,456,789 as a shared constant
 - Improved `(*)` to detect overflow as an `<arithmetic-error>`
+- Added validation of the second argument (element-class) for `(file-length)`, `(open-input-file)`, `(open-output-file)`, and `(open-io-file)`
 
 v0.7.18
 =======

@@ -10,7 +10,7 @@
 - クラスでない普通のオブジェクトも`<built-in-class>` の派生クラス扱いになっていた不具合を修正
 - `<serious-condition>` をクラス定義
 - `<arithmetic-error>` を `<arithmetic-error-class>` と誤記していたのを修正
-- `<floating-point-overflow>` と `<floating-point-underflow>` が `<object>`, `<seirious-condition>`, `<error>`, `<arithmetic-error>` を継承していなかった点を修正
+- `<division-by-zero>`, `<floating-point-overflow>` と `<floating-point-underflow>` が `<object>`, `<seirious-condition>`, `<error>`, `<arithmetic-error>` を継承していなかった点を修正
 - 符号付きの2進数、8進数、16進数が整数と認識されていなかった点を修正
 - 小数点で終わる数値がエラーにならなかった点を修正
 - `(-)`, `(max)`, `(min)`:  引数が数値でなかったり、0個の時、適切にエラーとするようにした
@@ -19,6 +19,7 @@
 - `(create-list)` で第一引数が非負整数でなかったり、引数個数が 1 or 2 でない時にエラーとするようにした
 - `<storage-exhausted>` を起こす要素数を 123456789 個と共通の定数とした
 - `(*)` におけるオーバーフローを `<arithmetic-error>` として検出できるようにした
+- `(file-lenght)`, `(open-input-file)`, `(open-output-file)`, `(open-io-file)` で第二引数(element-class) のチェックを行うようにした
 
 v0.7.18
 =======
