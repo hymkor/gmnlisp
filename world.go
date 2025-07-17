@@ -310,7 +310,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("%raise-domain-error"):            Function2(funRaiseDomainError),
 	NewSymbol("*"):                              &Function{F: funMulti},
 	NewSymbol("+"):                              &Function{F: funAdd},
-	NewSymbol("-"):                              &Function{F: funSub},
+	NewSymbol("-"):                              &Function{Min: 1, F: funSub},
 	NewSymbol("/="):                             &Function{C: 2, F: funNotEqual},
 	NewSymbol("<"):                              &Function{F: funLessThan},
 	NewSymbol("<="):                             &Function{F: funLessOrEqual},

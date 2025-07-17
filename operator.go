@@ -45,6 +45,14 @@ type canMinus interface {
 }
 
 func funSub(ctx context.Context, w *World, args []Node) (Node, error) {
+	for _, v := range args {
+		if !numberClass.InstanceP(v) {
+			return nil, &DomainError{
+				Object:        v,
+				ExpectedClass: numberClass,
+			}
+		}
+	}
 	if len(args) == 1 {
 		class := args[0].ClassOf()
 		zero := class.Create()
