@@ -2,6 +2,7 @@ package gmnlisp
 
 import (
 	"context"
+	"errors"
 	"math"
 	"math/big"
 )
@@ -15,14 +16,23 @@ func funMath1(fn func(n float64) float64) SpecialF {
 		if IsSome(node) {
 			return nil, ErrTooManyArguments
 		}
+		var result float64
 		if i, ok := value.(Integer); ok {
-			return Float(fn(float64(int(i)))), nil
+			result = fn(float64(int(i)))
+		} else {
+			f, err := ExpectClass[Float](ctx, w, value)
+			if err != nil {
+				return nil, err
+			}
+			result = fn(float64(f))
 		}
-		f, err := ExpectClass[Float](ctx, w, value)
-		if err != nil {
-			return nil, err
+		if math.IsNaN(result) {
+			return nil, errors.New("NaN")
 		}
-		return Float(fn(float64(f))), nil
+		if math.IsInf(result, 0) {
+			return nil, errors.New("Inf")
+		}
+		return Float(result), nil
 	}
 }
 
