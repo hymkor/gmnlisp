@@ -43,7 +43,7 @@ func (m *_Method) canCallWith(values []Node) bool {
 	return true
 }
 
-type _Generic struct {
+type genericType struct {
 	Symbol
 	argc    int
 	rest    bool
@@ -54,7 +54,7 @@ var genericFunction = registerClass(&BuiltInClass{
 	name: NewSymbol("<generic-function>"),
 	instanceP: func(n Node) bool {
 		if f, ok := n.(FunctionRef); ok {
-			_, ok := f.value.(*_Generic)
+			_, ok := f.value.(*genericType)
 			return ok
 		}
 		return false
@@ -67,7 +67,7 @@ var standardGenericFunction = registerClass(&BuiltInClass{
 	name: NewSymbol("<standard-generic-function>"),
 	instanceP: func(n Node) bool {
 		if f, ok := n.(FunctionRef); ok {
-			if _, ok := f.value.(*_Generic); ok {
+			if _, ok := f.value.(*genericType); ok {
 				// do at later
 				return ok
 			}
@@ -128,11 +128,11 @@ func cmdDefGeneric(ctx context.Context, w *World, node Node) (Node, error) {
 		}
 		argc++
 	}
-	w.defun.Set(name, &_Generic{Symbol: name, argc: argc, rest: hasRest})
+	w.defun.Set(name, &genericType{Symbol: name, argc: argc, rest: hasRest})
 	return name, nil
 }
 
-func (c *_Generic) Call(ctx context.Context, w *World, node Node) (Node, error) {
+func (c *genericType) Call(ctx context.Context, w *World, node Node) (Node, error) {
 	values := []Node{}
 	for IsSome(node) {
 		var v Node
@@ -154,12 +154,12 @@ func (c *_Generic) Call(ctx context.Context, w *World, node Node) (Node, error) 
 	})
 }
 
-func (c *_Generic) FuncId() uintptr {
+func (c *genericType) FuncId() uintptr {
 	return funcToId(c)
 }
 
-func ExpectGeneric(c Callable) (*_Generic, error) {
-	g, ok := c.(*_Generic)
+func ExpectGeneric(c Callable) (*genericType, error) {
+	g, ok := c.(*genericType)
 	if !ok {
 		return nil, errors.New("already used for normal function or macro")
 	}
@@ -281,12 +281,12 @@ func cmdDefMethod(ctx context.Context, w *World, node Node) (Node, error) {
 
 func funGenericFunctionP(ctx context.Context, w *World, arg Node) (Node, error) {
 	if f, ok := arg.(FunctionRef); ok {
-		if _, okk := f.value.(*_Generic); okk {
+		if _, okk := f.value.(*genericType); okk {
 			return True, nil
 		}
 		return Null, nil
 	}
-	if _, ok := arg.(*_Generic); ok {
+	if _, ok := arg.(*genericType); ok {
 		return True, nil
 	}
 	return Null, nil

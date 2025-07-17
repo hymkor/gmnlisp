@@ -66,7 +66,7 @@ func (e *_ErrContinueCondition) Error() string {
 }
 
 var symReportCondition = NewSymbol("report-condition")
-var reportCondition = &_Generic{
+var reportCondition = &genericType{
 	Symbol:  symReportCondition,
 	argc:    2,
 	methods: []*_Method{},

@@ -65,13 +65,13 @@ func newBoundp(class Class, slotName Symbol) *_Method {
 
 func registerMethod(w *World, methodName Symbol, class Class, method *_Method) error {
 	if _acc, err := w.GetFunc(methodName); err == nil {
-		if gen, ok := _acc.(*_Generic); ok {
+		if gen, ok := _acc.(*genericType); ok {
 			gen.methods = append(gen.methods, method)
 		} else {
 			return fmt.Errorf("%v: already defined as not method", methodName)
 		}
 	} else {
-		w.defun.Set(methodName, &_Generic{
+		w.defun.Set(methodName, &genericType{
 			Symbol:  methodName,
 			argc:    len(method.types),
 			rest:    method.restType != nil,
