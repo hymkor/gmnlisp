@@ -50,6 +50,34 @@ type _Generic struct {
 	methods []*_Method
 }
 
+var genericFunction = registerClass(&BuiltInClass{
+	name: NewSymbol("<generic-function>"),
+	instanceP: func(n Node) bool {
+		if f, ok := n.(FunctionRef); ok {
+			_, ok := f.value.(*_Generic)
+			return ok
+		}
+		return false
+	},
+	create: func() Node { return nil },
+	super:  []Class{ObjectClass, functionRefClassObject},
+})
+
+var standardGenericFunction = registerClass(&BuiltInClass{
+	name: NewSymbol("<standard-generic-function>"),
+	instanceP: func(n Node) bool {
+		if f, ok := n.(FunctionRef); ok {
+			if _, ok := f.value.(*_Generic); ok {
+				// do at later
+				return ok
+			}
+		}
+		return false
+	},
+	create: func() Node { return nil },
+	super:  []Class{ObjectClass, functionRefClassObject, genericFunction},
+})
+
 func cmdDefGeneric(ctx context.Context, w *World, node Node) (Node, error) {
 	_name, node, err := Shift(node)
 	if err != nil {
