@@ -122,7 +122,7 @@ func (e *ArithmeticError) Error() string {
 	return e.String()
 }
 
-var divisionByZeroClass = registerNewAbstractClass[*ArithmeticError]("<division-by-zero>")
+var divisionByZeroClass = registerNewAbstractClass[*ArithmeticError]("<division-by-zero>", ObjectClass, seriousConditionClass, errorClass, arithmeticErrorClass)
 
 func funArithmeticErrorOperation(ctx context.Context, w *World, n Node) (Node, error) {
 	e, err := ExpectClass[*ArithmeticError](ctx, w, n)
