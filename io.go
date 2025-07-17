@@ -344,6 +344,18 @@ func funProbeFile(ctx context.Context, w *World, arg Node) (Node, error) {
 	return True, nil
 }
 
+func ExpectElementClass(ctx context.Context, w *World, v Node) (int64, error) {
+	_n, err := ExpectClass[Integer](ctx, w, v)
+	if err != nil {
+		return 0, err
+	}
+	n := int64(_n)
+	if n <= 0 || 8%n != 0 {
+		return 0, errors.New("invalid element class")
+	}
+	return n, nil
+}
+
 func funFileLength(ctx context.Context, w *World, first, second Node) (Node, error) {
 	_fname, err := ExpectClass[String](ctx, w, first)
 	if err != nil {
@@ -351,15 +363,14 @@ func funFileLength(ctx context.Context, w *World, first, second Node) (Node, err
 	}
 	fname := _fname.String()
 
-	_n, err := ExpectClass[Integer](ctx, w, second)
+	n, err := ExpectElementClass(ctx, w, second)
 	if err != nil {
 		return nil, err
 	}
-	n := int64(_n)
 
 	stat, err := os.Stat(fname)
 	if err != nil {
-		return Null, nil
+		return nil, err
 	}
 	return Integer(stat.Size() * 8 / n), nil
 }
