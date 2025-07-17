@@ -6,30 +6,30 @@ import (
 	"unicode"
 )
 
-type _TrueType struct{}
+type trueType struct{}
 
-var trueClass = registerNewBuiltInClass[_TrueType]("<truetype>", symbolClass)
+var trueClass = registerNewBuiltInClass[trueType]("<truetype>", symbolClass)
 
-func (t _TrueType) ClassOf() Class {
+func (t trueType) ClassOf() Class {
 	return trueClass
 }
 
-func (_TrueType) String() string {
+func (trueType) String() string {
 	return "T"
 }
 
-func (_TrueType) OriginalString() string {
+func (trueType) OriginalString() string {
 	return "T"
 }
 
-var True Node = _TrueType{}
+var True Node = trueType{}
 
-func (_TrueType) Equals(n Node, m EqlMode) bool {
-	_, ok := n.(_TrueType)
+func (trueType) Equals(n Node, m EqlMode) bool {
+	_, ok := n.(trueType)
 	return ok
 }
 
-func (nt _TrueType) Id() int {
+func (nt trueType) Id() int {
 	return NewReserved("T").Id()
 }
 
