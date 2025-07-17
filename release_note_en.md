@@ -1,9 +1,16 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
+
 - `(read)` and parser convert `\r\n` to `\n` in string literals.
 - Fixed a crash in `(subseq)` that occurred with certain argument combinations
 - Fixed: Numeric strings starting with a plus sign were mistakenly recognized as symbols
 - Fixed: Numeric strings representing large integers were incorrectly treated as floating-point numbers
 - Fixed: Comparison between references to functions now behaves as expected
+- Implemented class definitions related to arrays: `<basic-array>`, `<basic-array*>`, `<general-array*>`, `<basic-vector>`, and `<general-vector>`
+- Implemented class definitions related to generic functions: `<generic-function>` and `<standard-generic-function>`
+- Fixed: Non-class ordinary objects were incorrectly treated as subclasses of `<built-in-class>`
+- Defined the class `<serious-condition>`
+- Fixed: `<arithmetic-error>` was mistakenly referred to as `<arithmetic-error-class>`
+- Fixed: `<floating-point-overflow>` and `<floating-point-underflow>` did not inherit from `<object>`, `<serious-condition>`, `<error>`, and `<arithmetic-error>` as expected
 
 v0.7.18
 =======
@@ -27,7 +34,7 @@ Jul 14, 2025
 - Changed `(subseq)` to return a `<domain-error>` when given out-of-range arguments.
 - `(subseq)` now supports `<general-array>`
 
-[TP Result] : OK = 14266, NG = 2145
+[TP Result] : PASS = 14266, FAIL = 2145
 
 v0.7.17
 =======

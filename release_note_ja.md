@@ -5,6 +5,12 @@
 - プラス記号で始まる数字列がシンボルに見えていた不具合を修正
 - 巨大整数と扱うべき数字列が実数扱いされていた不具合を修正
 - 関数への参照どうしの比較が期待どおり動作するようにした
+- 配列関連のクラス定義(`<basic-array>`, `<basic-array*>`, `<general-array*>`, `<basic-vector>`, `<general-vector>`)を実装した
+- 包括関数関連のクラス定義(`<generic-function>`, `<standard-generic-function>`)を実装した
+- クラスでない普通のオブジェクトも`<built-in-class>` の派生クラス扱いになっていた不具合を修正
+- `<serious-condition>` をクラス定義
+- `<arithmetic-error>` を `<arithmetic-error-class>` と誤記していたのを修正
+- `<floating-point-overflow>` と `<floating-point-underflow>` が `<object>`, `<seirious-condition>`, `<error>`, `<arithmetic-error>` を継承していなかった点を修正
 
 v0.7.18
 =======
@@ -28,7 +34,7 @@ Jul 14, 2025
 - `(subseq)` の引数が範囲外の時に `<domain-error>` とするようにした
 - `<general-array>` に対して `(subseq)` も使えるようにした
 
-[TP Result] : OK = 14266, NG = 2145
+[TP Result] : PASS = 14266, FAIL = 2145
 
 v0.7.17
 =======
