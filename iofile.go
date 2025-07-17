@@ -116,6 +116,11 @@ func funOpenIoFile(ctx context.Context, w *World, args []Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
+	if len(args) >= 2 {
+		if _, err := ExpectElementClass(ctx, w, args[1]); err != nil {
+			return nil, err
+		}
+	}
 	return newIoFile(string(fname))
 }
 
