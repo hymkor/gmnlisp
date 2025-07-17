@@ -182,7 +182,7 @@ func funCreateString(ctx context.Context, w *World, list []Node) (Node, error) {
 			return nil, err
 		}
 	}
-	if length < 0 || length >= 1234567890 {
+	if length < 0 || length >= exhaustThresHold {
 		condition := &DomainError{
 			Object:        length,
 			ExpectedClass: integerClass,
