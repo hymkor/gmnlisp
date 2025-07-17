@@ -354,7 +354,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("cosh"):                           funMath1(math.Cosh),
 	NewSymbol("create"):                         &Function{Min: 1, F: funCreate},
 	NewSymbol("create-array"):                   &Function{Min: 1, Max: 2, F: funCreateArray},
-	NewSymbol("create-list"):                    &Function{Min: 2, F: funCreateList},
+	NewSymbol("create-list"):                    &Function{Min: 1, Max: 2, F: funCreateList},
 	NewSymbol("create-string"):                  &Function{Min: 1, Max: 2, F: funCreateString},
 	NewSymbol("create-string-input-stream"):     Function1(funCreateStringInputStream),
 	NewSymbol("create-string-output-stream"):    Function0(funCreateStringOutputStream),

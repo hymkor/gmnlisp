@@ -168,10 +168,23 @@ func funCreateList(ctx context.Context, w *World, argv []Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	result := Null
+	if n < 0 {
+		return nil, &DomainError{
+			Object: argv[0],
+			Reason: "not a negative integer",
+		}
+	}
+	if n >= 123456789 {
+		return callHandler[Node](ctx, w, false, StorageExhausted{})
+	}
+	var e Node = Null
+	if len(argv) == 2 {
+		e = argv[1]
+	}
+	var result Node = Null
 	for ; n > 0; n-- {
 		result = &Cons{
-			Car: argv[1],
+			Car: e,
 			Cdr: result,
 		}
 	}
