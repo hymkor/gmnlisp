@@ -40,6 +40,18 @@ func toFloat64(ctx context.Context, w *World, x Node, hasPeriod *bool) (float64,
 	return float64(f), nil
 }
 
+func funAtan2(ctx context.Context, w *World, x, y Node) (Node, error) {
+	X, err := toFloat64(ctx, w, x, nil)
+	if err != nil {
+		return nil, err
+	}
+	Y, err := toFloat64(ctx, w, y, nil)
+	if err != nil {
+		return nil, err
+	}
+	return Float(math.Atan2(X, Y)), nil
+}
+
 func funLog(ctx context.Context, w *World, x Node) (Node, error) {
 	f, err := toFloat64(ctx, w, x, nil)
 	if err != nil {
