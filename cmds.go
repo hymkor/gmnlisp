@@ -182,8 +182,8 @@ func funAnyTypep[T Node](_ context.Context, _ *World, arg Node) (Node, error) {
 }
 
 var (
-	floatingPointOverflowClass  = registerNewAbstractClass[Node]("<floating-point-overflow>", arithmeticErrorClass)
-	floatingPointUnderflowClass = registerNewAbstractClass[Node]("<floating-point-underflow>", arithmeticErrorClass)
+	floatingPointOverflowClass  = registerNewAbstractClass[Node]("<floating-point-overflow>", ObjectClass, seriousConditionClass, errorClass, arithmeticErrorClass)
+	floatingPointUnderflowClass = registerNewAbstractClass[Node]("<floating-point-underflow>", ObjectClass, seriousConditionClass, errorClass, arithmeticErrorClass)
 )
 
 func funParseNumber(ctx context.Context, w *World, arg Node) (Node, error) {
