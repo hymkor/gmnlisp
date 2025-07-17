@@ -21,7 +21,7 @@ var streamClass = registerClass(&BuiltInClass{
 	create: func() Node {
 		return &StringBuilder{}
 	},
-	super: []Class{ObjectClass, BuiltInClassObject},
+	super: []Class{ObjectClass},
 })
 
 func chomp(s string) string {

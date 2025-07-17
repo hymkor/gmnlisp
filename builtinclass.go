@@ -98,11 +98,11 @@ func registerClass(class *BuiltInClass) *BuiltInClass {
 }
 
 func registerNewBuiltInClass[T Node](name string, super ...Class) *BuiltInClass {
-	super = append(super, ObjectClass, BuiltInClassObject)
+	super = append(super, ObjectClass)
 	return registerClass(NewBuiltInClass[T](name, super...))
 }
 
 func registerNewAbstractClass[T Node](name string, super ...Class) *BuiltInClass {
-	super = append(super, ObjectClass, BuiltInClassObject)
+	super = append(super, ObjectClass)
 	return registerClass(NewAbstractClass[T](name, super...))
 }
