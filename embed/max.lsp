@@ -1,6 +1,7 @@
 (lambda (a :rest b)
+  (assure <number> a)
   (while (and b (consp b))
-    (if (> (car b) a)
+    (if (> (assure <number> (car b)) a)
       (setq a (car b)))
     (setq b (cdr b)))
   a)
