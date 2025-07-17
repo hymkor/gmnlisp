@@ -370,6 +370,8 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 	return className, nil
 }
 
+var standardObjectClass = registerNewAbstractClass[*_StandardObject]("<standard-object>", ObjectClass)
+
 type _StandardObject struct {
 	_StandardClass *_StandardClass
 	Slot           map[Symbol]Node
