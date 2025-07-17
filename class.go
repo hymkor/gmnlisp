@@ -17,8 +17,8 @@ type _SlotSpec struct {
 	initarg    []Symbol
 }
 
-func newGetter(class Class, slotName Symbol) *_Method {
-	return &_Method{
+func newGetter(class Class, slotName Symbol) *methodType {
+	return &methodType{
 		types: []Class{class},
 		method: func(ctx context.Context, w *World, node []Node) (Node, error) {
 			rec, ok := node[0].(*_StandardObject)
@@ -33,8 +33,8 @@ func newGetter(class Class, slotName Symbol) *_Method {
 	}
 }
 
-func newSetter(class Class, slotName Symbol) *_Method {
-	return &_Method{
+func newSetter(class Class, slotName Symbol) *methodType {
+	return &methodType{
 		types: []Class{ObjectClass, class},
 		method: func(ctx context.Context, w *World, node []Node) (Node, error) {
 			rec, ok := node[1].(*_StandardObject)
@@ -47,8 +47,8 @@ func newSetter(class Class, slotName Symbol) *_Method {
 	}
 }
 
-func newBoundp(class Class, slotName Symbol) *_Method {
-	return &_Method{
+func newBoundp(class Class, slotName Symbol) *methodType {
+	return &methodType{
 		types: []Class{class},
 		method: func(ctx context.Context, w *World, node []Node) (Node, error) {
 			rec, ok := node[0].(*_StandardObject)
@@ -63,7 +63,7 @@ func newBoundp(class Class, slotName Symbol) *_Method {
 	}
 }
 
-func registerMethod(w *World, methodName Symbol, class Class, method *_Method) error {
+func registerMethod(w *World, methodName Symbol, class Class, method *methodType) error {
 	if _acc, err := w.GetFunc(methodName); err == nil {
 		if gen, ok := _acc.(*genericType); ok {
 			gen.methods = append(gen.methods, method)
@@ -75,7 +75,7 @@ func registerMethod(w *World, methodName Symbol, class Class, method *_Method) e
 			Symbol:  methodName,
 			argc:    len(method.types),
 			rest:    method.restType != nil,
-			methods: []*_Method{method},
+			methods: []*methodType{method},
 		})
 	}
 	return nil
@@ -362,7 +362,7 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 	}
 	w.shared.class[className] = class
 
-	registerMethod(w, symInitializeObject, class, &_Method{
+	registerMethod(w, symInitializeObject, class, &methodType{
 		restType: ObjectClass,
 		types:    []Class{class},
 		method:   defaultInitializeObject,

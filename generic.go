@@ -6,13 +6,13 @@ import (
 	"fmt"
 )
 
-type _Method struct {
+type methodType struct {
 	restType Class
 	types    []Class
 	method   func(context.Context, *World, []Node) (Node, error)
 }
 
-func (m *_Method) canCallWith(values []Node) bool {
+func (m *methodType) canCallWith(values []Node) bool {
 	//println("values:", joinStringer(values, ":"))
 	//println("method:", joinStringer(m.types, ":"))
 	if m.restType != nil {
@@ -47,7 +47,7 @@ type genericType struct {
 	Symbol
 	argc    int
 	rest    bool
-	methods []*_Method
+	methods []*methodType
 }
 
 var genericFunction = registerClass(&BuiltInClass{
@@ -188,7 +188,7 @@ func cmdDefMethod(ctx context.Context, w *World, node Node) (Node, error) {
 		return nil, err
 	}
 
-	method := &_Method{}
+	method := &methodType{}
 	paramNames := []Symbol{}
 	var restName Symbol
 	for IsSome(params) {
