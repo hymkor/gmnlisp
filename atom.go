@@ -33,35 +33,35 @@ func (nt trueType) Id() int {
 	return NewReserved("T").Id()
 }
 
-type _NullType struct{}
+type nullType struct{}
 
-var nullClass = registerNewBuiltInClass[_NullType]("<null>", symbolClass, listClass)
+var nullClass = registerNewBuiltInClass[nullType]("<null>", symbolClass, listClass)
 
-func (_NullType) ClassOf() Class {
+func (nullType) ClassOf() Class {
 	return nullClass
 }
 
-func (_NullType) String() string {
+func (nullType) String() string {
 	return "NIL"
 }
 
-func (_NullType) OriginalString() string {
+func (nullType) OriginalString() string {
 	return "NIL"
 }
 
-func (nt _NullType) Equals(n Node, m EqlMode) bool {
+func (nt nullType) Equals(n Node, m EqlMode) bool {
 	if n == nil {
 		return true
 	}
-	_, ok := n.(_NullType)
+	_, ok := n.(nullType)
 	return ok
 }
 
-func (nt _NullType) Id() int {
+func (nt nullType) Id() int {
 	return NewReserved("NIL").Id()
 }
 
-var Null Node = _NullType{}
+var Null Node = nullType{}
 
 type Rune rune
 

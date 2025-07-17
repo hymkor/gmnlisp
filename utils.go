@@ -53,7 +53,7 @@ func IsNone(node Node) bool {
 	if node == nil {
 		return true
 	}
-	_, ok := node.(_NullType)
+	_, ok := node.(nullType)
 	return ok
 }
 
@@ -67,7 +67,7 @@ func IsSome(node Node) bool {
 	if node == nil {
 		return false
 	}
-	_, ok := node.(_NullType)
+	_, ok := node.(nullType)
 	return !ok
 }
 

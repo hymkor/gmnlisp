@@ -9,7 +9,7 @@ func notNullToTrue(v Node, err error) (Node, error) {
 	if v == nil || err != nil {
 		return Null, err
 	}
-	if _, ok := v.(_NullType); ok {
+	if _, ok := v.(nullType); ok {
 		return Null, err
 	}
 	return True, err
