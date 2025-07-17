@@ -82,13 +82,26 @@ func funMulti(ctx context.Context, w *World, args []Node) (Node, error) {
 			return nil, err
 		}
 	}
-	return inject(args, func(left, right Node) (Node, error) {
+	result, err := inject(args, func(left, right Node) (Node, error) {
 		_left, err := ExpectInterface[CanMulti](ctx, w, left, floatClass)
 		if err != nil {
 			return nil, err
 		}
 		return _left.Multi(ctx, w, right)
 	})
+	if err != nil {
+		return nil, err
+	}
+	if f, ok := result.(Float); ok {
+		if _, err := checkFiniteFloat(float64(f)); err != nil {
+			return callHandler[*ArithmeticError](ctx, w, true, &ArithmeticError{
+				Operation: FunctionRef{value: &Function{F: funMulti}},
+				Operands:  List(args...),
+				Class:     arithmeticErrorClass,
+			})
+		}
+	}
+	return result, nil
 }
 
 func div(z1, z2 int) int {

@@ -7,6 +7,16 @@ import (
 	"math/big"
 )
 
+func checkFiniteFloat(v float64) (Node, error) {
+	if math.IsNaN(v) {
+		return nil, errors.New("NaN")
+	}
+	if math.IsInf(v, 0) {
+		return nil, errors.New("Inf")
+	}
+	return Float(v), nil
+}
+
 func funMath1(fn func(n float64) float64) SpecialF {
 	return func(ctx context.Context, w *World, node Node) (Node, error) {
 		value, node, err := w.ShiftAndEvalCar(ctx, node)
@@ -26,13 +36,7 @@ func funMath1(fn func(n float64) float64) SpecialF {
 			}
 			result = fn(float64(f))
 		}
-		if math.IsNaN(result) {
-			return nil, errors.New("NaN")
-		}
-		if math.IsInf(result, 0) {
-			return nil, errors.New("Inf")
-		}
-		return Float(result), nil
+		return checkFiniteFloat(result)
 	}
 }
 
