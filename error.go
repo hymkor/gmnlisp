@@ -10,8 +10,8 @@ type ErrorNode struct {
 	Value error
 }
 
-var errorClass = &BuiltInClass{
-	name: NewSymbol("<error>"),
+var seriousConditionClass = registerClass(&BuiltInClass{
+	name: NewSymbol("<serious-condition>"),
 	instanceP: func(value Node) bool {
 		_, ok := value.(error)
 		return ok
@@ -20,7 +20,19 @@ var errorClass = &BuiltInClass{
 		return nil
 	},
 	super: []Class{ObjectClass},
-}
+})
+
+var errorClass = registerClass(&BuiltInClass{
+	name: NewSymbol("<error>"),
+	instanceP: func(value Node) bool {
+		_, ok := value.(error)
+		return ok
+	},
+	create: func() Node {
+		return nil
+	},
+	super: []Class{ObjectClass, seriousConditionClass},
+})
 
 func (ErrorNode) ClassOf() Class {
 	return errorClass
