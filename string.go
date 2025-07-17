@@ -9,7 +9,7 @@ import (
 
 type String string
 
-var stringClass = registerNewBuiltInClass[String]("<string>")
+var stringClass = registerNewBuiltInClass[String]("<string>", basicArrayClass, basicVectorClass)
 
 func (String) ClassOf() Class {
 	return stringClass

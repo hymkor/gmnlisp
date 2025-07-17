@@ -28,8 +28,8 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 
 	if IsNone(source) {
 		switch class {
-		case arrayClass.name:
-			return arrayClass.Create(), nil
+		case generalVectorClass.name:
+			return generalVectorClass.Create(), nil
 		case stringClass.name:
 			return String("NIL"), nil
 		case symbolClass.name:

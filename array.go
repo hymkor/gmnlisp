@@ -87,10 +87,35 @@ type Array struct {
 	dim  []int
 }
 
-var arrayClass = registerNewAbstractClass[*Array]("<array>")
+var (
+	basicArrayClass       = registerNewAbstractClass[*Array]("<basic-array>")
+	basicArrayStarClass   = registerNewAbstractClass[*Array]("<basic-array*>", basicArrayClass)
+	generalArrayStarClass = registerClass(&BuiltInClass{
+		name: NewSymbol("<general-array*>"),
+		instanceP: func(n Node) bool {
+			a, ok := n.(*Array)
+			return ok && len(a.dim) != 1
+		},
+		create: func() Node { return nil },
+		super:  []Class{ObjectClass, basicArrayClass, basicArrayStarClass},
+	})
+	basicVectorClass   = registerNewAbstractClass[*Array]("<basic-vector>", basicArrayClass)
+	generalVectorClass = registerClass(&BuiltInClass{
+		name: NewSymbol("<general-vector>"),
+		instanceP: func(n Node) bool {
+			a, ok := n.(*Array)
+			return ok && len(a.dim) == 1
+		},
+		create: func() Node { return nil },
+		super:  []Class{ObjectClass, basicArrayClass, basicVectorClass},
+	})
+)
 
-func (*Array) ClassOf() Class {
-	return arrayClass
+func (a *Array) ClassOf() Class {
+	if a != nil && len(a.dim) == 1 {
+		return generalVectorClass
+	}
+	return generalArrayStarClass
 }
 
 func (A *Array) printTo(w io.Writer, mode PrintMode, list []Node, dim []int) ([]Node, int, error) {
@@ -284,7 +309,7 @@ func funAref(ctx context.Context, w *World, args []Node) (Node, error) {
 	}
 	return callHandler[Node](ctx, w, false, &DomainError{
 		Object:        args[0],
-		ExpectedClass: arrayClass,
+		ExpectedClass: basicArrayClass,
 	})
 }
 
@@ -346,7 +371,7 @@ func funSetAref(ctx context.Context, w *World, args []Node) (Node, error) {
 	}
 	return callHandler[Node](ctx, w, false, &DomainError{
 		Object:        args[0],
-		ExpectedClass: arrayClass,
+		ExpectedClass: basicArrayClass,
 	})
 }
 func funSetGaref(ctx context.Context, w *World, args []Node) (Node, error) {

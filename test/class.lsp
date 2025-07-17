@@ -81,7 +81,6 @@
 (assert-eq (subclassp (class <object>) (class <error>)) nil)
 (assert-eq (subclassp (class <error>) (class <error>)) nil)
 
-(assert-eq (subclassp (class <array>) (class <built-in-class>)) t)
 (assert-eq (subclassp (class-of #(1 2 3)) (class <built-in-class>)) t)
 (assert-eq (subclassp (class-of t) (class <built-in-class>)) t)
 (assert-eq (subclassp (class-of nil) (class <built-in-class>)) t)
@@ -99,3 +98,4 @@
 (assert-eq (subclassp (class <string>) (class <built-in-class>)) t)
 (assert-eq (subclassp (class-of "a") (class <built-in-class>)) t)
 (assert-eq (subclassp (class <point1d>) (class <built-in-class>)) nil)
+(assert-eq (subclassp (class <general-array*>) (class <object>)) t)
