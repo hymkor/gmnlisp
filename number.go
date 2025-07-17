@@ -92,7 +92,7 @@ type ArithmeticError struct {
 	Class     Class
 }
 
-var arithmeticErrorClass = registerNewBuiltInClass[*ArithmeticError]("<arithmetic-error-class>")
+var arithmeticErrorClass = registerNewAbstractClass[*ArithmeticError]("<arithmetic-error>")
 
 func (e *ArithmeticError) ClassOf() Class {
 	if e != nil && e.Class != nil {
