@@ -107,6 +107,11 @@ func openInputFile(ctx context.Context, w *World, fname Node) (*inputStream, err
 }
 
 func funOpenInputFile(ctx context.Context, w *World, args []Node) (Node, error) {
+	if len(args) >= 2 {
+		if _, err := ExpectElementClass(ctx, w, args[1]); err != nil {
+			return nil, err
+		}
+	}
 	return openInputFile(ctx, w, args[0])
 }
 
