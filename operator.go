@@ -251,7 +251,7 @@ func floatToInteger(ctx context.Context, w *World, arg Node, f func(float64) flo
 	if err != nil {
 		return nil, err
 	}
-	return Integer(int(f(float64(value)))), nil
+	return Integer(int64(f(float64(value)))), nil
 }
 
 // funTruncate implements (truncte X). It returns the integer value of X.
@@ -270,7 +270,7 @@ func funCeiling(ctx context.Context, w *World, arg Node) (Node, error) {
 }
 
 func funRound(ctx context.Context, w *World, arg Node) (Node, error) {
-	return floatToInteger(ctx, w, arg, math.Round)
+	return floatToInteger(ctx, w, arg, math.RoundToEven)
 }
 
 func mod(z1, z2 int) int {
