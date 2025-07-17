@@ -301,6 +301,11 @@ func openOutputFile(ctx context.Context, w *World, fnameNode Node) (*outputStrea
 }
 
 func funOpenOutputFile(ctx context.Context, w *World, args []Node) (Node, error) {
+	if len(args) >= 2 {
+		if _, err := ExpectElementClass(ctx, w, args[1]); err != nil {
+			return nil, err
+		}
+	}
 	return openOutputFile(ctx, w, args[0])
 }
 
