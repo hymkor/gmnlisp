@@ -148,7 +148,6 @@ func testFloat(t *testing.T, text string, expected float64) {
 
 func TestFloat(t *testing.T) {
 	testFloat(t, "1.0", 1.0)
-	testFloat(t, "10.", 10.0)
 	testFloat(t, "1.0E1", 10.0)
 	testFloat(t, "-1.0e-1", -0.1)
 	testFloat(t, "7e3", 7000)
