@@ -339,6 +339,23 @@ func (b BigInt) Multi(ctx context.Context, w *World, other Node) (Node, error) {
 	return BigInt{Int: new(big.Int).Mul(b.Int, o)}, nil
 }
 
+type DivisionByZero struct {
+	ArithmeticError
+}
+
+func (d *DivisionByZero) ClassOf() Class {
+	return divisionByZeroClass
+}
+
+func (d *DivisionByZero) Equals(other Node, m EqlMode) bool {
+	if o, ok := other.(*DivisionByZero); ok {
+		return d.ArithmeticError.Equals(&o.ArithmeticError, m)
+	}
+	return false
+}
+
+var _ ArithmeticErrorInterface = &DivisionByZero{}
+
 func funReciprocal(ctx context.Context, w *World, x Node) (Node, error) {
 	var f Float
 	var err error
