@@ -230,16 +230,25 @@ func funParseNumber(ctx context.Context, w *World, arg Node) (Node, error) {
 		var numError *strconv.NumError
 		if errors.As(err, &numError) {
 			if numError.Func == "ParseFloat" {
-				class := floatingPointOverflowClass
-				if strings.Contains(numError.Num, "E-") || strings.Contains(numError.Num, "e-") {
-					class = floatingPointUnderflowClass
-				}
-
-				return callHandler[*ArithmeticError](ctx, w, true, &ArithmeticError{
+				var cond Condition
+				ae := &ArithmeticError{
 					Operation: FunctionRef{value: Function1(funParseNumber)},
 					Operands:  s,
-					Class:     class,
-				})
+				}
+				if false || errors.Is(numError.Err, strconv.ErrRange) {
+					cond = &FloatingPointOverflow{
+						ArithmeticError: *ae,
+					}
+				} else if strings.Contains(numError.Num, "E-") || strings.Contains(numError.Num, "e-") {
+					cond = &FloatingPointUnderflow{
+						ArithmeticError: *ae,
+					}
+				} else {
+					cond = &FloatingPointOverflow{
+						ArithmeticError: *ae,
+					}
+				}
+				return callHandler[*ArithmeticError](ctx, w, true, cond)
 			}
 		}
 		return callHandler[*ParseError](ctx, w, true, &ParseError{

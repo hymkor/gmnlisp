@@ -94,14 +94,12 @@ func funExpt(ctx context.Context, w *World, x1, x2 Node) (Node, error) {
 		return callHandler[*ArithmeticError](ctx, w, true, &ArithmeticError{
 			Operation: FunctionRef{value: Function2(funExpt)},
 			Operands:  List(x1, x2),
-			Class:     arithmeticErrorClass,
 		})
 	}
 	if _, ok := x2.(Integer); !ok && f1 < 0 {
 		return callHandler[*ArithmeticError](ctx, w, true, &ArithmeticError{
 			Operation: FunctionRef{value: Function2(funExpt)},
 			Operands:  List(x1, x2),
-			Class:     arithmeticErrorClass,
 		})
 	}
 	result := math.Pow(f1, f2)
@@ -110,14 +108,12 @@ func funExpt(ctx context.Context, w *World, x1, x2 Node) (Node, error) {
 			return callHandler[*ArithmeticError](ctx, w, true, &ArithmeticError{
 				Operation: FunctionRef{value: Function2(funExpt)},
 				Operands:  List(x1, x2),
-				Class:     floatingPointOverflowClass,
 			})
 		}
 		if math.IsNaN(result) {
 			return callHandler[*ArithmeticError](ctx, w, true, &ArithmeticError{
 				Operation: FunctionRef{value: Function2(funExpt)},
 				Operands:  List(x1, x2),
-				Class:     arithmeticErrorClass,
 			})
 		}
 		return Float(result), nil

@@ -89,7 +89,6 @@ func (i Integer) Multi(ctx context.Context, w *World, n Node) (Node, error) {
 type ArithmeticError struct {
 	Operation FunctionRef
 	Operands  Node
-	Class     Class
 }
 
 type ArithmeticErrorInterface interface {
@@ -117,9 +116,6 @@ var arithmeticErrorClass = registerClass(&BuiltInClass{
 })
 
 func (e *ArithmeticError) ClassOf() Class {
-	if e != nil && e.Class != nil {
-		return e.Class
-	}
 	return arithmeticErrorClass
 }
 
@@ -129,13 +125,11 @@ func (e *ArithmeticError) Equals(other Node, mode EqlMode) bool {
 		return false
 	}
 	return e.Operands.Equals(o.Operands, mode) &&
-		e.Operation.Equals(o.Operation, mode) &&
-		e.Class.Equals(o.Class, mode)
+		e.Operation.Equals(o.Operation, mode)
 }
 
 func (e *ArithmeticError) String() string {
-	return fmt.Sprintf("arithmetic error: %#v %#v %#v",
-		e.Class.String(),
+	return fmt.Sprintf("arithmetic error: %#v %#v",
 		e.Operation.String(),
 		e.Operands.String())
 }
@@ -144,7 +138,7 @@ func (e *ArithmeticError) Error() string {
 	return e.String()
 }
 
-var divisionByZeroClass = registerNewAbstractClass[*ArithmeticError]("<division-by-zero>", ObjectClass, seriousConditionClass, errorClass, arithmeticErrorClass)
+var divisionByZeroClass = registerNewAbstractClass[*DivisionByZero]("<division-by-zero>", ObjectClass, seriousConditionClass, errorClass, arithmeticErrorClass)
 
 func funArithmeticErrorOperation(ctx context.Context, w *World, n Node) (Node, error) {
 	e, err := ExpectInterface[ArithmeticErrorInterface](ctx, w, n, arithmeticErrorClass)
@@ -361,10 +355,11 @@ func funReciprocal(ctx context.Context, w *World, x Node) (Node, error) {
 	var err error
 	if i, ok := x.(Integer); ok {
 		if i == 0 {
-			return callHandler[Node](ctx, w, true, &ArithmeticError{
-				Operation: FunctionRef{value: Function1(funReciprocal)},
-				Operands:  x,
-				Class:     divisionByZeroClass,
+			return callHandler[Node](ctx, w, true, &DivisionByZero{
+				ArithmeticError: ArithmeticError{
+					Operation: FunctionRef{value: Function1(funReciprocal)},
+					Operands:  x,
+				},
 			})
 		}
 		if 1%i == 0 {
@@ -374,10 +369,11 @@ func funReciprocal(ctx context.Context, w *World, x Node) (Node, error) {
 	} else if f, err = ExpectClass[Float](ctx, w, x); err != nil {
 		return nil, err
 	} else if f == 0.0 {
-		return callHandler[Node](ctx, w, true, &ArithmeticError{
-			Operation: FunctionRef{value: Function1(funReciprocal)},
-			Operands:  x,
-			Class:     divisionByZeroClass,
+		return callHandler[Node](ctx, w, true, &DivisionByZero{
+			ArithmeticError: ArithmeticError{
+				Operation: FunctionRef{value: Function1(funReciprocal)},
+				Operands:  x,
+			},
 		})
 	}
 	return 1 / f, nil
@@ -433,10 +429,11 @@ func funQuotient(ctx context.Context, w *World, args []Node) (Node, error) {
 			panic("funQuotient(R)")
 		}
 		if R.Sign() == 0 {
-			return callHandler[Node](ctx, w, true, &ArithmeticError{
-				Operation: FunctionRef{value: &Function{Min: 2, F: funQuotient}},
-				Operands:  divisor[0],
-				Class:     divisionByZeroClass,
+			return callHandler[Node](ctx, w, true, &DivisionByZero{
+				ArithmeticError: ArithmeticError{
+					Operation: FunctionRef{value: &Function{Min: 2, F: funQuotient}},
+					Operands:  divisor[0],
+				},
 			})
 		}
 		L = new(big.Float).Quo(L, R)

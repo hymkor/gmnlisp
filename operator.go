@@ -97,7 +97,6 @@ func funMulti(ctx context.Context, w *World, args []Node) (Node, error) {
 			return callHandler[*ArithmeticError](ctx, w, true, &ArithmeticError{
 				Operation: FunctionRef{value: &Function{F: funMulti}},
 				Operands:  List(args...),
-				Class:     arithmeticErrorClass,
 			})
 		}
 	}
@@ -123,10 +122,11 @@ func funDivide(ctx context.Context, w *World, args []Node) (Node, error) {
 		return nil, err
 	}
 	if R == 0 {
-		return callHandler[Node](ctx, w, true, &ArithmeticError{
-			Operation: FunctionRef{value: &Function{C: 2, F: funDivide}},
-			Operands:  List(args[0], args[1]),
-			Class:     divisionByZeroClass,
+		return callHandler[Node](ctx, w, true, &DivisionByZero{
+			ArithmeticError: ArithmeticError{
+				Operation: FunctionRef{value: &Function{C: 2, F: funDivide}},
+				Operands:  List(args[0], args[1]),
+			},
 		})
 	}
 	return Integer(div(int(L), int(R))), nil
@@ -304,10 +304,11 @@ func funMod(ctx context.Context, w *World, args []Node) (Node, error) {
 		return nil, err
 	}
 	if R == 0 {
-		return callHandler[Node](ctx, w, true, &ArithmeticError{
-			Operation: FunctionRef{value: &Function{C: 2, F: funMod}},
-			Operands:  List(args[0], args[1]),
-			Class:     divisionByZeroClass,
+		return callHandler[Node](ctx, w, true, &DivisionByZero{
+			ArithmeticError: ArithmeticError{
+				Operation: FunctionRef{value: &Function{C: 2, F: funMod}},
+				Operands:  List(args[0], args[1]),
+			},
 		})
 	}
 	return Integer(mod(int(L), int(R))), nil
