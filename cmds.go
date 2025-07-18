@@ -216,8 +216,8 @@ func (f *FloatingPointUnderflow) Equals(other Node, m EqlMode) bool {
 }
 
 var (
-	floatingPointOverflowClass  = registerNewAbstractClass[Node]("<floating-point-overflow>", ObjectClass, seriousConditionClass, errorClass, arithmeticErrorClass)
-	floatingPointUnderflowClass = registerNewAbstractClass[Node]("<floating-point-underflow>", ObjectClass, seriousConditionClass, errorClass, arithmeticErrorClass)
+	floatingPointOverflowClass  = registerNewAbstractClass[*FloatingPointOverflow]("<floating-point-overflow>", ObjectClass, seriousConditionClass, errorClass, arithmeticErrorClass)
+	floatingPointUnderflowClass = registerNewAbstractClass[*FloatingPointUnderflow]("<floating-point-underflow>", ObjectClass, seriousConditionClass, errorClass, arithmeticErrorClass)
 )
 
 func funParseNumber(ctx context.Context, w *World, arg Node) (Node, error) {
