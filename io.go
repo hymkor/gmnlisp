@@ -278,6 +278,13 @@ func funSetFilePosition(ctx context.Context, w *World, stream, z Node) (Node, er
 	if err != nil {
 		return nil, err
 	}
+	if offset < 0 {
+		return nil, &DomainError{
+			Object:        offset,
+			ExpectedClass: integerClass,
+			Reason:        "not a non negative integer",
+		}
+	}
 	if f, ok := stream.(setFilePositioner); ok {
 		ret, err := f.SetFilePosition(int64(offset))
 		return Integer(ret), err

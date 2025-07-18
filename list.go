@@ -171,7 +171,7 @@ func funCreateList(ctx context.Context, w *World, argv []Node) (Node, error) {
 	if n < 0 {
 		return nil, &DomainError{
 			Object: argv[0],
-			Reason: "not a negative integer",
+			Reason: "not a non negative integer",
 		}
 	}
 	if n >= exhaustThresHold {
