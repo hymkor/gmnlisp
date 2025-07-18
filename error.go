@@ -530,3 +530,19 @@ func funMakeSimpleError(ctx context.Context, w *World, f, args Node) (Node, erro
 		FormatArguments: args,
 	}, nil
 }
+
+type Invalid struct{}
+
+func (Invalid) Equals(other Node, m EqlMode) bool {
+	return false
+}
+
+func (Invalid) String() string {
+	return "(invalid)"
+}
+
+func (Invalid) ClassOf() Class {
+	return invalidClass
+}
+
+var invalidClass = registerNewAbstractClass[Invalid]("<invalid>")
