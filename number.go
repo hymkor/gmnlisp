@@ -92,7 +92,29 @@ type ArithmeticError struct {
 	Class     Class
 }
 
-var arithmeticErrorClass = registerNewAbstractClass[*ArithmeticError]("<arithmetic-error>")
+type ArithmeticErrorInterface interface {
+	GetOperation() FunctionRef
+	GetOperands() Node
+	Node
+}
+
+func (A *ArithmeticError) GetOperation() FunctionRef {
+	return A.Operation
+}
+
+func (A *ArithmeticError) GetOperands() Node {
+	return A.Operands
+}
+
+var arithmeticErrorClass = registerClass(&BuiltInClass{
+	name: NewSymbol("<arithmetic-error>"),
+	instanceP: func(v Node) bool {
+		_, ok := v.(ArithmeticErrorInterface)
+		return ok
+	},
+	create: func() Node { return nil },
+	super:  []Class{ObjectClass, seriousConditionClass, errorClass},
+})
 
 func (e *ArithmeticError) ClassOf() Class {
 	if e != nil && e.Class != nil {
@@ -125,19 +147,19 @@ func (e *ArithmeticError) Error() string {
 var divisionByZeroClass = registerNewAbstractClass[*ArithmeticError]("<division-by-zero>", ObjectClass, seriousConditionClass, errorClass, arithmeticErrorClass)
 
 func funArithmeticErrorOperation(ctx context.Context, w *World, n Node) (Node, error) {
-	e, err := ExpectClass[*ArithmeticError](ctx, w, n)
+	e, err := ExpectInterface[ArithmeticErrorInterface](ctx, w, n, arithmeticErrorClass)
 	if err != nil {
 		return nil, err
 	}
-	return e.Operation, nil
+	return e.GetOperation(), nil
 }
 
 func funArithmeticErrorOperands(ctx context.Context, w *World, n Node) (Node, error) {
-	e, err := ExpectClass[*ArithmeticError](ctx, w, n)
+	e, err := ExpectInterface[ArithmeticErrorInterface](ctx, w, n, arithmeticErrorClass)
 	if err != nil {
 		return nil, err
 	}
-	return e.Operands, nil
+	return e.GetOperands(), nil
 }
 
 func (i Integer) LessThan(ctx context.Context, w *World, n Node) (bool, error) {
