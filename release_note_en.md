@@ -18,8 +18,9 @@
 - Changed `(round)` to use Go's `math.RoundToEven` instead of `math.Round` for calculation
 - Fixed: `(create-list)` now raises an error if the first argument is not a non-negative integer or if the number of arguments is not 1 or 2
 - Standardized the number of elements required to trigger `<storage-exhausted>` to 123,456,789 as a shared constant
-- Improved `(*)` to detect overflow as an `<arithmetic-error>`
 - Added validation of the second argument (element-class) for `(file-length)`, `(open-input-file)`, `(open-output-file)`, and `(open-io-file)`
+- Added the `<invalid>` class for compatibility with ISLisp conformance test systems
+- Improved `(*)` to detect floating-point overflow and underflow as `<floating-point-overflow>` or `<floating-point-underflow>`
 
 v0.7.18
 =======

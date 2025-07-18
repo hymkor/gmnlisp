@@ -18,8 +18,9 @@
 - `(round)` の算出に、Go の `math.Round` ではなく、`math.RoundToEven` を使うようにした
 - `(create-list)` で第一引数が非負整数でなかったり、引数個数が 1 or 2 でない時にエラーとするようにした
 - `<storage-exhausted>` を起こす要素数を 123456789 個と共通の定数とした
-- `(*)` におけるオーバーフローを `<arithmetic-error>` として検出できるようにした
-- `(file-lenght)`, `(open-input-file)`, `(open-output-file)`, `(open-io-file)` で第二引数(element-class) のチェックを行うようにした
+- `(file-length)`, `(open-input-file)`, `(open-output-file)`, `(open-io-file)` で第二引数(element-class) のチェックを行うようにした
+- ISLisp 検証処理系との互換のため、クラス `<invalid>` を追加
+- `(*)` におけるオーバーフロー、アンダーフローを `<floating-point-overflow` もしくは `<floating-point-underflow>` として検出できるようにした
 
 v0.7.18
 =======
