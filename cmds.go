@@ -198,6 +198,23 @@ func (f *FloatingPointOverflow) Equals(other Node, m EqlMode) bool {
 	return false
 }
 
+type FloatingPointUnderflow struct {
+	ArithmeticError
+}
+
+var _ ArithmeticErrorInterface = &FloatingPointUnderflow{}
+
+func (f *FloatingPointUnderflow) ClassOf() Class {
+	return floatingPointUnderflowClass
+}
+
+func (f *FloatingPointUnderflow) Equals(other Node, m EqlMode) bool {
+	if o, ok := other.(*FloatingPointUnderflow); ok {
+		return f.ArithmeticError.Equals(&o.ArithmeticError, m)
+	}
+	return false
+}
+
 var (
 	floatingPointOverflowClass  = registerNewAbstractClass[Node]("<floating-point-overflow>", ObjectClass, seriousConditionClass, errorClass, arithmeticErrorClass)
 	floatingPointUnderflowClass = registerNewAbstractClass[Node]("<floating-point-underflow>", ObjectClass, seriousConditionClass, errorClass, arithmeticErrorClass)
