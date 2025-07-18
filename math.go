@@ -7,18 +7,24 @@ import (
 	"math/big"
 )
 
-func checkFiniteFloat(v float64) (Node, error) {
+func checkFiniteFloat(v float64, op Callable) (Node, error) {
 	if math.IsNaN(v) {
 		return nil, errors.New("NaN")
 	}
 	if math.IsInf(v, 0) {
-		return nil, errors.New("Inf")
+		return nil, &FloatingPointOverflow{
+			ArithmeticError: ArithmeticError{
+				Operation: FunctionRef{value: op},
+				Operands:  Float(v),
+			},
+		}
 	}
 	return Float(v), nil
 }
 
 func funMath1(fn func(n float64) float64) SpecialF {
-	return func(ctx context.Context, w *World, node Node) (Node, error) {
+	var spf SpecialF
+	spf = func(ctx context.Context, w *World, node Node) (Node, error) {
 		value, node, err := w.ShiftAndEvalCar(ctx, node)
 		if err != nil {
 			return nil, err
@@ -36,8 +42,9 @@ func funMath1(fn func(n float64) float64) SpecialF {
 			}
 			result = fn(float64(f))
 		}
-		return checkFiniteFloat(result)
+		return checkFiniteFloat(result, spf)
 	}
+	return spf
 }
 
 func toFloat64(ctx context.Context, w *World, x Node, hasPeriod *bool) (float64, error) {
@@ -105,9 +112,11 @@ func funExpt(ctx context.Context, w *World, x1, x2 Node) (Node, error) {
 	result := math.Pow(f1, f2)
 	if hasPeriod || f2 < 0 {
 		if math.IsInf(result, 0) {
-			return callHandler[*ArithmeticError](ctx, w, true, &ArithmeticError{
-				Operation: FunctionRef{value: Function2(funExpt)},
-				Operands:  List(x1, x2),
+			return callHandler[Node](ctx, w, false, &FloatingPointOverflow{
+				ArithmeticError: ArithmeticError{
+					Operation: FunctionRef{value: Function2(funExpt)},
+					Operands:  List(x1, x2),
+				},
 			})
 		}
 		if math.IsNaN(result) {

@@ -93,7 +93,7 @@ func funMulti(ctx context.Context, w *World, args []Node) (Node, error) {
 		return nil, err
 	}
 	if f, ok := result.(Float); ok {
-		if _, err := checkFiniteFloat(float64(f)); err != nil {
+		if _, err := checkFiniteFloat(float64(f), &Function{F: funMulti}); err != nil {
 			return callHandler[*ArithmeticError](ctx, w, true, &ArithmeticError{
 				Operation: FunctionRef{value: &Function{F: funMulti}},
 				Operands:  List(args...),
