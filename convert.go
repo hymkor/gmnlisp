@@ -7,11 +7,6 @@ import (
 	"unicode"
 )
 
-var (
-	classList   = NewSymbol("<list>")
-	classVector = NewSymbol("<general-vector>")
-)
-
 func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 
 	source, list, err := w.ShiftAndEvalCar(ctx, list)
@@ -29,15 +24,13 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 	if IsNone(source) {
 		switch class {
 		case generalVectorClass.name:
-			return generalVectorClass.Create(), nil
+			return &Array{list: nil, dim: []int{0}}, nil
 		case stringClass.name:
 			return String("NIL"), nil
 		case symbolClass.name:
 			return Null, nil
 		case listClass.name:
 			return Null, nil
-		case classVector:
-			return new(VectorBuilder).Sequence(), nil
 		}
 	}
 	switch val := source.(type) {
@@ -74,13 +67,13 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 			return NewSymbol(val.String()), nil
 		case stringClass.name:
 			return val, nil
-		case classList:
+		case listClass.name:
 			var buffer ListBuilder
 			for _, r := range val {
 				buffer.Add(ctx, w, Rune(r))
 			}
 			return buffer.Sequence(), nil
-		case classVector:
+		case generalVectorClass.name:
 			var buffer VectorBuilder
 			for _, r := range val {
 				buffer.Add(ctx, w, Rune(r))
@@ -109,9 +102,9 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 		}
 	case *Cons:
 		switch class {
-		case classList:
+		case listClass.name:
 			return val, nil
-		case classVector:
+		case generalVectorClass.name:
 			var buffer VectorBuilder
 			for IsSome(val) {
 				buffer.Add(ctx, w, val.Car)
@@ -128,8 +121,10 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 			return nil, fmt.Errorf("%w: dimension is not 1: %#v", ErrNotSupportType, val)
 		}
 		switch class {
-		case classList:
-			var cons Node = nil
+		case generalVectorClass.name:
+			return val, nil
+		case listClass.name:
+			var cons Node = Null
 			for i := len(val.list) - 1; i >= 0; i-- {
 				cons = &Cons{
 					Car: val.list[i],
