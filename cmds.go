@@ -181,6 +181,23 @@ func funAnyTypep[T Node](_ context.Context, _ *World, arg Node) (Node, error) {
 	return Null, nil
 }
 
+type FloatingPointOverflow struct {
+	ArithmeticError
+}
+
+var _ ArithmeticErrorInterface = &FloatingPointOverflow{}
+
+func (f *FloatingPointOverflow) ClassOf() Class {
+	return floatingPointOverflowClass
+}
+
+func (f *FloatingPointOverflow) Equals(other Node, m EqlMode) bool {
+	if o, ok := other.(*FloatingPointOverflow); ok {
+		return f.ArithmeticError.Equals(&o.ArithmeticError, m)
+	}
+	return false
+}
+
 var (
 	floatingPointOverflowClass  = registerNewAbstractClass[Node]("<floating-point-overflow>", ObjectClass, seriousConditionClass, errorClass, arithmeticErrorClass)
 	floatingPointUnderflowClass = registerNewAbstractClass[Node]("<floating-point-underflow>", ObjectClass, seriousConditionClass, errorClass, arithmeticErrorClass)
