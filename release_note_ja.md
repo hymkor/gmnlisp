@@ -21,6 +21,10 @@
 - `(file-length)`, `(open-input-file)`, `(open-output-file)`, `(open-io-file)` で第二引数(element-class) のチェックを行うようにした
 - ISLisp 検証処理系との互換のため、クラス `<invalid>` を追加
 - `(*)` におけるオーバーフロー、アンダーフローを `<floating-point-overflow` もしくは `<floating-point-underflow>` として検出できるようにした
+- `(set-file-position)` でオフセットが負の時、`<domain-error>` を返すようにした
+- `(convert)` で `<general-vector>` 他、サポートする型を増やした
+- `<`, `<=`, `>`, `>=` でパラメータの個数チェックが抜けていた不具合を修正
+- `(finish-output)` に、`(standard-output)` などバッファリングしていない`<stream>`を与えた場合 `<domain-error>` を起こしていたが、何もしないよう修正した
 
 v0.7.18
 =======

@@ -21,6 +21,10 @@
 - Added validation of the second argument (element-class) for `(file-length)`, `(open-input-file)`, `(open-output-file)`, and `(open-io-file)`
 - Added the `<invalid>` class for compatibility with ISLisp conformance test systems
 - Improved `(*)` to detect floating-point overflow and underflow as `<floating-point-overflow>` or `<floating-point-underflow>`
+- Modified `(set-file-position)` to return `<domain-error>` when given a negative offset
+- Extended `(convert)` to support additional types, including `<general-vector>`
+- Fixed: Missing parameter count checks in `<`, `<=`, `>`, and `>=`
+- Fixed: `(finish-output)` no longer raises `<domain-error>` when given an unbuffered `<stream>` such as `(standard-output)`; it now performs no operation in such cases
 
 v0.7.18
 =======
