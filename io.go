@@ -224,6 +224,9 @@ func funClose(ctx context.Context, w *World, arg Node) (Node, error) {
 func funFinishOutput(ctx context.Context, w *World, arg Node) (Node, error) {
 	W, ok := arg.(interface{ Flush() error })
 	if !ok {
+		if _, ok := arg.(io.Writer); ok {
+			return Null, nil
+		}
 		return callHandler[Node](ctx, w, true, &DomainError{
 			Object:        arg,
 			ExpectedClass: streamClass,
