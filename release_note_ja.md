@@ -1,5 +1,9 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+v0.7.19
+=======
+Jul 21, 2025
+
 - `(read)` やパーサーで文字列中の `\r\n` を `\n` に変換するようにした
 - `(subseq)` において、特定の引数を与えた場合にクラッシュする不具合を修正
 - プラス記号で始まる数字列がシンボルに見えていた不具合を修正
@@ -26,6 +30,8 @@
 - `<`, `<=`, `>`, `>=` でパラメータの個数チェックが抜けていた不具合を修正
 - `(finish-output)` に、`(standard-output)` などバッファリングしていない`<stream>`を与えた場合 `<domain-error>` を起こしていたが、何もしないよう修正した
 
+[TP Result] : PASS = 15760, FAIL = 651 (Pass rate: 96.03%)
+
 v0.7.18
 =======
 Jul 14, 2025
@@ -48,7 +54,7 @@ Jul 14, 2025
 - `(subseq)` の引数が範囲外の時に `<domain-error>` とするようにした
 - `<general-array>` に対して `(subseq)` も使えるようにした
 
-[TP Result] : PASS = 14266, FAIL = 2145
+[TP Result] : PASS = 14266, FAIL = 2145 (Pass rate: 86.92%)
 
 v0.7.17
 =======

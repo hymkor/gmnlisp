@@ -1,5 +1,9 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+v0.7.19
+=======
+Jul 21, 2025
+
 - `(read)` and parser convert `\r\n` to `\n` in string literals.
 - Fixed a crash in `(subseq)` that occurred with certain argument combinations
 - Fixed: Numeric strings starting with a plus sign were mistakenly recognized as symbols
@@ -26,6 +30,8 @@
 - Fixed: Missing parameter count checks in `<`, `<=`, `>`, and `>=`
 - Fixed: `(finish-output)` no longer raises `<domain-error>` when given an unbuffered `<stream>` such as `(standard-output)`; it now performs no operation in such cases
 
+[TP Result] : PASS = 15760, FAIL = 651 (Pass rate: 96.03%)
+
 v0.7.18
 =======
 Jul 14, 2025
@@ -48,7 +54,7 @@ Jul 14, 2025
 - Changed `(subseq)` to return a `<domain-error>` when given out-of-range arguments.
 - `(subseq)` now supports `<general-array>`
 
-[TP Result] : PASS = 14266, FAIL = 2145
+[TP Result] : PASS = 14266, FAIL = 2145 (Pass rate: 86.92%)
 
 v0.7.17
 =======
