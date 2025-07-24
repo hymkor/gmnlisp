@@ -307,6 +307,11 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 		if !ok {
 			return nil, fmt.Errorf("%v: %w", superRaw, ErrExpectedClass)
 		}
+		for _, v := range class.Super {
+			if v == super {
+				return nil, fmt.Errorf("duplicated class: %s", superSymbol.String())
+			}
+		}
 		class.Super = append(class.Super, super)
 	}
 	if IsNone(args) {
