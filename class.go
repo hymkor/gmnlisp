@@ -145,6 +145,9 @@ func readSlotSpec(ctx context.Context, w *World, list Node) (*_SlotSpec, error) 
 				return nil, fmt.Errorf("%#v: %w", keyword.String(), err)
 			}
 		case kwInitForm:
+			if slotSpec.initform != nil {
+				return nil, fmt.Errorf(":initform for %#v is twice defined", identifier.String())
+			}
 			slotSpec.initform = func() (Node, error) { return w.Eval(ctx, value) }
 		case kwInitArg:
 			if len(slotSpec.initarg) >= 1 {
