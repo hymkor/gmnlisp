@@ -171,6 +171,7 @@ type _StandardClass struct {
 	Super     []Class
 	Slot      map[Symbol]*_SlotSpec
 	MetaClass Class
+	Abstract  bool
 }
 
 // standardClass can not be created with registerNewBuilInClass
@@ -426,6 +427,27 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 				}
 			}
 			class.MetaClass = metaClass
+		} else if left == NewKeyword(":abstractp") {
+			right, rest, err := Shift(rest)
+			if err != nil {
+				return nil, err
+			}
+			if IsSome(rest) {
+				return nil, ErrTooManyArguments
+			}
+			if right == True {
+				class.Abstract = true
+			} else if right == Null {
+				if class.Abstract {
+					return nil, fmt.Errorf("%s: abstractp is already set", className.String())
+				}
+				class.Abstract = false
+			} else {
+				return nil, &DomainError{
+					Object: right,
+					Reason: "t or nil",
+				}
+			}
 		} else {
 			return nil, fmt.Errorf("syntax error %s", left.String())
 		}
