@@ -323,6 +323,12 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 				return nil, fmt.Errorf("duplicated class: %s", superSymbol.String())
 			}
 		}
+		if _, ok := super.(*_StandardClass); !ok {
+			return nil, &DomainError{
+				Object:        super,
+				ExpectedClass: standardClass,
+			}
+		}
 		class.Super = append(class.Super, super)
 	}
 	// (slot-spec*)
