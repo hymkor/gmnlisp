@@ -147,6 +147,9 @@ func readSlotSpec(ctx context.Context, w *World, list Node) (*_SlotSpec, error) 
 		case kwInitForm:
 			slotSpec.initform = func() (Node, error) { return w.Eval(ctx, value) }
 		case kwInitArg:
+			if len(slotSpec.initarg) >= 1 {
+				return nil, fmt.Errorf(":initarg for %#v is twice defined", identifier.String())
+			}
 			if v, err := ExpectSymbol(ctx, w, value); err == nil {
 				slotSpec.initarg = append(slotSpec.initarg, v)
 			} else {
