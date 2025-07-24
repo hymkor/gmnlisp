@@ -3,8 +3,8 @@
 ;;;     (defglobal make (load "smake-go120.lsp"))
 ;;; Call a method:
 ;;;     (funcall make 'build) or (funcall make "build")
-(let* ((GO120   (which "go1.20.14"))
-       (GOEXE   (if (consp GO120) (car GO120) "go"))
+(let* ((GO120   (lookpath "go1.20.14"))
+       (GOEXE   (or GO120 "go"))
        (EXE     (shell (string-append GOEXE " env GOEXE")))
        (CURDIR  (getwd))
        (NAME    (notdir CURDIR))
@@ -18,7 +18,12 @@
              (with-error-output *discard*
                (q "git" "describe" "--tags"))))))
   (labels
-    ((find-str-file
+    ((dbg!
+       (x)
+       (format (error-output) "[~S]~%" x)
+       x)
+
+     (find-str-file
        (word filename)
        (file-for-each filename (lambda (line) (string-index word line))))
 
@@ -34,12 +39,15 @@
                  (cond
                    ((string-index "go:build" line)
                     t)
-                   ((and (string-index "package " line)
-                         (not (string-index "_test" line)))
-                    (return-from func (string-index "main" line)))
+                   ((string-index "package " line)
+                    (if (string-index "_test" line)
+                      t
+                      (return-from func (string-index "main" line))))
                    (t
                      nil)))))
-           (wildcard (join-path dir "*.go")))))
+           (mapcan
+             (lambda (fn) (if (string-index "_test.go" fn) nil (list fn)))
+             (wildcard (join-path dir "*.go"))))))
 
      (go-build
        () 
@@ -80,6 +88,75 @@
            exe-list)
          ) ; let
        ) ; make-dist
+
+     (quote-version-section
+       (in)
+       ; read from the first /vN.N.N/ line to the next /vN.N.N/ as a list
+
+       (let ((line nil) (flag nil) (result nil))
+         (block line-loop
+           (while (setq line (read-line in nil nil))
+             (if (match "^v\\d+\\.\\d+\\.\\d+" line)
+               (if flag
+                 (return-from line-loop result)
+                 (setq flag t))
+               )
+             (if flag
+               (setq result (append result (list line))))))))
+
+     (dump
+       (L w)
+
+       (while L
+         (format w "~A~%" (car L))
+         (setq L (cdr L))))
+
+     (recent-changes
+       (fnames)
+
+       (block fnames-loop
+         (while fnames
+           (if (probe-file (car fnames))
+             (with-open-input-file
+               (in (car fnames))
+               (let ((L (quote-version-section in))
+                     (s (create-string-output-stream)))
+                 (dump (cdddr L) s)
+                 (return-from fnames-loop 
+                              (cons (car L) (get-output-stream-string s))))
+               ))
+           (setq fnames (cdr fnames))))
+       )
+
+     (make-release-notes
+       (w)
+
+       (let ((L '(("## Changes in ~A (English)~%" "release_note.md" "release_note_en.md")
+                  ("## Changes in ~A (Japanese)~%" "release_note_ja.md"))))
+         (while L
+           (let ((r (recent-changes (cdr (car L)))))
+             (format w (car (car L)) (car r))
+             (format w "~A~%" (cdr r)))
+           (setq L (cdr L))))
+       )
+
+     (gh-release
+       (name version)
+
+       (let ((notes-txt (join-path (getenv "TEMP") "notes.txt")))
+         (with-open-output-file
+           (w notes-txt)
+           (make-release-notes w)
+           )
+         (unwind-protect
+           (apply #'spawn "gh" "release" "create" "-d" "--notes-file" notes-txt "-t"
+                  version version
+                  (wildcard (string-append name "-" version "-*.zip")))
+           (if (probe-file notes-txt)
+             (rm notes-txt))
+           ) ; unwind-protect
+         )
+       )
      ) ; labels-func
 
     (lambda (sub-command :rest args)
@@ -102,7 +179,7 @@
 
           ((get)
            (spawn GOEXE "get" "-u")
-           (if (consp GO120)
+           (if GO120
              (mapc
                (lambda (i)
                  (if (find-str-file (car i) "go.mod")
@@ -131,9 +208,11 @@
                  (string-split delimiter (getenv "PATH"))))))
 
           ((release)
-           (apply #'spawn "gh" "release" "create" "-d" "--notes" "" "-t"
-                  VERSION VERSION
-                  (wildcard (string-append NAME "-" VERSION "-*.zip"))))
+           (gh-release NAME VERSION)
+           ;(apply #'spawn "gh" "release" "create" "-d" "--notes" "" "-t"
+           ;       VERSION VERSION
+           ;       (wildcard (string-append NAME "-" VERSION "-*.zip")))
+           )
 
           ((manifest)
            (sh (string-append "make-scoop-manifest *.zip > " NAME ".json")))
@@ -156,7 +235,8 @@
           ((env)
            (mapc
              (lambda (c) (format (standard-output) "~S=~S~%" c (eval c)))
-             '(GO120 GOEXE EXE CURDIR NAME TARGET SOURCE VERSION)))
+             '(GO120 GOEXE EXE CURDIR NAME TARGET SOURCE VERSION))
+           )
           (t
             (error "~S: not command" sub-command))
           ); case
