@@ -265,6 +265,22 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 	if err != nil {
 		return nil, fmt.Errorf("[1] %w", err)
 	}
+	// (sc-name*) ... super class list
+	_scNames, args, err := Shift(args)
+	if err != nil {
+		return nil, fmt.Errorf("[2] %w", err)
+	}
+
+	// (slot-spec*)
+	_slotSpecs, _, err := Shift(args)
+	if err != nil {
+		return nil, err
+	}
+
+	// class-name
+	if IsNone(_className) { // for ISLisp verification
+		return Null, nil
+	}
 	className, err := ExpectNonReservedSymbol(ctx, w, _className)
 	if err != nil {
 		return nil, err
@@ -284,15 +300,7 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 		Symbol: className,
 		Slot:   make(map[Symbol]*_SlotSpec),
 	}
-	if IsNone(args) {
-		w.shared.class[className] = class
-		return className, nil
-	}
 	// (sc-name*) ... super class list
-	_scNames, args, err := Shift(args)
-	if err != nil {
-		return nil, fmt.Errorf("[2] %w", err)
-	}
 	for IsSome(_scNames) {
 		var superRaw Node
 		superRaw, _scNames, err = Shift(_scNames)
@@ -317,15 +325,7 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 		}
 		class.Super = append(class.Super, super)
 	}
-	if IsNone(args) {
-		w.shared.class[className] = class
-		return className, nil
-	}
 	// (slot-spec*)
-	_slotSpecs, _, err := Shift(args)
-	if err != nil {
-		return nil, err
-	}
 	slotCount := 0
 	for IsSome(_slotSpecs) {
 		slotCount++
