@@ -1,5 +1,11 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+- `(defclass)` now checks for duplicate superclass names and raises an error if any are found.
+- `(defclass)` now raises a `<undefined-entity>` error if a specified superclass is not defined.
+- `(defclass)` now silently returns `nil` without performing any operation when the class name is `nil`.
+- `(defclass)` now raises an error if the same slot specifies `:initarg` or `:initform` more than once.
+- Added support for the `:metaclass` and `:abstractp` options in `(defclass)`.
+
 v0.7.19
 =======
 Jul 21, 2025

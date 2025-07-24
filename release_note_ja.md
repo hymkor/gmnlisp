@@ -1,5 +1,11 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+- `(defclass)` でスーパークラス名が重複していないかチェックするようにした
+- `(defclass)` で未定義のスーパークラス名が指定された場合、`<undefined-entity>` エラーとするようにした
+- `(defclass)` においてクラス名が `nil` の場合、何もせず `nil` を返して終了するようにした
+- `(defclass)` で、同一スロットに対して `:initarg` や `:initform` を複数回指定した場合にエラーとするようにした
+- `(defclass)` で `:metaclass` および `:abstractp` オプションをサポート
+
 v0.7.19
 =======
 Jul 21, 2025
