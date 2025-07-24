@@ -166,10 +166,11 @@ func readSlotSpec(ctx context.Context, w *World, list Node) (*_SlotSpec, error) 
 }
 
 type _StandardClass struct {
-	serial int
-	Symbol Symbol
-	Super  []Class
-	Slot   map[Symbol]*_SlotSpec
+	serial    int
+	Symbol    Symbol
+	Super     []Class
+	Slot      map[Symbol]*_SlotSpec
+	MetaClass Class
 }
 
 // standardClass can not be created with registerNewBuilInClass
@@ -278,7 +279,7 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 	}
 
 	// (slot-spec*)
-	_slotSpecs, _, err := Shift(args)
+	_slotSpecs, args, err := Shift(args)
 	if err != nil {
 		return nil, err
 	}
@@ -378,6 +379,55 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 			if err := registerMethod(w, setterName, class, setter); err != nil {
 				return nil, err
 			}
+		}
+	}
+	for IsSome(args) {
+		var cur Node
+		var err error
+		cur, args, err = Shift(args)
+		if err != nil {
+			return nil, err
+		}
+		left, rest, err := Shift(cur)
+		if err != nil {
+			return nil, err
+		}
+		if left == NewKeyword(":metaclass") {
+			if class.MetaClass != nil {
+				return nil, fmt.Errorf("%s: meta class is already defined", className.String())
+			}
+			right, rest, err := Shift(rest)
+			if err != nil {
+				return nil, err
+			}
+			if IsSome(rest) {
+				return nil, ErrTooManyArguments
+			}
+			metaClassSymbol, err := ExpectSymbol(ctx, w, right)
+			if err != nil {
+				return nil, err
+			}
+			if metaClassSymbol == className {
+				return nil, fmt.Errorf("%s: metaclass must not be itself", className.String())
+			}
+			metaClass, ok := w.class[metaClassSymbol]
+			if !ok {
+				return nil, &_UndefinedEntity{
+					name:  metaClassSymbol,
+					space: NewSymbol("class"),
+				}
+			}
+			if metaClass != standardClass {
+				if !metaClass.InheritP(standardClass) {
+					return nil, &DomainError{
+						Object:        metaClassSymbol,
+						ExpectedClass: standardObjectClass,
+					}
+				}
+			}
+			class.MetaClass = metaClass
+		} else {
+			return nil, fmt.Errorf("syntax error %s", left.String())
 		}
 	}
 	w.shared.class[className] = class
