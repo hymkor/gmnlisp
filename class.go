@@ -305,7 +305,10 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 		}
 		super, ok := w.class[superSymbol]
 		if !ok {
-			return nil, fmt.Errorf("%v: %w", superRaw, ErrExpectedClass)
+			return nil, &_UndefinedEntity{
+				name:  superSymbol,
+				space: NewSymbol("class"),
+			}
 		}
 		for _, v := range class.Super {
 			if v == super {
