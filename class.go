@@ -174,6 +174,10 @@ type _StandardClass struct {
 	Abstract  bool
 }
 
+func (c *_StandardClass) Supers() []Class {
+	return c.Super
+}
+
 // standardClass can not be created with registerNewBuilInClass
 // because it does not inherit <built-in-class>.
 var standardClass = &BuiltInClass{
@@ -265,6 +269,26 @@ var symInitializeObject = NewSymbol("initialize-object")
 
 var classCounter = 0
 
+func checkDiamond(class Class, checkList map[Symbol]struct{}) []Symbol {
+	if _, ok := class.(*_StandardClass); !ok {
+		return nil
+	}
+	name := class.Name()
+	superClass := class.Supers()
+
+	if _, ok := checkList[name]; ok {
+		return []Symbol{name}
+	}
+	checkList[name] = struct{}{}
+
+	for _, c1 := range superClass {
+		if syms := checkDiamond(c1, checkList); len(syms) > 0 {
+			return syms
+		}
+	}
+	return nil
+}
+
 func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 	// (defclass class-name (sc-name*) (slot-spec*) class-opt*)
 
@@ -274,7 +298,7 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 		return nil, fmt.Errorf("[1] %w", err)
 	}
 	// (sc-name*) ... super class list
-	_scNames, args, err := Shift(args)
+	superClassNames, args, err := Shift(args)
 	if err != nil {
 		return nil, fmt.Errorf("[2] %w", err)
 	}
@@ -309,9 +333,10 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 		Slot:   make(map[Symbol]*_SlotSpec),
 	}
 	// (sc-name*) ... super class list
-	for IsSome(_scNames) {
+	checkList := map[Symbol]struct{}{}
+	for IsSome(superClassNames) {
 		var superRaw Node
-		superRaw, _scNames, err = Shift(_scNames)
+		superRaw, superClassNames, err = Shift(superClassNames)
 		if err != nil {
 			return nil, err
 		}
@@ -330,6 +355,9 @@ func cmdDefClass(ctx context.Context, w *World, args Node) (Node, error) {
 			if v == super {
 				return nil, fmt.Errorf("duplicated class: %s", superSymbol.String())
 			}
+		}
+		if dupSyms := checkDiamond(super, checkList); len(dupSyms) > 0 {
+			return nil, fmt.Errorf("diamond inherits: %s", dupSyms[0].String())
 		}
 		if _, ok := super.(*_StandardClass); !ok {
 			return nil, &DomainError{

@@ -10,6 +10,7 @@ type Class interface {
 	InstanceP(Node) bool
 	Create() Node
 	InheritP(Class) bool
+	Supers() []Class
 }
 
 type BuiltInClass struct {
@@ -17,6 +18,10 @@ type BuiltInClass struct {
 	instanceP func(Node) bool
 	create    func() Node
 	super     []Class
+}
+
+func (e *BuiltInClass) Supers() []Class {
+	return e.super
 }
 
 func (e *BuiltInClass) InheritP(c Class) bool {
