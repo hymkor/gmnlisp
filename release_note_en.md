@@ -5,6 +5,10 @@
 - `(defclass)` now silently returns `nil` without performing any operation when the class name is `nil`.
 - `(defclass)` now raises an error if the same slot specifies `:initarg` or `:initform` more than once.
 - Added support for the `:metaclass` and `:abstractp` options in `(defclass)`.
+- Added a check for diamond inheritance in `(defclass)` definitions.
+- Made generic function calls report an explicit error when the number of arguments does not match.
+- Modified method-based setters to return the assigned value.
+- Modified method-based getters to signal an error when accessing uninitialized slots.
 
 v0.7.19
 =======
