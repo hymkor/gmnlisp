@@ -42,7 +42,7 @@ func newSetter(class Class, slotName Symbol) *methodType {
 				return nil, fmt.Errorf("%v: %w", node[1], ErrExpectedClass)
 			}
 			rec.Slot[slotName] = node[0]
-			return True, nil
+			return node[0], nil
 		},
 	}
 }
