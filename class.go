@@ -28,7 +28,7 @@ func newGetter(class Class, slotName Symbol) *methodType {
 			if val, ok := rec.Slot[slotName]; ok {
 				return val, nil
 			}
-			return Null, nil
+			return Null, fmt.Errorf("slot %#v not initialized", slotName)
 		},
 	}
 }
