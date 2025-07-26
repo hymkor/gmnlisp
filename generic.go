@@ -12,35 +12,32 @@ type methodType struct {
 	method   func(context.Context, *World, []Node) (Node, error)
 }
 
-func (m *methodType) canCallWith(values []Node) bool {
+func (m *methodType) checkArguments(values []Node) (bool, error) {
 	//println("values:", joinStringer(values, ":"))
 	//println("method:", joinStringer(m.types, ":"))
-	if m.restType != nil {
-		//println("rest:", m.restType.String())
-		if len(m.types) > len(values) {
-			//println("too few arguments")
-			return false
-		}
-	} else {
-		if len(m.types) != len(values) {
-			return false
+	if len(m.types) > len(values) {
+		return false, ErrTooFewArguments
+	}
+	if m.restType == nil {
+		if len(m.types) < len(values) {
+			return false, ErrTooManyArguments
 		}
 	}
 	for i, t := range m.types {
 		if !t.InstanceP(values[i]) {
 			//println("NG2", t.String(), values[i].String())
-			return false
+			return false, nil
 		}
 	}
 	if m.restType != nil {
 		for _, v := range values[len(m.types):] {
 			if !m.restType.InstanceP(v) {
 				//println("NG1")
-				return false
+				return false, nil
 			}
 		}
 	}
-	return true
+	return true, nil
 }
 
 type genericType struct {
@@ -143,15 +140,21 @@ func (c *genericType) Call(ctx context.Context, w *World, node Node) (Node, erro
 		}
 		values = append(values, v)
 	}
+	errs := []error{}
 	for i := len(c.methods) - 1; i >= 0; i-- {
-		if m := c.methods[i]; m.canCallWith(values) {
+		m := c.methods[i]
+		ok, err := m.checkArguments(values)
+		if ok {
 			return m.method(ctx, w, values)
 		}
+		if err != nil {
+			errs = append(errs, err)
+		}
 	}
-	return callHandler[FunctionRef](ctx, w, false, &_UndefinedEntity{
-		name:  c.Symbol,
-		space: symFunction,
-	})
+	if len(errs) > 0 {
+		return nil, errs[0]
+	}
+	return nil, errors.New("no match methods")
 }
 
 func (c *genericType) FuncId() uintptr {
