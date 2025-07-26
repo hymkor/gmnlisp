@@ -97,12 +97,25 @@ func registerClass(class *BuiltInClass) *BuiltInClass {
 	return class
 }
 
+func hasObjectClass(super []Class) bool {
+	for _, c := range super {
+		if c.Name() == ObjectClass.Name() {
+			return true
+		}
+	}
+	return false
+}
+
 func registerNewBuiltInClass[T Node](name string, super ...Class) *BuiltInClass {
-	super = append(super, ObjectClass)
+	if !hasObjectClass(super) {
+		super = append(super, ObjectClass)
+	}
 	return registerClass(NewBuiltInClass[T](name, super...))
 }
 
 func registerNewAbstractClass[T Node](name string, super ...Class) *BuiltInClass {
-	super = append(super, ObjectClass)
+	if !hasObjectClass(super) {
+		super = append(super, ObjectClass)
+	}
 	return registerClass(NewAbstractClass[T](name, super...))
 }
