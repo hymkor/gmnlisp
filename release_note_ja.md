@@ -1,5 +1,9 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+v0.7.20
+=======
+Jul 28, 2025
+
 - `(defclass)` でスーパークラス名が重複していないかチェックするようにした
 - `(defclass)` で未定義のスーパークラス名が指定された場合、`<undefined-entity>` エラーとするようにした
 - `(defclass)` においてクラス名が `nil` の場合、何もせず `nil` を返して終了するようにした
@@ -10,6 +14,8 @@
 - generic function の呼び出し時に、引数の数が合わない場合はエラーを明示するようにした
 - method による slot の setter が、代入された値を戻り値として返すようにした
 - method の getter が、明示的に初期化されていない slot にアクセスした場合にエラーを出すようにした
+
+[TP Result] : PASS = 15800, FAIL = 611 (Pass rate: 96.28%)
 
 v0.7.19
 =======

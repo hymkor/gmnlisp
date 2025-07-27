@@ -1,5 +1,9 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+v0.7.20
+=======
+Jul 28, 2025
+
 - `(defclass)` now checks for duplicate superclass names and raises an error if any are found.
 - `(defclass)` now raises a `<undefined-entity>` error if a specified superclass is not defined.
 - `(defclass)` now silently returns `nil` without performing any operation when the class name is `nil`.
@@ -9,6 +13,8 @@
 - Made generic function calls report an explicit error when the number of arguments does not match.
 - Modified method-based setters to return the assigned value.
 - Modified method-based getters to signal an error when accessing uninitialized slots.
+
+[TP Result] : PASS = 15800, FAIL = 611 (Pass rate: 96.28%)
 
 v0.7.19
 =======
