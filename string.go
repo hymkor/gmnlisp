@@ -186,12 +186,15 @@ func funCreateString(ctx context.Context, w *World, list []Node) (Node, error) {
 			return nil, err
 		}
 	}
-	if length < 0 || length >= exhaustThresHold {
+	if length < 0 {
 		condition := &DomainError{
 			Object:        length,
 			ExpectedClass: integerClass,
 		}
 		return callHandler[Node](ctx, w, false, condition)
+	}
+	if length >= exhaustThresHold {
+		return nil, StorageExhausted{}
 	}
 	return String(strings.Repeat(string(ch), int(length))), nil
 }
