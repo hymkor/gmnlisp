@@ -198,3 +198,19 @@ func funCreateString(ctx context.Context, w *World, list []Node) (Node, error) {
 	}
 	return String(strings.Repeat(string(ch), int(length))), nil
 }
+
+func (s String) Elt(n int) (Node, error) {
+	if n < 0 {
+		return nil, &DomainError{
+			Object: Integer(n),
+			Reason: "Not a non-negative integer",
+		}
+	}
+	for _, c := range s {
+		if n == 0 {
+			return Rune(c), nil
+		}
+		n--
+	}
+	return nil, ErrIndexOutOfRange
+}
