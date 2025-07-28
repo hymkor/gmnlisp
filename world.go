@@ -370,7 +370,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("div"):                            &Function{C: 2, F: funDivide},
 	NewSymbol("domain-error-expected-class"):    Function1(funDomainErrorExpectedClass),
 	NewSymbol("domain-error-object"):            Function1(funDomainErrorObject),
-	NewSymbol("elt"):                            &Function{Min: 2, F: funElt},
+	NewSymbol("elt"):                            &Function{C: 2, F: funElt},
 	NewSymbol("eq"):                             &Function{C: 2, F: funEq},
 	NewSymbol("eql"):                            &Function{C: 2, F: funEql},
 	NewSymbol("equal"):                          &Function{C: 2, F: funEqual},

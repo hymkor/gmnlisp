@@ -106,6 +106,12 @@ func funElt(ctx context.Context, w *World, args []Node) (Node, error) {
 	type canElt interface {
 		Elt(int) (Node, error)
 	}
+	if _, ok := args[0].(canElt); !ok {
+		return nil, &DomainError{
+			Object: args[0],
+			Reason: "Not a sequence",
+		}
+	}
 	var value Node = args[0]
 	for i, indexArg := range args[1:] {
 		index, err := ExpectClass[Integer](ctx, w, indexArg)
