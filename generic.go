@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"sort"
 )
 
 type methodType struct {
@@ -129,6 +130,50 @@ func cmdDefGeneric(ctx context.Context, w *World, node Node) (Node, error) {
 	return name, nil
 }
 
+var errNotSuperClass = errors.New("Not a super class")
+
+func distanceClass(given, funcs Class) (int, bool) {
+	if given.Name() == funcs.Name() {
+		return 0, true
+	}
+	// givenClass can be assigned to funcClass
+	supers := given.Supers()
+	minimum := 99999
+	found := false
+	for i := len(supers) - 1; i >= 0; i-- {
+		distance, ok := distanceClass(supers[i], funcs)
+		if ok {
+			found = true
+			if distance < minimum {
+				minimum = distance + 1
+			}
+		}
+	}
+	return minimum, found
+}
+
+func classLessThan(args []Node, left *methodType, right *methodType) (bool, error) {
+	for i := 0; i < len(left.types); i++ {
+		L, ok := distanceClass(args[i].ClassOf(), left.types[i])
+		if !ok {
+			return false, fmt.Errorf("%s: %s, %s", errNotSuperClass, args[i].ClassOf().String(), left.types[i].String())
+		}
+		R, ok := distanceClass(args[i].ClassOf(), right.types[i])
+		if !ok {
+			// return -1, errNotSuperClass
+			return false, fmt.Errorf("%s: %s, %s", errNotSuperClass, args[i].ClassOf().String(), right.types[i].String())
+		}
+		if L < R {
+			return true, nil
+		} else if L > R {
+			return false, nil
+		}
+	}
+	return false, nil
+}
+
+var errNoMatchMethods = errors.New("no match methods")
+
 func (c *genericType) Call(ctx context.Context, w *World, node Node) (Node, error) {
 	values := []Node{}
 	for IsSome(node) {
@@ -140,21 +185,32 @@ func (c *genericType) Call(ctx context.Context, w *World, node Node) (Node, erro
 		}
 		values = append(values, v)
 	}
-	errs := []error{}
+	if len(values) < c.argc {
+		return nil, ErrTooFewArguments
+	}
+	if !c.rest && len(values) > c.argc {
+		return nil, ErrTooManyArguments
+	}
+
+	candidates := make([]*methodType, 0, len(c.methods))
 	for i := len(c.methods) - 1; i >= 0; i-- {
 		m := c.methods[i]
 		ok, err := m.checkArguments(values)
-		if ok {
-			return m.method(ctx, w, values)
+		if ok && err == nil {
+			candidates = append(candidates, m)
 		}
+	}
+	if len(candidates) <= 0 {
+		return nil, errNoMatchMethods
+	}
+	sort.Slice(candidates, func(i, j int) bool {
+		lessThan, err := classLessThan(values, candidates[i], candidates[j])
 		if err != nil {
-			errs = append(errs, err)
+			panic(err.Error())
 		}
-	}
-	if len(errs) > 0 {
-		return nil, errs[0]
-	}
-	return nil, errors.New("no match methods")
+		return lessThan
+	})
+	return candidates[0].method(ctx, w, values)
 }
 
 func (c *genericType) FuncId() uintptr {
