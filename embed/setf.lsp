@@ -23,13 +23,11 @@
       `(setq ,expr ,newvalue)
       (let* ((name (car expr))
              (pair (assoc name setf-table))
-             (tmp nil)
              (setter (if pair
                        (cdr pair)
-                       (progn
-                         (setq tmp (convert
+                       (let* ((tmp (convert
                                      (string-append "set-" (convert name <string>))
-                                     <symbol>))
+                                     <symbol>)))
                          (setq setf-table (cons (cons name tmp) setf-table))
                          tmp)))
              (arguments (cdr expr)))
