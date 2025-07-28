@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"unicode"
+	"unicode/utf8"
 )
 
 type trueType struct{}
@@ -183,6 +184,15 @@ func funRuneIndex(ctx context.Context, w *World, argv []Node) (Node, error) {
 			return nil, err
 		}
 		start = int(_start)
+		if L := utf8.RuneCountInString(string(str)); start >= L {
+			return nil, ErrIndexOutOfRange
+		}
+		if start < 0 {
+			return nil, &DomainError{
+				Reason: "Expect not a negative integer",
+				Object: _start,
+			}
+		}
 	}
 	i := 0
 	for _, c := range string(str) {
