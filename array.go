@@ -425,7 +425,7 @@ func funArrayDimensions(ctx context.Context, w *World, arg Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	var cons Node
+	var cons Node = Null
 	for i := len(array.dim) - 1; i >= 0; i-- {
 		cons = &Cons{
 			Car: Integer(array.dim[i]),
