@@ -141,6 +141,13 @@ func funStringIndex(ctx context.Context, w *World, argv []Node) (Node, error) {
 		return nil, err
 	}
 	subStr := _subStr.String()
+
+	_str, err := ExpectClass[String](ctx, w, argv[1])
+	if err != nil {
+		return nil, err
+	}
+	str := _str.String()
+
 	start := 0
 	if len(argv) >= 3 {
 		_start, err := ExpectClass[Integer](ctx, w, argv[2])
@@ -151,12 +158,16 @@ func funStringIndex(ctx context.Context, w *World, argv []Node) (Node, error) {
 			return nil, ErrTooManyArguments
 		}
 		start = int(_start)
+		if L := utf8.RuneCountInString(str); start >= L {
+			return nil, ErrIndexOutOfRange
+		}
+		if start < 0 {
+			return nil, &DomainError{
+				Reason: "Expect not a negative integer",
+				Object: _start,
+			}
+		}
 	}
-	_str, err := ExpectClass[String](ctx, w, argv[1])
-	if err != nil {
-		return nil, err
-	}
-	str := _str.String()
 
 	for i := 0; i < start && len(str) > 0; i++ {
 		_, siz := utf8.DecodeRuneInString(str)
