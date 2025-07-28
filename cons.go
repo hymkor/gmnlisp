@@ -54,6 +54,31 @@ func (cons *Cons) isTailNull() bool {
 	}
 }
 
+func (cons *Cons) Elt(n int) (Node, error) {
+	if n < 0 {
+		return nil, &DomainError{
+			Object: Integer(n),
+			Reason: "Not a non-negative integer",
+		}
+	}
+	var p Node = cons
+	for IsSome(p) {
+		q, ok := p.(*Cons)
+		if !ok {
+			return nil, &DomainError{
+				Object: cons,
+				Reason: "Not a list",
+			}
+		}
+		if n == 0 {
+			return q.Car, nil
+		}
+		n--
+		p = q.Cdr
+	}
+	return nil, ErrIndexOutOfRange
+}
+
 type writeCounter struct {
 	n   int
 	err error
