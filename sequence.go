@@ -112,6 +112,12 @@ func funElt(ctx context.Context, w *World, args []Node) (Node, error) {
 			Reason: "Not a sequence",
 		}
 	}
+	if a, ok := args[0].(*Array); ok && len(a.dim) != 1 {
+		return nil, &DomainError{
+			Object: args[0],
+			Reason: "Not a vector or a list",
+		}
+	}
 	var value Node = args[0]
 	for i, indexArg := range args[1:] {
 		index, err := ExpectClass[Integer](ctx, w, indexArg)
