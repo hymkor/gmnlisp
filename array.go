@@ -417,6 +417,10 @@ func funSetGaref(ctx context.Context, w *World, args []Node) (Node, error) {
 }
 
 func funArrayDimensions(ctx context.Context, w *World, arg Node) (Node, error) {
+	if s, ok := arg.(String); ok {
+		leng, err := funLength(ctx, w, s)
+		return &Cons{Car: leng, Cdr: nil}, err
+	}
 	array, err := ExpectClass[*Array](ctx, w, arg)
 	if err != nil {
 		return nil, err
