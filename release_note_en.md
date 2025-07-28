@@ -1,5 +1,11 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+- Fixed an issue where `(array-dimensions)` did not work correctly for strings and 0-dimensional arrays
+- Made `(char-index)` and `(start-index)` signal an error when the start position is invalid
+- Fixed a bug where `(string-index)` did not signal an error when given too many arguments
+- Fixed `(create-string)` to signal `<storage-exhausted>` instead of `<domain-error>` when the requested string length is excessively large
+- Made `(elt)` signal `<domain-error>` when given a non-`<vector>`/`<string>` argument (only in strict mode)
+
 v0.7.20
 =======
 Jul 28, 2025

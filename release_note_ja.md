@@ -1,5 +1,11 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+- `(array-dimensions)` が文字列および 0 次元配列に対して正しく動作しなかった問題を修正
+- `(char-index)` および `(start-index)` において、検索開始位置が不適切な場合にエラーを発生させるようにした
+- `(string-index)` に過剰な引数が与えられた際にエラーとならなかった問題を修正
+- `(create-string)` に過大な文字列長を指定した場合、本来発生すべき `<storage-exhausted>` エラーが `<domain-error>` となっていた問題を修正
+- `(elt)` に `<vector>` または `<string>` 以外の引数が与えられた場合に `<domain-error>` を発生させるようにした（strict モード時のみ）
+
 v0.7.20
 =======
 Jul 28, 2025
