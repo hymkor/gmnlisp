@@ -481,7 +481,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("stream-ready-p"):                 Function1(funStreamReadyP),
 	NewSymbol("streamp"):                        Function1(funStreamP),
 	NewSymbol("string-append"):                  &Function{F: funStringAppend},
-	NewSymbol("string-index"):                   &Function{F: funStringIndex},
+	NewSymbol("string-index"):                   &Function{Min: 2, Max: 3, F: funStringIndex},
 	NewSymbol("string/="):                       &Function{C: 2, F: funStringNe},
 	NewSymbol("string<"):                        &Function{C: 2, F: funStringLt},
 	NewSymbol("string<="):                       &Function{C: 2, F: funStringLe},

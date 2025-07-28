@@ -133,9 +133,6 @@ func funStringNe(ctx context.Context, w *World, argv []Node) (Node, error) {
 }
 
 func funStringIndex(ctx context.Context, w *World, argv []Node) (Node, error) {
-	if len(argv) < 2 {
-		return nil, ErrTooFewArguments
-	}
 	_subStr, err := ExpectClass[String](ctx, w, argv[0])
 	if err != nil {
 		return nil, err
@@ -154,9 +151,6 @@ func funStringIndex(ctx context.Context, w *World, argv []Node) (Node, error) {
 		if err != nil {
 			return nil, err
 		}
-		if len(argv) >= 4 {
-			return nil, ErrTooManyArguments
-		}
 		start = int(_start)
 		if L := utf8.RuneCountInString(str); start >= L {
 			return nil, ErrIndexOutOfRange
@@ -168,7 +162,6 @@ func funStringIndex(ctx context.Context, w *World, argv []Node) (Node, error) {
 			}
 		}
 	}
-
 	for i := 0; i < start && len(str) > 0; i++ {
 		_, siz := utf8.DecodeRuneInString(str)
 		str = str[siz:]
