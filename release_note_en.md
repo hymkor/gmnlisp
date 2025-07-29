@@ -5,6 +5,8 @@
 - Fixed a bug where `(string-index)` did not signal an error when given too many arguments
 - Fixed `(create-string)` to signal `<storage-exhausted>` instead of `<domain-error>` when the requested string length is excessively large
 - Made `(elt)` signal `<domain-error>` when given a non-`<vector>`/`<string>` argument (only in strict mode)
+- Modified generic function method resolution to prefer methods with parameter types that more closely match the arguments, rather than selecting the first match
+- Implemented `(call-next-method)` and `(next-method-p)`
 
 v0.7.20
 =======

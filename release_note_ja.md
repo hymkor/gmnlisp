@@ -5,6 +5,8 @@
 - `(string-index)` に過剰な引数が与えられた際にエラーとならなかった問題を修正
 - `(create-string)` に過大な文字列長を指定した場合、本来発生すべき `<storage-exhausted>` エラーが `<domain-error>` となっていた問題を修正
 - `(elt)` に `<vector>` または `<string>` 以外の引数が与えられた場合に `<domain-error>` を発生させるようにした（strict モード時のみ）
+- 包括関数のメソッド決定において、最初に見つかったものではなく、引数の型がより近いものを優先的に選ぶよう修正
+- `(call-next-method)` および `(next-method-p)` を実装
 
 v0.7.20
 =======
