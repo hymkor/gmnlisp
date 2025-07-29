@@ -210,7 +210,31 @@ func (c *genericType) Call(ctx context.Context, w *World, node Node) (Node, erro
 		}
 		return lessThan
 	})
-	return candidates[0].method(ctx, w, values)
+	currMethod := candidates[0]
+	candidates = candidates[1:]
+
+	var newWorld *World
+	newWorld = &World{
+		parent: w,
+		shared: w.shared,
+		funcs: Functions{
+			NewSymbol("next-method-p"): Function0(func(context.Context, *World) (Node, error) {
+				if len(candidates) > 0 {
+					return True, nil
+				}
+				return Null, nil
+			}),
+			NewSymbol("call-next-method"): Function0(func(context.Context, *World) (Node, error) {
+				if len(candidates) <= 0 {
+					return nil, errors.New("no methods")
+				}
+				currMethod = candidates[0]
+				candidates = candidates[1:]
+				return currMethod.method(ctx, newWorld, values)
+			}),
+		},
+	}
+	return currMethod.method(ctx, newWorld, values)
 }
 
 func (c *genericType) FuncId() uintptr {

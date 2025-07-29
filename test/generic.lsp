@@ -56,3 +56,14 @@
 
 (assert-eq (generic-rest 1 "2" "3") "A-1-2-3")
 (assert-eq (generic-rest 1 2 3) "B-1-2-3")
+
+(defgeneric mmm (x))
+(defmethod mmm ((x <integer>))
+  (if (next-method-p)
+    (setq x (call-next-method)))
+  (+ x 1))
+
+(defmethod mmm ((x <number>))
+  (* x 2))
+
+(assert-eq (mmm 4) 9)
