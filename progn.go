@@ -32,11 +32,9 @@ func cmdReturnFrom(ctx context.Context, w *World, args Node) (Node, error) {
 		return nil, err
 	}
 	for p := w; p != nil; p = p.parent {
-		if p.tag != nil && p.tag.Key.Equals(symbol, STRICT) {
-			if tag1, ok := p.tag.Value.(blockTagType); ok {
-				if _, ok := w.blockName[tag1]; ok {
-					return nil, &_ErrEarlyReturns{value: value, tag: tag1}
-				}
+		if bt, ok := p.aux.(*blockTagType); ok && bt.key.Equals(symbol, STRICT) {
+			if _, ok := w.blockName[bt.serial]; ok {
+				return nil, &_ErrEarlyReturns{value: value, tag: *bt}
 			}
 		}
 	}
@@ -58,26 +56,16 @@ func cmdProgn(ctx context.Context, w *World, c Node) (Node, error) {
 	return Progn(ctx, w, c)
 }
 
-type blockTagType int
+type blockTagType struct {
+	key    Symbol
+	serial int
+}
 
 var blockTagCount = 0
 
-func newBlockTag() blockTagType {
+func newBlockTag(sym Symbol) *blockTagType {
 	blockTagCount++
-	return blockTagType(blockTagCount)
-}
-
-func (b blockTagType) Equals(other Node, m EqlMode) bool {
-	o, ok := other.(blockTagType)
-	return ok && b == o
-}
-
-func (b blockTagType) String() string {
-	return fmt.Sprintf("(block-tag %d", int(b))
-}
-
-func (b blockTagType) ClassOf() Class {
-	return NewBuiltInClass[blockTagType]("<block-tag>", ObjectClass)
+	return &blockTagType{key: sym, serial: blockTagCount}
 }
 
 func cmdBlock(ctx context.Context, w *World, node Node) (Node, error) {
@@ -90,23 +78,23 @@ func cmdBlock(ctx context.Context, w *World, node Node) (Node, error) {
 		return nil, err
 	}
 
-	tag := newBlockTag()
+	bt := newBlockTag(nameSymbol)
 	newWorld := &World{
 		parent: w,
-		tag:    &Pair{Key: nameSymbol, Value: tag},
+		aux:    bt,
 		shared: w.shared,
 	}
 	if w.blockName == nil {
-		w.blockName = make(map[blockTagType]struct{})
+		w.blockName = make(map[int]struct{})
 	}
-	if _, ok := w.blockName[tag]; !ok {
-		defer delete(w.blockName, tag)
-		w.blockName[tag] = struct{}{}
+	if _, ok := w.blockName[bt.serial]; !ok {
+		defer delete(w.blockName, bt.serial)
+		w.blockName[bt.serial] = struct{}{}
 	}
 	rv, err := Progn(ctx, newWorld, statements)
 
 	var errEarlyReturns *_ErrEarlyReturns
-	if errors.As(err, &errEarlyReturns) && tag.Equals(errEarlyReturns.tag, STRICT) {
+	if errors.As(err, &errEarlyReturns) && bt.serial == errEarlyReturns.tag.serial && bt.key == errEarlyReturns.tag.key {
 		return errEarlyReturns.value, nil
 	}
 	return rv, err

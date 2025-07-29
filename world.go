@@ -139,7 +139,7 @@ type shared struct {
 		Node
 	}
 	startup    sync.Once
-	blockName  map[blockTagType]struct{}
+	blockName  map[int]struct{}
 	catchTag   map[Node]struct{}
 	goTag      map[Symbol]struct{}
 	StrictMode bool
@@ -151,7 +151,7 @@ type World struct {
 	parent *World
 	funcs  FuncScope
 	vars   Scope
-	tag    *Pair
+	aux    any
 }
 
 type _Reader interface {
