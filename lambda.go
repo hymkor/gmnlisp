@@ -427,7 +427,7 @@ func cmdDefun(ctx context.Context, w *World, list Node) (Node, error) {
 		return nil, err
 	}
 	if f, ok := w.defun.Get(symbol); ok {
-		if _, ok := f.(SpecialF); ok {
+		if isSpecial(f) {
 			return raiseProgramError(ctx, w, fmt.Errorf("%s: special operator can not be changed", symbol.String()))
 		}
 	}
@@ -514,6 +514,53 @@ func (f SpecialF) Call(ctx context.Context, w *World, n Node) (Node, error) {
 
 func (f SpecialF) FuncId() uintptr {
 	return funcToId(f)
+}
+
+type SpecialN struct {
+	F   func(context.Context, *World, []Node) (Node, error)
+	Min int
+	Max int
+}
+
+func (f *SpecialN) FuncId() uintptr {
+	return funcToId(f)
+}
+
+func isSpecial(f Callable) bool {
+	if _, ok := f.(SpecialF); ok {
+		return true
+	}
+	if _, ok := f.(*SpecialN); ok {
+		return true
+	}
+	return false
+}
+
+func consToList(n Node) ([]Node, error) {
+	args := []Node{}
+	for IsSome(n) {
+		cons, ok := n.(*Cons)
+		if !ok {
+			return nil, ErrDotEnditList
+		}
+		args = append(args, cons.Car)
+		n = cons.Cdr
+	}
+	return args, nil
+}
+
+func (f *SpecialN) Call(ctx context.Context, w *World, n Node) (Node, error) {
+	args, err := consToList(n)
+	if err != nil {
+		return nil, err
+	}
+	if f.Min > 0 && len(args) < f.Min {
+		return nil, ErrTooFewArguments
+	}
+	if f.Max > 0 && len(args) > f.Max {
+		return nil, ErrTooManyArguments
+	}
+	return f.F(ctx, w, args)
 }
 
 func cmdTrace(ctx context.Context, w *World, list Node) (Node, error) {

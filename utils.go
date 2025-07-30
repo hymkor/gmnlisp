@@ -25,6 +25,7 @@ var (
 	ErrTooManyArguments = ProgramError{err: parser.ErrTooManyArguments}
 	ErrTooShortTokens   = parser.ErrTooShortTokens
 	ErrIndexOutOfRange  = ProgramError{err: errors.New("index out of range")}
+	ErrDotEnditList     = ProgramError{err: errors.New("Dot-ended-list is illegal")}
 )
 
 type EqlMode int

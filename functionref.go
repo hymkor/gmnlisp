@@ -70,7 +70,7 @@ func cmdFunction(ctx context.Context, w *World, node Node) (Node, error) {
 	if _, ok := f.(*_Macro); ok {
 		return nil, fmt.Errorf("macro forms can be avaliable on (function): %#v", symbol)
 	}
-	if _, ok := f.(SpecialF); ok {
+	if isSpecial(f) {
 		return nil, fmt.Errorf("special forms can be avaliable on (function): %#v", symbol)
 	}
 	return FunctionRef{value: f, name: symbol}, nil
