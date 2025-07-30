@@ -8,6 +8,7 @@ import (
 
 type FunctionRef struct {
 	value Callable
+	name  Symbol
 }
 
 var functionRefClassObject = registerNewBuiltInClass[FunctionRef]("<function>")
@@ -28,7 +29,9 @@ func (f FunctionRef) Equals(other Node, mode EqlMode) bool {
 }
 
 func (f FunctionRef) PrintTo(w io.Writer, _ PrintMode) (int, error) {
-	if f.value != nil {
+	if f.name != nil {
+		return fmt.Fprintf(w, "#'%s", f.name.String())
+	} else if f.value != nil {
 		return fmt.Fprintf(w, "(FuncID:%#v)", f.value.FuncId())
 	} else {
 		return fmt.Fprintf(w, "(function to %#v)", f.value)
@@ -70,7 +73,7 @@ func cmdFunction(ctx context.Context, w *World, node Node) (Node, error) {
 	if _, ok := f.(SpecialF); ok {
 		return nil, fmt.Errorf("special forms can be avaliable on (function): %#v", symbol)
 	}
-	return FunctionRef{value: f}, nil
+	return FunctionRef{value: f, name: symbol}, nil
 }
 
 func ExpectFunction(ctx context.Context, w *World, value Node) (Callable, error) {
