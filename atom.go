@@ -50,6 +50,10 @@ func (nullType) OriginalString() string {
 	return "NIL"
 }
 
+func (nullType) FirstAndRest() (Node, Node, bool) {
+	return Null, Null, false
+}
+
 func (nt nullType) Equals(n Node, m EqlMode) bool {
 	if n == nil {
 		return true
