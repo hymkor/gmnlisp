@@ -7,6 +7,9 @@
 - Made `(elt)` signal `<domain-error>` when given a non-`<vector>`/`<string>` argument (only in strict mode)
 - Modified generic function method resolution to prefer methods with parameter types that more closely match the arguments, rather than selecting the first match
 - Implemented `(call-next-method)` and `(next-method-p)`
+- Improved the display of function objects obtained via `function` or `#'` so that they now show the function name instead of just a memory address
+- Modified `(subseq)` to signal `<program-error>` (index out of range) instead of `<domain-error>` when indices exceed the sequence length
+- Changed `(subseq)` to signal `<domain-error>` when applied to arrays (`<general-array*>`) that are not one-dimensional
 
 v0.7.20
 =======
