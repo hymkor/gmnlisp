@@ -394,6 +394,12 @@ func funSubSeq(ctx context.Context, w *World, args []Node) (Node, error) {
 
 	var buffer SeqBuilder
 	if array, ok := args[0].(*Array); ok {
+		if len(array.dim) != 1 {
+			return nil, &DomainError{
+				Object: args[0],
+				Reason: "Not a vector or a list",
+			}
+		}
 		elementSize := dim2size(array.dim[1:])
 		startElement := int(start) * elementSize
 		endElement := int(end) * elementSize
