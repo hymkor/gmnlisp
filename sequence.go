@@ -398,10 +398,7 @@ func funSubSeq(ctx context.Context, w *World, args []Node) (Node, error) {
 		startElement := int(start) * elementSize
 		endElement := int(end) * elementSize
 		if endElement > len(array.list) {
-			return nil, &DomainError{
-				Object: Integer(end),
-				Reason: "Index out of range",
-			}
+			return nil, ErrIndexOutOfRange
 		}
 		return &Array{
 			list: array.list[startElement:endElement],
@@ -426,10 +423,7 @@ func funSubSeq(ctx context.Context, w *World, args []Node) (Node, error) {
 		return
 	})
 	if end > count {
-		return nil, &DomainError{
-			Object: Integer(end),
-			Reason: "Index out of range",
-		}
+		return nil, ErrIndexOutOfRange
 	}
 	return buffer.Sequence(), ignoreEOF(err)
 }
