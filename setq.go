@@ -6,42 +6,16 @@ import (
 	"fmt"
 )
 
-func cmdSetq(ctx context.Context, w *World, params Node) (Node, error) {
-	if w.StrictMode && IsNone(params) {
-		return nil, ErrTooFewArguments
+func cmdSetq(ctx context.Context, w *World, args []Node) (Node, error) {
+	name, err := ExpectSymbol(ctx, w, args[0])
+	if err != nil {
+		return nil, err
 	}
-	var value Node = Null
-	for IsSome(params) {
-		var nameNode Node
-		var err error
-
-		nameNode, params, err = Shift(params)
-		if err != nil {
-			return nil, err
-		}
-		if IsNone(params) {
-			return nil, ErrTooFewArguments
-		}
-		value, params, err = Shift(params)
-		if err != nil {
-			return nil, err
-		}
-		if w.StrictMode && IsSome(params) {
-			return nil, ErrTooManyArguments
-		}
-		nameSymbol, err := ExpectSymbol(ctx, w, nameNode)
-		if err != nil {
-			return nil, err
-		}
-		value, err = w.Eval(ctx, value)
-		if err != nil {
-			return nil, err
-		}
-		if err := w.Set(nameSymbol, value); err != nil {
-			return value, err
-		}
+	value, err := w.Eval(ctx, args[1])
+	if err != nil {
+		return nil, err
 	}
-	return value, nil
+	return value, w.Set(name, value)
 }
 
 func cmdPSetq(ctx context.Context, w *World, params Node) (Node, error) {

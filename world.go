@@ -468,7 +468,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("set-file-position"):              Function2(funSetFilePosition),
 	NewSymbol("set-garef"):                      &Function{Min: 3, F: funSetGaref},
 	NewSymbol("set-gethash"):                    &Function{C: 3, F: funSetHash},
-	NewSymbol("setq"):                           SpecialF(cmdSetq),
+	NewSymbol("setq"):                           &SpecialN{F: cmdSetq, Min: 2, Max: 2},
 	NewSymbol("signal-condition"):               Function2(funSignalCondition),
 	NewSymbol("simple-error-format-arguments"):  Function1(funSimpleErrorFormatArguments),
 	NewSymbol("simple-error-format-string"):     Function1(funSimpleErrorFormatString),
