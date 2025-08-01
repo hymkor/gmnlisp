@@ -229,33 +229,19 @@ func cmdCase(ctx context.Context, w *World, list Node) (Node, error) {
 	return Null, nil
 }
 
-func cmdIf(ctx context.Context, w *World, params Node) (Node, error) {
-	return cmdIfWithTailRecOpt(ctx, w, params, _Symbol(-1))
+func cmdIf(ctx context.Context, w *World, args []Node) (Node, error) {
+	return cmdIfWithTailRecOpt(ctx, w, args, _Symbol(-1))
 }
 
-func cmdIfWithTailRecOpt(ctx context.Context, w *World, params Node, tailOptSym Symbol) (Node, error) {
-	cond, params, err := w.ShiftAndEvalCar(ctx, params)
+func cmdIfWithTailRecOpt(ctx context.Context, w *World, args []Node, tailOptSym Symbol) (Node, error) {
+	cond, err := w.Eval(ctx, args[0])
 	if err != nil {
 		return nil, err
-	}
-	thenClause, params, err := Shift(params)
-	if err != nil {
-		return nil, err
-	}
-	var elseClause Node = Null
-	if IsSome(params) {
-		elseClause, params, err = Shift(params)
-		if err != nil {
-			return nil, err
-		}
-		if IsSome(params) {
-			return raiseProgramError(ctx, w, ErrTooManyArguments)
-		}
 	}
 	if IsSome(cond) {
-		return evalWithTailRecOpt(ctx, w, thenClause, tailOptSym)
-	} else if IsSome(elseClause) {
-		return evalWithTailRecOpt(ctx, w, elseClause, tailOptSym)
+		return evalWithTailRecOpt(ctx, w, args[1], tailOptSym)
+	} else if len(args) == 3 {
+		return evalWithTailRecOpt(ctx, w, args[2], tailOptSym)
 	} else {
 		return Null, nil
 	}

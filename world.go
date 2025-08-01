@@ -285,7 +285,7 @@ var autoLoadFunc = Functions{
 	NewReserved("flet"):                         SpecialF(cmdFlet),
 	NewReserved("function"):                     SpecialF(cmdFunction),
 	NewReserved("go"):                           SpecialF(cmdGo),
-	NewReserved("if"):                           SpecialF(cmdIf),
+	NewReserved("if"):                           &SpecialN{F: cmdIf, Min: 2, Max: 3},
 	NewReserved("ignore-errors"):                SpecialF(cmdIgnoreErrors),
 	NewReserved("labels"):                       SpecialF(cmdLabels),
 	NewReserved("lambda"):                       SpecialF(cmdLambda),

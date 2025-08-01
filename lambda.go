@@ -364,13 +364,23 @@ var (
 
 // Evaluate the target considering the tail call optimization.
 func evalWithTailRecOpt(ctx context.Context, w *World, target Node, currFunc Symbol) (Node, error) {
-	if currFunc.Id() >= 0 {
+	if currFunc != nil && currFunc.Id() >= 0 {
 		if err := testCarIsCurrFunc(ctx, w, target, currFunc); err != nil {
 			return nil, err
 		}
 		if cons, ok := target.(*Cons); ok {
 			if symIf.Equals(cons.Car, EQUAL) {
-				return cmdIfWithTailRecOpt(ctx, w, cons.Cdr, currFunc)
+				args, err := consToList(cons.Cdr)
+				if err != nil {
+					return nil, err
+				}
+				if len(args) < 2 {
+					return nil, ErrTooFewArguments
+				}
+				if len(args) > 3 {
+					return nil, ErrTooManyArguments
+				}
+				return cmdIfWithTailRecOpt(ctx, w, args, currFunc)
 			}
 			if symLet.Equals(cons.Car, EQUAL) {
 				return cmdLetWithTailRecOpt(ctx, w, cons.Cdr, currFunc)
