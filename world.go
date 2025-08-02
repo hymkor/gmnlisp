@@ -264,8 +264,8 @@ var autoLoadConstants = Constants{
 	NewSymbol("*err-exist*"):              ErrorNode{Value: os.ErrExist},
 	NewSymbol("*err-not-exist*"):          ErrorNode{Value: os.ErrNotExist},
 	NewSymbol("*err-quit*"):               ErrorNode{Value: ErrQuit},
-	NewSymbol("*err-too-few-arguments*"):  ErrorNode{Value: ErrTooFewArguments},
-	NewSymbol("*err-too-many-arguments*"): ErrorNode{Value: ErrTooManyArguments},
+	NewSymbol("*err-too-few-arguments*"):  ErrTooFewArguments,
+	NewSymbol("*err-too-many-arguments*"): ErrTooManyArguments,
 	NewSymbol("*err-too-short-tokens*"):   ErrorNode{Value: ErrTooShortTokens},
 	// *sort*end*
 }
