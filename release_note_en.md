@@ -10,6 +10,7 @@
 - Improved the display of function objects obtained via `function` or `#'` so that they now show the function name instead of just a memory address
 - Modified `(subseq)` to signal `<program-error>` (index out of range) instead of `<domain-error>` when indices exceed the sequence length
 - Changed `(subseq)` to signal `<domain-error>` when applied to arrays (`<general-array*>`) that are not one-dimensional
+- `(property)` now checks the number of parameters
 
 v0.7.20
 =======
