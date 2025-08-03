@@ -182,20 +182,15 @@ const (
 ISLisp Compatibility
 --------------------
 
-Gmnlisp implements a subset of functions defined in the [ISLisp] standard.
-
-The full compatibility checklist has been moved to a separate file due to its length:  
-👉 [ISLisp Compatibility Checklist](./is_lisp_compat.md)
-
-(Items without checkboxes are not standard functions.)
-
-### ✅ Conformance Test Results
-
 Gmnlisp has been tested with the [ISLisp Verification System](https://islisp.org/verification.html),  
 which checks compliance with the ISO ISLisp standard.
 
-- **TP Result**: PASS = 15760, FAIL = 651  
-- **Pass rate**: **96.03%**
+| Item      | Result     |
+| --------- | ---------- |
+| Version   | v0.7.21    |
+| Passed    | 15853      |
+| Failed    | 558        |
+| Pass rate | **96.60%** |
 
 Projects Using gmnlisp
 -----------------------
