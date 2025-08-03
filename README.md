@@ -7,7 +7,7 @@ Gmnlisp
 Gmnlisp is the interpreter of [ISLisp] written in Go.
 It is developed to embbed to the applications for customizing.
 
-![Example image](factorial.png)
+![Example image](factorial.gif)
 
 Usage and Integration Guide
 ----------------------------
