@@ -1,5 +1,9 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+v0.7.21
+=======
+Aug 4, 2025
+
 - `(array-dimensions)` が文字列および 0 次元配列に対して正しく動作しなかった問題を修正
 - `(char-index)` および `(start-index)` において、検索開始位置が不適切な場合にエラーを発生させるようにした
 - `(string-index)` に過剰な引数が与えられた際にエラーとならなかった問題を修正
@@ -11,6 +15,8 @@
 - `(subseq)` のインデックスがシーケンスの長さを超過している場合、`<domain-error>` ではなく `<program-error>`（index out of range）を報告するようにした
 - `(subseq)` において、1 次元でない配列（`<general-array*>`）を渡した場合は `<domain-error>` を報告するようにした
 - `(property)` の引数の個数チェックを追加
+
+[TP Result] : PASS = 15853, FAIL = 558 (Pass rate: 96.60%)
 
 v0.7.20
 =======

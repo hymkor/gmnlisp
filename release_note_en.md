@@ -1,5 +1,9 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+v0.7.21
+=======
+Aug 4, 2025
+
 - Fixed an issue where `(array-dimensions)` did not work correctly for strings and 0-dimensional arrays
 - Made `(char-index)` and `(start-index)` signal an error when the start position is invalid
 - Fixed a bug where `(string-index)` did not signal an error when given too many arguments
@@ -11,6 +15,8 @@
 - Modified `(subseq)` to signal `<program-error>` (index out of range) instead of `<domain-error>` when indices exceed the sequence length
 - Changed `(subseq)` to signal `<domain-error>` when applied to arrays (`<general-array*>`) that are not one-dimensional
 - `(property)` now checks the number of parameters
+
+[TP Result] : PASS = 15853, FAIL = 558 (Pass rate: 96.60%)
 
 v0.7.20
 =======
