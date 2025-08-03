@@ -185,11 +185,10 @@ func interactive(lisp *gmnlisp.World) error {
 			return symbols, symbols
 		},
 	})
-	fmt.Printf("gmnlisp %s-%s-%s by %s\n",
+	fmt.Printf("gmnlisp %s for %s/%s\n",
 		version,
 		runtime.GOOS,
-		runtime.GOARCH,
-		runtime.Version())
+		runtime.GOARCH)
 
 	for {
 		lines, err := editor.Read(ctx)
