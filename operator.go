@@ -334,10 +334,38 @@ func mod(z1, z2 int) int {
 	return r
 }
 
+func modBig(z1, z2 BigInt) (Node, error) {
+	if z2.Int.Sign() == 0 {
+		return nil, &DivisionByZero{
+			ArithmeticError: ArithmeticError{
+				Operation: FunctionRef{value: &Function{C: 2, F: funDivide}},
+				Operands:  List(z1, z2),
+			},
+		}
+	}
+	q := new(big.Int)
+	r := new(big.Int)
+	q.DivMod(z1.Int, z2.Int, r)
+	if r.Sign() != 0 && (r.Sign() < 0) != (z2.Int.Sign() < 0) {
+		r = new(big.Int).Add(r, z2.Int)
+	}
+	return BigInt{Int: r}, nil
+}
+
 func funMod(ctx context.Context, w *World, args []Node) (Node, error) {
+	if L, ok := args[0].(BigInt); ok {
+		if R, ok := args[1].(BigInt); ok {
+			return modBig(L, R)
+		} else if R, ok := args[1].(Integer); ok {
+			return modBig(L, BigInt{Int: big.NewInt(int64(R))})
+		}
+	}
 	L, err := ExpectClass[Integer](ctx, w, args[0])
 	if err != nil {
 		return nil, err
+	}
+	if R, ok := args[1].(BigInt); ok {
+		return modBig(BigInt{Int: big.NewInt(int64(L))}, R)
 	}
 	R, err := ExpectClass[Integer](ctx, w, args[1])
 	if err != nil {
