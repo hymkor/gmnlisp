@@ -4,4 +4,7 @@
   (cond
     ((= a 0) 0)
     ((= b 0) 0)
-    (t (* (div a (gcd a b)) b))))
+    (t (let* ((r (* (div a (gcd a b)) b)))
+         (if (< r 0)
+           (- 0 r)
+           r)))))
