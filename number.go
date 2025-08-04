@@ -348,6 +348,22 @@ func (b BigInt) Multi(ctx context.Context, w *World, other Node) (Node, error) {
 	return BigInt{Int: new(big.Int).Mul(b.Int, o)}, nil
 }
 
+func (b BigInt) Sub(ctx context.Context, w *World, other Node) (Node, error) {
+	var o *big.Int
+
+	if i, ok := other.(Integer); ok {
+		o = big.NewInt(int64(i))
+	} else if b2, ok := other.(BigInt); ok {
+		o = b2.Int
+	} else {
+		return nil, &DomainError{
+			Reason: "not a integer or bigint",
+			Object: other,
+		}
+	}
+	return BigInt{Int: new(big.Int).Sub(b.Int, o)}, nil
+}
+
 type DivisionByZero struct {
 	ArithmeticError
 }
