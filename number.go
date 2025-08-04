@@ -80,10 +80,14 @@ func (i Integer) Multi(ctx context.Context, w *World, n Node) (Node, error) {
 		return Float(i) * _n, nil
 	}
 	_n, err := ExpectClass[Integer](ctx, w, n)
-	if err == nil {
-		return i * _n, nil
+	if err != nil {
+		return nil, err
 	}
-	return nil, err
+	r := i * _n
+	if _n != 0 && r/_n != i { // overflow
+		return BigInt{Int: big.NewInt(int64(i))}.Multi(ctx, w, _n)
+	}
+	return r, nil
 }
 
 type ArithmeticError struct {
