@@ -1,5 +1,9 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+- `(gcd)` および `(lcm)` において、負の値を与えると誤った結果を返す不具合を修正
+- `(div)` が Go の big.Int 型を引数として受け入れられるように対応
+- `(*)` において、int64 の引数による計算結果が int64 の範囲を超える場合は、自動的に big.Int 型に昇格して正しい値を返すようにした
+
 v0.7.21
 =======
 Aug 4, 2025

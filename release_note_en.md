@@ -1,5 +1,9 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+- Fixed a bug in (gcd) and (lcm) where negative values caused incorrect results.
+- Added support for Go's big.Int type in (div).
+- Improved `(*)` so that if the result overflows int64, it is automatically promoted to a big.Int to preserve correctness.
+
 v0.7.21
 =======
 Aug 4, 2025
