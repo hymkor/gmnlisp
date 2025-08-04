@@ -16,19 +16,27 @@ var numberClass = &BuiltInClass{
 		if _, ok := n.(Float); ok {
 			return true
 		}
-		return false
+		_, ok := n.(BigInt)
+		return ok
 	},
-	create: func() Node {
-		return nil
-	},
-	super: []Class{
-		ObjectClass,
-	},
+	create: func() Node { return nil },
+	super:  []Class{ObjectClass},
 }
 
 type Integer int64
 
-var integerClass = registerNewBuiltInClass[Integer]("<integer>", numberClass)
+var integerClass = registerClass(&BuiltInClass{
+	name: NewSymbol("<integer>"),
+	instanceP: func(n Node) bool {
+		if _, ok := n.(Integer); ok {
+			return true
+		}
+		_, ok := n.(BigInt)
+		return ok
+	},
+	create: func() Node { return Integer(0) },
+	super:  []Class{ObjectClass, numberClass},
+})
 
 func (i Integer) ClassOf() Class {
 	return integerClass
