@@ -3,6 +3,7 @@
 - Fixed a bug in (gcd) and (lcm) where negative values caused incorrect results.
 - Added support for Go's big.Int type in (div).
 - Improved `(*)` so that if the result overflows int64, it is automatically promoted to a big.Int to preserve correctness.
+- Modified `(lcm)`, `(gcd)`, `(<)`, `(-)`, `(=)`, `(/=)`, and `(*)` to allow calculations involving mixed numeric types (`big.Int`, `int64`, and `float64`) without raising `<domain-error>`.
 
 v0.7.21
 =======
