@@ -71,14 +71,20 @@ func (i Integer) Add(ctx context.Context, w *World, n Node) (Node, error) {
 }
 
 func (i Integer) Sub(ctx context.Context, w *World, n Node) (Node, error) {
-	if _n, ok := n.(Float); ok {
-		return Float(i) - _n, nil
-	}
-	_n, err := ExpectClass[Integer](ctx, w, n)
-	if err == nil {
-		return i - _n, nil
-	}
-	return nil, err
+	return promoteOperands(ctx, w, i, n,
+		func(a, b Integer) (Node, error) {
+			return a - b, nil
+		},
+		func(a, b BigInt) (Node, error) {
+			return BigInt{Int: new(big.Int).Sub(a.Int, b.Int)}, nil
+		},
+		func(a, b Float) (Node, error) {
+			return a - b, nil
+		},
+		func(a, b *big.Float) (Node, error) {
+			v, _ := new(big.Float).Sub(a, b).Float64()
+			return Float(v), nil
+		})
 }
 
 func (i Integer) Multi(ctx context.Context, w *World, n Node) (Node, error) {
