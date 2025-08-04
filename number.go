@@ -364,6 +364,18 @@ func (b BigInt) Sub(ctx context.Context, w *World, other Node) (Node, error) {
 	return BigInt{Int: new(big.Int).Sub(b.Int, o)}, nil
 }
 
+func (b BigInt) LessThan(ctx context.Context, w *World, other Node) (bool, error) {
+	var o BigInt
+	var err error
+
+	if v, ok := other.(Integer); ok {
+		o = BigInt{Int: big.NewInt(int64(v))}
+	} else if o, err = ExpectClass[BigInt](ctx, w, other); err != nil {
+		return false, err
+	}
+	return b.Int.Cmp(o.Int) < 0, nil
+}
+
 type DivisionByZero struct {
 	ArithmeticError
 }
