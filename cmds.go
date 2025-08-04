@@ -102,20 +102,6 @@ func funNot(_ context.Context, w *World, arg Node) (Node, error) {
 	return Null, nil
 }
 
-func funNotEqual(ctx context.Context, w *World, argv []Node) (Node, error) {
-	for _, v := range argv {
-		if _, ok := v.(Integer); !ok {
-			if _, err := ExpectClass[Float](ctx, w, v); err != nil {
-				return nil, err
-			}
-		}
-	}
-	if argv[0].Equals(argv[1], EQUALP) {
-		return Null, nil
-	}
-	return True, nil
-}
-
 func xxxxP(arg Node, f1 func(Integer) bool, f2 func(Float) bool) (Node, error) {
 	if value, ok := arg.(Integer); ok {
 		if f1(value) {

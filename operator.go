@@ -211,15 +211,35 @@ func funGreaterThan(ctx context.Context, w *World, args []Node) (Node, error) {
 	}))
 }
 
-func funEqualOp(ctx context.Context, w *World, args []Node) (Node, error) {
-	for _, v := range args {
-		if _, ok := v.(Integer); !ok {
-			if _, err := ExpectClass[Float](ctx, w, v); err != nil {
-				return nil, err
-			}
-		}
+func boolToNode(b bool) (Node, error) {
+	if b {
+		return True, nil
 	}
-	if args[0].Equals(args[1], EQUALP) {
+	return Null, nil
+}
+
+func funEqualOp(ctx context.Context, w *World, left, right Node) (Node, error) {
+	return promoteOperands(ctx, w, left, right,
+		func(a, b Integer) (Node, error) {
+			return boolToNode(a == b)
+		},
+		func(a, b BigInt) (Node, error) {
+			return boolToNode(a.Int.Cmp(b.Int) == 0)
+		},
+		func(a, b Float) (Node, error) {
+			return boolToNode(a == b)
+		},
+		func(a, b *big.Float) (Node, error) {
+			return boolToNode(a.Cmp(b) == 0)
+		})
+}
+
+func funNotEqual(ctx context.Context, w *World, left, right Node) (Node, error) {
+	v, err := funEqualOp(ctx, w, left, right)
+	if err != nil {
+		return nil, err
+	}
+	if IsNone(v) {
 		return True, nil
 	}
 	return Null, nil
