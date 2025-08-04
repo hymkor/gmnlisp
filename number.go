@@ -169,6 +169,9 @@ func funArithmeticErrorOperands(ctx context.Context, w *World, n Node) (Node, er
 }
 
 func (i Integer) LessThan(ctx context.Context, w *World, n Node) (bool, error) {
+	if v, ok := n.(BigInt); ok {
+		return big.NewInt(int64(i)).Cmp(v.Int) < 0, nil
+	}
 	if _n, ok := n.(Float); ok {
 		return Float(i) < _n, nil
 	}
