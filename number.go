@@ -388,19 +388,20 @@ func promoteOperands(
 }
 
 func (b BigInt) Multi(ctx context.Context, w *World, other Node) (Node, error) {
-	var o *big.Int
-
-	if i, ok := other.(Integer); ok {
-		o = big.NewInt(int64(i))
-	} else if b2, ok := other.(BigInt); ok {
-		o = b2.Int
-	} else {
-		return nil, &DomainError{
-			Reason: "not a integer or bigint",
-			Object: other,
-		}
-	}
-	return BigInt{Int: new(big.Int).Mul(b.Int, o)}, nil
+	return promoteOperands(ctx, w, b, other,
+		func(a, b Integer) (Node, error) {
+			return a * b, nil
+		},
+		func(a, b BigInt) (Node, error) {
+			return BigInt{Int: new(big.Int).Mul(a.Int, b.Int)}, nil
+		},
+		func(a, b Float) (Node, error) {
+			return Float(a * b), nil
+		},
+		func(a, b *big.Float) (Node, error) {
+			v, _ := new(big.Float).Mul(a, b).Float64()
+			return Float(v), nil
+		})
 }
 
 func (b BigInt) Sub(ctx context.Context, w *World, other Node) (Node, error) {
