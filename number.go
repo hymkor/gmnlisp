@@ -332,6 +332,61 @@ func (b BigInt) ClassOf() Class {
 	return integerClass
 }
 
+func promoteOperands(
+	ctx context.Context,
+	w *World,
+	a, b Node,
+	doInt func(Integer, Integer) (Node, error),
+	doBigInt func(BigInt, BigInt) (Node, error),
+	doFloat func(Float, Float) (Node, error),
+	doBigFlt func(*big.Float, *big.Float) (Node, error)) (Node, error) {
+
+	if A, ok := a.(Float); ok {
+		if B, ok := b.(Float); ok {
+			return doFloat(A, B)
+		}
+		if B, ok := b.(Integer); ok {
+			return doFloat(A, Float(float64(int64(B))))
+		}
+		if B, ok := b.(BigInt); ok {
+			aa := big.NewFloat(float64(A))
+			bb := new(big.Float).SetInt(B.Int)
+			return doBigFlt(aa, bb)
+		}
+	} else if A, ok := a.(BigInt); ok {
+		if B, ok := b.(BigInt); ok {
+			return doBigInt(A, B)
+		}
+		if B, ok := b.(Integer); ok {
+			return doBigInt(A, BigInt{Int: big.NewInt(int64(B))})
+		}
+		if B, ok := b.(Float); ok {
+			aa := new(big.Float).SetInt(A.Int)
+			bb := big.NewFloat(float64(B))
+			return doBigFlt(aa, bb)
+		}
+	} else if A, ok := a.(Integer); ok {
+		if B, ok := b.(BigInt); ok {
+			return doBigInt(BigInt{Int: big.NewInt(int64(A))}, B)
+		}
+		if B, ok := b.(Integer); ok {
+			return doInt(A, B)
+		}
+		if B, ok := b.(Float); ok {
+			return doFloat(Float(float64(int64(A))), Float(float64(B)))
+		}
+	} else {
+		return callHandler[Node](ctx, w, false, &DomainError{
+			Reason: "not a integer, bigint and float",
+			Object: a,
+		})
+	}
+	return callHandler[Node](ctx, w, false, &DomainError{
+		Reason: "not a integer, bigint and float",
+		Object: b,
+	})
+}
+
 func (b BigInt) Multi(ctx context.Context, w *World, other Node) (Node, error) {
 	var o *big.Int
 
