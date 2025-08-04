@@ -5,4 +5,6 @@
     (let ((new-a b) (new-b (mod a b)))
       (setq a new-a)
       (setq b new-b)))
-  a)
+  (if (< a 0)
+    (- 0 a)
+    a))
