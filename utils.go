@@ -11,11 +11,7 @@ import (
 
 var (
 	ErrAbort          = errors.New("abort")
-	ErrDevisionByZero = errors.New("devision by zeor")
 	ErrExpectedClass  = errors.New("expected class")
-	ErrExpectedMacro  = errors.New("expected macro")
-	ErrExpectedStream = errors.New("expected stream")
-	ErrExpectedWriter = errors.New("expected writer")
 	ErrInvalidFormat  = errors.New("invalid format")
 	ErrNoMatchMethods = errors.New("no match methods")
 	ErrNotSupportType = errors.New("not support type")
