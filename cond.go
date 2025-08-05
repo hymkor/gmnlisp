@@ -53,7 +53,7 @@ func cmdWithHandler(ctx context.Context, w *World, node Node) (Node, error) {
 	if err2 != nil {
 		return nil, err2
 	}
-	return raiseControlError(ctx, w, errors.New("Handler return normally"))
+	return raiseControlError(ctx, w, errors.New("handler return normally"))
 }
 
 type _ErrContinueCondition struct {

@@ -634,7 +634,7 @@ func funCreate(ctx context.Context, w *World, args []Node) (Node, error) {
 	}
 	rec := class.Create()
 	if rec == nil {
-		return raiseError(ctx, w, fmt.Errorf("Can not create instance for %s", class.Name()))
+		return raiseError(ctx, w, fmt.Errorf("can not create instance for %s", class.Name()))
 	}
 	_gen, err := w.GetFunc(symInitializeObject)
 	if err != nil {

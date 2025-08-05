@@ -215,7 +215,7 @@ type Condition interface {
 
 type callHandlerLimitter struct{}
 
-var errHandlerReturnNormally = errors.New("Handler return normally")
+var errHandlerReturnNormally = errors.New("handler return normally")
 
 func callHandler[T Node](ctx context.Context, w *World, cont bool, condition Condition) (T, error) {
 
@@ -300,7 +300,7 @@ func ExpectNonReservedSymbol(ctx context.Context, w *World, v Node) (_Symbol, er
 	if _, err := ExpectSymbol(ctx, w, v); err != nil {
 		return 0, err
 	}
-	_, err := raiseProgramError(ctx, w, errors.New("Expect Symbol"))
+	_, err := raiseProgramError(ctx, w, errors.New("expect symbol"))
 	return 0, err
 }
 

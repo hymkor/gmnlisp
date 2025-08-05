@@ -130,7 +130,7 @@ func cmdDefGeneric(ctx context.Context, w *World, node Node) (Node, error) {
 	return name, nil
 }
 
-var errNotSuperClass = errors.New("Not a super class")
+var errNotSuperClass = errors.New("not a super class")
 
 func distanceClass(given, funcs Class) (int, bool) {
 	if given.Name() == funcs.Name() {

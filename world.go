@@ -53,7 +53,7 @@ func (m Constants) Get(key Symbol) (Node, bool) {
 
 func (m Constants) Set(key Symbol, value Node) error {
 	if _, ok := m[key]; ok {
-		return fmt.Errorf("Can't modify Constant: %v", key)
+		return fmt.Errorf("can't modify constant: %v", key)
 	}
 	m[key] = value
 	return nil

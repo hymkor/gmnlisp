@@ -115,16 +115,16 @@ func cmdCatch(ctx context.Context, w *World, node Node) (Node, error) {
 		return nil, err
 	}
 	if _, ok := tagForm.(Integer); ok {
-		return raiseProgramError(ctx, w, errors.New("Can not use an integer as tag-form"))
+		return raiseProgramError(ctx, w, errors.New("can not use an integer as tag-form"))
 	}
 	if _, ok := tagForm.(Float); ok {
-		return raiseProgramError(ctx, w, errors.New("Can not use an float as tag-form"))
+		return raiseProgramError(ctx, w, errors.New("can not use an float as tag-form"))
 	}
 	if _, ok := tagForm.(String); ok {
-		return raiseProgramError(ctx, w, errors.New("Can not use an string as tag-form"))
+		return raiseProgramError(ctx, w, errors.New("can not use an string as tag-form"))
 	}
 	if _, ok := tagForm.(Rune); ok {
-		return raiseProgramError(ctx, w, errors.New("Can not use an character as tag-form"))
+		return raiseProgramError(ctx, w, errors.New("can not use an character as tag-form"))
 	}
 
 	if w.catchTag == nil {
@@ -219,11 +219,11 @@ func cmdCase(ctx context.Context, w *World, list Node) (Node, error) {
 			}
 		} else if caseValue.Equals(True, STRICT) {
 			if IsSome(list) {
-				return raiseProgramError(ctx, w, errors.New("Syntax error"))
+				return raiseProgramError(ctx, w, errors.New("syntax error"))
 			}
 			return Progn(ctx, w, act)
 		} else {
-			return raiseProgramError(ctx, w, errors.New("Syntax error"))
+			return raiseProgramError(ctx, w, errors.New("syntax error"))
 		}
 	}
 	return Null, nil
