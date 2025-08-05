@@ -58,7 +58,7 @@ func (s _Symbol) Id() int {
 	return int(s)
 }
 
-func (_ _Symbol) ClassOf() Class {
+func (_Symbol) ClassOf() Class {
 	return symbolClass
 }
 
@@ -101,7 +101,7 @@ func (r Reserved) Id() int {
 	return int(r)
 }
 
-func (_ Reserved) ClassOf() Class {
+func (Reserved) ClassOf() Class {
 	return symbolClass
 }
 
