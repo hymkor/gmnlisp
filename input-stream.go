@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"context"
 	"fmt"
+	"io"
 	"os"
 )
 
@@ -71,7 +72,7 @@ func (i *inputStream) IsClosed() bool {
 }
 
 func (i *inputStream) FilePosition() (int64, error) {
-	z, err := i.file.Seek(0, os.SEEK_CUR)
+	z, err := i.file.Seek(0, io.SeekCurrent)
 	if err != nil {
 		return 0, err
 	}
@@ -79,7 +80,7 @@ func (i *inputStream) FilePosition() (int64, error) {
 }
 
 func (i *inputStream) SetFilePosition(n int64) (int64, error) {
-	ret, err := i.file.Seek(n, os.SEEK_SET)
+	ret, err := i.file.Seek(n, io.SeekStart)
 	i._Reader.Reset(i.file)
 	return ret, err
 }
@@ -88,7 +89,7 @@ func (i *inputStream) QueryStreamReady() (Node, error) {
 	if i.isClosed {
 		return Null, StreamError{Stream: i}
 	}
-	if _, err := i.file.Seek(0, os.SEEK_CUR); err != nil {
+	if _, err := i.file.Seek(0, io.SeekCurrent); err != nil {
 		return Null, nil
 	}
 	return True, nil

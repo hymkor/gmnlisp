@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"context"
+	"io"
 	"os"
 )
 
@@ -74,7 +75,7 @@ func (t *IOFile) String() string {
 
 func (i *IOFile) FilePosition() (int64, error) {
 	i.writer.Flush()
-	z, err := i.file.Seek(0, os.SEEK_CUR)
+	z, err := i.file.Seek(0, io.SeekCurrent)
 	if err != nil {
 		return 0, err
 	}
@@ -83,7 +84,7 @@ func (i *IOFile) FilePosition() (int64, error) {
 
 func (i *IOFile) SetFilePosition(n int64) (int64, error) {
 	i.writer.Flush()
-	ret, err := i.file.Seek(n, os.SEEK_SET)
+	ret, err := i.file.Seek(n, io.SeekStart)
 	i.reader.Reset(i.file)
 	return ret, err
 }
@@ -93,7 +94,7 @@ func (i *IOFile) QueryStreamReady() (Node, error) {
 		return Null, StreamError{Stream: i}
 	}
 	i.writer.Flush()
-	if _, err := i.file.Seek(0, os.SEEK_CUR); err != nil {
+	if _, err := i.file.Seek(0, io.SeekCurrent); err != nil {
 		return Null, nil
 	}
 	return True, nil

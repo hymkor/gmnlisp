@@ -111,12 +111,12 @@ func (o *outputStream) Close() error {
 
 func (o *outputStream) FilePosition() (int64, error) {
 	o.w.Flush()
-	return o.file.Seek(0, os.SEEK_CUR)
+	return o.file.Seek(0, io.SeekCurrent)
 }
 
 func (o *outputStream) SetFilePosition(n int64) (int64, error) {
 	o.w.Flush()
-	return o.file.Seek(n, os.SEEK_SET)
+	return o.file.Seek(n, io.SeekStart)
 }
 
 func (*outputStream) ClassOf() Class {
