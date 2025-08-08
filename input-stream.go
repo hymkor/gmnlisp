@@ -9,9 +9,14 @@ import (
 )
 
 type inputStream struct {
-	_Reader  *bufio.Reader
-	file     *os.File
-	isClosed bool
+	_Reader      *bufio.Reader
+	file         *os.File
+	isClosed     bool
+	elementClass int64
+}
+
+func (i *inputStream) ElementClass() int64 {
+	return i.elementClass
 }
 
 var inputStreamClass = &BuiltInClass{
@@ -43,7 +48,8 @@ func (t *inputStream) Equals(other Node, _ EqlMode) bool {
 }
 
 func (t *inputStream) String() string {
-	return fmt.Sprintf("<input-stream>: %p", t)
+	return fmt.Sprintf("(struct <input-stream> (isClosed %v) (elementClass %d))",
+		t.isClosed, t.elementClass)
 }
 
 func (i *inputStream) Read(b []byte) (int, error) {
@@ -95,7 +101,7 @@ func (i *inputStream) QueryStreamReady() (Node, error) {
 	return True, nil
 }
 
-func openInputFile(ctx context.Context, w *World, fname Node) (*inputStream, error) {
+func openInputFile(ctx context.Context, w *World, fname Node, elementClass int64) (*inputStream, error) {
 	filename, err := ExpectClass[String](ctx, w, fname)
 	if err != nil {
 		return nil, err
@@ -104,16 +110,19 @@ func openInputFile(ctx context.Context, w *World, fname Node) (*inputStream, err
 	if err != nil {
 		return nil, err
 	}
-	return &inputStream{_Reader: bufio.NewReader(reader), file: reader}, nil
+	return &inputStream{_Reader: bufio.NewReader(reader), file: reader, elementClass: elementClass}, nil
 }
 
 func funOpenInputFile(ctx context.Context, w *World, args []Node) (Node, error) {
+	var elementClass int64 = 0
 	if len(args) >= 2 {
-		if _, err := ExpectElementClass(ctx, w, args[1]); err != nil {
+		if v, err := ExpectElementClass(ctx, w, args[1]); err != nil {
 			return nil, err
+		} else {
+			elementClass = int64(v)
 		}
 	}
-	return openInputFile(ctx, w, args[0])
+	return openInputFile(ctx, w, args[0], elementClass)
 }
 
 func cmdWithOpenInputFile(ctx context.Context, w *World, list Node) (Node, error) {
@@ -129,11 +138,23 @@ func cmdWithOpenInputFile(ctx context.Context, w *World, list Node) (Node, error
 	if err != nil {
 		return nil, err
 	}
-	filename, _, err := w.ShiftAndEvalCar(ctx, param)
+	filename, param, err := w.ShiftAndEvalCar(ctx, param)
 	if err != nil {
 		return nil, err
 	}
-	stream, err := openInputFile(ctx, w, filename)
+	var elementClass int64 = 0
+	if IsSome(param) {
+		elementClassNode, _, err := w.ShiftAndEvalCar(ctx, param)
+		if err != nil {
+			return nil, err
+		}
+		if v, err := ExpectElementClass(ctx, w, elementClassNode); err != nil {
+			return nil, err
+		} else {
+			elementClass = int64(v)
+		}
+	}
+	stream, err := openInputFile(ctx, w, filename, elementClass)
 	if err != nil {
 		return nil, err
 	}

@@ -42,7 +42,7 @@ type _StreamInput struct {
 	eofValue Node
 }
 
-func newStreamInput(w *World, argv []Node) (*_StreamInput, error) {
+func newStreamInput(w *World, argv []Node, binary bool) (*_StreamInput, error) {
 	this := &_StreamInput{
 		reader:   nil,
 		eofFlag:  true,
@@ -66,6 +66,21 @@ func newStreamInput(w *World, argv []Node) (*_StreamInput, error) {
 				ExpectedClass: streamClass,
 			}
 		}
+		if binary {
+			if isTextStream(this.reader) {
+				return nil, &DomainError{
+					Object: argv[0],
+					Reason: "not a binary stream",
+				}
+			}
+		} else {
+			if isBinaryStream(this.reader) {
+				return nil, &DomainError{
+					Object: argv[0],
+					Reason: "not a text stream",
+				}
+			}
+		}
 	case 0:
 		this.reader = w.Stdin()
 	}
@@ -87,7 +102,7 @@ func readString(r io.ByteReader, delim byte) (string, error) {
 }
 
 func funReadLine(ctx context.Context, w *World, argv []Node) (Node, error) {
-	stream, err := newStreamInput(w, argv)
+	stream, err := newStreamInput(w, argv, false)
 	if err != nil {
 		return nil, err
 	}
@@ -115,7 +130,7 @@ func funReadLine(ctx context.Context, w *World, argv []Node) (Node, error) {
 }
 
 func funRead(ctx context.Context, w *World, argv []Node) (Node, error) {
-	stream, err := newStreamInput(w, argv)
+	stream, err := newStreamInput(w, argv, false)
 	if err != nil {
 		return nil, err
 	}
@@ -141,7 +156,7 @@ func funRead(ctx context.Context, w *World, argv []Node) (Node, error) {
 }
 
 func funReadByte(ctx context.Context, w *World, argv []Node) (Node, error) {
-	stream, err := newStreamInput(w, argv)
+	stream, err := newStreamInput(w, argv, true)
 	if err != nil {
 		return nil, err
 	}
@@ -158,7 +173,7 @@ func funReadByte(ctx context.Context, w *World, argv []Node) (Node, error) {
 }
 
 func funReadChar(ctx context.Context, w *World, argv []Node) (Node, error) {
-	stream, err := newStreamInput(w, argv)
+	stream, err := newStreamInput(w, argv, false)
 	if err != nil {
 		return nil, err
 	}
@@ -175,7 +190,7 @@ func funReadChar(ctx context.Context, w *World, argv []Node) (Node, error) {
 }
 
 func funPreviewChar(ctx context.Context, w *World, argv []Node) (Node, error) {
-	stream, err := newStreamInput(w, argv)
+	stream, err := newStreamInput(w, argv, false)
 	if err != nil {
 		return nil, err
 	}
