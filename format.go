@@ -142,10 +142,6 @@ func printFloat(w io.Writer, value Node, mark byte, args ...int) error {
 }
 
 func funFormatFloat(ctx context.Context, w *World, args []Node) (Node, error) {
-	_, err := ExpectClass[Float](ctx, w, args[1])
-	if err != nil {
-		return nil, err
-	}
 	return tAndNilToWriter(ctx, w, args, func(_writer io.Writer, args []Node) error {
 		return printFloat(_writer, args[0], 'f')
 	})
@@ -178,15 +174,15 @@ func writeRune(w io.Writer, r rune) (int, error) {
 }
 
 func funFormatFreshLine(ctx context.Context, w *World, node Node) (Node, error) {
-	if c, ok := node.(interface{ Column() int }); ok && c.Column() == 0 {
-		return Null, nil
-	}
 	writer, ok := node.(io.Writer)
-	if !ok {
+	if !ok || isBinaryStream(node) {
 		return callHandler[Node](ctx, w, true, &DomainError{
 			Object:        node,
 			ExpectedClass: streamClass,
 		})
+	}
+	if c, ok := node.(interface{ Column() int }); ok && c.Column() == 0 {
+		return Null, nil
 	}
 	writer.Write(NewLineOnFormat)
 	return Null, nil
@@ -374,6 +370,12 @@ func tAndNilToWriter(ctx context.Context, w *World, argv []Node, f func(io.Write
 		}
 		if True.Equals(argv[0], STRICT) {
 			return Null, f(w.stdout, argv[1:])
+		}
+	}
+	if elementClass, ok := argv[0].(elementClassType); ok && elementClass.ElementClass() != 0 {
+		return nil, &DomainError{
+			Object: argv[0],
+			Reason: "not a character stream",
 		}
 	}
 	type writerType interface {

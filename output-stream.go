@@ -53,17 +53,23 @@ func (t WriterStream) RawWriter() io.Writer {
 }
 
 type outputStream struct {
-	w        *bufio.Writer
-	file     *os.File
-	column   int
-	isClosed bool
+	w            *bufio.Writer
+	file         *os.File
+	column       int
+	isClosed     bool
+	elementClass int64
 }
 
-func newOutputFileStream(f *os.File) *outputStream {
+func newOutputFileStream(f *os.File, elementClass int64) *outputStream {
 	return &outputStream{
-		w:    bufio.NewWriter(f),
-		file: f,
+		w:            bufio.NewWriter(f),
+		file:         f,
+		elementClass: elementClass,
 	}
+}
+
+func (o *outputStream) ElementClass() int64 {
+	return o.elementClass
 }
 
 func (o *outputStream) Column() int {
@@ -132,5 +138,6 @@ func (t *outputStream) Equals(other Node, _ EqlMode) bool {
 }
 
 func (t *outputStream) String() string {
-	return fmt.Sprintf("<output-stream>: %p", t)
+	return fmt.Sprintf("(struct <output-stream> (column %d) (isClosed %v) (elementClass %d))",
+		t.column, t.isClosed, t.elementClass)
 }

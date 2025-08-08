@@ -9,11 +9,16 @@ import (
 )
 
 type IOFile struct {
-	reader   *bufio.Reader
-	writer   *bufio.Writer
-	file     *os.File
-	isClosed bool
-	column   int
+	reader       *bufio.Reader
+	writer       *bufio.Writer
+	file         *os.File
+	isClosed     bool
+	column       int
+	elementClass int64
+}
+
+func (iof *IOFile) ElementClass() int64 {
+	return iof.elementClass
 }
 
 var _ _Reader = &IOFile{}
@@ -100,15 +105,16 @@ func (i *IOFile) QueryStreamReady() (Node, error) {
 	return True, nil
 }
 
-func newIoFile(fname string) (*IOFile, error) {
+func newIoFile(fname string, ec int64) (*IOFile, error) {
 	f, err := os.OpenFile(fname, os.O_RDWR|os.O_CREATE, 0644)
 	if err != nil {
 		return nil, err
 	}
 	return &IOFile{
-		reader: bufio.NewReader(f),
-		writer: bufio.NewWriter(f),
-		file:   f,
+		reader:       bufio.NewReader(f),
+		writer:       bufio.NewWriter(f),
+		file:         f,
+		elementClass: ec,
 	}, nil
 }
 
@@ -117,12 +123,13 @@ func funOpenIoFile(ctx context.Context, w *World, args []Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
+	var elementClass int64
 	if len(args) >= 2 {
-		if _, err := ExpectElementClass(ctx, w, args[1]); err != nil {
+		if elementClass, err = ExpectElementClass(ctx, w, args[1]); err != nil {
 			return nil, err
 		}
 	}
-	return newIoFile(string(fname))
+	return newIoFile(string(fname), elementClass)
 }
 
 func cmdWithOpenIoFile(ctx context.Context, w *World, list Node) (Node, error) {
@@ -138,7 +145,7 @@ func cmdWithOpenIoFile(ctx context.Context, w *World, list Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	filenameNode, _, err := w.ShiftAndEvalCar(ctx, param)
+	filenameNode, param, err := w.ShiftAndEvalCar(ctx, param)
 	if err != nil {
 		return nil, err
 	}
@@ -146,7 +153,17 @@ func cmdWithOpenIoFile(ctx context.Context, w *World, list Node) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	stream, err := newIoFile(string(filename))
+	var elementClass int64 = 0
+	if IsSome(param) {
+		elementClassNode, _, err := w.ShiftAndEvalCar(ctx, param)
+		if err != nil {
+			return nil, err
+		}
+		if ec, ok := elementClassNode.(Integer); ok {
+			elementClass = int64(ec)
+		}
+	}
+	stream, err := newIoFile(string(filename), elementClass)
 	if err != nil {
 		return nil, err
 	}

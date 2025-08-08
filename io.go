@@ -236,10 +236,31 @@ func funFinishOutput(ctx context.Context, w *World, arg Node) (Node, error) {
 	return Null, nil
 }
 
+type elementClassType interface {
+	ElementClass() int64
+}
+
+func isBinaryStream(f any) bool {
+	ff, ok := f.(elementClassType)
+	return ok && ff.ElementClass() != 0
+}
+
+func isTextStream(f any) bool {
+	ff, ok := f.(elementClassType)
+	return !ok || ff.ElementClass() == 0
+}
+
 func funWriteByte(ctx context.Context, w *World, z, stream Node) (Node, error) {
 	data, err := ExpectClass[Integer](ctx, w, z)
 	if err != nil {
 		return nil, err
+	}
+	e, ok := stream.(elementClassType)
+	if !ok || e.ElementClass() == 0 || data < 0 || int64(data) >= (1<<e.ElementClass()) {
+		return nil, &DomainError{
+			Object: stream,
+			Reason: "not a binary stream",
+		}
 	}
 	if w, ok := stream.(io.ByteWriter); ok {
 		w.WriteByte(byte(int(data)))
@@ -298,7 +319,7 @@ func funSetFilePosition(ctx context.Context, w *World, stream, z Node) (Node, er
 	}
 }
 
-func openOutputFile(ctx context.Context, w *World, fnameNode Node) (*outputStream, error) {
+func openOutputFile(ctx context.Context, w *World, fnameNode Node, elementClass int64) (*outputStream, error) {
 	filename, err := ExpectClass[String](ctx, w, fnameNode)
 	if err != nil {
 		return nil, err
@@ -307,16 +328,18 @@ func openOutputFile(ctx context.Context, w *World, fnameNode Node) (*outputStrea
 	if err != nil {
 		return nil, err
 	}
-	return newOutputFileStream(writer), nil
+	return newOutputFileStream(writer, elementClass), nil
 }
 
 func funOpenOutputFile(ctx context.Context, w *World, args []Node) (Node, error) {
+	var elementClass int64 = 0
 	if len(args) >= 2 {
-		if _, err := ExpectElementClass(ctx, w, args[1]); err != nil {
+		var err error
+		if elementClass, err = ExpectElementClass(ctx, w, args[1]); err != nil {
 			return nil, err
 		}
 	}
-	return openOutputFile(ctx, w, args[0])
+	return openOutputFile(ctx, w, args[0], elementClass)
 }
 
 func cmdWithOpenOutputFile(ctx context.Context, w *World, list Node) (Node, error) {
@@ -332,11 +355,21 @@ func cmdWithOpenOutputFile(ctx context.Context, w *World, list Node) (Node, erro
 	if err != nil {
 		return nil, err
 	}
-	filename, _, err := w.ShiftAndEvalCar(ctx, param)
+	filename, param, err := w.ShiftAndEvalCar(ctx, param)
 	if err != nil {
 		return nil, err
 	}
-	stream, err := openOutputFile(ctx, w, filename)
+	var elementClass int64 = 0
+	if IsSome(param) {
+		elementClassNode, _, err := w.ShiftAndEvalCar(ctx, param)
+		if err != nil {
+			return nil, err
+		}
+		if e, ok := elementClassNode.(Integer); ok {
+			elementClass = int64(e)
+		}
+	}
+	stream, err := openOutputFile(ctx, w, filename, elementClass)
 	if err != nil {
 		return nil, err
 	}
