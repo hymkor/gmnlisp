@@ -4,10 +4,29 @@ Gmnlisp
 [![Go Reference](https://pkg.go.dev/badge/github.com/hymkor/gmnlisp.svg)](https://pkg.go.dev/github.com/hymkor/gmnlisp)
 [![Go Test](https://github.com/hymkor/gmnlisp/actions/workflows/go.yml/badge.svg)](https://github.com/hymkor/gmnlisp/actions/workflows/go.yml)
 
-Gmnlisp is the interpreter of [ISLisp] written in Go.
-It is developed to embbed to the applications for customizing.
+Gmnlisp is an **ISLisp** interpreter written in Go, designed for embedding into Go applications to enable scripting and customization in ISLisp.
 
 ![Example image](factorial.gif)
+
+## Features
+
+- **High ISLisp Standard Compliance**  
+  - Verified with the [ISLisp Verification System](https://islisp.org/verification.html):  
+    **PASS:** 16143 / **FAIL:** 268 → Pass rate: **98.36%**  
+  - Remaining failures are mainly due to:  
+    - Class system and generic functions: core features implemented, a few features still missing  
+    - Nearly all standard functions have correct parameter validation; some minor cases remain  
+    - Strings are currently immutable (spec requires mutability)
+
+- **Written in Go — Interpreter**  
+  - Pure interpreter implementation (no compiler)  
+  - Embeddable directly into Go programs  
+  - Allows **mutual function calls** between Go and ISLisp
+
+- **Embedding-Oriented API**  
+  - Simple registration of variables, functions, and special forms from Go  
+  - Direct access to Lisp objects as Go interfaces (`gmnlisp.Node`)  
+  - Works on Windows and Linux
 
 Usage and Integration Guide
 ----------------------------
@@ -178,19 +197,6 @@ const (
     EQUALP                // corresponds to (equalp a b) 
 )
 ```
-
-ISLisp Compatibility
---------------------
-
-Gmnlisp has been tested with the [ISLisp Verification System](https://islisp.org/verification.html),  
-which checks compliance with the ISO ISLisp standard.
-
-| Item      | Result     |
-| --------- | ---------- |
-| Version   | v0.7.22    |
-| Passed    | 16143      |
-| Failed    | 268        |
-| Pass rate | **98.36%** |
 
 Projects Using gmnlisp
 -----------------------
