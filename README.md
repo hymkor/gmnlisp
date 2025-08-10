@@ -187,10 +187,10 @@ which checks compliance with the ISO ISLisp standard.
 
 | Item      | Result     |
 | --------- | ---------- |
-| Version   | v0.7.21    |
-| Passed    | 15853      |
-| Failed    | 558        |
-| Pass rate | **96.60%** |
+| Version   | v0.7.22    |
+| Passed    | 16143      |
+| Failed    | 268        |
+| Pass rate | **98.36%** |
 
 Projects Using gmnlisp
 -----------------------
