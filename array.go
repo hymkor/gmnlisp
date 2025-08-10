@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"strings"
+	"unicode/utf8"
 )
 
 type VectorBuilder struct {
@@ -354,23 +355,30 @@ func funSetAref(ctx context.Context, w *World, args []Node) (Node, error) {
 	if _, ok := args[1].(*Array); ok {
 		return funSetGaref(ctx, w, args)
 	}
-	if _, ok := args[1].(String); ok {
+	if s, ok := args[1].(String); ok {
 		if len(args) > 3 {
 			return nil, ErrTooManyArguments
 		}
 		if len(args) < 3 {
 			return nil, ErrTooFewArguments
 		}
-		if i, ok := args[1].(Integer); ok && i < 0 {
+		if i, ok := args[2].(Integer); !ok || i < 0 {
 			return callHandler[Node](ctx, w, false, &DomainError{
-				Object:        args[1],
+				Object:        args[2],
 				ExpectedClass: integerClass,
+			})
+		} else if L := utf8.RuneCountInString(string(s)); int(i) >= L {
+			return nil, ErrIndexOutOfRange
+		} else if _, ok := args[0].(Rune); !ok {
+			return callHandler[Node](ctx, w, false, &DomainError{
+				Object:        args[0],
+				ExpectedClass: characterClass,
 			})
 		}
 		return nil, errors.New("aref did not support <string>,yet")
 	}
 	return callHandler[Node](ctx, w, false, &DomainError{
-		Object:        args[0],
+		Object:        args[1],
 		ExpectedClass: basicArrayClass,
 	})
 }
