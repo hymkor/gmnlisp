@@ -436,18 +436,17 @@ func funSubSeq(ctx context.Context, w *World, args []Node) (Node, error) {
 
 func funMember(ctx context.Context, w *World, expr, list Node) (Node, error) {
 	for IsSome(list) {
-		seq, err := ExpectInterface[Sequence](ctx, w, list, listClass)
-		if err != nil {
-			return nil, err
-		}
-		value, rest, ok := seq.FirstAndRest()
+		cons, ok := list.(*Cons)
 		if !ok {
-			break
+			return nil, &DomainError{
+				Object:        list,
+				ExpectedClass: listClass,
+			}
 		}
-		if expr.Equals(value, STRICT) {
+		if expr.Equals(cons.Car, STRICT) {
 			return list, nil
 		}
-		list = rest
+		list = cons.Cdr
 	}
 	return Null, nil
 }
