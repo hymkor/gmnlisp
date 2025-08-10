@@ -5,6 +5,7 @@
 - Improved `(*)` so that if the result overflows int64, it is automatically promoted to a big.Int to preserve correctness.
 - Modified `(lcm)`, `(gcd)`, `(<)`, `(-)`, `(=)`, `(/=)`, and `(*)` to allow calculations involving mixed numeric types (`big.Int`, `int64`, and `float64`) without raising `<domain-error>`.
 - File I/O functions now check the element-class specified at file open time, and signal a `<domain-error>` if an operation not permitted for that stream is attempted.
+- Fixed insufficient argument count and type checks in `(set-aref)`, `(set-garef)`, `(set-elt)`, `(member)`, and `(abs)`.
 
 v0.7.21
 =======
