@@ -54,12 +54,12 @@ type Parser[N comparable] struct {
 	Null    func() N           // Null returns the Lisp nil object.
 	True    func() N           // True returns the Lisp true object.
 
-	Quote   func(N) N
-	Quasi   func(N) N
-	Unquote func(N) N
+	Quote    func(N) N
+	Quasi    func(N) N
+	Unquote  func(N) N
+	Function func(N) N
 
 	dotSymbol        N
-	functionSymbol   N
 	parenCloseSymbol N
 
 	initialized bool
@@ -270,7 +270,7 @@ func (p *Parser[N]) readNode(rs io.RuneScanner) (N, error) {
 			}
 			return p.Null(), err
 		}
-		return p.Cons(p.functionSymbol, p.Cons(function, p.Null())), nil
+		return p.Function(function), nil
 	}
 	if token == "#(" {
 		return p.readArray(1, rs)
@@ -383,7 +383,6 @@ func (p *Parser[N]) init() {
 		p.initialized = true
 
 		p.dotSymbol = p.Symbol(".")
-		p.functionSymbol = p.Symbol("function")
 		p.parenCloseSymbol = p.Symbol(")")
 
 		if p.Cons == nil {
@@ -432,6 +431,12 @@ func (p *Parser[N]) init() {
 			unquoteSymbol := p.Symbol("unquote")
 			p.Unquote = func(value N) N {
 				return p.Cons(unquoteSymbol, p.Cons(value, p.Null()))
+			}
+		}
+		if p.Function == nil {
+			functionSymbol := p.Symbol("function")
+			p.Function = func(value N) N {
+				return p.Cons(functionSymbol, p.Cons(value, p.Null()))
 			}
 		}
 	}
