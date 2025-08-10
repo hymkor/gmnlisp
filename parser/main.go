@@ -53,12 +53,13 @@ type Parser[N comparable] struct {
 	Rune    func(rune) N       // Rune constructs a character object from a rune.
 	Null    func() N           // Null returns the Lisp nil object.
 	True    func() N           // True returns the Lisp true object.
-	Quasi   func(N) N
+
+	Quote func(N) N
+	Quasi func(N) N
 
 	dotSymbol        N
 	functionSymbol   N
 	parenCloseSymbol N
-	quoteSymbol      N
 	unquoteSymbol    N
 
 	initialized bool
@@ -135,10 +136,6 @@ func (p *Parser[N]) readArray(lenDim int, rs io.RuneScanner) (N, error) {
 	} else {
 		return p.Array(nodes, dim), nil
 	}
-}
-
-func (p *Parser[N]) newQuote(value N) N {
-	return p.Cons(p.quoteSymbol, p.Cons(value, p.Null()))
 }
 
 func (p *Parser[N]) tryParseAsFloat(token string) (N, bool, error) {
@@ -253,7 +250,7 @@ func (p *Parser[N]) readNode(rs io.RuneScanner) (N, error) {
 			}
 			return p.Null(), err
 		}
-		return p.newQuote(quoted), nil
+		return p.Quote(quoted), nil
 	}
 	if token == "," {
 		quoted, err := p.readNode(rs)
@@ -388,7 +385,6 @@ func (p *Parser[N]) init() {
 		p.dotSymbol = p.Symbol(".")
 		p.functionSymbol = p.Symbol("function")
 		p.parenCloseSymbol = p.Symbol(")")
-		p.quoteSymbol = p.Symbol("quote")
 		p.unquoteSymbol = p.Symbol("unquote")
 
 		if p.Cons == nil {
@@ -420,6 +416,12 @@ func (p *Parser[N]) init() {
 		}
 		if p.True == nil {
 			panic("Parser.True is not set")
+		}
+		if p.Quote == nil {
+			quoteSymbol := p.Symbol("quote")
+			p.Quote = func(value N) N {
+				return p.Cons(quoteSymbol, p.Cons(value, p.Null()))
+			}
 		}
 		if p.Quasi == nil {
 			quasiquoteSymbol := p.Symbol("quasiquote")
