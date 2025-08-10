@@ -1,4 +1,5 @@
 (lambda (x)
+  (assure <number> x)
   (if (< x 0)
     (- x)
     x))
