@@ -10,8 +10,8 @@
   (with-open-input-file
     (r (string-append *temp-dir* "/foo"))
     (let ((c nil) (buf (create-string-output-stream)))
-      (while (setq c (read-byte r nil nil))
-        (write-byte c buf))
+      (while (setq c (read-char r nil nil))
+        (format-char buf c))
       (get-output-stream-string buf)))
 
   ; expect
