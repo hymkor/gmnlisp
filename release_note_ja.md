@@ -1,11 +1,17 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+v0.7.22
+=======
+Aug 11, 2025
+
 - `(gcd)` および `(lcm)` において、負の値を与えると誤った結果を返す不具合を修正
 - `(div)` が Go の big.Int 型を引数として受け入れられるように対応
 - `(*)` において、int64 の引数による計算結果が int64 の範囲を超える場合は、自動的に big.Int 型に昇格して正しい値を返すようにした
 - `(lcm)`, `(gcd)`, `(<)`, `(-)`, `(=)`, `(/=)`, `(*)` において、巨大整数（`big.Int`）、通常の整数（`int64`）、浮動小数点数（`float64`）が混在している場合でも、`<domain-error>` を発生させずに計算できるように修正。
 - ファイルを読み書きする関数が、オープン時に指定された element-class を確認し、そのストリームで許可されない操作が行われた場合は `<domain-error>` を発生させるようにした。
 - `(set-aref)`, `(set-garef)`, `(set-elt)`, `(member)`, `(abs)` において、引数の個数や型のチェックが不十分だった問題を修正。
+
+[TP Result] : PASS = 16143, FAIL = 268 (Pass rate: 98.36%)
 
 v0.7.21
 =======
