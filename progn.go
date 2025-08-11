@@ -32,10 +32,10 @@ func cmdReturnFrom(ctx context.Context, w *World, args Node) (Node, error) {
 		return nil, err
 	}
 	for p := w; p != nil; p = p.parent {
-		if bt, ok := p.aux.(*blockTagType); ok && bt.key.Equals(symbol, STRICT) {
-			if _, ok := w.blockName[bt.serial]; ok {
-				return nil, &_ErrEarlyReturns{value: value, tag: *bt}
-			}
+		if bt, ok := p.aux.(*blockTagType); ok &&
+			bt.key.Equals(symbol, STRICT) &&
+			bt.ready {
+			return nil, &_ErrEarlyReturns{value: value, tag: *bt}
 		}
 	}
 	return raiseControlError(ctx, w, fmt.Errorf("block-tag '%s' not found", symbol.String()))
@@ -59,13 +59,14 @@ func cmdProgn(ctx context.Context, w *World, c Node) (Node, error) {
 type blockTagType struct {
 	key    Symbol
 	serial int
+	ready  bool
 }
 
 var blockTagCount = 0
 
 func newBlockTag(sym Symbol) *blockTagType {
 	blockTagCount++
-	return &blockTagType{key: sym, serial: blockTagCount}
+	return &blockTagType{key: sym, serial: blockTagCount, ready: true}
 }
 
 func cmdBlock(ctx context.Context, w *World, node Node) (Node, error) {
@@ -84,17 +85,15 @@ func cmdBlock(ctx context.Context, w *World, node Node) (Node, error) {
 		aux:    bt,
 		shared: w.shared,
 	}
-	if w.blockName == nil {
-		w.blockName = make(map[int]struct{})
-	}
-	if _, ok := w.blockName[bt.serial]; !ok {
-		defer delete(w.blockName, bt.serial)
-		w.blockName[bt.serial] = struct{}{}
-	}
+	defer func() { bt.ready = false }()
+
 	rv, err := Progn(ctx, newWorld, statements)
 
 	var errEarlyReturns *_ErrEarlyReturns
-	if errors.As(err, &errEarlyReturns) && bt.serial == errEarlyReturns.tag.serial && bt.key == errEarlyReturns.tag.key {
+	if errors.As(err, &errEarlyReturns) &&
+		bt.serial == errEarlyReturns.tag.serial &&
+		bt.key == errEarlyReturns.tag.key &&
+		bt.ready {
 		return errEarlyReturns.value, nil
 	}
 	return rv, err

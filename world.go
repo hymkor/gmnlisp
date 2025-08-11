@@ -139,7 +139,6 @@ type shared struct {
 		Node
 	}
 	startup    sync.Once
-	blockName  map[int]struct{}
 	catchTag   map[Node]struct{}
 	goTag      map[Symbol]struct{}
 	StrictMode bool
