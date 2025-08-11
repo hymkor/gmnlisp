@@ -94,7 +94,7 @@ func (s _Symbol) OriginalString() string {
 	return symbolManager.IdToName(s)[1]
 }
 
-var symbolManager = &nameIDRegistry[_Symbol]{}
+var symbolManager nameIDRegistry[_Symbol]
 
 func NewSymbol(s string) _Symbol {
 	return symbolManager.NameToId(s)
@@ -137,7 +137,7 @@ func (s Reserved) OriginalString() string {
 	return reservedManager.IdToName(s)[1]
 }
 
-var reservedManager = &nameIDRegistry[Reserved]{}
+var reservedManager nameIDRegistry[Reserved]
 
 func NewReserved(name string) Reserved {
 	return reservedManager.NameToId(name)
