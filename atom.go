@@ -210,7 +210,7 @@ func funRuneIndex(ctx context.Context, w *World, argv []Node) (Node, error) {
 
 type Keyword int
 
-var keywordManager = idMap[Keyword]{}
+var keywordManager = nameIDRegistry[Keyword]{}
 
 func NewKeyword(name string) Keyword {
 	return keywordManager.NameToId(name)

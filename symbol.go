@@ -7,13 +7,13 @@ import (
 	"sync"
 )
 
-type idMap[T ~int] struct {
+type nameIDRegistry[T ~int] struct {
 	mu      sync.RWMutex
 	id2name [][2]string
 	name2id map[string]T
 }
 
-func (idm *idMap[T]) find(name string) (T, bool) {
+func (idm *nameIDRegistry[T]) find(name string) (T, bool) {
 	idm.mu.RLock()
 	defer idm.mu.RUnlock()
 
@@ -26,7 +26,7 @@ func (idm *idMap[T]) find(name string) (T, bool) {
 	return s, ok
 }
 
-func (idm *idMap[T]) NameToId(name string) T {
+func (idm *nameIDRegistry[T]) NameToId(name string) T {
 	upperName := strings.ToUpper(name)
 
 	idm.mu.Lock()
@@ -45,13 +45,13 @@ func (idm *idMap[T]) NameToId(name string) T {
 	return id
 }
 
-func (idm *idMap[T]) Count() int {
+func (idm *nameIDRegistry[T]) Count() int {
 	idm.mu.RLock()
 	defer idm.mu.RUnlock()
 	return len(idm.name2id)
 }
 
-func (idm *idMap[T]) IdToName(id T) [2]string {
+func (idm *nameIDRegistry[T]) IdToName(id T) [2]string {
 	idm.mu.RLock()
 	defer idm.mu.RUnlock()
 
@@ -94,7 +94,7 @@ func (s _Symbol) OriginalString() string {
 	return symbolManager.IdToName(s)[1]
 }
 
-var symbolManager = &idMap[_Symbol]{}
+var symbolManager = &nameIDRegistry[_Symbol]{}
 
 func NewSymbol(s string) _Symbol {
 	return symbolManager.NameToId(s)
@@ -137,7 +137,7 @@ func (s Reserved) OriginalString() string {
 	return reservedManager.IdToName(s)[1]
 }
 
-var reservedManager = &idMap[Reserved]{}
+var reservedManager = &nameIDRegistry[Reserved]{}
 
 func NewReserved(name string) Reserved {
 	return reservedManager.NameToId(name)
