@@ -4,14 +4,19 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"sync"
 )
 
 type idMap[T ~int] struct {
+	mu      sync.RWMutex
 	id2name [][2]string
 	name2id map[string]T
 }
 
 func (idm *idMap[T]) find(name string) (T, bool) {
+	idm.mu.RLock()
+	defer idm.mu.RUnlock()
+
 	if idm.name2id == nil {
 		var zero T
 		return zero, false
@@ -22,13 +27,18 @@ func (idm *idMap[T]) find(name string) (T, bool) {
 }
 
 func (idm *idMap[T]) NameToId(name string) T {
+	upperName := strings.ToUpper(name)
+
+	idm.mu.Lock()
+	defer idm.mu.Unlock()
+
 	if idm.name2id == nil {
 		idm.name2id = make(map[string]T)
 	}
-	upperName := strings.ToUpper(name)
 	if id, ok := idm.name2id[upperName]; ok {
 		return id
 	}
+
 	id := T(len(idm.name2id))
 	idm.name2id[upperName] = id
 	idm.id2name = append(idm.id2name, [...]string{upperName, name})
@@ -36,10 +46,15 @@ func (idm *idMap[T]) NameToId(name string) T {
 }
 
 func (idm *idMap[T]) Count() int {
+	idm.mu.RLock()
+	defer idm.mu.RUnlock()
 	return len(idm.name2id)
 }
 
 func (idm *idMap[T]) IdToName(id T) [2]string {
+	idm.mu.RLock()
+	defer idm.mu.RUnlock()
+
 	if id < 0 || int(id) >= len(idm.id2name) {
 		return [...]string{"(UNDEFINED)", "(undefined)"}
 	}
