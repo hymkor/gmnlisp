@@ -31,14 +31,14 @@ func cmdWithHandler(ctx context.Context, w *World, node Node) (Node, error) {
 		w.handler = w.handler[:L-1]
 	}
 
-	// 本来、場合によっては継続処理があるため、ハンドラー関数はエラーが起きた場所で
-	// 呼ばなければいけないが、 古いコードは error を返して、error の処理元で
-	// ハンドラー関数を呼ぶことを想定し、エラー発生箇所で呼べていない
+	// For error conditions where continuation is not required,
+	// the handler function is invoked here.
 	//
-	// エラー発生箇所でハンドラー関数が呼ばれて、ここに戻る時は大域脱出系エラーで
-	// 戻ってくるはずなので、そういった場合は、ここでハンドラー関数を呼ばない
-	// ようにしている
-	// (将来的にはエラーが起きた場所で呼ぶよう変更しなくてはいけない)
+	// If the handler has already been invoked at the error site and
+	// returned with no continuation, it is not called again.
+	//
+	// Non-local exit information may also be returned as an error value,
+	// but since this is not a Lisp error, it is simply returned to the caller.
 
 	if err == nil || IsNonLocalExists(err) || errors.Is(err, errHandlerReturnNormally) {
 		return value, err
