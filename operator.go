@@ -26,6 +26,9 @@ func funAdd(ctx context.Context, w *World, args []Node) (Node, error) {
 	case 0:
 		return Integer(0), nil
 	case 1:
+		if _, err := checkNumber(args[0]); err != nil {
+			return nil, err
+		}
 		_, err := ExpectInterface[canPlus](ctx, w, args[0], floatClass)
 		if err != nil {
 			return nil, err
