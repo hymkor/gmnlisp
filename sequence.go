@@ -269,6 +269,11 @@ func mapList(ctx context.Context, w *World, funcNode Node, sourceSet []Node, sto
 	listSet := make([]Node, len(sourceSet))
 	copy(listSet, sourceSet)
 	for {
+		for _, v := range listSet {
+			if IsNone(v) {
+				return nil
+			}
+		}
 		result, err := _f.Call(ctx, w, listToQuotedList(listSet))
 		if err != nil {
 			return err
@@ -276,9 +281,6 @@ func mapList(ctx context.Context, w *World, funcNode Node, sourceSet []Node, sto
 		store(result)
 
 		for i := 0; i < len(listSet); i++ {
-			if IsNone(listSet[i]) {
-				return nil
-			}
 			seq, ok := listSet[i].(Sequence)
 			if !ok {
 				return ErrNotSupportType
