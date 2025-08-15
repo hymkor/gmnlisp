@@ -301,7 +301,7 @@ func funMapList(ctx context.Context, w *World, argv []Node) (Node, error) {
 
 func funMapL(ctx context.Context, w *World, argv []Node) (Node, error) {
 	err := mapList(ctx, w, argv[0], argv[1:], func(Node) {})
-	return argv[0], err
+	return argv[1], err
 }
 
 func funMapCon(ctx context.Context, w *World, argv []Node) (Node, error) {
