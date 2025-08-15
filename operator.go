@@ -80,6 +80,9 @@ func funMulti(ctx context.Context, w *World, args []Node) (Node, error) {
 		Node
 		Multi(context.Context, *World, Node) (Node, error)
 	}
+	if len(args) <= 0 {
+		return Integer(1), nil
+	}
 	if len(args) == 1 {
 		_, err := ExpectInterface[CanMulti](ctx, w, args[0], floatClass)
 		if err != nil {
