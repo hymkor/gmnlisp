@@ -177,8 +177,36 @@ type canLessThan interface {
 	Node
 }
 
+func checkNumber(n Node) (canLessThan, error) {
+	if v, ok := n.(BigInt); ok {
+		return v, nil
+	}
+	if v, ok := n.(Integer); ok {
+		return v, nil
+	}
+	if v, ok := n.(Float); ok {
+		return v, nil
+	}
+	return nil, &DomainError{
+		Object: n,
+		Reason: "not a number",
+	}
+}
+
+func checkNumbers(n ...Node) error {
+	for _, v := range n {
+		if _, err := checkNumber(v); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func funLessThan(ctx context.Context, w *World, args []Node) (Node, error) {
 	return notNullToTrue(inject(args, func(left, right Node) (Node, error) {
+		if err := checkNumbers(left, right); err != nil {
+			return nil, err
+		}
 		_left, err := ExpectInterface[canLessThan](ctx, w, left, floatClass)
 		if err != nil {
 			return nil, err
@@ -196,6 +224,9 @@ func funLessThan(ctx context.Context, w *World, args []Node) (Node, error) {
 
 func funGreaterThan(ctx context.Context, w *World, args []Node) (Node, error) {
 	return notNullToTrue(inject(args, func(left, right Node) (Node, error) {
+		if err := checkNumbers(left, right); err != nil {
+			return nil, err
+		}
 		_right, err := ExpectInterface[canLessThan](ctx, w, right, floatClass)
 		if err != nil {
 			return nil, err
@@ -247,6 +278,9 @@ func funNotEqual(ctx context.Context, w *World, left, right Node) (Node, error) 
 
 func funGreaterOrEqual(ctx context.Context, w *World, args []Node) (Node, error) {
 	return notNullToTrue(inject(args, func(left, right Node) (Node, error) {
+		if err := checkNumbers(left, right); err != nil {
+			return nil, err
+		}
 		//     left >= right
 		// <=> not (left < right )
 		_left, err := ExpectInterface[canLessThan](ctx, w, left, floatClass)
@@ -266,6 +300,9 @@ func funGreaterOrEqual(ctx context.Context, w *World, args []Node) (Node, error)
 
 func funLessOrEqual(ctx context.Context, w *World, args []Node) (Node, error) {
 	return notNullToTrue(inject(args, func(left, right Node) (Node, error) {
+		if err := checkNumbers(left, right); err != nil {
+			return nil, err
+		}
 		//     left <= right
 		// <=> not (right < left)
 		_right, err := ExpectInterface[canLessThan](ctx, w, right, floatClass)
