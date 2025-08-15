@@ -294,29 +294,17 @@ func mapList(ctx context.Context, w *World, funcNode Node, sourceSet []Node, sto
 }
 
 func funMapList(ctx context.Context, w *World, argv []Node) (Node, error) {
-	if len(argv) < 1 {
-		return nil, ErrTooFewArguments
-	}
 	var buffer ListBuilder
 	err := mapList(ctx, w, argv[0], argv[1:], func(n Node) { buffer.Add(ctx, w, n) })
 	return buffer.Sequence(), err
 }
 
 func funMapL(ctx context.Context, w *World, argv []Node) (Node, error) {
-	if len(argv) < 1 {
-		return nil, ErrTooFewArguments
-	}
 	err := mapList(ctx, w, argv[0], argv[1:], func(Node) {})
-	if len(argv) < 2 {
-		return Null, err
-	}
 	return argv[0], err
 }
 
 func funMapCon(ctx context.Context, w *World, argv []Node) (Node, error) {
-	if len(argv) < 1 {
-		return nil, ErrTooFewArguments
-	}
 	list := []Node{}
 	err := mapList(ctx, w, argv[0], argv[1:], func(n Node) { list = append(list, n) })
 	if err != nil {
