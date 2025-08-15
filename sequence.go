@@ -160,6 +160,19 @@ func funElt(ctx context.Context, w *World, args []Node) (Node, error) {
 }
 
 func funLength(ctx context.Context, w *World, arg Node) (Node, error) {
+	if IsNone(arg) {
+		return Integer(0), nil
+	}
+	if _, ok := arg.(*Cons); !ok {
+		if _, ok := arg.(String); !ok {
+			if a, ok := arg.(*Array); !ok || len(a.dim) != 1 {
+				return nil, &DomainError{
+					Object: arg,
+					Reason: "not a list, string or vector",
+				}
+			}
+		}
+	}
 	length := 0
 	err := SeqEach(ctx, w, arg, func(_ Node) error {
 		length++
