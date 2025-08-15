@@ -106,16 +106,18 @@ func funElt(ctx context.Context, w *World, args []Node) (Node, error) {
 	type canElt interface {
 		Elt(int) (Node, error)
 	}
-	if _, ok := args[0].(canElt); !ok {
-		return nil, &DomainError{
-			Object: args[0],
-			Reason: "Not a sequence",
+	if IsSome(args[0]){
+		if _, ok := args[0].(canElt); !ok {
+			return nil, &DomainError{
+				Object: args[0],
+				Reason: "Not a sequence",
+			}
 		}
-	}
-	if a, ok := args[0].(*Array); ok && len(a.dim) != 1 {
-		return nil, &DomainError{
-			Object: args[0],
-			Reason: "Not a vector or a list",
+		if a, ok := args[0].(*Array); ok && len(a.dim) != 1 {
+			return nil, &DomainError{
+				Object: args[0],
+				Reason: "Not a vector or a list",
+			}
 		}
 	}
 	var value Node = args[0]

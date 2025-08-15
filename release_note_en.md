@@ -3,6 +3,9 @@
 - Fixed an issue where the symbol lookup/creation process (`NewSymbol`) did not implement mutual exclusion, despite being accessed from multiple interpreter instances, by adding synchronization to the global symbol table.
 - Fixed a bug in `mapl`-family functions where processing was not terminated immediately when the first element of the list was `nil`, causing the function to process once including `nil`.
 - Fixed a bug in `(mapl)` where the return value was incorrectly the first argument (function object) instead of the second argument (the first list argument) as specified.
+- Modified `(length)` to raise `<domain-error>` when given an argument other than `<list>` or `<general-vector*>`.
+- Modified `(<)`, `(>)`, `(<=)`, `(>=)`, and `(+)` to raise `<domain-error>` when given a non-numeric argument.
+- Changed `(*)` with no arguments to return `1` instead of `nil` (correct multiplicative identity).
 
 v0.7.22
 =======
