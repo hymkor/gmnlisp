@@ -6,6 +6,9 @@
 - Modified `(length)` to raise `<domain-error>` when given an argument other than `<list>` or `<general-vector*>`.
 - Modified `(<)`, `(>)`, `(<=)`, `(>=)`, and `(+)` to raise `<domain-error>` when given a non-numeric argument.
 - Changed `(*)` with no arguments to return `1` instead of `nil` (correct multiplicative identity).
+- Errors that implement the `IsControlFlow` method are now treated as non-local exits. Previously, only the three types `_ErrEarlyReturns`, `_ErrThrown`, and `_ErrTagBody` were fixed as non-local exit errors.
+- The `(quit)` and `(abort)` functions have been removed from the core and moved to the `exit` subpackage. To use them, import `github.com/hymkor/gmnlisp/exit`. The gmnlisp executable imports them by default.
+- Objects previously represented by `ErrQuit` and `ErrAbort` using `fmt.Errorf` are now replaced by instances of `exit.ExitError` and `exit.AbortError`, serving as non-local exit errors.
 
 v0.7.22
 =======

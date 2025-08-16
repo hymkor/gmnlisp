@@ -6,6 +6,9 @@
 - `(length)` に `<list>` または `<general-vector*>` 以外が与えられた場合、`<domain-error>` を返すように修正。
 - `(<)`, `(>)`, `(<=)`, `(>=)`, `(+)` に数値以外が与えられた場合、`<domain-error>` を返すように修正。
 - 引数なしの `(*)` の戻り値を、`nil` ではなく 1 に修正（仕様通りの単位元に変更）。
+- `IsControlFlow` メソッドを実装している `error` は、大域脱出用のエラーとして扱うことにした。従来は `_ErrEarlyReturns`、`_ErrThrown`、`_ErrTagBody` の3種類の型のみが固定で対象となっていた。
+- `(quit)` および `(abort)` 関数を本体から除き、サブパッケージ `exit` に移動した。利用する場合は `import "github.com/hymkor/gmnlisp/exit"` を行う。gmnlisp の実行ファイルではこれらを import する。
+- これまで `ErrQuit` や `ErrAbort` として `fmt.Errorf` で生成していたオブジェクトは、`exit.ExitError` 型, `exit.AbortError` 型のインスタンスとして大域脱出用のエラーに置き換えた。
 
 v0.7.22
 =======
