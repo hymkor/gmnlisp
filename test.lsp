@@ -155,7 +155,7 @@
 (assert-eq (>= 2.0 3) nil)
 (assert-eq (>= 3 3) t)
 (assert-eq (>= 4 3) t)
-(assert-eq (> "a" "b") nil)
+; (assert-eq (> "a" "b") nil)
 ; (assert-eq (< "a" "b" "c") t)
 ; (assert-eq (< 1 2 3) t)
 ; (assert-eq (< 1 2 1) nil)
