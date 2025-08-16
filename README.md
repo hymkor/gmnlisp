@@ -198,6 +198,31 @@ const (
 )
 ```
 
+### `(quit)` and `(abort)`
+
+The functions `(quit)` and `(abort)` are provided by the `exit` subpackage. To use them,
+import:
+
+```go
+import "github.com/hymkor/gmnlisp/exit"
+```
+
+* **`(quit [N])`**
+  Terminates the gmnlisp executable with exit code `N`.
+
+  * `N` must be a non-negative integer (`0`–`255`).
+  * If omitted, the exit code defaults to `0`.
+  * Passing a non-integer or a negative integer signals a `<domain-error>`.
+  * Passing an integer greater than `255` signals a `<program-error>`.
+
+* **`(abort)`**
+  When running a script from the gmnlisp executable, terminates with exit code `1`.
+  In the interactive REPL, `(abort)` does **not** terminate the REPL itself; it only stops the current evaluation.
+  Internally, `(abort)` raises an `exit.AbortError` instance (`ErrAbort`).
+
+> Both `(quit)` and `(abort)` are only available when the `exit` package is imported.
+> In the gmnlisp executable, they are imported by default.
+
 Projects Using gmnlisp
 -----------------------
 
