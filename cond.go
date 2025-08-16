@@ -6,12 +6,13 @@ import (
 	"fmt"
 )
 
-	var e1 *_ErrEarlyReturns // block & return-from
-	var e2 *_ErrThrown       // catch & throw
-	var e3 *_ErrTagBody      // tagbody & go
+type ControlFlow interface {
+	IsControlFlow()
+}
 
-	return errors.As(err, &e1) || errors.As(err, &e2) || errors.As(err, &e3)
 func isNonLocalExit(err error) bool {
+	var controlFlow ControlFlow
+	return errors.As(err, &controlFlow)
 }
 
 func cmdWithHandler(ctx context.Context, w *World, node Node) (Node, error) {

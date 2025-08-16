@@ -11,6 +11,8 @@ type _ErrEarlyReturns struct {
 	tag   blockTagType
 }
 
+func (e *_ErrEarlyReturns) IsControlFlow() {}
+
 func (e *_ErrEarlyReturns) Error() string {
 	return "Unexpected (return-from)"
 }
@@ -103,6 +105,8 @@ type _ErrThrown struct {
 	Value   Node
 	TagForm Node
 }
+
+func (e *_ErrThrown) IsControlFlow() {}
 
 func (e *_ErrThrown) Error() string {
 	return fmt.Sprintf("Thrown tag-form %#v was not caught", e.TagForm.String())
@@ -303,6 +307,8 @@ func cmdUnwindProtect(ctx context.Context, w *World, list Node) (Node, error) {
 type _ErrTagBody struct {
 	tag Symbol
 }
+
+func (t *_ErrTagBody) IsControlFlow() {}
 
 func (t *_ErrTagBody) Error() string {
 	return fmt.Sprintf("tag: %s not found", t.tag)
