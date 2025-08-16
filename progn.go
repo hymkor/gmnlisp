@@ -288,10 +288,7 @@ func cmdUnwindProtect(ctx context.Context, w *World, list Node) (Node, error) {
 		var err error
 		_, err = Progn(ctx, w, list)
 		if err != nil {
-			var e1 *_ErrEarlyReturns // block & return-from
-			var e2 *_ErrThrown       // catch & throw
-			var e3 *_ErrTagBody      // tagbody & go
-			if errors.As(err, &e1) || errors.As(err, &e2) || errors.As(err, &e3) {
+			if isNonLocalExit(err) {
 				return raiseControlError(ctx, w, errors.New("can not escape from cleanup-form"))
 			}
 			return nil, err

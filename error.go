@@ -237,7 +237,7 @@ func callHandler[T Node](ctx context.Context, w *World, cont bool, condition Con
 					return v, nil
 				}
 			}
-			if IsNonLocalExists(e) {
+			if isNonLocalExit(e) {
 				return zero, e
 			}
 			if e != nil {

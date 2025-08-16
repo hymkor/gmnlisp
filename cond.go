@@ -6,12 +6,12 @@ import (
 	"fmt"
 )
 
-func IsNonLocalExists(err error) bool {
 	var e1 *_ErrEarlyReturns // block & return-from
 	var e2 *_ErrThrown       // catch & throw
 	var e3 *_ErrTagBody      // tagbody & go
 
 	return errors.As(err, &e1) || errors.As(err, &e2) || errors.As(err, &e3)
+func isNonLocalExit(err error) bool {
 }
 
 func cmdWithHandler(ctx context.Context, w *World, node Node) (Node, error) {
@@ -40,7 +40,7 @@ func cmdWithHandler(ctx context.Context, w *World, node Node) (Node, error) {
 	// Non-local exit information may also be returned as an error value,
 	// but since this is not a Lisp error, it is simply returned to the caller.
 
-	if err == nil || IsNonLocalExists(err) || errors.Is(err, errHandlerReturnNormally) {
+	if err == nil || isNonLocalExit(err) || errors.Is(err, errHandlerReturnNormally) {
 		return value, err
 	}
 	var errorValue Condition
