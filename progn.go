@@ -275,14 +275,6 @@ func cmdWhile(ctx context.Context, w *World, n Node) (Node, error) {
 	}
 }
 
-func funQuit(context.Context, *World) (Node, error) {
-	return Null, ErrQuit
-}
-
-func funAbort(context.Context, *World) (Node, error) {
-	return Null, ErrAbort
-}
-
 func cmdUnwindProtect(ctx context.Context, w *World, list Node) (Node, error) {
 	var formErr error
 	var value Node

@@ -10,12 +10,10 @@ import (
 )
 
 var (
-	ErrAbort          = errors.New("abort")
 	ErrExpectedClass  = errors.New("expected class")
 	ErrInvalidFormat  = errors.New("invalid format")
 	ErrNoMatchMethods = errors.New("no match methods")
 	ErrNotSupportType = errors.New("not support type")
-	ErrQuit           = errors.New("bye")
 
 	ErrTooFewArguments  = ProgramError{err: parser.ErrTooFewArguments}
 	ErrTooManyArguments = ProgramError{err: parser.ErrTooManyArguments}

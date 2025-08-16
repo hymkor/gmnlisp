@@ -16,8 +16,10 @@ import (
 	"github.com/hymkor/gmnlisp"
 	_ "github.com/hymkor/gmnlisp/command"
 	_ "github.com/hymkor/gmnlisp/eval"
+	exit "github.com/hymkor/gmnlisp/exit"
 	_ "github.com/hymkor/gmnlisp/regexp"
 	_ "github.com/hymkor/gmnlisp/wildcard"
+
 	"github.com/hymkor/go-multiline-ny"
 	"github.com/hymkor/go-multiline-ny/completion"
 	"github.com/mattn/go-colorable"
@@ -209,7 +211,7 @@ func interactive(lisp *gmnlisp.World) error {
 		lisp.SetErrout(os.Stderr) // reset the flag for `~&` in (format)
 		result, err := lisp.Interpret(ctx, code)
 		if err != nil {
-			if errors.Is(err, gmnlisp.ErrQuit) {
+			if errors.Is(err, exit.ErrQuit) {
 				return nil
 			}
 			fmt.Fprintln(os.Stderr, err.Error())
@@ -290,7 +292,7 @@ func mains(args []string) error {
 func main() {
 	flag.Parse()
 	if err := mains(flag.Args()); err != nil {
-		if !errors.Is(err, gmnlisp.ErrQuit) {
+		if !errors.Is(err, exit.ErrQuit) {
 			fmt.Fprintln(os.Stderr, err.Error())
 			os.Exit(1)
 		}
