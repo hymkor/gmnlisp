@@ -106,7 +106,7 @@ func funElt(ctx context.Context, w *World, args []Node) (Node, error) {
 	type canElt interface {
 		Elt(int) (Node, error)
 	}
-	if IsSome(args[0]){
+	if IsSome(args[0]) {
 		if _, ok := args[0].(canElt); !ok {
 			return nil, &DomainError{
 				Object: args[0],
