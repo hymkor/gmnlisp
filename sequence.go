@@ -132,6 +132,9 @@ func funElt(ctx context.Context, w *World, args []Node) (Node, error) {
 				Object: Integer(index),
 			})
 		}
+		if index >= exhaustThresHold {
+			return nil, ErrIndexOutOfRange
+		}
 		if aref, ok := value.(canElt); ok {
 			var err error
 			value, err = aref.Elt(int(index))
