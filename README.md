@@ -12,7 +12,7 @@ Gmnlisp is an **ISLisp** interpreter written in Go, designed for embedding into 
 
 - **High ISLisp Standard Compliance**  
   - Verified with the [ISLisp Verification System](https://islisp.org/verification.html):  
-    **PASS:** 16143 / **FAIL:** 268 → Pass rate: **98.36%**  
+    **PASS:** 16173 / **FAIL:** 238 → Pass rate: **98.54%**  
   - Remaining failures are mainly due to:  
     - Class system and generic functions: core features implemented, a few features still missing  
     - Nearly all standard functions have correct parameter validation; some minor cases remain  
