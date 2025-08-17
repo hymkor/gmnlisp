@@ -211,8 +211,9 @@ func interactive(lisp *gmnlisp.World) error {
 		lisp.SetErrout(os.Stderr) // reset the flag for `~&` in (format)
 		result, err := lisp.Interpret(ctx, code)
 		if err != nil {
-			if errors.Is(err, exit.ErrQuit) {
-				return nil
+			var exitError exit.ExitError
+			if errors.As(err, &exitError) {
+				return err
 			}
 			fmt.Fprintln(os.Stderr, err.Error())
 			continue
@@ -292,9 +293,11 @@ func mains(args []string) error {
 func main() {
 	flag.Parse()
 	if err := mains(flag.Args()); err != nil {
-		if !errors.Is(err, exit.ErrQuit) {
-			fmt.Fprintln(os.Stderr, err.Error())
-			os.Exit(1)
+		var exitError exit.ExitError
+		if errors.As(err, &exitError) {
+			os.Exit(exitError.Value)
 		}
+		fmt.Fprintln(os.Stderr, err.Error())
+		os.Exit(1)
 	}
 }
