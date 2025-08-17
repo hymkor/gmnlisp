@@ -198,6 +198,24 @@ const (
 )
 ```
 
+### `(load)` and `(eval)`
+
+The functions `(load)` and `(eval)` are provided by the `eval` subpackage.  
+To make them available, simply import the package:
+
+```go
+import _ "github.com/hymkor/gmnlisp/eval"
+````
+
+* **`(load "filename")`**
+  Reads S-expressions from the specified file and evaluates them sequentially.
+
+* **`(eval expr)`**
+  Evaluates the given S-expression.
+
+> Importing the `eval` package is sufficient; the functions are automatically registered
+> when a gmnlisp interpreter instance is created.
+
 ### `(quit)` and `(abort)`
 
 The functions `(quit)` and `(abort)` are provided by the `exit` subpackage. To use them,
