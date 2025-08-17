@@ -1,5 +1,9 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+v0.7.23
+=======
+Aug 17, 2025
+
 - Fixed an issue where the symbol lookup/creation process (`NewSymbol`) did not implement mutual exclusion, despite being accessed from multiple interpreter instances, by adding synchronization to the global symbol table.
 - Fixed a bug in `mapl`-family functions where processing was not terminated immediately when the first element of the list was `nil`, causing the function to process once including `nil`.
 - Fixed a bug in `(mapl)` where the return value was incorrectly the first argument (function object) instead of the second argument (the first list argument) as specified.
@@ -9,6 +13,8 @@
 - Errors that implement the `IsControlFlow` method are now treated as non-local exits. Previously, only the three types `_ErrEarlyReturns`, `_ErrThrown`, and `_ErrTagBody` were fixed as non-local exit errors.
 - The `(quit)` and `(abort)` functions have been removed from the core and moved to the `exit` subpackage. To use them, import `github.com/hymkor/gmnlisp/exit`. The gmnlisp executable imports them by default.
 - Objects previously represented by `ErrQuit` and `ErrAbort` using `fmt.Errorf` are now replaced by instances of `exit.ExitError` and `exit.AbortError`, serving as non-local exit errors.
+
+[TP Result] : PASS = 16173, FAIL = 238 (Pass rate: 98.54%)
 
 v0.7.22
 =======

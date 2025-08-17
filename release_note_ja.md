@@ -1,5 +1,9 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+v0.7.23
+=======
+Aug 17, 2025
+
 - シンボル参照・生成処理 (`NewSymbol`) が複数のインタプリタインスタンスから同時にアクセスされる可能性があるにもかかわらず、排他制御を行っていなかった不具合を修正
 - `(mapl)` 系関数で、リストの最初の要素が `nil` の場合にただちに終了せず、`nil` を含めて一度処理してしまう不具合を修正。
 - `(mapl)` の戻り値が、本来は第二引数（最初のリスト引数）であるべきところ、誤って第一引数（関数オブジェクト）になっていた不具合を修正。
@@ -9,6 +13,8 @@
 - `IsControlFlow` メソッドを実装している `error` は、大域脱出用のエラーとして扱うことにした。従来は `_ErrEarlyReturns`、`_ErrThrown`、`_ErrTagBody` の3種類の型のみが固定で対象となっていた。
 - `(quit)` および `(abort)` 関数を本体から除き、サブパッケージ `exit` に移動した。利用する場合は `import "github.com/hymkor/gmnlisp/exit"` を行う。gmnlisp の実行ファイルではこれらを import する。
 - これまで `ErrQuit` や `ErrAbort` として `fmt.Errorf` で生成していたオブジェクトは、`exit.ExitError` 型, `exit.AbortError` 型のインスタンスとして大域脱出用のエラーに置き換えた。
+
+[TP Result] : PASS = 16173, FAIL = 238 (Pass rate: 98.54%)
 
 v0.7.22
 =======
