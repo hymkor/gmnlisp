@@ -17,6 +17,7 @@ import (
 	_ "github.com/hymkor/gmnlisp/command"
 	_ "github.com/hymkor/gmnlisp/eval"
 	exit "github.com/hymkor/gmnlisp/exit"
+	_ "github.com/hymkor/gmnlisp/hash"
 	_ "github.com/hymkor/gmnlisp/regexp"
 	_ "github.com/hymkor/gmnlisp/wildcard"
 

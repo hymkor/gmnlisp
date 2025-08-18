@@ -5,7 +5,18 @@ import (
 	"fmt"
 	"io"
 	"strings"
+
+	. "github.com/hymkor/gmnlisp"
 )
+
+func init() {
+	Export(NewSymbol("clrhash"), Function1(funClearHash))
+	Export(NewSymbol("gethash"), Function2(funGetHash))
+	Export(NewSymbol("hash-table-count"), Function1(funHashTableCount))
+	Export(NewSymbol("make-hash-table"), Function0(funMakeHashTable))
+	Export(NewSymbol("remhash"), Function2(funRemoveHash))
+	Export(NewSymbol("set-gethash"), &Function{C: 3, F: funSetHash})
+}
 
 type _Hash map[Node]Node
 
@@ -14,19 +25,22 @@ func (h _Hash) Equals(other Node, mode EqlMode) bool {
 }
 
 func (h _Hash) PrintTo(w io.Writer, mode PrintMode) (int, error) {
-	var wc writeCounter
+	n := 0
 	dem := '{'
 	for key, val := range h {
-		if wc.Try(fmt.Fprintf(w, "%c%#v:%#v", dem, key, val)) {
-			return wc.Result()
+		_n, err := fmt.Fprintf(w, "%c%#v:%#v", dem, key, val)
+		n += _n
+		if err != nil {
+			return n, err
 		}
 		dem = ','
 	}
-	wc.Try(w.Write([]byte{'}'}))
-	return wc.Result()
+	_n, err := w.Write([]byte{'}'})
+	n += _n
+	return n, err
 }
 
-var hashClass = registerNewBuiltInClass[_Hash]("<hashtable>")
+var hashClass = NewBuiltInClass[_Hash]("<hashtable>")
 
 func (_Hash) ClassOf() Class {
 	return hashClass
