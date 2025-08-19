@@ -3,8 +3,6 @@ package gmnlisp
 import (
 	"context"
 	"io"
-	"strconv"
-	"strings"
 )
 
 type Sequence interface {
@@ -58,48 +56,6 @@ func (L *ListBuilder) Sequence() Node {
 		return Null
 	}
 	return L.first.Cdr
-}
-
-type StringBuilder struct {
-	strings.Builder
-}
-
-func (S *StringBuilder) String() string {
-	if S == nil {
-		return ""
-	}
-	return S.Builder.String()
-}
-
-func (S *StringBuilder) Column() int {
-	s := S.String()
-	pos := strings.LastIndexByte(s, '\n')
-	if pos >= 0 {
-		return len(s) - pos - 1
-	}
-	return len(s)
-}
-
-func (S *StringBuilder) Add(ctx context.Context, w *World, n Node) error {
-	r, err := ExpectClass[Rune](ctx, w, n)
-	if err != nil {
-		return err
-	}
-	S.WriteRune(rune(r))
-	return nil
-}
-
-func (S *StringBuilder) Close() error {
-	S.Reset()
-	return nil
-}
-
-func (S *StringBuilder) Sequence() Node {
-	return String(S.String())
-}
-
-func (S StringBuilder) GoString() string {
-	return strconv.Quote(S.String())
 }
 
 func funElt(ctx context.Context, w *World, args []Node) (Node, error) {

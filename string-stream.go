@@ -1,10 +1,7 @@
 package gmnlisp
 
 import (
-	"bufio"
 	"context"
-	"io"
-	"os"
 	"strings"
 )
 
@@ -57,61 +54,4 @@ func funCreateStringInputStream(ctx context.Context, w *World, arg Node) (Node, 
 		return nil, err
 	}
 	return StringReader{Reader: strings.NewReader(s.String())}, nil
-}
-
-func funCreateStringOutputStream(ctx context.Context, w *World) (Node, error) {
-	return &StringBuilder{}, nil
-}
-
-func funGetOutputStreamString(ctx context.Context, w *World, arg Node) (Node, error) {
-	stringer, err := ExpectClass[*StringBuilder](ctx, w, arg)
-	if err != nil {
-		return nil, err
-	}
-	result := String(stringer.String())
-	stringer.Reset()
-	return result, nil
-}
-
-var stringBuilderClass = &BuiltInClass{
-	name: NewSymbol("<string-builder>"),
-	instanceP: func(value Node) bool {
-		_, ok := value.(*StringBuilder)
-		return ok
-	},
-	create: func() Node {
-		return &StringBuilder{}
-	},
-	super: []Class{ObjectClass, streamClass},
-}
-
-func (*StringBuilder) ClassOf() Class {
-	return stringBuilderClass
-}
-
-func (t *StringBuilder) Equals(other Node, _ EqlMode) bool {
-	o, ok := other.(*StringBuilder)
-	if !ok {
-		return false
-	}
-	return t.String() == o.String()
-}
-
-func (t *StringBuilder) RawWriter() io.Writer {
-	return &t.Builder
-}
-
-var outputStreamClass = &BuiltInClass{
-	name: NewSymbol("<output-stream>"),
-	instanceP: func(value Node) bool {
-		_, ok := value.(*outputStream)
-		return ok
-	},
-	create: func() Node {
-		return &outputStream{
-			w:    bufio.NewWriter(os.Stderr),
-			file: os.Stderr,
-		}
-	},
-	super: []Class{ObjectClass, streamClass},
 }
