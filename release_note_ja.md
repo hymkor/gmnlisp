@@ -1,5 +1,19 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+- `<storage-exausted>` を発生させる閾値を ExhaustThreshold int64 として参照/変更できるようにした (デフォルト: 123456789)
+- `(elt)` のインデックスが閾値 (ExhaustThreshold) 以上の時 `<program-error>` とするようにした
+- ハッシュテーブル関連の関数 `(clrhash)`, `(gethash)`, `(hash-table-count)`, `(make-hash-table)`, `(remhash)`, `(set-gethash)` をサブパッケージ `hash` へ移動。利用する場合は `import "github.com/hymkor/gmnlisp/hash"` を行う。gmnlisp の実行ファイルではこれらを import する。
+- go doc の量が多すぎ、読みづらくなるため、内部的なツール関数などは非公開とした
+    - 型 `StringBuilder` を `stringWriter` へ改名し、非公開とした
+    - 型 `StringReader` を `stringReader` へ改名し、非公開とした
+    - 型 `ListBuilder` を `listBuilder` へ改名し、非公開とした
+    - 型 `Invalid` を `invalidType` へ改名し、非公開とした
+    - 型 `VectorBuilder` を `vectorBuilder` へ改名し、非公開とした
+    - 型 `LispString` を`lazyForm` へ改名し、非公開とした
+    - 型 `SeqBuilder` を匿名型にした(1関数でしか使われていないため)
+    - 関数 `ExpectElementClass` を `expectElementClass` へ改名し、非公開とした
+- embed で組み込んだS式による関数定義(lazyForm)の二回目以降の呼び出しの効率を改善した
+
 v0.7.23
 =======
 Aug 17, 2025

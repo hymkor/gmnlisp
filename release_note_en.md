@@ -1,5 +1,19 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+- Added `ExhaustThreshold int64` to configure the threshold for raising `<storage-exhausted>` (default: 123456789).
+- Modified `(elt)` so that if the index is greater than or equal to `ExhaustThreshold`, it raises `<program-error>`.
+- Moved hash-table related functions `(clrhash)`, `(gethash)`, `(hash-table-count)`, `(make-hash-table)`, `(remhash)`, `(set-gethash)` into a subpackage `hash`. To use them, import `"github.com/hymkor/gmnlisp/hash"`. The gmnlisp executable imports this by default.
+- Reduced the amount of `go doc` output by making internal utility types and functions unexported:
+  - Renamed type `StringBuilder` to `stringWriter` (unexported).
+  - Renamed type `StringReader` to `stringReader` (unexported).
+  - Renamed type `ListBuilder` to `listBuilder` (unexported).
+  - Renamed type `Invalid` to `invalidType` (unexported).
+  - Renamed type `VectorBuilder` to `vectorBuilder` (unexported).
+  - Renamed type `LispString` to `lazyForm` (unexported).
+  - Changed type `SeqBuilder` to an anonymous type (only used in a single function).
+  - Renamed function `ExpectElementClass` to `expectElementClass` (unexported).
+- Improved efficiency of subsequent calls to embedded function definitions (lazyForm) that are included via `embed`.
+
 v0.7.23
 =======
 Aug 17, 2025
