@@ -24,18 +24,18 @@ var outputStreamClass = &BuiltInClass{
 	super: []Class{ObjectClass, streamClass},
 }
 
-type StringBuilder struct {
+type stringWriter struct {
 	strings.Builder
 }
 
-func (S *StringBuilder) String() string {
+func (S *stringWriter) String() string {
 	if S == nil {
 		return ""
 	}
 	return S.Builder.String()
 }
 
-func (S *StringBuilder) Column() int {
+func (S *stringWriter) Column() int {
 	s := S.String()
 	pos := strings.LastIndexByte(s, '\n')
 	if pos >= 0 {
@@ -44,7 +44,7 @@ func (S *StringBuilder) Column() int {
 	return len(s)
 }
 
-func (S *StringBuilder) Add(ctx context.Context, w *World, n Node) error {
+func (S *stringWriter) Add(ctx context.Context, w *World, n Node) error {
 	r, err := ExpectClass[Rune](ctx, w, n)
 	if err != nil {
 		return err
@@ -53,53 +53,53 @@ func (S *StringBuilder) Add(ctx context.Context, w *World, n Node) error {
 	return nil
 }
 
-func (S *StringBuilder) Close() error {
+func (S *stringWriter) Close() error {
 	S.Reset()
 	return nil
 }
 
-func (S *StringBuilder) Sequence() Node {
+func (S *stringWriter) Sequence() Node {
 	return String(S.String())
 }
 
-func (S StringBuilder) GoString() string {
+func (S stringWriter) GoString() string {
 	return strconv.Quote(S.String())
 }
 
 var stringBuilderClass = &BuiltInClass{
 	name: NewSymbol("<string-builder>"),
 	instanceP: func(value Node) bool {
-		_, ok := value.(*StringBuilder)
+		_, ok := value.(*stringWriter)
 		return ok
 	},
 	create: func() Node {
-		return &StringBuilder{}
+		return &stringWriter{}
 	},
 	super: []Class{ObjectClass, streamClass},
 }
 
-func (*StringBuilder) ClassOf() Class {
+func (*stringWriter) ClassOf() Class {
 	return stringBuilderClass
 }
 
-func (t *StringBuilder) Equals(other Node, _ EqlMode) bool {
-	o, ok := other.(*StringBuilder)
+func (t *stringWriter) Equals(other Node, _ EqlMode) bool {
+	o, ok := other.(*stringWriter)
 	if !ok {
 		return false
 	}
 	return t.String() == o.String()
 }
 
-func (t *StringBuilder) RawWriter() io.Writer {
+func (t *stringWriter) RawWriter() io.Writer {
 	return &t.Builder
 }
 
 func funCreateStringOutputStream(ctx context.Context, w *World) (Node, error) {
-	return &StringBuilder{}, nil
+	return &stringWriter{}, nil
 }
 
 func funGetOutputStreamString(ctx context.Context, w *World, arg Node) (Node, error) {
-	stringer, err := ExpectClass[*StringBuilder](ctx, w, arg)
+	stringer, err := ExpectClass[*stringWriter](ctx, w, arg)
 	if err != nil {
 		return nil, err
 	}

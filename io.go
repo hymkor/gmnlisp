@@ -19,7 +19,7 @@ var streamClass = registerClass(&BuiltInClass{
 		return ok
 	},
 	create: func() Node {
-		return &StringBuilder{}
+		return &stringWriter{}
 	},
 	super: []Class{ObjectClass},
 })

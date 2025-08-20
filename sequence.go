@@ -375,7 +375,7 @@ func funSubSeq(ctx context.Context, w *World, args []Node) (Node, error) {
 			dim:  append([]int{int(end - start)}, array.dim[1:]...),
 		}, nil
 	} else if _, ok := args[0].(String); ok {
-		buffer = &StringBuilder{}
+		buffer = &stringWriter{}
 	} else {
 		if _, err := ExpectInterface[Sequence](ctx, w, args[0], listClass); err != nil {
 			return nil, err

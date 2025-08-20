@@ -364,7 +364,7 @@ func formatSub(ctx context.Context, world *World, w io.Writer, argv []Node) erro
 func tAndNilToWriter(ctx context.Context, w *World, argv []Node, f func(io.Writer, []Node) error) (Node, error) {
 	if !w.StrictMode {
 		if IsNone(argv[0]) {
-			var buffer StringBuilder
+			var buffer stringWriter
 			err := f(&buffer, argv[1:])
 			return buffer.Sequence(), err
 		}
