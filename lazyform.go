@@ -42,9 +42,9 @@ func (L *lazyForm) FuncId() uintptr {
 //go:embed embed/*
 var embedLisp embed.FS
 
-type _RootWorld map[Symbol]Callable
+type rootFuncTable map[Symbol]Callable
 
-func (rw _RootWorld) Get(symbol Symbol) (Callable, bool) {
+func (rw rootFuncTable) Get(symbol Symbol) (Callable, bool) {
 	if value, ok := rw[symbol]; ok {
 		return value, true
 	}
@@ -62,11 +62,11 @@ func (rw _RootWorld) Get(symbol Symbol) (Callable, bool) {
 	return nil, false
 }
 
-func (rw _RootWorld) Set(symbol Symbol, value Callable) {
+func (rw rootFuncTable) Set(symbol Symbol, value Callable) {
 	rw[symbol] = value
 }
 
-func (rw _RootWorld) Range(f func(Symbol, Callable) bool) {
+func (rw rootFuncTable) Range(f func(Symbol, Callable) bool) {
 	for key, val := range rw {
 		if !f(key, val) {
 			break

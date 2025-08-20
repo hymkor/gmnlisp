@@ -271,7 +271,7 @@ var presetClass = []Class{
 
 func New() *World {
 	rwvars := &autoLoadVars
-	rwfuncs := _RootWorld{}
+	rwfuncs := rootFuncTable{}
 	w := &World{
 		shared: &shared{
 			global:    rwvars,
