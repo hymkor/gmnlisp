@@ -2,7 +2,9 @@ package gmnlisp
 
 import (
 	"context"
+	"embed"
 	"fmt"
+	"strings"
 )
 
 type lazyForm struct {
@@ -35,4 +37,39 @@ func (L *lazyForm) Call(ctx context.Context, w *World, n Node) (Node, error) {
 
 func (L *lazyForm) FuncId() uintptr {
 	return funcToId(L)
+}
+
+//go:embed embed/*
+var embedLisp embed.FS
+
+type _RootWorld map[Symbol]Callable
+
+func (rw _RootWorld) Get(symbol Symbol) (Callable, bool) {
+	if value, ok := rw[symbol]; ok {
+		return value, true
+	}
+	if value, ok := autoLoadFunc[symbol]; ok {
+		return value, true
+	}
+	fname := "embed/" + strings.ToLower(symbol.String()) + ".lsp"
+
+	script, err := embedLisp.ReadFile(fname)
+	if err == nil {
+		value := &lazyForm{S: string(script)}
+		autoLoadFunc[symbol] = value
+		return value, true
+	}
+	return nil, false
+}
+
+func (rw _RootWorld) Set(symbol Symbol, value Callable) {
+	rw[symbol] = value
+}
+
+func (rw _RootWorld) Range(f func(Symbol, Callable) bool) {
+	for key, val := range rw {
+		if !f(key, val) {
+			break
+		}
+	}
 }
