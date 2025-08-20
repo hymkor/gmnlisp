@@ -328,11 +328,6 @@ func funReverse(ctx context.Context, w *World, arg Node) (Node, error) {
 	return Reverse(arg)
 }
 
-type SeqBuilder interface {
-	Add(context.Context, *World, Node) error
-	Sequence() Node
-}
-
 func funSubSeq(ctx context.Context, w *World, args []Node) (Node, error) {
 	start, err := ExpectClass[Integer](ctx, w, args[1])
 	if err != nil {
@@ -355,8 +350,10 @@ func funSubSeq(ctx context.Context, w *World, args []Node) (Node, error) {
 			Reason: "Index out of range",
 		}
 	}
-
-	var buffer SeqBuilder
+	var buffer interface {
+		Add(context.Context, *World, Node) error
+		Sequence() Node
+	}
 	if array, ok := args[0].(*Array); ok {
 		if len(array.dim) != 1 {
 			return nil, &DomainError{
