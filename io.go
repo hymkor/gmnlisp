@@ -36,14 +36,14 @@ func chomp(s string) string {
 	return s
 }
 
-type _StreamInput struct {
+type readerParam struct {
 	reader   _Reader
 	eofFlag  bool
 	eofValue Node
 }
 
-func newStreamInput(w *World, argv []Node, binary bool) (*_StreamInput, error) {
-	this := &_StreamInput{
+func newStreamInput(w *World, argv []Node, binary bool) (*readerParam, error) {
+	this := &readerParam{
 		reader:   nil,
 		eofFlag:  true,
 		eofValue: Null,
