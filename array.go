@@ -9,16 +9,16 @@ import (
 	"unicode/utf8"
 )
 
-type VectorBuilder struct {
+type vectorBuilder struct {
 	list []Node
 }
 
-func (v *VectorBuilder) Add(ctx context.Context, w *World, value Node) error {
+func (v *vectorBuilder) Add(ctx context.Context, w *World, value Node) error {
 	v.list = append(v.list, value)
 	return nil
 }
 
-func (v *VectorBuilder) Sequence() Node {
+func (v *vectorBuilder) Sequence() Node {
 	return &Array{
 		list: v.list,
 		dim:  []int{len(v.list)},
@@ -26,7 +26,7 @@ func (v *VectorBuilder) Sequence() Node {
 }
 
 func NewVector(ctx context.Context, w *World, args ...Node) Node {
-	var v VectorBuilder
+	var v vectorBuilder
 	for _, value := range args {
 		v.Add(ctx, w, value)
 	}

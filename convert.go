@@ -74,7 +74,7 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 			}
 			return buffer.Sequence(), nil
 		case generalVectorClass.name:
-			var buffer VectorBuilder
+			var buffer vectorBuilder
 			for _, r := range val {
 				buffer.Add(ctx, w, Rune(r))
 			}
@@ -105,7 +105,7 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 		case listClass.name:
 			return val, nil
 		case generalVectorClass.name:
-			var buffer VectorBuilder
+			var buffer vectorBuilder
 			for IsSome(val) {
 				buffer.Add(ctx, w, val.Car)
 				var ok bool
