@@ -221,14 +221,7 @@ func funMacroExpand(ctx context.Context, w *World, arg Node) (Node, error) {
 			return arg, nil
 		}
 		if L, ok := macro.(*lazyForm); ok {
-			_macro, err := L.Eval(ctx, w)
-			if err != nil {
-				return arg, nil
-			}
-			macro, err = ExpectFunction(ctx, w, _macro)
-			if err != nil {
-				return arg, nil
-			}
+			macro, err = L.Callable(ctx, w)
 		}
 		m, ok := macro.(*_Macro)
 		if !ok {

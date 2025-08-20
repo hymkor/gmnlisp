@@ -6,29 +6,29 @@ import (
 )
 
 type lazyForm struct {
-	S       string
-	compile Node
+	S string
+	f Callable
 }
 
-func (L *lazyForm) Eval(ctx context.Context, w *World) (Node, error) {
-	if L.compile == nil {
+func (L *lazyForm) Callable(ctx context.Context, w *World) (Callable, error) {
+	if L.f == nil {
 		c, err := w.Interpret(ctx, L.S)
 		if err != nil {
 			return nil, err
 		}
-		L.compile = c
+		L.f, err = ExpectFunction(ctx, w, c)
+		if err != nil {
+			L.f = nil
+			return nil, fmt.Errorf("lazyForm Call: %w", err)
+		}
 	}
-	return L.compile, nil
+	return L.f, nil
 }
 
 func (L *lazyForm) Call(ctx context.Context, w *World, n Node) (Node, error) {
-	compile, err := L.Eval(ctx, w)
+	f, err := L.Callable(ctx, w)
 	if err != nil {
 		return nil, err
-	}
-	f, err := ExpectFunction(ctx, w, compile)
-	if err != nil {
-		return nil, fmt.Errorf("(*LispString) Call: %w", err)
 	}
 	return f.Call(ctx, w, n)
 }

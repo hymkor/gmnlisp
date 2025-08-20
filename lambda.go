@@ -100,19 +100,15 @@ func expandMacroOne(ctx context.Context, w *World, value Node) Node {
 		if err != nil {
 			return nil
 		}
-		ls, ok := f.(*lazyForm)
+		lazy, ok := f.(*lazyForm)
 		if !ok {
 			return nil
 		}
-		fm, err := ls.Eval(ctx, w)
+		callable, err := lazy.Callable(ctx, w)
 		if err != nil {
 			return nil
 		}
-		fmacro, ok := fm.(FunctionRef)
-		if !ok {
-			return nil
-		}
-		macro, ok = fmacro.value.(*_Macro)
+		macro, ok = callable.(*_Macro)
 		if !ok {
 			return nil
 		}
