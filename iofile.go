@@ -125,7 +125,7 @@ func funOpenIoFile(ctx context.Context, w *World, args []Node) (Node, error) {
 	}
 	var elementClass int64
 	if len(args) >= 2 {
-		if elementClass, err = ExpectElementClass(ctx, w, args[1]); err != nil {
+		if elementClass, err = expectElementClass(ctx, w, args[1]); err != nil {
 			return nil, err
 		}
 	}

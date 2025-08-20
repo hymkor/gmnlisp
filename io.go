@@ -350,7 +350,7 @@ func funOpenOutputFile(ctx context.Context, w *World, args []Node) (Node, error)
 	var elementClass int64 = 0
 	if len(args) >= 2 {
 		var err error
-		if elementClass, err = ExpectElementClass(ctx, w, args[1]); err != nil {
+		if elementClass, err = expectElementClass(ctx, w, args[1]); err != nil {
 			return nil, err
 		}
 	}
@@ -407,7 +407,7 @@ func funProbeFile(ctx context.Context, w *World, arg Node) (Node, error) {
 	return True, nil
 }
 
-func ExpectElementClass(ctx context.Context, w *World, v Node) (int64, error) {
+func expectElementClass(ctx context.Context, w *World, v Node) (int64, error) {
 	_n, err := ExpectClass[Integer](ctx, w, v)
 	if err != nil {
 		return 0, err
@@ -426,7 +426,7 @@ func funFileLength(ctx context.Context, w *World, first, second Node) (Node, err
 	}
 	fname := _fname.String()
 
-	n, err := ExpectElementClass(ctx, w, second)
+	n, err := expectElementClass(ctx, w, second)
 	if err != nil {
 		return nil, err
 	}

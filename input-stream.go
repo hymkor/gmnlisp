@@ -116,7 +116,7 @@ func openInputFile(ctx context.Context, w *World, fname Node, elementClass int64
 func funOpenInputFile(ctx context.Context, w *World, args []Node) (Node, error) {
 	var elementClass int64 = 0
 	if len(args) >= 2 {
-		if v, err := ExpectElementClass(ctx, w, args[1]); err != nil {
+		if v, err := expectElementClass(ctx, w, args[1]); err != nil {
 			return nil, err
 		} else {
 			elementClass = int64(v)
@@ -148,7 +148,7 @@ func cmdWithOpenInputFile(ctx context.Context, w *World, list Node) (Node, error
 		if err != nil {
 			return nil, err
 		}
-		if v, err := ExpectElementClass(ctx, w, elementClassNode); err != nil {
+		if v, err := expectElementClass(ctx, w, elementClassNode); err != nil {
 			return nil, err
 		} else {
 			elementClass = int64(v)
