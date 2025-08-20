@@ -5,46 +5,46 @@ import (
 	"strings"
 )
 
-type StringReader struct {
+type stringReader struct {
 	*strings.Reader
 }
 
 var stringReaderClass = &BuiltInClass{
 	name: NewSymbol("<string-stream-reader>"),
 	instanceP: func(v Node) bool {
-		_, ok := v.(StringReader)
+		_, ok := v.(stringReader)
 		return ok
 	},
 	create: func() Node {
-		return StringReader{Reader: strings.NewReader("")}
+		return stringReader{Reader: strings.NewReader("")}
 	},
 	super: []Class{ObjectClass, streamClass},
 }
 
-func (sr StringReader) QueryStreamReady() (Node, error) {
+func (sr stringReader) QueryStreamReady() (Node, error) {
 	if sr.Reader.Len() <= 0 {
 		return Null, nil
 	}
 	return True, nil
 }
 
-func (sr StringReader) ClassOf() Class {
+func (sr stringReader) ClassOf() Class {
 	return stringReaderClass
 }
 
-func (sr StringReader) Equals(other Node, _ EqlMode) bool {
-	o, ok := other.(StringReader)
+func (sr stringReader) Equals(other Node, _ EqlMode) bool {
+	o, ok := other.(stringReader)
 	if !ok {
 		return false
 	}
 	return o.Reader == sr.Reader
 }
 
-func (sr StringReader) String() string {
+func (sr stringReader) String() string {
 	return "<stream> for string"
 }
 
-func (sr StringReader) Close() error {
+func (sr stringReader) Close() error {
 	return nil
 }
 
@@ -53,5 +53,5 @@ func funCreateStringInputStream(ctx context.Context, w *World, arg Node) (Node, 
 	if err != nil {
 		return nil, err
 	}
-	return StringReader{Reader: strings.NewReader(s.String())}, nil
+	return stringReader{Reader: strings.NewReader(s.String())}, nil
 }
