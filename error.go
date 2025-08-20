@@ -81,8 +81,6 @@ type ParseError struct {
 	ExpectedClass Class
 }
 
-const exhaustThresHold = 123456789
-
 type StorageExhausted struct{}
 
 type StreamError struct {

@@ -172,7 +172,7 @@ func funCreateList(ctx context.Context, w *World, argv []Node) (Node, error) {
 			Reason: "not a non negative integer",
 		}
 	}
-	if n >= exhaustThresHold {
+	if n >= Integer(ExhaustThreshold) {
 		return callHandler[Node](ctx, w, false, StorageExhausted{})
 	}
 	var e Node = Null

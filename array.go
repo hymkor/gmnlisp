@@ -48,7 +48,7 @@ func funCreateVector(ctx context.Context, w *World, args []Node) (Node, error) {
 			return nil, err
 		}
 	}
-	if n >= exhaustThresHold {
+	if n >= Integer(ExhaustThreshold) {
 		return callHandler[Node](ctx, w, false, StorageExhausted{})
 	}
 	v := &Array{
@@ -254,7 +254,7 @@ func funCreateArray(ctx context.Context, w *World, args []Node) (Node, error) {
 		_dim = append(_dim, int(n))
 		size *= int(n)
 	}
-	if size >= exhaustThresHold {
+	if size >= int(ExhaustThreshold) {
 		return callHandler[Node](ctx, w, false, StorageExhausted{})
 	}
 	_list := make([]Node, size)

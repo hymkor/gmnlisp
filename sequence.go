@@ -88,7 +88,7 @@ func funElt(ctx context.Context, w *World, args []Node) (Node, error) {
 				Object: Integer(index),
 			})
 		}
-		if index >= exhaustThresHold {
+		if index >= Integer(ExhaustThreshold) {
 			return nil, ErrIndexOutOfRange
 		}
 		if aref, ok := value.(canElt); ok {

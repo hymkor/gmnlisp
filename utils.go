@@ -22,6 +22,8 @@ var (
 	ErrDotEnditList     = ProgramError{err: errors.New("dot-ended-list is illegal")}
 )
 
+var ExhaustThreshold int64 = 123456789
+
 type EqlMode int
 
 const (
