@@ -171,7 +171,7 @@ func MapCar(ctx context.Context, w *World, funcNode Node, sourceSet []Node, stor
 				return nil
 			}
 		}
-		result, err := _f.Call(ctx, w, listToQuotedList(paramSet))
+		result, err := _f.Call(ctx, w, UnevalList(paramSet...))
 		if err != nil {
 			return err
 		}
@@ -211,23 +211,6 @@ func funMapCan(ctx context.Context, w *World, argv []Node) (Node, error) {
 	return funAppend(ctx, w, list)
 }
 
-func listToQuotedList(list []Node) Node {
-	var cons Node = Null
-	for i := len(list) - 1; i >= 0; i-- {
-		cons = &Cons{
-			Car: &Cons{
-				Car: quoteSymbol,
-				Cdr: &Cons{
-					Car: list[i],
-					Cdr: Null,
-				},
-			},
-			Cdr: cons,
-		}
-	}
-	return cons
-}
-
 func mapList(ctx context.Context, w *World, funcNode Node, sourceSet []Node, store func(Node)) error {
 	for i, v := range sourceSet {
 		var err error
@@ -248,7 +231,7 @@ func mapList(ctx context.Context, w *World, funcNode Node, sourceSet []Node, sto
 				return nil
 			}
 		}
-		result, err := _f.Call(ctx, w, listToQuotedList(listSet))
+		result, err := _f.Call(ctx, w, UnevalList(listSet...))
 		if err != nil {
 			return err
 		}
