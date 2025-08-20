@@ -57,9 +57,9 @@ clean-gen:
 ### Formating sources ###
 
 sort-world:
-	$(RUNLISP) tools/gosort.lsp < world.go > world.go_
-	-cmp world.go world.go_ || $(CP) world.go_ world.go
-	$(RM) world.go_
+	$(RUNLISP) tools/gosort.lsp < autoload.go > autoload.go_
+	-cmp autoload.go autoload.go_ || $(CP) autoload.go_ autoload.go
+	$(RM) autoload.go_
 
 ### Packaging ###
 
