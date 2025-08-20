@@ -73,7 +73,7 @@ var autoLoadFunc = Functions{
 	NewSymbol("arithmetic-error-operands"):      Function1(funArithmeticErrorOperands),
 	NewSymbol("arithmetic-error-operation"):     Function1(funArithmeticErrorOperation),
 	NewSymbol("array-dimensions"):               Function1(funArrayDimensions),
-	NewSymbol("assoc"):                          Function2(Assoc),
+	NewSymbol("assoc"):                          Function2(funAssoc),
 	NewSymbol("atan"):                           funMath1(math.Atan),
 	NewSymbol("atan2"):                          Function2(funAtan2),
 	NewSymbol("atanh"):                          funMath1(math.Atanh),

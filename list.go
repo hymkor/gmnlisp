@@ -121,9 +121,7 @@ func funListp(_ context.Context, _ *World, arg Node) (Node, error) {
 	return Null, nil
 }
 
-// funAssoc implements (assoc KEY LIST)
-
-func Assoc(ctx context.Context, w *World, key Node, list Node) (Node, error) {
+func funAssoc(ctx context.Context, w *World, key Node, list Node) (Node, error) {
 	for IsSome(list) {
 		var element Node
 		var err error
