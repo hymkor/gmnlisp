@@ -230,7 +230,7 @@ func callHandler[T Node](ctx context.Context, w *World, cont bool, condition Con
 		}
 		ctx = context.WithValue(ctx, callHandlerLimitter{}, 1)
 		for h := w.handler; len(h) > 0; h = h[:len(h)-1] {
-			_, e := h[len(h)-1].Call(ctx, w, UnevalList(condition))
+			_, e := h[len(h)-1].Call(ctx, w, quotes(condition))
 			var ce *_ErrContinueCondition
 			if cont && errors.As(e, &ce) {
 				if v, ok := ce.Value.(T); ok {
@@ -251,7 +251,7 @@ func callHandler[T Node](ctx context.Context, w *World, cont bool, condition Con
 }
 
 func ExpectInterface[T Node](ctx context.Context, w *World, v Node, class Class) (T, error) {
-	if _v, ok := v.(Uneval); ok {
+	if _v, ok := v.(quoted); ok {
 		v = _v.Node
 	}
 	value, ok := v.(T)

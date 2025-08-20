@@ -87,7 +87,7 @@ func funSignalCondition(ctx context.Context, w *World, cond, continuable Node) (
 	}
 	if len(w.handler) <= 0 {
 		buffer := &stringWriter{}
-		if _, err := reportCondition.Call(ctx, w, UnevalList(cond, buffer)); err == nil {
+		if _, err := reportCondition.Call(ctx, w, quotes(cond, buffer)); err == nil {
 			return nil, errors.New(buffer.String())
 		} else if !errors.Is(err, ErrNoMatchMethods) {
 			return nil, fmt.Errorf("%w in (report-condition)", err)

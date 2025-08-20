@@ -481,7 +481,7 @@ func cmdApply(ctx context.Context, w *World, list Node) (Node, error) {
 				return nil, err
 			}
 			err = SeqEach(ctx, w, value, func(n Node) error {
-				newargs.Add(ctx, w, Uneval{n})
+				newargs.Add(ctx, w, quoted{n})
 				return nil
 			})
 			if err != nil {

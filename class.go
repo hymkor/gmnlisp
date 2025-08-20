@@ -608,19 +608,19 @@ func (reciever *_StandardObject) callInitArg(classDef *_StandardClass, initArg S
 	return false
 }
 
-type Uneval struct {
+type quoted struct {
 	Node
 }
 
-func (u Uneval) Eval(ctx context.Context, w *World) (Node, error) {
+func (u quoted) Eval(ctx context.Context, w *World) (Node, error) {
 	return u.Node, nil
 }
 
-func UnevalList(list ...Node) Node {
+func quotes(list ...Node) Node {
 	var result Node = Null
 	for i := len(list) - 1; i >= 0; i-- {
 		result = &Cons{
-			Car: Uneval{Node: list[i]},
+			Car: quoted{Node: list[i]},
 			Cdr: result,
 		}
 	}
@@ -646,7 +646,7 @@ func funCreate(ctx context.Context, w *World, args []Node) (Node, error) {
 	}
 	if _, ok := rec.(*_StandardObject); ok {
 		newargs := append([]Node{rec}, args[1:]...)
-		return gen.Call(ctx, w, UnevalList(newargs...))
+		return gen.Call(ctx, w, quotes(newargs...))
 	}
 	return rec, nil
 }

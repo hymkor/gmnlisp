@@ -171,7 +171,7 @@ func MapCar(ctx context.Context, w *World, funcNode Node, sourceSet []Node, stor
 				return nil
 			}
 		}
-		result, err := _f.Call(ctx, w, UnevalList(paramSet...))
+		result, err := _f.Call(ctx, w, quotes(paramSet...))
 		if err != nil {
 			return err
 		}
@@ -231,7 +231,7 @@ func mapList(ctx context.Context, w *World, funcNode Node, sourceSet []Node, sto
 				return nil
 			}
 		}
-		result, err := _f.Call(ctx, w, UnevalList(listSet...))
+		result, err := _f.Call(ctx, w, quotes(listSet...))
 		if err != nil {
 			return err
 		}
