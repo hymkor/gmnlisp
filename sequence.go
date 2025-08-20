@@ -32,12 +32,12 @@ func SeqEach(ctx context.Context, w *World, list Node, f func(Node) error) error
 	return nil
 }
 
-type ListBuilder struct {
+type listBuilder struct {
 	first Cons
 	last  *Cons
 }
 
-func (L *ListBuilder) Add(ctx context.Context, w *World, n Node) error {
+func (L *listBuilder) Add(ctx context.Context, w *World, n Node) error {
 	tmp := &Cons{
 		Car: n,
 		Cdr: Null,
@@ -51,7 +51,7 @@ func (L *ListBuilder) Add(ctx context.Context, w *World, n Node) error {
 	return nil
 }
 
-func (L *ListBuilder) Sequence() Node {
+func (L *listBuilder) Sequence() Node {
 	if L.last == nil {
 		return Null
 	}
@@ -183,7 +183,7 @@ func funMapCar(ctx context.Context, w *World, argv []Node) (Node, error) {
 	if len(argv) < 1 {
 		return nil, ErrTooFewArguments
 	}
-	var buffer ListBuilder
+	var buffer listBuilder
 	err := MapCar(ctx, w, argv[0], argv[1:], func(node Node) { buffer.Add(ctx, w, node) })
 	return buffer.Sequence(), err
 }
@@ -268,7 +268,7 @@ func mapList(ctx context.Context, w *World, funcNode Node, sourceSet []Node, sto
 }
 
 func funMapList(ctx context.Context, w *World, argv []Node) (Node, error) {
-	var buffer ListBuilder
+	var buffer listBuilder
 	err := mapList(ctx, w, argv[0], argv[1:], func(n Node) { buffer.Add(ctx, w, n) })
 	return buffer.Sequence(), err
 }
@@ -380,7 +380,7 @@ func funSubSeq(ctx context.Context, w *World, args []Node) (Node, error) {
 		if _, err := ExpectInterface[Sequence](ctx, w, args[0], listClass); err != nil {
 			return nil, err
 		}
-		buffer = &ListBuilder{}
+		buffer = &listBuilder{}
 	}
 	err = SeqEach(ctx, w, args[0], func(value Node) (e error) {
 		if count >= end {

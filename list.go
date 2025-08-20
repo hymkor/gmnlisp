@@ -69,7 +69,7 @@ func funLast(ctx context.Context, w *World, arg Node) (Node, error) {
 func funAppend(ctx context.Context, w *World, list []Node) (Node, error) {
 	var value Node
 	var err error
-	var buffer ListBuilder
+	var buffer listBuilder
 
 	if len(list) <= 0 {
 		return Null, nil

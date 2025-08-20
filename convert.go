@@ -68,7 +68,7 @@ func cmdConvert(ctx context.Context, w *World, list Node) (Node, error) {
 		case stringClass.name:
 			return val, nil
 		case listClass.name:
-			var buffer ListBuilder
+			var buffer listBuilder
 			for _, r := range val {
 				buffer.Add(ctx, w, Rune(r))
 			}
