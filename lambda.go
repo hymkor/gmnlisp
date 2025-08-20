@@ -100,7 +100,7 @@ func expandMacroOne(ctx context.Context, w *World, value Node) Node {
 		if err != nil {
 			return nil
 		}
-		ls, ok := f.(*LispString)
+		ls, ok := f.(*lazyForm)
 		if !ok {
 			return nil
 		}

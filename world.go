@@ -278,7 +278,7 @@ func (rw _RootWorld) Get(symbol Symbol) (Callable, bool) {
 
 	script, err := embedLisp.ReadFile(fname)
 	if err == nil {
-		value := &LispString{S: string(script)}
+		value := &lazyForm{S: string(script)}
 		autoLoadFunc[symbol] = value
 		return value, true
 	}

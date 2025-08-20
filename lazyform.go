@@ -5,12 +5,12 @@ import (
 	"fmt"
 )
 
-type LispString struct {
+type lazyForm struct {
 	S       string
 	compile Node
 }
 
-func (L *LispString) Eval(ctx context.Context, w *World) (Node, error) {
+func (L *lazyForm) Eval(ctx context.Context, w *World) (Node, error) {
 	if L.compile == nil {
 		c, err := w.Interpret(ctx, L.S)
 		if err != nil {
@@ -21,7 +21,7 @@ func (L *LispString) Eval(ctx context.Context, w *World) (Node, error) {
 	return L.compile, nil
 }
 
-func (L *LispString) Call(ctx context.Context, w *World, n Node) (Node, error) {
+func (L *lazyForm) Call(ctx context.Context, w *World, n Node) (Node, error) {
 	compile, err := L.Eval(ctx, w)
 	if err != nil {
 		return nil, err
@@ -33,6 +33,6 @@ func (L *LispString) Call(ctx context.Context, w *World, n Node) (Node, error) {
 	return f.Call(ctx, w, n)
 }
 
-func (L *LispString) FuncId() uintptr {
+func (L *lazyForm) FuncId() uintptr {
 	return funcToId(L)
 }

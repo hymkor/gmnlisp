@@ -220,7 +220,7 @@ func funMacroExpand(ctx context.Context, w *World, arg Node) (Node, error) {
 		if err != nil {
 			return arg, nil
 		}
-		if L, ok := macro.(*LispString); ok {
+		if L, ok := macro.(*lazyForm); ok {
 			_macro, err := L.Eval(ctx, w)
 			if err != nil {
 				return arg, nil
