@@ -240,13 +240,13 @@ func cmdDynamic(ctx context.Context, w *World, list Node) (Node, error) {
 	return value, nil
 }
 
-type Dynamics struct {
+type dynamicVariables struct {
 	backups map[Symbol]Node
 	removes map[Symbol]struct{}
 	world   *World
 }
 
-func (D *Dynamics) Close() {
+func (D *dynamicVariables) Close() {
 	for key := range D.removes {
 		delete(D.world.dynamic, key)
 	}
@@ -255,8 +255,8 @@ func (D *Dynamics) Close() {
 	}
 }
 
-func (w *World) NewDynamics() *Dynamics {
-	return &Dynamics{
+func (w *World) NewDynamics() *dynamicVariables {
+	return &dynamicVariables{
 		backups: make(map[Symbol]Node),
 		removes: make(map[Symbol]struct{}),
 		world:   w,
@@ -267,7 +267,7 @@ func (w *World) Dynamic(name Symbol) Node {
 	return w.dynamic[name]
 }
 
-func (D *Dynamics) Set(symbol Symbol, newValue Node) {
+func (D *dynamicVariables) Set(symbol Symbol, newValue Node) {
 	if orig, ok := D.world.dynamic.Get(symbol); ok {
 		D.backups[symbol] = orig
 	} else {
