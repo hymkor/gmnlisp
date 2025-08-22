@@ -90,7 +90,7 @@ func cmdFlet(ctx context.Context, w *World, list Node) (Node, error) {
 		return raiseProgramError(ctx, w, err)
 	}
 	lexical := Functions{}
-	for HasValue(flist) {
+	for IsSome(flist) {
 		var flist1 Node
 		flist1, flist, err = Shift(flist)
 		if err != nil {
@@ -123,7 +123,7 @@ func cmdLabels(ctx context.Context, w *World, list Node) (Node, error) {
 	}
 	lexical := Functions{}
 	nw := w.Flet(lexical)
-	for HasValue(flist) {
+	for IsSome(flist) {
 		var flist1 Node
 		flist1, flist, err = Shift(flist)
 		if err != nil {

@@ -47,11 +47,6 @@ func IsSome(node Node) bool {
 	return !ok
 }
 
-// Deprecated: use IsSome
-func HasValue(node Node) bool {
-	return IsSome(node)
-}
-
 func List(nodes ...Node) Node {
 	var cons Node = Null
 	for i := len(nodes) - 1; i >= 0; i-- {
