@@ -163,7 +163,7 @@ Lisp values correspond to the following Go types or constructors when embedding 
 | `1`          | `gmnlisp.Integer(1)`                    |
 | `2.3`        | `gmnlisp.Float(2.3)`                    |
 | `"string"`   | `gmnlisp.String("string")`              |
-| `Symbol`     | `gmnlisp.NewSymbol("Symbol")`           |
+| `SYMBOL`     | `gmnlisp.NewSymbol("SYMBOL")`           |
 | `(cons 1 2)` | `&gmnlisp.Cons{ Car:gmnlisp.Integer(1), Cdr:gmnlisp.Integer(2) }` |
 | `#\A`        | `gmnlisp.Rune('A')`                     |
 
