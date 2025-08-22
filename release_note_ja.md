@@ -12,7 +12,9 @@
     - 型 `LispString` を`lazyForm` へ改名し、非公開とした
     - 型 `SeqBuilder` を匿名型にした(1関数でしか使われていないため)
     - 関数 `ExpectElementClass` を `expectElementClass` へ改名し、非公開とした
+    - 型 `Dynamics` を`dynamicVariables` へ改名し、非公開とした
 - embed で組み込んだS式による関数定義(lazyForm)の二回目以降の呼び出しの効率を改善した
+- 非推奨関数 `HasValue`, `IsNull` を削除した
 
 v0.7.23
 =======

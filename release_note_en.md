@@ -12,7 +12,9 @@
   - Renamed type `LispString` to `lazyForm` (unexported).
   - Changed type `SeqBuilder` to an anonymous type (only used in a single function).
   - Renamed function `ExpectElementClass` to `expectElementClass` (unexported).
+  - Renamed type `Dynamics` to `dynamicVariables` (unexported)
 - Improved efficiency of subsequent calls to embedded function definitions (lazyForm) that are included via `embed`.
+- Removed deprecated functions: `HasValue` and `IsNull`
 
 v0.7.23
 =======
