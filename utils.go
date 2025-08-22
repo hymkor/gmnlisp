@@ -33,11 +33,6 @@ func IsNone(node Node) bool {
 	return ok
 }
 
-// Deprecated: use IsNone
-func IsNull(node Node) bool {
-	return IsNone(node)
-}
-
 // IsSome returns whether `node` has a value or not
 func IsSome(node Node) bool {
 	if node == nil {

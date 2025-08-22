@@ -131,7 +131,7 @@ func (cons *Cons) writeToWithoutKakko(w io.Writer, m PrintMode) (int, error) {
 						return wc.Result()
 					}
 				}
-				if IsNull(p.Car) {
+				if IsNone(p.Car) {
 					if wc.Try(io.WriteString(w, "NIL")) {
 						return wc.Result()
 					}
