@@ -255,7 +255,7 @@ func (D *dynamicVariables) Close() {
 	}
 }
 
-func (w *World) NewDynamics() *dynamicVariables {
+func (w *World) newDynamics() *dynamicVariables {
 	return &dynamicVariables{
 		backups: make(map[Symbol]Node),
 		removes: make(map[Symbol]struct{}),
@@ -282,7 +282,7 @@ func cmdDynamicLet(ctx context.Context, w *World, list Node) (Node, error) {
 	var vars Node
 	var err error
 
-	D := w.NewDynamics()
+	D := w.newDynamics()
 	defer D.Close()
 
 	vars, list, err = Shift(list)
