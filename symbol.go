@@ -61,12 +61,6 @@ func (idm *nameIDRegistry[T]) IdToName(id T) [2]string {
 	return idm.id2name[id]
 }
 
-type Symbol interface {
-	Id() int
-	Node
-	OriginalString() string
-}
-
 type _Symbol int
 
 func (s _Symbol) Id() int {

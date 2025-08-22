@@ -4,15 +4,6 @@ import (
 	"context"
 )
 
-type Class interface {
-	Node
-	Name() Symbol
-	InstanceP(Node) bool
-	Create() Node
-	InheritP(Class) bool
-	Supers() []Class
-}
-
 type BuiltInClass struct {
 	name      Symbol
 	instanceP func(Node) bool
