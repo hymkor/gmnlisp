@@ -1,5 +1,9 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+v0.7.24
+=======
+Aug 25, 2025
+
 - Added `ExhaustThreshold int64` to configure the threshold for raising `<storage-exhausted>` (default: 123456789).
 - Modified `(elt)` so that if the index is greater than or equal to `ExhaustThreshold`, it raises `<program-error>`.
 - Moved hash-table related functions `(clrhash)`, `(gethash)`, `(hash-table-count)`, `(make-hash-table)`, `(remhash)`, `(set-gethash)` into a subpackage `hash`. To use them, import `"github.com/hymkor/gmnlisp/hash"`. The gmnlisp executable imports this by default.
@@ -15,6 +19,8 @@
   - Renamed type `Dynamics` to `dynamicVariables` (unexported)
 - Improved efficiency of subsequent calls to embedded function definitions (lazyForm) that are included via `embed`.
 - Removed deprecated functions: `HasValue` and `IsNull`
+
+[TP Result] : PASS = 16174, FAIL = 237 (Pass rate: 98.55%)
 
 v0.7.23
 =======

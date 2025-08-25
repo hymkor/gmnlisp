@@ -1,5 +1,9 @@
 [TP Result]: https://github.com/hymkor/gmnlisp/blob/master/how-to-verify.md
 
+v0.7.24
+=======
+Aug 25, 2025
+
 - `<storage-exausted>` を発生させる閾値を ExhaustThreshold int64 として参照/変更できるようにした (デフォルト: 123456789)
 - `(elt)` のインデックスが閾値 (ExhaustThreshold) 以上の時 `<program-error>` とするようにした
 - ハッシュテーブル関連の関数 `(clrhash)`, `(gethash)`, `(hash-table-count)`, `(make-hash-table)`, `(remhash)`, `(set-gethash)` をサブパッケージ `hash` へ移動。利用する場合は `import "github.com/hymkor/gmnlisp/hash"` を行う。gmnlisp の実行ファイルではこれらを import する。
@@ -15,6 +19,8 @@
     - 型 `Dynamics` を`dynamicVariables` へ改名し、非公開とした
 - embed で組み込んだS式による関数定義(lazyForm)の二回目以降の呼び出しの効率を改善した
 - 非推奨関数 `HasValue`, `IsNull` を削除した
+
+[TP Result] : PASS = 16174, FAIL = 237 (Pass rate: 98.55%)
 
 v0.7.23
 =======
